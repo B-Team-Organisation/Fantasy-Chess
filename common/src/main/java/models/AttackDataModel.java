@@ -1,7 +1,7 @@
 package models;
 
 import java.util.Objects;
-import main.java.entities.CharacterEntity;
+import entities.CharacterEntity;
 
 /**
  * Represents the position of an attack as a model.

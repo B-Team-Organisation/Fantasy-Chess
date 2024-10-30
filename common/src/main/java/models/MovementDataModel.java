@@ -1,7 +1,7 @@
 package models;
 
 import java.util.Objects;
-import main.java.entities.CharacterEntity;
+import entities.CharacterEntity;
 
 /**
  * Represents the targeted movement of a character on the playing field.

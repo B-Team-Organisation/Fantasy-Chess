@@ -1,7 +1,6 @@
 package models;
 
 import org.junit.jupiter.api.Test;
-import main.java.models.Vector2D;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestVector2D {
