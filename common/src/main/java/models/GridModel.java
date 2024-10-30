@@ -19,8 +19,8 @@ import java.util.Objects;
  * @version 1.0
  */
 public class GridModel{
-    private int rows; // x-coordinates
-    private int cols; // y-coordinates
+    private int rows;
+    private int cols;
 
     private TileModel[][] tileGrid;
 

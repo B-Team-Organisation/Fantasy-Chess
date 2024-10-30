@@ -3,6 +3,7 @@ package models;
 import Exceptions.DestinationInvalidException;
 import Exceptions.NoCharacterFoundException;
 import Exceptions.DestinationAlreadyOccupiedException;
+import Exceptions.NotAStartPositionException;
 import entities.CharacterEntity;
 
 /**
@@ -38,6 +39,23 @@ public class GridService {
     }
 
     /**
+     * Marks the specified rows in the tileGrid as start tiles.
+     *
+     * @param rows indices of the rows that should become start tiles
+     * @throws DestinationInvalidException if a given row index is invalid
+     */
+    public void setStartTiles(int[] rows) throws DestinationInvalidException {
+        for (int row : rows) {
+            if (checkPositionInvalid(new Vector2D(0, row))){
+                throw new DestinationInvalidException(new Vector2D(0, row));
+            }
+            for (int col = 0; col < gridModel.getCols(); col++) {
+                gridModel.getTileGrid()[row][col].setStartTile(true);
+            }
+        }
+    }
+
+    /**
      * Tries to move the {@link CharacterEntity} found at {@code from} over to {@code to}.
      *
      * @param from {@link Vector2D}-position it tries to retrieve the {@link CharacterEntity} from
@@ -63,6 +81,7 @@ public class GridService {
 
     /**
      * Tries to place the given {@link CharacterEntity} at the specified {@link Vector2D}-position.
+     * This only works if the position is marked as a valid starting position.
      * <p>
      * Will throw an exception if anything goes wrong.
      *
@@ -70,11 +89,15 @@ public class GridService {
      * @param character the {@link CharacterEntity} it tries to place at the {@link Vector2D}
      * @throws DestinationInvalidException if the {@link Vector2D}-position is invalid
      * @throws DestinationAlreadyOccupiedException if the destination-tile is already occupied
+     * @throws NotAStartPositionException if the destination-tile isn't a valid starting position
      */
-    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException {
+    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException {
         TileModel tile = getTileAt(to);
         if (tile.getCharacter() != null){
             throw new DestinationAlreadyOccupiedException(to);
+        }
+        if (!tile.getStartTile()){
+            throw new NotAStartPositionException(to);
         }
         tile.setCharacter(character);
     }

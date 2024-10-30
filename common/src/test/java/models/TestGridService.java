@@ -3,6 +3,7 @@ package models;
 import Exceptions.DestinationAlreadyOccupiedException;
 import Exceptions.DestinationInvalidException;
 import Exceptions.NoCharacterFoundException;
+import Exceptions.NotAStartPositionException;
 import entities.CharacterEntity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,17 @@ public class TestGridService {
     }
 
     @Test
+    void testSetStartTiles(){
+        // Check invalid index
+        assertThrows(DestinationInvalidException.class, () -> {gridService.setStartTiles(new int[]{-1});});
+        // Check valid indices
+        assertDoesNotThrow(() -> {gridService.setStartTiles(new int[]{0,1,2});});
+        // Check worked
+        assertTrue(gridModel.getTileGrid()[0][0].getStartTile());
+        assertFalse(gridModel.getTileGrid()[3][0].getStartTile());
+    }
+
+    @Test
     void testCheckPositionInvalid(){
         // Check all four boundaries
         assertTrue(gridService.checkPositionInvalid(vec1invalid));
@@ -70,9 +82,12 @@ public class TestGridService {
 
     @Test
     void testSetCharacterTo(){
+        // Check invalid position (not a starting position)
+        assertThrows(NotAStartPositionException.class,()->{gridService.setCharacterTo(vec5valid,character1);});
         // Check valid position
+        gridModel.getTileGrid()[vec5valid.getY()][vec5valid.getX()].setStartTile(true);
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec5valid,character1);});
-        // Check invalid position
+        // Check invalid position (out of bounds)
         assertThrows(DestinationInvalidException.class, () -> {gridService.setCharacterTo(vec1invalid,character1);});
         // Check occupied position
         assertThrows(DestinationAlreadyOccupiedException.class, () -> {gridService.setCharacterTo(vec5valid,character2);});
@@ -85,6 +100,7 @@ public class TestGridService {
         // Check empty position
         assertDoesNotThrow(() -> {assertNull(gridService.getCharacterAt(vec5valid));});
 
+        gridModel.getTileGrid()[vec5valid.getY()][vec5valid.getX()].setStartTile(true);
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec5valid,character1);});
         // Check valid position
         assertDoesNotThrow(() -> {gridService.getCharacterAt(vec5valid);});
@@ -97,6 +113,7 @@ public class TestGridService {
         // Check empty position
         assertThrows(NoCharacterFoundException.class, () -> {gridService.removeCharacterFrom(vec5valid);});
 
+        gridModel.getTileGrid()[vec5valid.getY()][vec5valid.getX()].setStartTile(true);
         assertDoesNotThrow(()->{gridService.setCharacterTo(vec5valid,character1);});
         // Check occupied position
         assertDoesNotThrow(()->{gridService.removeCharacterFrom(vec5valid);});
@@ -109,7 +126,9 @@ public class TestGridService {
         // Check from valid to invalid
         assertThrows(NoCharacterFoundException.class, () -> {gridService.moveCharacter(vec5valid,vec1invalid);});
 
+        gridModel.getTileGrid()[vec5valid.getY()][vec5valid.getX()].setStartTile(true);
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec5valid,character1);});
+        gridModel.getTileGrid()[vec5valid.getY()][vec6valid.getX()].setStartTile(true);
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec6valid,character2);});
         // Check from valid occupied to invalid
         assertThrows(DestinationInvalidException.class, () -> {gridService.moveCharacter(vec5valid,vec1invalid);});
