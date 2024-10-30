@@ -1,3 +1,7 @@
+package models;
+
+import java.util.Arrays;
+
 /**
  * Feature: Grid Model
  *    First Choice ->2d array 
@@ -39,13 +43,39 @@
  *                  -> getCell: given 0-8,-0-8
  *
  *
-
-
-
-
-
  @version 1.0
  * @since 2024-10-29
  */
+
+
 public class GridModel{
+    private int rows; // x-coordinates
+    private int cols; // y-coordinates
+
+    private TileModel[][] tileGrid;
+
+    public GridModel(int rows, int cols){
+        this.rows = rows;
+        this.cols = cols;
+
+        tileGrid = new TileModel[rows][cols];
+
+        for (TileModel[] tileRow : tileGrid) {
+            for (int i = 0; i < tileRow.length; i++) {
+                tileRow[i] = new TileModel();
+            }
+        }
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public TileModel[][] getTileGrid() {
+        return tileGrid;
+    }
 }
