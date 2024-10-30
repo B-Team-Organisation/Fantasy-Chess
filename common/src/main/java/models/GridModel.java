@@ -1,59 +1,35 @@
 package models;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
- * Feature: Grid Model
- *    First Choice ->2d array 
- *         ->(no other choice, more complex graph represantion node based).
+ * Data model for the map grid
+ * <p>
+ * This class represents a grid of tiles. Its dimensions are defined by the amount
+ * of {@link GridModel#rows} and {@link GridModel#cols}.
+ * Each tile is represented by an instance of the {@link TileModel} class.
+ * The grid is initialized with empty tiles.
+ * <p>
+ * The coordinate origin of the grid ("tileGrid[0][0]") lies in the top corner of the map.
+ * The rows correspond to y-coordinated, the columns represent the x-coordinates.
+ * By this definition, a tile is addressed by tileGrid[row][column].
  *
- * MxN Grid with m=n
- *    First Choice(9x9) -> odd number ?
- *        Second Choice -> 8x8 with a max of 10 pieces per player? 10x10 for 12.
- *
- * Implementation Details:
- * - The grid model  provides
- *   methods to set, remove, and check the occupancy of cells.
- * - The Tile class represents an individual cell on the game board and stores
- *   information about the current piece , maybe about the stats too.
- * 
- * Possible Methods requiredd:
- *     -Set Piece(row, column,->(obj) piece( charachter object with name ,stats))
- *     -remove Piece( maybe just move) same....
- *     -boolean occupied (cell obejct (col , row)) is charachter or not
- *      
- *
- * Structure:
- *     -class Cell
- *        -row,column, Charachter(Object)
- *        -construct: -> Empty Cell, charachter obj= null
- *        -methods : -> toString
- *                   -> set piece
- *                   -> get piece
- *                   -> remove piece
- *                   -> bool occupied
- *
- *     -Class Board:
- *        -private Cell [][];
- *        -Construct: -> 9x9(8x8)
- *                    ->initialize Board
- *        -methods: -> initializeBoard : give the value 0 til 9 for the Cell
- *                  (IF NOTATION A-I, 1-9)-> getNotation: chess notaion from 0-8,0-8 to A-I,1-9
- *                                        -> getCell : invers Chess notation -'A',9-charat(1)
- *                  -> getCell: given 0-8,-0-8
- *
- *
- @version 1.0
- * @since 2024-10-29
+ * @author lukas albano
+ * @version 1.0
  */
-
-
 public class GridModel{
     private int rows; // x-coordinates
     private int cols; // y-coordinates
 
     private TileModel[][] tileGrid;
 
+    /**
+     * Constructor for the GridModel.
+     *
+     * @param rows the number of rows in the grid
+     * @param cols the number of cols in the grid
+     */
     public GridModel(int rows, int cols){
         this.rows = rows;
         this.cols = cols;
@@ -77,5 +53,20 @@ public class GridModel{
 
     public TileModel[][] getTileGrid() {
         return tileGrid;
+    }
+
+    @Override
+    public String toString() {
+        return "GridModel [rows=" + rows + ", cols=" + cols + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof GridModel && Arrays.deepEquals(tileGrid, ((GridModel) o).tileGrid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rows, cols, Arrays.deepHashCode(tileGrid));
     }
 }
