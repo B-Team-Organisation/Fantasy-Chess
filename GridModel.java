@@ -19,6 +19,29 @@
  *     -boolean occupied (cell obejct (col , row)) is charachter or not
  *      
  *
+ * Structure:
+ *     -class Cell
+ *        -row,column, Charachter(Object)
+ *        -construct: -> Empty Cell, charachter obj= null
+ *        -methods : -> toString
+ *                   -> set piece
+ *                   -> get piece
+ *                   -> remove piece
+ *                   -> bool occupied
+ *
+ *     -Class Board:
+ *        -private Cell [][];
+ *        -Construct: -> 9x9(8x8)
+ *                    ->initialize Board
+ *        -methods: -> initializeBoard : give the value 0 til 9 for the Cell
+ *                  (IF NOTATION A-I, 1-9)-> getNotation: chess notaion from 0-8,0-8 to A-I,1-9
+ *                                        -> getCell : invers Chess notation -'A',9-charat(1)
+ *                  -> getCell: given 0-8,-0-8
+ *
+ *
+
+
+
 
 
  @version 1.0
