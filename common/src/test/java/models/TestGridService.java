@@ -94,6 +94,30 @@ public class TestGridService {
     }
 
     @Test
+    void testSwapCharacters(){
+        assertDoesNotThrow(() -> gridService.setStartTiles(new int[]{0,1,2,3,4}));
+        gridModel.getTileGrid()[vec5valid.getY()][vec6valid.getX()].setStartTile(true);
+        // Check both tiles out of bounds
+        assertThrows(DestinationInvalidException.class, () -> {gridService.swapCharacters(vec1invalid,vec2invalid);});
+        // Check first tile invalid
+        assertThrows(DestinationInvalidException.class, () -> {gridService.swapCharacters(vec1invalid,vec5valid);});
+        // Check first tile empty
+        assertThrows(NoCharacterFoundException.class, () -> {gridService.swapCharacters(vec5valid,vec5valid);});
+
+        assertDoesNotThrow(() -> {gridService.setCharacterTo(vec5valid,character1);});
+        // Check first tile valid second invalid
+        assertThrows(DestinationInvalidException.class, () -> {gridService.swapCharacters(vec5valid,vec1invalid);});
+        // Check first tile valid second empty
+        assertThrows(NoCharacterFoundException.class, () -> {gridService.swapCharacters(vec5valid,vec6valid);});
+
+        assertDoesNotThrow(() -> {gridService.setCharacterTo(vec6valid,character2);});
+        // Check swap successful
+        assertDoesNotThrow(() -> {gridService.swapCharacters(vec5valid,vec6valid);});
+        assertDoesNotThrow(() -> {assertEquals(character1,gridService.getCharacterAt(vec6valid));});
+        assertDoesNotThrow(() -> {assertEquals(character2,gridService.getCharacterAt(vec5valid));});
+    }
+
+    @Test
     void testGetCharacterFrom(){
         // Check invalid position
         assertThrows(DestinationInvalidException.class,() -> {gridService.getCharacterAt(vec1invalid);});

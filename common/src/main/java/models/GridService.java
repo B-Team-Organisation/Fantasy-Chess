@@ -56,6 +56,28 @@ public class GridService {
     }
 
     /**
+     * Tries to swap the two characters from tiles {@code one} and {@code two}.
+     *
+     * @param one {@link Vector2D}-position of the first character
+     * @param two {@link Vector2D}-position of the second character
+     * @throws DestinationInvalidException if one of the positions is out of bounds
+     * @throws NoCharacterFoundException if one of the {@link TileModel} doesn't contain a {@link CharacterEntity}
+     */
+    public void swapCharacters(Vector2D one, Vector2D two) throws DestinationInvalidException, NoCharacterFoundException {
+        TileModel tileOne = getTileAt(one);
+        if (tileOne.getCharacter() == null){
+            throw new NoCharacterFoundException(one);
+        }
+        TileModel tileTwo = getTileAt(two);
+        if (tileTwo.getCharacter() == null){
+            throw new NoCharacterFoundException(two);
+        }
+        CharacterEntity characterOne = tileOne.getCharacter();
+        tileOne.setCharacter(tileTwo.getCharacter());
+        tileTwo.setCharacter(characterOne);
+    }
+
+    /**
      * Tries to move the {@link CharacterEntity} found at {@code from} over to {@code to}.
      *
      * @param from {@link Vector2D}-position it tries to retrieve the {@link CharacterEntity} from
