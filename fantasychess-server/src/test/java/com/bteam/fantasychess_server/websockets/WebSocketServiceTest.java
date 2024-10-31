@@ -10,8 +10,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.io.IOException;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -58,23 +62,40 @@ class WebSocketServiceTest {
         assertTrue(webSocketService.getClients().containsKey(TEST_ID));
     }
 
-    @Test
-    void testSendMessage() {
-        webSocketService.getClients().put(TEST_ID, mockClient);
-        webSocketService.sendToClient(TEST_ID, TEST_PAYLOAD);
 
-        verify(webSocketService.getClients().get(TEST_ID), times(1)).sendMessage(TEST_PAYLOAD);
+    @Test
+    void testClientUnregistration() {
+        when(mockSession.getId()).thenReturn(TEST_ID);
+
+        webSocketService.registerSession(mockSession);
+
+        assertEquals(1, webSocketService.getClients().size());
+        assertEquals(TEST_ID, Objects.requireNonNull(webSocketService.getClients().get(TEST_ID)).getId());
+
+        webSocketService.removeSession(TEST_ID, CloseStatus.NO_STATUS_CODE);
+
+        assertEquals(0, webSocketService.getClients().size());
     }
 
     @Test
-    void testMessageHandle() throws Exception {
+    void testSendMessage() throws IOException {
+        when(mockSession.getId()).thenReturn(TEST_ID);
+
+        webSocketService.registerSession(mockSession);
+        webSocketService.sendToClient(TEST_ID, TEST_PAYLOAD);
+
+        verify(mockSession, times(1)).sendMessage(any());
+    }
+
+    @Test
+    void testMessageHandle() {
         when(mockSession.getId()).thenReturn(TEST_ID);
         when(mockTextMessage.getPayload()).thenReturn(testPayloadString);
 
         webSocketService.registerSession(mockSession);
 
-        webSocketService.getClients().get(TEST_ID)
-                .getOnMessageRecievedEvent()
+        Objects.requireNonNull(webSocketService.getClients().get(TEST_ID))
+                .getOnMessageReceivedEvent()
                 .AddListener(payload -> assertEquals(testPayloadString, payload));
 
         webSocketService.handleTextMessage(mockSession, mockTextMessage);

@@ -1,7 +1,9 @@
 package com.bteam.fantasychess_server.client;
 
 import com.bteam.fantasychess_server.utils.Event;
+import com.bteam.fantasychess_server.utils.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -10,7 +12,8 @@ public class Client {
     private final WebSocketSession session;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private final Event<String> onMessageRecievedEvent = new Event<>();
+    private final Event<String> onMessageReceivedEvent = new Event<>();
+    private final Event<CloseStatus> onClientDisconnected = new Event<>();
 
     public Client(String id, WebSocketSession session) {
         this.id = id;
@@ -25,15 +28,20 @@ public class Client {
         return session;
     }
 
-    public Event<String> getOnMessageRecievedEvent() {
-        return onMessageRecievedEvent;
+    public Event<String> getOnMessageReceivedEvent() {
+        return onMessageReceivedEvent;
     }
 
-    public <T> void sendMessage(T payload) {
+    public Event<CloseStatus> getOnClientDisconnected() {
+        return onClientDisconnected;
+    }
+
+    public <T> Result<Boolean> sendMessage(T payload) {
         try {
             session.sendMessage(new TextMessage(mapper.writeValueAsString(payload)));
+            return Result.asSuccess(true);
         } catch (Exception e) {
-            e.printStackTrace();
+            return Result.asFailure(e);
         }
     }
 }

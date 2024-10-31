@@ -51,6 +51,23 @@ class EventTest {
         event.Invoke(TEST_ARGUMENT);
 
         assertEquals(1, calls.get());
+    }
 
+    @Test
+    void invokeWithError() {
+        Event<String> event = new Event<>();
+        AtomicInteger calls = new AtomicInteger();
+        var exception = new RuntimeException("TEST_EXCEPTION");
+
+        event.AddListener(c -> {
+            throw exception;
+        });
+
+        event.Invoke(TEST_ARGUMENT, e -> {
+            assertEquals(exception, e);
+            calls.getAndIncrement();
+        });
+
+        assertEquals(1, calls.get());
     }
 }

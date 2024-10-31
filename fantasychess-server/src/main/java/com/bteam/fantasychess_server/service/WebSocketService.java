@@ -4,6 +4,7 @@ import com.bteam.fantasychess_server.client.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -23,9 +24,15 @@ public class WebSocketService {
         return mapper;
     }
 
-    public void registerSession(WebSocketSession session) {
+    public Client registerSession(WebSocketSession session) {
         var sessionID = session.getId();
-        clients.put(sessionID, new Client(sessionID, session));
+        return clients.put(sessionID, new Client(sessionID, session));
+    }
+
+    public Client removeSession(String sessionID, CloseStatus status) {
+        clients.get(sessionID).getSession().isOpen();
+        clients.get(sessionID).getOnClientDisconnected().Invoke(status);
+        return clients.remove(sessionID);
     }
 
     public <T> void sendToClient(String id, T payload) {
@@ -34,6 +41,6 @@ public class WebSocketService {
 
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
-        clients.get(session.getId()).getOnMessageRecievedEvent().Invoke(payload);
+        clients.get(session.getId()).getOnMessageReceivedEvent().Invoke(payload);
     }
 }
