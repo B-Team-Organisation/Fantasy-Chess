@@ -8,9 +8,16 @@ import com.bteam.fantasychess_client.ui.SplashScreen;
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends Game {
 
+    private Skin skin;
+
     @Override
     public void create() {
-        Skin skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
+        skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
         setScreen(new SplashScreen(skin));
+    }
+
+    @Override
+    public void dispose() {
+        skin.dispose();
     }
 }
