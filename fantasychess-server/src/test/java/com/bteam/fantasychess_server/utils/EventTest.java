@@ -15,16 +15,16 @@ class EventTest {
     @Test
     void addListener() {
         Event<Void> event = new Event<>();
-        event.AddListener(TEST_CONSUMER);
+        event.addListener(TEST_CONSUMER);
         assertTrue(event.listeners.contains(TEST_CONSUMER));
     }
 
     @Test
     void removeListener() {
         Event<Void> event = new Event<>();
-        event.AddListener(TEST_CONSUMER);
+        event.addListener(TEST_CONSUMER);
         assertTrue(event.listeners.contains(TEST_CONSUMER));
-        event.RemoveListener(TEST_CONSUMER);
+        event.removeListener(TEST_CONSUMER);
         assertFalse(event.listeners.contains(TEST_CONSUMER));
     }
 
@@ -32,10 +32,10 @@ class EventTest {
     void clear() {
         Event<Void> event = new Event<>();
         for (int i = 0; i < 3; i++) {
-            event.AddListener(TEST_CONSUMER);
+            event.addListener(TEST_CONSUMER);
         }
         assertEquals(3, event.listeners.size());
-        event.Clear();
+        event.clear();
         assertEquals(0, event.listeners.size());
     }
 
@@ -44,11 +44,11 @@ class EventTest {
         Event<String> event = new Event<>();
         AtomicInteger calls = new AtomicInteger();
 
-        event.AddListener(c -> {
+        event.addListener(c -> {
             assertEquals(TEST_ARGUMENT, c);
             calls.getAndIncrement();
         });
-        event.Invoke(TEST_ARGUMENT);
+        event.invoke(TEST_ARGUMENT);
 
         assertEquals(1, calls.get());
     }
@@ -59,11 +59,11 @@ class EventTest {
         AtomicInteger calls = new AtomicInteger();
         var exception = new RuntimeException("TEST_EXCEPTION");
 
-        event.AddListener(c -> {
+        event.addListener(c -> {
             throw exception;
         });
 
-        event.Invoke(TEST_ARGUMENT, e -> {
+        event.invoke(TEST_ARGUMENT, e -> {
             assertEquals(exception, e);
             calls.getAndIncrement();
         });

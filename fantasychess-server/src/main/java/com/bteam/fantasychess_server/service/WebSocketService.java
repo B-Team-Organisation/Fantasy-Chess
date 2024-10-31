@@ -11,6 +11,13 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link Service} Singleton that provides a Map of all connected clients and methods
+ * to send Messages to said clients. As well as handling routing received {@link TextMessage}s
+ * to the appropriate clients
+ *
+ * @author Marc
+ */
 @Service
 public class WebSocketService {
     private final Map<String, Client> clients = new HashMap<>();
@@ -31,7 +38,7 @@ public class WebSocketService {
 
     public Client removeSession(String sessionID, CloseStatus status) {
         clients.get(sessionID).getSession().isOpen();
-        clients.get(sessionID).getOnClientDisconnected().Invoke(status);
+        clients.get(sessionID).getOnClientDisconnected().invoke(status);
         return clients.remove(sessionID);
     }
 
@@ -41,6 +48,6 @@ public class WebSocketService {
 
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
-        clients.get(session.getId()).getOnMessageReceivedEvent().Invoke(payload);
+        clients.get(session.getId()).getOnMessageReceivedEvent().invoke(payload);
     }
 }

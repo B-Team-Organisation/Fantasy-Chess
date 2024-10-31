@@ -41,11 +41,11 @@ class ClientTest {
     @Test
     void getOnMessageReceivedEvent() {
         AtomicInteger calls = new AtomicInteger(0);
-        client.getOnMessageReceivedEvent().AddListener(c -> {
+        client.getOnMessageReceivedEvent().addListener(c -> {
             assertEquals("TEST", c);
             calls.incrementAndGet();
         });
-        client.getOnMessageReceivedEvent().Invoke("TEST");
+        client.getOnMessageReceivedEvent().invoke("TEST");
         assertEquals(1, calls.get());
 
     }
@@ -68,10 +68,10 @@ class ClientTest {
     @Test
     void onClientDisconnected() {
         AtomicInteger calls = new AtomicInteger(0);
-        client.getOnClientDisconnected().AddListener(c -> {
+        client.getOnClientDisconnected().addListener(c -> {
             assertEquals(CloseStatus.NORMAL, c);
             calls.incrementAndGet();
         });
-        client.getOnClientDisconnected().Invoke(CloseStatus.NORMAL);
+        client.getOnClientDisconnected().invoke(CloseStatus.NORMAL);
     }
 }

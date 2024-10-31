@@ -6,6 +6,12 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+/**
+ * {@link TextWebSocketHandler} extension, that maps the incoming methods to
+ * the {@link WebSocketService}
+ *
+ * @author Marc
+ */
 public class TextWebSocketHandlerExt extends TextWebSocketHandler {
     WebSocketService service;
 

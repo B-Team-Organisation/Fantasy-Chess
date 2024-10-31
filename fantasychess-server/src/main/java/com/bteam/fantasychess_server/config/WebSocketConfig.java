@@ -24,6 +24,11 @@ public class WebSocketConfig implements WebSocketConfigurer {
         this.service = service;
     }
 
+    /**
+     * Provides WebSocket Servelet and specifies it's parameters
+     *
+     * @return {@link ServletServerContainerFactoryBean}
+     */
     @Bean
     public ServletServerContainerFactoryBean createWebSocketContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
@@ -32,6 +37,12 @@ public class WebSocketConfig implements WebSocketConfigurer {
         return container;
     }
 
+    /**
+     * Registers all Websocket handler and maps these to paths, that are accessible by the client,
+     * although we only need one.
+     *
+     * @param registry {@link WebSocketHandlerRegistry}
+     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(createHandler(), "/ws")

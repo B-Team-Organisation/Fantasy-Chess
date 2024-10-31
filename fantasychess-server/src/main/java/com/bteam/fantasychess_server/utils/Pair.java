@@ -1,7 +1,11 @@
 package com.bteam.fantasychess_server.utils;
 
 /**
- * A simple helper Class to allow for Tuples
+ * A simple helper Class to allow for Pairs
+ *
+ * @param <T> Type of the first Object in the Pair
+ * @param <U> type of the second Object in the Pair
+ * @author Marc
  */
 public class Pair<T, U> {
     T first;

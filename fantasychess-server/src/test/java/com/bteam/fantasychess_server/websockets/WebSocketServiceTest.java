@@ -96,7 +96,7 @@ class WebSocketServiceTest {
 
         Objects.requireNonNull(webSocketService.getClients().get(TEST_ID))
                 .getOnMessageReceivedEvent()
-                .AddListener(payload -> assertEquals(testPayloadString, payload));
+                .addListener(payload -> assertEquals(testPayloadString, payload));
 
         webSocketService.handleTextMessage(mockSession, mockTextMessage);
     }
