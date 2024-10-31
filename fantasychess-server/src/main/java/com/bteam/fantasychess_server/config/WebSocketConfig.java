@@ -34,7 +34,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        System.out.println("registerWebSocketHandlers");
         registry.addHandler(createHandler(), "/ws")
                 .setAllowedOrigins("*")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
@@ -43,7 +42,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
 
     @Bean
     public WebSocketHandler createHandler() {
-        System.out.println("createHandler");
         return new TextWebSocketHandlerExt(service);
     }
 }
