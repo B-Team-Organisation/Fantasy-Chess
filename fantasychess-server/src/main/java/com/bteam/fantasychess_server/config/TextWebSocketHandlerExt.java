@@ -8,14 +8,13 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 public class TextWebSocketHandlerExt extends TextWebSocketHandler {
     WebSocketService service;
 
-    public TextWebSocketHandlerExt(WebSocketService service){
+    public TextWebSocketHandlerExt(WebSocketService service) {
         this.service = service;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        System.out.println("Connected");
         service.registerSession(session);
     }
 

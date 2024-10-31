@@ -1,8 +1,11 @@
 package com.bteam.fantasychess_server.utils;
 
-public class Pair<T,U> {
-    public T first;
-    public U second;
+/**
+ * A simple helper Class to allow for Tuples
+ */
+public class Pair<T, U> {
+    T first;
+    U second;
 
     public Pair(T first, U second) {
         this.first = first;
