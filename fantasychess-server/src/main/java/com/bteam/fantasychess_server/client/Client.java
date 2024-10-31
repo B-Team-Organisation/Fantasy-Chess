@@ -1,8 +1,6 @@
 package com.bteam.fantasychess_server.client;
 
-import com.bteam.fantasychess_server.config.TextWebSocketHandlerExt;
 import com.bteam.fantasychess_server.utils.Event;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
