@@ -2,6 +2,7 @@ package com.bteam.fantasychess_server.service;
 
 import com.bteam.fantasychess_server.client.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -14,8 +15,15 @@ public class WebSocketService {
     private final Map<String, Client> clients = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
 
+    public ImmutableMap<String, Client> getClients() {
+        return ImmutableMap.copyOf(clients);
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
     public void registerSession(WebSocketSession session) {
-        System.out.println("registering session");
         var sessionID = session.getId();
         clients.put(sessionID, new Client(sessionID, session));
     }
@@ -24,7 +32,7 @@ public class WebSocketService {
         clients.get(id).sendMessage(payload);
     }
 
-    public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
+    public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
         clients.get(session.getId()).getOnMessageRecievedEvent().Invoke(payload);
     }
