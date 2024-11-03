@@ -1,6 +1,7 @@
 # Fantasy-Chess
 
-![IMG_9156](https://github.com/user-attachments/assets/515d3790-6779-4e41-bce8-0cc4b79416e2)
+![IMG_9156](https://github.com/user-attachments/assets/d09c1ba1-6a28-4f74-b503-32ba93a83a6a)
+
 
 
 DAS B-TEAM
