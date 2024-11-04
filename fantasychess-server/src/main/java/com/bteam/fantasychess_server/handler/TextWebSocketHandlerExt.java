@@ -23,6 +23,7 @@ public class TextWebSocketHandlerExt extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
         service.registerSession(session);
+        System.out.println(session.getUri());
     }
 
     @Override
