@@ -28,6 +28,11 @@ Characters roam the board and adhere to their Movement and Attack patterns each 
   - Low Damage
   - Low health
 
+- Ranger
+  - Mid Movement
+  - Mid Damage
+  - Low Health
+
 ![alt balance diagram](./character-statistic-balance.drawio.svg)
 
 ## Commands
