@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
@@ -20,6 +21,23 @@ import java.util.ArrayList;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
+
+
+
+// every lobby in lower case for search handling
+// distance algo 2
+
+
+// Bug1: after pressing create and cancel to lobby, search panel doenst dissapear .
+// --Fix1: no mistakes in the writing, just mid search
+  //-> fixed, suggestions label, ( maybe link to input later?),
+
+// Fix2: event handler -> Lukas
+// Problem1: Refresh Button ?
+//
+
+
+
 /** First screen of the application. Displayed after the application is created. */
 public class MainMenu extends ScreenAdapter {
 
@@ -28,25 +46,28 @@ public class MainMenu extends ScreenAdapter {
 
     private final ExtendViewport extendViewport;
     private User user1;
-    private User user2;
     private Stage stage;
     private Skin skin;
+    private Table centerContent;
+    private List<Lobby> allLobbies;
+    private Label noLobbyFoundTable;
+    private TextField lobbyNameInput;
 
     // just for testing , waiting for adnan implementation
     public static class Lobby {
 
         String status ; // maybe not necessary
-        String opponentName;
-       // String lobbyname?
+        String lobbyName;
+        // String lobbyid?
 
 
-        public Lobby(String opponentName) {
-            this.opponentName = opponentName;
+        public Lobby(String lobbyName) {
+            this.lobbyName = lobbyName;
             status= "open";
         }
     }
 
-
+// test
     public static class User {
         String username;
 
@@ -69,33 +90,31 @@ public class MainMenu extends ScreenAdapter {
     @Override
 
     public void show() {
-         user1 = new User("Albano");
-         user2 = new User("Lana");
-
-
+        user1 = new User("Albano");
 
         stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
 
 
-
-
         Table table = new Table();
         table.setFillParent(true);
 
-        Label usernameLabel = new Label("Username", skin);
+        Label usernameLabel = new Label(" "+ user1.username, skin);
         usernameLabel.setFontScale(4f);
         usernameLabel.setAlignment(Align.left);
 
         Label titleLabel = new Label("FantasyChess", skin);
-       // titleLabel.setColor(Color.WHITE);
+        // titleLabel.setColor(Color.WHITE);
         titleLabel.setFontScale(6f);
 
         Table topContent = new Table();
         topContent.setBackground(skin.getDrawable("round-dark-gray"));
 
-        TextField lobbyNameInput = new TextField("Search lobby name", skin);
+        noLobbyFoundTable = new Label("No results found", skin);
+        noLobbyFoundTable.setVisible(false);
+
+        lobbyNameInput = new TextField("Search lobby name", skin);
         lobbyNameInput.setColor(Color.LIGHT_GRAY);
 
         lobbyNameInput.addListener(new FocusListener() {
@@ -118,64 +137,77 @@ public class MainMenu extends ScreenAdapter {
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         TextButton createLobby = new TextButton("Create Lobby", skin);
 
-        createLobby.addListener(new ClickListener() {
+        onChange(createLobby, this::createLobbyDialog);// this instead of ()->
+
+
+
+        refreshButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                createLobbyDialog();
+                String searchText = lobbyNameInput.getText().toLowerCase();
+                filterLobbies(searchText);
             }
-        });
-
-        onChange(refreshButton, () -> {
-            System.out.println("I want to refresh lobbies");
         });
 
         topContent.add(lobbyNameInput).growX().pad(10);
         topContent.add(refreshButton).pad(10);
         topContent.add(createLobby).pad(10);
 
-        Table centerContent = new Table();
+        centerContent = new Table();
         centerContent.setBackground(skin.getDrawable("round-dark-gray"));
         centerContent.top().pad(0);
 
-        List<Lobby> lobbiesList = showLobbies();
-        for (Lobby lobby : lobbiesList) {
-            Button lobbyMember = new Button(skin);
-            lobbyMember.setBackground(skin.getDrawable("round-light-gray"));
-            lobbyMember.pad(5);
-            lobbyMember.left();
+        ScrollPane scrollPane = new ScrollPane(centerContent, skin);
+        scrollPane.setFadeScrollBars(false);
+        scrollPane.setScrollingDisabled(true, false);
 
-            lobbyMember.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    System.out.println("Entering lobby " + lobby.opponentName);
-                }
-            });
 
-            Label lobbyLabel = new Label("Opponent: " + lobby.opponentName + ", Status: " + lobby.status, skin);
-            lobbyMember.add(lobbyLabel).expandX().left().padRight(10);
 
-            centerContent.add(lobbyMember).growX().padBottom(10);
-            centerContent.row();
-        }
         table.add(usernameLabel).expandX().left().padTop(0);
         table.row();
         table.add(titleLabel).padBottom(20);
         table.row();
         table.add(topContent).width(1000).padBottom(20);
         table.row();
-        table.add(centerContent).width(1000).height(520).top();
+        table.add(scrollPane).width(1000).height(520).top();
         table.row();
+        table.add(noLobbyFoundTable).padTop(10);
 
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
+
+        allLobbies = showLobbies();
+        loadLobbies(allLobbies);
+
+        //mal schauen
+
+        lobbyNameInput.addListener(new ChangeListener() {
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String searchText = lobbyNameInput.getText().toLowerCase();
+                filterLobbies(searchText);
+            }
+        });
+
+
     }
 
+    /**
+     * Opens a dialog for creating a new lobby. The dialog has a text field for the User Lobby Name ,set
+     * to "{username}´s Lobby" by default. The dialog has two Buttons, the "Cance"-Button closes the dialog,
+     * the "Create"-Button is only active if your inout is not empty, and will direct you to the game screen
+     * in your own lobby if clicked.
+     */
     private void createLobbyDialog() {
-        Dialog dialog = new Dialog("Create Lobby", skin) {
+        Dialog dialog = new Dialog("Create New Lobby", skin) {
             @Override
             protected void result(Object object) {
                 if ("create".equals(object)) {
                     System.out.println("Lobby created!");
+
+                       goToGameScreen();
+
                 }
             }
         };
@@ -192,28 +224,162 @@ public class MainMenu extends ScreenAdapter {
         contentTable.add(lobbyNameLabel).padBottom(20).colspan(2).center().row();
         contentTable.add(lobbyNameField).width(400).height(50).center().row();
 
-        dialog.button("Create", "create").pad(20);
-        dialog.button("Cancel", null).pad(20);
+        TextButton createButton = new TextButton("Create", skin);
+        createButton.setDisabled(false);
+
+        // to change @lukas
+        lobbyNameField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                boolean isFieldEmpty = lobbyNameField.getText().isEmpty();
+
+                createButton.setDisabled(isFieldEmpty);// -> maybe min number of letters?
+
+
+                if (isFieldEmpty) {
+                    createButton.setDisabled(true);
+                    createButton.setColor(Color.DARK_GRAY); // darj grey for disabled
+                } else {
+                    createButton.setColor(Color.WHITE); // normal color
+                }
+            }
+        });
+
+
+        dialog.button(createButton, "create").pad(18);
+        dialog.button("Cancel", null).pad(18);
 
         dialog.key(Input.Keys.ENTER, "create");
         dialog.key(Input.Keys.ESCAPE, null);
+
         dialog.show(stage).setSize(600, 300);
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
 
+    /**
+     * Function to be directed to GameScreen
+     */
+    private void goToGameScreen() {
+        Gdx.app.postRunnable(() -> {
+            ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(skin));
+        });
+    }
+
+    /**
+     * filters the lobbies with the input live
+     * @param searchText input
+     */
+    private void filterLobbies(String searchText) {
+        var filteredLobbies = new ArrayList<Lobby>();
+
+        for (Lobby lobby : allLobbies) {
+            if (lobby.lobbyName.toLowerCase().contains(searchText)) {
+                filteredLobbies.add(lobby);
+            }
+        }
+
+        if (filteredLobbies.isEmpty()) {
+            var suggestions = getSuggestions(searchText);
+
+            if (!suggestions.isEmpty()) {
+                noLobbyFoundTable.setText("No lobby found. Did you mean: " + String.join(", ", suggestions) + "?");
+             // link ? maybe after mvp
+
+            } else {
+                noLobbyFoundTable.setText("No lobby found");
+            }
+            noLobbyFoundTable.setVisible(true);
+        } else {
+            noLobbyFoundTable.setVisible(false);
+        }
+
+        loadLobbies(filteredLobbies);
+    }
+
+    private void loadLobbies(List<Lobby> lobbies) {
+        centerContent.clearChildren();
+
+        if (lobbies.isEmpty()) {
+            centerContent.add(noLobbyFoundTable).expandX().center().padTop(10);
+        } else {
+            for (Lobby lobby : lobbies) {
+                Button lobbyMember = new Button(skin);
+                lobbyMember.setBackground(skin.getDrawable("round-light-gray"));
+                lobbyMember.pad(5);
+                lobbyMember.left();
+
+                lobbyMember.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        System.out.println("Creating lobby " + lobby.lobbyName);
+                    }
+                });
+
+                Label lobbyLabel = new Label("Lobby name: " + lobby.lobbyName + ", Status: " + lobby.status, skin);
+                lobbyMember.add(lobbyLabel).expandX().left().padRight(10);
+
+                centerContent.add(lobbyMember).growX().padBottom(10);
+                centerContent.row();
+            }
+        }
+    }
+
+    private List<String> getSuggestions(String searchText) {
+        var suggestions = new ArrayList<String>();
+
+        for (Lobby lobby : allLobbies) {
+            int distance = levenshteinDistance(searchText, lobby.lobbyName.toLowerCase());
+            if (distance <= 2) { // distance =2 , can be increased with few lobbies, lowered with many
+                suggestions.add(lobby.lobbyName);
+            }
+        }
+        return suggestions;
+    }
+    // 1 per 1
+    private int levenshteinDistance(String s1, String s2) {
+        int[] costs = new int[s2.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            int lastValue = i;
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0) {
+                    costs[j] = j;
+                } else if (j > 0) {
+                    int newValue = costs[j - 1];
+                    if (s1.charAt(i - 1) != s2.charAt(j - 1))
+                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+            if (i > 0)
+                costs[s2.length()] = lastValue;
+        }
+        return costs[s2.length()];
+    }
+
+
+    // testdata,to check with online data
     private List<Lobby> showLobbies() {
         List<Lobby> lobbies = new ArrayList<>();
-        lobbies.add(new Lobby("Ayakoji" ));
+        lobbies.add(new Lobby("Ayakoji"));
         lobbies.add(new Lobby("Hana"));
         lobbies.add(new Lobby("Luxort"));
         lobbies.add(new Lobby("Zhuxin"));
+        lobbies.add(new Lobby("Beras"));
+        lobbies.add(new Lobby("Ino"));
+        lobbies.add(new Lobby("Kalavoi"));
+        lobbies.add(new Lobby("Albert"));
+        lobbies.add(new Lobby("Sius"));
+        lobbies.add(new Lobby("Demonzone"));
+        lobbies.add(new Lobby("Angels"));
+        lobbies.add(new Lobby("Classrom of"));
         return lobbies;
     }
 
 
 
-   // private user1 = new User("Xene");
+    // private user1 = new User("Xene");
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -253,3 +419,4 @@ public class MainMenu extends ScreenAdapter {
 
 
 }
+
