@@ -2,11 +2,15 @@ package com.bteam.fantasychess_server.service;
 
 import com.bteam.fantasychess_server.data.entities.TokenEntity;
 import com.bteam.fantasychess_server.data.repositories.TokenRepository;
+import com.bteam.fantasychess_server.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import security.CRC8;
 
 import java.security.SecureRandom;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.UUID;
 
 /**
@@ -25,6 +29,7 @@ public class TokenService {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '-'
     };
     private final static int TOKEN_LENGTH = 14;
+    private final static long TOKEN_VALID_LENGTH_IN_SECONDS = 180;
 
     private final SecureRandom random = new SecureRandom();
 
@@ -38,9 +43,22 @@ public class TokenService {
      * @return weather Token is valid or not
      */
     public boolean invalidateToken(String token) {
+        //Validate Checksum
         var checksum = getChecksum(token.substring(0, TOKEN_LENGTH));
         if (!token.substring(TOKEN_LENGTH).equals(checksum)) return false;
-        if (!tokenRepository.existsById(token)) return false;
+
+        //Validate if token exists
+        var tokenEntity = tokenRepository.findById(token);
+        if (tokenEntity.isEmpty()) return false;
+
+        //Validate if not Expired
+        var expireDate = LocalDateTime.ofEpochSecond(tokenEntity.get().getExpires(), 0, ZoneOffset.UTC);
+        if (LocalDateTime.now(Clock.systemUTC()).isAfter(expireDate)) {
+            tokenRepository.deleteById(token);
+            return false;
+        }
+
+        //Token Valid
         tokenRepository.deleteById(token);
         return true;
     }
@@ -51,7 +69,7 @@ public class TokenService {
      * @param userId User ID in the DataBase
      * @return 16 Character long base64 String
      */
-    public String generateToken(UUID userId) {
+    public Pair<String, Long> generateToken(UUID userId) {
         // Ensure only one valid token exists per UserId
         System.out.println(tokenRepository.findAll());
         var exists = tokenRepository.findTokenEntitiesByUserId(userId);
@@ -66,11 +84,17 @@ public class TokenService {
         // Append Checksum
         builder.append(getChecksum(builder.toString()));
 
+        //Generate Expiration Date
+        var expiresEpochSeconds = LocalDateTime.now()
+                .plusSeconds(TOKEN_VALID_LENGTH_IN_SECONDS)
+                .toEpochSecond(ZoneOffset.UTC);
+
         // Save to Database
         var string = builder.toString();
-        var item = tokenRepository.save(new TokenEntity(string, userId));
+        var entity = new TokenEntity(string, userId, expiresEpochSeconds);
+        var item = tokenRepository.save(entity);
 
-        return item.getId();
+        return new Pair<>(item.getId(), expiresEpochSeconds);
     }
 
     /**

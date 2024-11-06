@@ -19,7 +19,8 @@ public class AuthController {
     @GetMapping("/token")
     //@Authenticated
     public ResponseEntity<TokenDTO> getHealth(@RequestHeader(name = "X-USER-ID") UUID id) {
-        return ResponseEntity.ok(new TokenDTO(tokenService.generateToken(id)));
+        var token = tokenService.generateToken(id);
+        return ResponseEntity.ok(new TokenDTO(token.getFirst(), token.getSecond()));
     }
 
     @PostMapping("/register")

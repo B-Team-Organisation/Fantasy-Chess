@@ -16,12 +16,13 @@ public class TokenEntity {
     private String id;
     @Column(name = "userId", nullable = false)
     private UUID userId;
-    @Column(name = "expires")
+    @Column(name = "expires", nullable = false)
     private long expires;
 
-    public TokenEntity(String id, UUID userId) {
+    public TokenEntity(String id, UUID userId, long expires) {
         this.id = id;
         this.userId = userId;
+        this.expires = expires;
     }
 
     public TokenEntity() {
