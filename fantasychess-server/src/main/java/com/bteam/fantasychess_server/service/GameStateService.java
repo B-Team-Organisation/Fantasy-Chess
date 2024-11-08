@@ -3,6 +3,7 @@ package com.bteam.fantasychess_server.service;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.data.entities.GameEntity;
 import com.bteam.fantasychess_server.data.repositories.GameRepository;
+import models.GameSettingsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class GameStateService {
         return gameRepository.getReferenceById(id);
     }
 
-    public GameEntity getNewGame(Client host/*, GameSettings settings, Lobby lobby*/) {
+    public GameEntity getNewGame(Client host, GameSettingsModel settings/*, Lobby lobby*/) {
         var game = new GameEntity();
         return gameRepository.save(game);
     }

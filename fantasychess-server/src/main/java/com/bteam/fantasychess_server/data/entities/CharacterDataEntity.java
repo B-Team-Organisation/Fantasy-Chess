@@ -5,15 +5,15 @@ import jakarta.persistence.*;
 @Entity
 public class CharacterDataEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
-    private Long id;
-
-    public Long getId() {
+    private String id;
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private int health;
+    private int stamina;
+
+    /* private PatternEntity attackPattern;
+    private PatternEntity movementPattern; */
 }
