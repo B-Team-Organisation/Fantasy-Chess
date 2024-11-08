@@ -1,29 +1,33 @@
 package models;
 
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Represents a player in the game, holding their associated name, playerId and status.
  */
 public class Player {
     private String username;
-    private int playerId;
-    private boolean isReady;
+    private UUID playerId;
+    private Status status;
 
+    enum Status{
+        NOT_READY,
+        READY,
+    }
 
 
     /**
      * Constructor for a Player.
-     *
      * username: name of the players
-     * playerId: Id of the player
+     * playerId: id of the player
      * isReady: status of the player(ready, not ready)
      *
      */
-    public Player(String username, int playerId, boolean isReady) {
+    public Player(String username, UUID playerId) {
         this.username = username;
         this.playerId = playerId;
-        this.isReady = false;
+        this.status = Status.NOT_READY;
     }
 
 
@@ -31,30 +35,30 @@ public class Player {
         return username;
     }
 
-    public int getPlayerId() {
+    public UUID getPlayerId() {
         return playerId;
     }
 
-    public boolean isReady() {
-        return isReady;
+    public Status getStatus() {
+        return status;
     }
 
     public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setPlayerId(int playerId) {
-        this.playerId = playerId;
-    }
-
-    public void setReady(boolean ready) {
-        isReady = ready;
-    }
 
     @Override
     public String toString() {
-        return "Username: " + username + "PlayerId: " + playerId + "Status: "+ isReady;
+        return "Username: " + username + "PlayerId: " + playerId + "Status: "+ status;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerId, username, status);
+    }
 
+    public boolean equals(Object o){
+        return o instanceof Player && ((Player)o).playerId.equals(playerId);
+    }
 }

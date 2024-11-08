@@ -1,0 +1,112 @@
+package models;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
+
+/**
+ * This class represents the game lobby.
+ */
+public class LobbyModel {
+    private UUID lobbyId;
+    private int maxPlayers = 2;
+    private List<Player> players;
+    private Player host;
+    private GameState gameState;
+
+    enum GameState {
+        CLOSED,
+        OPEN,
+        FULL
+    }
+
+    /**
+     * Constructor for a LobbyModel.
+     *
+     * @param lobbyId: unique identifier for the lobby.
+     * @param gameState: status of the game lobby(waiting for player..., ready, not ready)
+     * @param players: List of the players that can enter the lobby
+     * @param host: player who is the host of the lobby
+     */
+    public LobbyModel(UUID lobbyId, GameState gameState, List<Player> players, Player host) {
+        this.lobbyId = lobbyId;
+        this.gameState = GameState.OPEN;
+        this.players = new ArrayList<>();
+        this.host = host;
+    }
+
+    public UUID getLobbyId() {
+        return lobbyId;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public Player getHost() {
+        return host;
+    }
+
+    /**
+     * Checks if the specified player is the host of the lobby.
+     *
+     * @param player - the player to check
+     * @return true if the player is the host, false otherwise
+     */
+    public boolean isHost(Player player){
+        return host.equals(player);
+    }
+
+    /**
+     * Adds a player to the lobby if there is space available.
+     *
+     * @param player - the player to add
+     */
+    public void addPlayer(Player player){
+        if (this.maxPlayers > players.size()){
+            this.players.add(player);
+            if (this.maxPlayers == players.size()){
+                gameState = GameState.FULL;
+            } else {
+                gameState = GameState.OPEN;
+            }
+        } else {
+            throw new IllegalArgumentException("Lobby is already full.");
+        }
+    }
+
+    /**
+     * Removes a player from the lobby and updates the game state if necessary.
+     *
+     * @param player - the player to remove
+     */
+    public void removePlayer(Player player){
+        this.players.remove(player);
+
+        if (this.players.size()==1){
+            gameState = GameState.OPEN;
+        } else if (this.players.isEmpty()) {
+            gameState = GameState.CLOSED;
+        }
+    }
+
+    public String toString() {
+        return "lobbyId: " + lobbyId + ", players: " + players + ", host: " + host;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof LobbyModel && lobbyId.equals(((LobbyModel) o).lobbyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lobbyId, players, host);
+    }
+}
