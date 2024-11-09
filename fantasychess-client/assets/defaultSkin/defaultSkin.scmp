@@ -1316,7 +1316,7 @@ jsonData: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
 						name: disabled
 						optional: true
-						value: null
+						value: round-dark-gray
 					}
 					pressedOffsetX: {
 						type: float
@@ -1760,7 +1760,7 @@ jsonData: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
 						name: disabled
 						optional: true
-						value: null
+						value: round-dark-gray
 					}
 					pressedOffsetX: {
 						type: float

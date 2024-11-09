@@ -84,7 +84,8 @@
 	"default": {
 		"up": "round-gray",
 		"down": "round-dark-gray",
-		"over": "round-light-gray"
+		"over": "round-light-gray",
+		"disabled": "round-dark-gray"
 	},
 	"toggle": {
 		"up": "round-gray",
@@ -202,7 +203,8 @@
 		"fontColor": "black",
 		"up": "round-gray",
 		"down": "round-dark-gray",
-		"over": "round-light-gray"
+		"over": "round-light-gray",
+		"disabled": "round-dark-gray"
 	},
 	"toggle": {
 		"font": "font",
