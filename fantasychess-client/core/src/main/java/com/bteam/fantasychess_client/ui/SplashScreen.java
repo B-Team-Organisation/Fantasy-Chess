@@ -16,6 +16,16 @@ import com.bteam.fantasychess_client.input.FullscreenInputListener;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
+/**
+ * Splash-Screen
+ * <p>
+ * This screen is the first screen you see when opening the game.
+ * It forces the player to choose a username to proceed.
+ * It also displays basic information about the game.
+ *
+ * @author lukas dania
+ * @version 1.0
+ */
 public class SplashScreen extends ScreenAdapter {
 
     private final OrthographicCamera camera;
@@ -44,19 +54,16 @@ public class SplashScreen extends ScreenAdapter {
         table.setFillParent(true);
         table.defaults().pad(20);
 
+        // Title label
         Label titleLabel = new Label("Fantasy-Chess", skin);
         titleLabel.setFontScale(10f);
-
+        
+        // Main widgets
         TextField usernameInput = new TextField("Username", skin);
-
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
-        onChange(playButton, () -> {
-            Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
-            Gdx.app.postRunnable(() -> ((Game)(Gdx.app.getApplicationListener())).setScreen(new MainMenu(skin)));
-        });
 
-
+        // Userinput logic
         onChange(usernameInput,() -> {
             playButton.setDisabled(usernameInput.getText().length() < 4);
         });
@@ -71,27 +78,37 @@ public class SplashScreen extends ScreenAdapter {
             }
         });
 
+        // Playbutton logic
+        onChange(playButton, () -> {
+            Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
+            Gdx.app.postRunnable(() -> ((Game)(Gdx.app.getApplicationListener())).setScreen(new MainMenu(skin)));
+        });
+
+        // Main scene composition
         table.add(titleLabel).row();
         table.add(usernameInput).row();
         table.add(playButton);
         stage.addActor(table);
 
+        // Version label
         Label versionLabel = new Label("Version 0.1", skin);
         versionLabel.setPosition(20,40, Align.bottomLeft);
         stage.addActor(versionLabel);
 
+        // Credit label
         Label creditLabel = new Label("Brought to you by the B-Team!", skin);
         creditLabel.setPosition(20,20,Align.bottomLeft);
         stage.addActor(creditLabel);
 
+        // Fullscreen button
         TextButton fullscreenButton = new TextButton("Fullscreen", skin);
         fullscreenButton.setPosition(20,1060,Align.topLeft);
         stage.addActor(fullscreenButton);
-
         onChange(fullscreenButton, () -> {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         });
 
+        // Input handling
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
