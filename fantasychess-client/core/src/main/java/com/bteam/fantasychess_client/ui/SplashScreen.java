@@ -47,13 +47,16 @@ public class SplashScreen extends ScreenAdapter {
         Label titleLabel = new Label("Fantasy-Chess", skin);
         titleLabel.setFontScale(10f);
 
+        TextField usernameInput = new TextField("Username", skin);
+
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
         onChange(playButton, () -> {
+            Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
             Gdx.app.postRunnable(() -> ((Game)(Gdx.app.getApplicationListener())).setScreen(new MainMenu(skin)));
         });
 
-        TextField usernameInput = new TextField("Username", skin);
+
         onChange(usernameInput,() -> {
             playButton.setDisabled(usernameInput.getText().length() < 4);
         });
