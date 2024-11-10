@@ -77,7 +77,7 @@ public class PatternService {
         Set<Vector2D> targets = new HashSet<>();
 
         if (patternModel.getSubpatternMappings().containsKey(c)) {
-            PatternModel subpatternModel = patternStore.getPatterns().get(patternModel.getSubpatternMappings().get(c));
+            PatternModel subpatternModel = patternStore.getPatternByName(patternModel.getSubpatternMappings().get(c));
             collectTargetsFromSubpattern(subpatternModel,targetPosition,targets);
         } else {
             targets.add(targetPosition);
@@ -102,7 +102,7 @@ public class PatternService {
             char c = mappings.get(relativeSubpatternPosition);
             Vector2D subpatternTarget = targetPosition.add(relativeSubpatternPosition);
             if (patternModel.getSubpatternMappings().containsKey(c)) {
-                PatternModel subpatternModel = patternStore.getPatterns().get(patternModel.getSubpatternMappings().get(c));
+                PatternModel subpatternModel = patternStore.getPatternByName(patternModel.getSubpatternMappings().get(c));
                 collectTargetsFromSubpattern(subpatternModel,subpatternTarget,targets);
             } else {
                 targets.add(subpatternTarget);
@@ -183,10 +183,12 @@ public class PatternService {
                     continue;
                 }
                 String subpatternName = patternModel.getSubpatternMappings().get(c);
-                if (!patternStore.getPatterns().containsKey(subpatternName)){
+
+                PatternModel subpatternModel = patternStore.getPatternByName(subpatternName);
+                if (subpatternModel == null){
                     return true;
                 }
-                return arePatternMappingsInvalid(patternStore.getPatterns().get(subpatternName));
+                return arePatternMappingsInvalid(subpatternModel);
             }
         }
         return false;

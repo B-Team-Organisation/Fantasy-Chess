@@ -14,9 +14,11 @@ public class TestPatternModel {
         HashMap<Character, String> map = new HashMap<>();
         map.put('x',"subpattern");
         // Create patternModel
-        PatternModel patternModel = new PatternModel("xxx\nxxx\nxxx",map);
+        PatternModel patternModel = new PatternModel("xxx\nxxx\nxxx",map,"TestPattern");
         // Validate patternString
         assertEquals("xxx\nxxx\nxxx",patternModel.getPatternString());
+        //Validate patternName
+        assertEquals("TestPattern",patternModel.getPatternName());
         // Create validation map
         HashMap<Character, String> validMap = new HashMap<>();
         validMap.put('x',"subpattern");
@@ -24,6 +26,6 @@ public class TestPatternModel {
         assertEquals(validMap,patternModel.getSubpatternMappings());
 
         // Validate always has subpatternMapping
-        assertNotNull(new PatternModel("",null).getSubpatternMappings());
+        assertNotNull(new PatternModel("",null,"").getSubpatternMappings());
     }
 }

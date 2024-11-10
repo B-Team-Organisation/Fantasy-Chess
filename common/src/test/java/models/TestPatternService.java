@@ -39,42 +39,53 @@ public class TestPatternService {
 
     @BeforeAll
     static void beforeAll() {
-        emptyModel = new PatternModel(" ",null);
-        simpleModel = new PatternModel("x x\n   \nx x",null);
+        emptyModel = new PatternModel(" ",null,"empty");
+        simpleModel = new PatternModel("x x\n   \nx x",null,"corners");
         deepModel = new PatternModel("   \n  I\n   ",new HashMap<Character,String>(){{
             put('I',"LinePattern");
-        }});
+        }},"deep");
         deepDeepModel = new PatternModel("   \n  =\n   ",new HashMap<Character,String>(){{
             put('=',"WeirdLinePattern");
-        }});
+        }},"deepDeep");
 
         emptyStore = new PatternStore() {
             @Override
-            public Map<String, PatternModel> getPatterns() {
-                return Map.of();
+            public PatternModel getPatternByName(String patternName) {
+                return patterns.get(patternName);
             }
+
+            private Map<String, PatternModel> patterns = new HashMap<>();
         };
         deepStore = new PatternStore(){
             @Override
-            public Map<String, PatternModel> getPatterns() {
-                HashMap<String,PatternModel> map = new HashMap<>();
-                map.put("LinePattern",new PatternModel(" x \n x \n x ",new HashMap<Character,String>(){}));
-                map.put("WeirdLinePattern",new PatternModel("-  \n   \n-  ",new HashMap<Character,String>(){{
-                    put('-',"Horizontal");
-                }}));
-                return map;
+            public PatternModel getPatternByName(String patternName) {
+                return patterns.get(patternName);
             }
+
+            private Map<String, PatternModel> patterns = new HashMap<>(){
+                {
+                    put("LinePattern", new PatternModel(" x \n x \n x ", new HashMap<Character, String>() {
+                    },"LinePattern"));
+                    put("WeirdLinePattern", new PatternModel("-  \n   \n-  ", new HashMap<Character, String>() {{
+                        put('-', "Horizontal");
+                    }},"WeirdLinePattern"));
+                }
+            };
         };
         deepDeepStore = new PatternStore(){
             @Override
-            public Map<String, PatternModel> getPatterns() {
-                HashMap<String,PatternModel> map = new HashMap<>();
-                map.put("WeirdLinePattern",new PatternModel("-  \n   \n-  ",new HashMap<Character,String>(){{
-                    put('-',"Horizontal");
-                }}));
-                map.put("Horizontal",new PatternModel("   \nxxx\n   ",new HashMap<Character,String>(){}));
-                return map;
+            public PatternModel getPatternByName(String patternName) {
+                return patterns.get(patternName);
             }
+
+            private Map<String, PatternModel> patterns = new HashMap<>(){
+                {
+                put("WeirdLinePattern",new PatternModel("-  \n   \n-  ",new HashMap<Character,String>(){{
+                    put('-',"Horizontal");
+                }},"WeirdLinePattern"));
+                put("Horizontal",new PatternModel("   \nxxx\n   ",new HashMap<Character,String>(){},"Horizontal"));
+                }
+            };
         };
 
         playerPosition = new Vector2D(4,4);
@@ -118,15 +129,15 @@ public class TestPatternService {
 
         // Test invalid shape detection
         // 1x2
-        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("  ",null),null));
+        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("  ",null,""),null));
         // 2x2
-        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("  \n  ",null),null));
+        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("  \n  ",null,""),null));
         // 2x1
-        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel(" \n  ",null),null));
+        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel(" \n  ",null,""),null));
         // 3x5
-        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("   \n   \n   \n   \n   ",null),null));
+        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("   \n   \n   \n   \n   ",null,""),null));
         // mix
-        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("   \n  \n   ",null),null));
+        assertThrows(PatternShapeInvalidException.class,()->new PatternService(new PatternModel("   \n  \n   ",null,""),null));
 
         // Test missing subpattern mappings
         // 1 deep
