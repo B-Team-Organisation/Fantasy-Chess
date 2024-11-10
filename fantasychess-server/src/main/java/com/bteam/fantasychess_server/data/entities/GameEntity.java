@@ -19,17 +19,64 @@ public class GameEntity {
     @Column(name = "turn")
     private int Turn;
 
-    @Column
     private int maxTurnSeconds;
-
-    @Column
     private GameStatus status;
 
-
     @OneToMany
-    private List<CharacterDataEntity> characters;
+    private List<CharacterEntity> entities;
+
+    private int rows;
+    private int cols;
 
     public UUID getId() {
         return id;
+    }
+
+    public int getTurn() {
+        return Turn;
+    }
+
+    public void setTurn(int turn) {
+        Turn = turn;
+    }
+
+    public int getMaxTurnSeconds() {
+        return maxTurnSeconds;
+    }
+
+    public void setMaxTurnSeconds(int maxTurnSeconds) {
+        this.maxTurnSeconds = maxTurnSeconds;
+    }
+
+    public GameStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(GameStatus status) {
+        this.status = status;
+    }
+
+    public List<CharacterEntity> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<CharacterEntity> entities) {
+        this.entities = entities;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public void setCols(int cols) {
+        this.cols = cols;
     }
 }
