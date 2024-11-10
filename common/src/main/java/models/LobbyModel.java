@@ -15,6 +15,7 @@ public class LobbyModel {
     private List<Player> players;
     private Player host;
     private GameState gameState;
+    private String lobbyName;
 
     enum GameState {
         CLOSED,
@@ -26,15 +27,18 @@ public class LobbyModel {
      * Constructor for a LobbyModel.
      *
      * @param lobbyId: unique identifier for the lobby.
-     * @param gameState: status of the game lobby(waiting for player..., ready, not ready)
      * @param players: List of the players that can enter the lobby
-     * @param host: player who is the host of the lobby
+     * @param host: player who is the host of the lobby and is added at index 0 in the players list
+     * @param lobbyName: name of the lobby
      */
-    public LobbyModel(UUID lobbyId, GameState gameState, List<Player> players, Player host) {
+    public LobbyModel(UUID lobbyId, GameState gameState, List<Player> players, Player host, String lobbyName) {
         this.lobbyId = lobbyId;
         this.gameState = GameState.OPEN;
         this.players = new ArrayList<>();
         this.host = host;
+        this.lobbyName = lobbyName;
+
+        this.players.add(host);
     }
 
     public UUID getLobbyId() {
@@ -77,7 +81,7 @@ public class LobbyModel {
                 gameState = GameState.OPEN;
             }
         } else {
-            throw new IllegalArgumentException("Lobby is already full.");
+            throw new IllegalStateException("Lobby is already full.");
         }
     }
 
@@ -89,10 +93,8 @@ public class LobbyModel {
     public void removePlayer(Player player){
         this.players.remove(player);
 
-        if (this.players.size()==1){
+        if (this.players.size() < maxPlayers){
             gameState = GameState.OPEN;
-        } else if (this.players.isEmpty()) {
-            gameState = GameState.CLOSED;
         }
     }
 

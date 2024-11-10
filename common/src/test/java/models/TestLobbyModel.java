@@ -25,13 +25,13 @@ public class TestLobbyModel {
         player3 = new Player("Player3",  UUID.randomUUID());  // für das Testen der vollen Kapazität
 
         // Erstellen des LobbyModel-Objekts mit allen benötigten Parametern
-        lobby = new LobbyModel(lobbyId, LobbyModel.GameState.OPEN, players, player1); // player1 ist der Host
+        lobby = new LobbyModel(lobbyId, LobbyModel.GameState.OPEN, players, player1, "lobby1"); // player1 ist der Host
     }
 
     @Test
     public void testLobbyInitialization() {
         assertNotNull(lobby.getLobbyId());
-        assertEquals(0, lobby.getPlayers().size());
+        assertEquals(1, lobby.getPlayers().size());
         assertEquals(LobbyModel.GameState.OPEN, lobby.getGameState());
         assertEquals(player1, lobby.getHost());
     }
@@ -46,15 +46,6 @@ public class TestLobbyModel {
     public void testAddPlayer() {
         lobby.addPlayer(player1);
 
-        assertEquals(1, lobby.getPlayers().size());
-        assertEquals(LobbyModel.GameState.OPEN, lobby.getGameState());
-    }
-
-    @Test
-    public void testAddTwoPlayers() {
-        lobby.addPlayer(player1);
-        lobby.addPlayer(player2);
-
         assertEquals(2, lobby.getPlayers().size());
         assertEquals(LobbyModel.GameState.FULL, lobby.getGameState());
     }
@@ -62,27 +53,16 @@ public class TestLobbyModel {
     @Test
     public void testAddPlayerToFullLobby() {
         lobby.addPlayer(player1);
-        lobby.addPlayer(player2);
 
-        assertThrows(IllegalArgumentException.class, () -> lobby.addPlayer(player3));
+        assertThrows(IllegalStateException.class, () -> lobby.addPlayer(player3));
     }
 
     @Test
     public void testRemovePlayer() {
         lobby.addPlayer(player1);
-        lobby.addPlayer(player2);
-
-        lobby.removePlayer(player2);
-        assertEquals(1, lobby.getPlayers().size());
-        assertEquals(LobbyModel.GameState.OPEN, lobby.getGameState());
-    }
-
-    @Test
-    public void testRemoveLastPlayer() {
-        lobby.addPlayer(player1);
 
         lobby.removePlayer(player1);
-        assertEquals(0, lobby.getPlayers().size());
-        assertEquals(LobbyModel.GameState.CLOSED, lobby.getGameState());
+        assertEquals(1, lobby.getPlayers().size());
+        assertEquals(LobbyModel.GameState.OPEN, lobby.getGameState());
     }
 }
