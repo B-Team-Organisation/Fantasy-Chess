@@ -5,8 +5,16 @@ import entities.CharacterEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Service class for the initial placement
+ *<p>
+ * The class is responsible for the placement of the given Characters
+ * into the {@link GridService }.
+ *
+ * @author albano lukas
+ * @version 1.0
+ */
 public class GridPlacementService {
 
     /**
@@ -16,23 +24,14 @@ public class GridPlacementService {
      * @param characters  list of CharacterEntity objects to place in the grid
      * @param startTilesRows array with the exact row numbers allowed for placement
      *
+     * @throws DestinationInvalidException if a specified position is out of bounds
+     * @throws DestinationAlreadyOccupiedException if a specified position is already occupied
+     * @throws NotAStartPositionException if the destination Tile is not a valid starting position
+     * @throws FullStartTilesException if there are more characters than available start tiles
      */
-    public void placeCharacters(GridService gridService, List<CharacterEntity> characters, int[] startTilesRows)
-            throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException, WrongStartTilesException, FullStartTilesException, NoCharacterGivenException {
+    public static void placeCharacters(GridService gridService, List<CharacterEntity> characters, int[] startTilesRows)
+            throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException, FullStartTilesException {
 
-        if (gridService == null) {
-            throw new NullPointerException("GridService cannot be null.");
-        }
-
-        for (CharacterEntity character : characters) {
-            if (character == null) {
-                throw new NoCharacterGivenException();
-            }
-        }
-
-        if (startTilesRows == null || startTilesRows.length == 0) {
-            throw new WrongStartTilesException(startTilesRows);
-        }
 
         List<Integer> sortedRows = Arrays.stream(startTilesRows)
                 .boxed()
@@ -43,7 +42,7 @@ public class GridPlacementService {
 
 
         int availableSpaces = gridCols *sortedRows.size();
-        System.out.println("ch"+characters.size()+" as"+availableSpaces);
+
         if (characters.size() > availableSpaces) {
             throw new FullStartTilesException();
         }
@@ -62,7 +61,6 @@ public class GridPlacementService {
                     CharacterEntity character = characters.get(characterIndex);
                     gridService.setCharacterTo(position, character);
                     character.setPosition(position);
-                    System.out.println("Character placed at: " + position);
 
                     characterIndex++;
                 }
