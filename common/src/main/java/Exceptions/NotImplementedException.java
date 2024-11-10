@@ -1,7 +1,7 @@
 package Exceptions;
 
 public class NotImplementedException extends RuntimeException {
-    public NotImplementedException(String message) {
-        super(message);
+    public NotImplementedException(String methodName) {
+        super(String.format("Method %s not implemented", methodName));
     }
 }
