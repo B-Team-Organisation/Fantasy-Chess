@@ -1,12 +1,10 @@
 package com.bteam.fantasychess_client.ui;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
@@ -57,7 +55,7 @@ public class SplashScreen extends ScreenAdapter {
         // Title label
         Label titleLabel = new Label("Fantasy-Chess", skin);
         titleLabel.setFontScale(10f);
-        
+
         // Main widgets
         TextField usernameInput = new TextField("Username", skin);
         TextButton playButton = new TextButton("Play!", skin);
