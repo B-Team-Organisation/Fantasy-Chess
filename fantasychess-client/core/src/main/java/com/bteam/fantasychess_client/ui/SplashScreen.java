@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -60,6 +61,23 @@ public class SplashScreen extends ScreenAdapter {
         TextField usernameInput = new TextField("Username", skin);
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
+
+        // Length Checker for Username
+        usernameInput.addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                if (usernameInput.getText().length() >= 4) {
+                    event.cancel();
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        onChange(usernameInput, () -> {
+            playButton.setDisabled(usernameInput.getText().isEmpty() || usernameInput.getText().length() > 4);
+        });
+
 
         // Userinput logic
         onChange(usernameInput,() -> {
