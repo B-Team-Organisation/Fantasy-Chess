@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 
+import java.util.function.IntPredicate;
+
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -62,11 +64,15 @@ public class SplashScreen extends ScreenAdapter {
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
 
-        // Length Checker for Username
+        // Restriction for Username
         usernameInput.addListener(new InputListener() {
             @Override
-            public boolean keyTyped(InputEvent event, char character) {
-                if (usernameInput.getText().length() >= 4) {
+            public boolean keyTyped(InputEvent event, char inputChar ) {
+                if ((inputChar < 32 || inputChar > 126) || (!Character.isLetterOrDigit(inputChar))) {
+                    event.cancel();
+                    return false;
+                }
+                if (usernameInput.getText().length() > 4) {
                     event.cancel();
                     return false;
                 }
@@ -74,7 +80,16 @@ public class SplashScreen extends ScreenAdapter {
             }
         });
 
+
         onChange(usernameInput, () -> {
+            String text = usernameInput.getText();
+            boolean isValid = text.chars().allMatch(c -> (c >= 32 && c <= 126) && (Character.isLetterOrDigit(c)));
+
+            /* warum geht das nicht ?
+            public boolean isValid (char inputChar){
+                return (inputChar >= 32 && inputChar <= 126) && (Character.isLetterOrDigit(inputChar));
+            }*/
+
             playButton.setDisabled(usernameInput.getText().isEmpty() || usernameInput.getText().length() > 4);
         });
 
