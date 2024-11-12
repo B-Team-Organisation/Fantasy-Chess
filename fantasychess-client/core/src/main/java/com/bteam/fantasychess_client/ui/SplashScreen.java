@@ -51,6 +51,7 @@ public class SplashScreen extends ScreenAdapter {
         stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
+        // Main table
         Table table = new Table();
         table.setFillParent(true);
         table.defaults().pad(20);
@@ -64,37 +65,12 @@ public class SplashScreen extends ScreenAdapter {
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
 
-        // Restriction for Username
-        usernameInput.addListener(new InputListener() {
-            @Override
-            public boolean keyTyped(InputEvent event, char inputChar ) {
-                if ((inputChar < 32 || inputChar > 126) || (!Character.isLetterOrDigit(inputChar))) {
-                    event.cancel();
-                    return false;
-                }
-                if (usernameInput.getText().length() > 4) {
-                    event.cancel();
-                    return false;
-                }
-                return true;
-            }
-        });
-
-
+        // Disable button if name too short
         onChange(usernameInput, () -> {
-            String text = usernameInput.getText();
-            boolean isValid = text.chars().allMatch(c -> (c >= 32 && c <= 126) && (Character.isLetterOrDigit(c)));
-
-            /* warum geht das nicht ?
-            public boolean isValid (char inputChar){
-                return (inputChar >= 32 && inputChar <= 126) && (Character.isLetterOrDigit(inputChar));
-            }*/
-
             playButton.setDisabled(usernameInput.getText().isEmpty() || usernameInput.getText().length() > 4);
         });
 
-
-        // Userinput logic
+        // User input logic
         onChange(usernameInput,() -> {
             playButton.setDisabled(usernameInput.getText().length() < 4);
         });
@@ -106,6 +82,12 @@ public class SplashScreen extends ScreenAdapter {
                        usernameInput.setText("");
                    }
                }
+            }
+        });
+        usernameInput.setTextFieldFilter(new TextField.TextFieldFilter() {
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return Character.isLetterOrDigit(c);
             }
         });
 
