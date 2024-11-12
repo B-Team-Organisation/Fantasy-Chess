@@ -31,7 +31,7 @@ public class LobbyModel {
      * @param host: player who is the host of the lobby and is added at index 0 in the players list
      * @param lobbyName: name of the lobby
      */
-    public LobbyModel(UUID lobbyId, GameState gameState, List<Player> players, Player host, String lobbyName) {
+    public LobbyModel(UUID lobbyId, List<Player> players, Player host, String lobbyName) {
         this.lobbyId = lobbyId;
         this.gameState = GameState.OPEN;
         this.players = new ArrayList<>();
@@ -57,6 +57,14 @@ public class LobbyModel {
         return host;
     }
 
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
     /**
      * Checks if the specified player is the host of the lobby.
      *
@@ -73,7 +81,7 @@ public class LobbyModel {
      * @param player - the player to add
      */
     public void addPlayer(Player player){
-        if (this.maxPlayers > players.size()){
+        if (this.players.size() < maxPlayers){
             this.players.add(player);
             if (this.maxPlayers == players.size()){
                 gameState = GameState.FULL;
@@ -99,7 +107,7 @@ public class LobbyModel {
     }
 
     public String toString() {
-        return "lobbyId: " + lobbyId + ", players: " + players + ", host: " + host;
+        return "lobbyId: " + lobbyId + ", players: " + players + ", host: " + host + "lobbyName: " + lobbyName;
     }
 
     @Override
@@ -109,6 +117,6 @@ public class LobbyModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(lobbyId, players, host);
+        return Objects.hash(lobbyId, players, host, lobbyName);
     }
 }
