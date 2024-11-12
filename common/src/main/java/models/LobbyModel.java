@@ -42,6 +42,10 @@ public class LobbyModel {
         this.players.add(host);
     }
 
+    public LobbyModel(String lobbyName){
+        this(UUID.randomUUID(), List.of(), null, lobbyName);
+    }
+
     public UUID getLobbyId() {
         return lobbyId;
     }

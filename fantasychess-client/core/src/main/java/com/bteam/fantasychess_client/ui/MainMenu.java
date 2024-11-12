@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import models.LobbyModel;
+
 
 import java.util.List;
 import java.util.ArrayList;
@@ -46,35 +48,12 @@ public class MainMenu extends ScreenAdapter {
     private Stage stage;
     private Skin skin;
 
-    private User user1;
     private Table centerContent;
-    private List<Lobby> allLobbies;
+    private List<LobbyModel> allLobbies;
     private Label noMatchingLobbyLabel;
     private TextField lobbyNameInput;
 
-    // just for testing , waiting for adnan implementation
-    public static class Lobby {
-
-        String status ; // maybe not necessary
-        String lobbyName;
-        // String lobbyid?
-
-
-        public Lobby(String lobbyName) {
-            this.lobbyName = lobbyName;
-            status= "open";
-        }
-    }
-
-// test
-    public static class User {
-        String username;
-
-        public User(String username) {
-            this.username = username;
-        }
-    }
-
+    private String username;
 
     public MainMenu(Skin skin) {
         camera = new OrthographicCamera();
@@ -89,15 +68,14 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void show() {
-        user1 = new User("Username");
-
         stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         Table table = new Table();
         table.setFillParent(true);
 
-        Label usernameLabel = new Label(" "+ user1.username, skin);
+        username = Gdx.app.getPreferences("usersettings").getString("username");
+        Label usernameLabel = new Label(username, skin);
         usernameLabel.setFontScale(4f);
         usernameLabel.setAlignment(Align.left);
 
@@ -192,7 +170,7 @@ public class MainMenu extends ScreenAdapter {
 
         Label lobbyNameLabel = new Label("Lobby Name:", skin);
 
-        TextField lobbyNameField = new TextField(user1.username + "'s Lobby", skin);
+        TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
         lobbyNameField.setMessageText("Enter lobby name");
         onChange(lobbyNameField,() -> {
             createButton.setDisabled(lobbyNameField.getText().length() < 4);
@@ -227,10 +205,10 @@ public class MainMenu extends ScreenAdapter {
     private void filterLobbies(String input) {
         String normalizedInput = input.toLowerCase();
 
-        List<Lobby> filteredLobbies = new ArrayList<Lobby>();
+        List<LobbyModel> filteredLobbies = new ArrayList<LobbyModel>();
 
-        for (Lobby lobby : allLobbies) {
-            String normalizedLobbyName = lobby.lobbyName.toLowerCase();
+        for (LobbyModel lobby : allLobbies) {
+            String normalizedLobbyName = lobby.getLobbyName().toLowerCase();
             if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance(normalizedInput,normalizedLobbyName) <= 2) {
                 filteredLobbies.add(lobby);
             }
@@ -245,13 +223,13 @@ public class MainMenu extends ScreenAdapter {
         loadLobbies(filteredLobbies);
     }
 
-    private void loadLobbies(List<Lobby> lobbies) {
+    private void loadLobbies(List<LobbyModel> lobbies) {
         centerContent.clearChildren();
 
         if (lobbies.isEmpty()) {
             centerContent.add(noMatchingLobbyLabel).expandX().center().padTop(10);
         } else {
-            for (Lobby lobby : lobbies) {
+            for (LobbyModel lobby : lobbies) {
                 Button lobbyMember = new Button(skin);
                 lobbyMember.setBackground(skin.getDrawable("round-light-gray"));
                 lobbyMember.pad(5);
@@ -260,11 +238,11 @@ public class MainMenu extends ScreenAdapter {
                 lobbyMember.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.out.println("Creating lobby " + lobby.lobbyName);
+                        System.out.println("Creating lobby " + lobby.getLobbyName());
                     }
                 });
 
-                Label lobbyLabel = new Label("Lobby name: " + lobby.lobbyName + ", Status: " + lobby.status, skin);
+                Label lobbyLabel = new Label("Lobby name: " + lobby.getLobbyName() + ", Status: " + lobby.getGameState(), skin);
                 lobbyMember.add(lobbyLabel).expandX().left().padRight(10);
 
                 centerContent.add(lobbyMember).growX().padBottom(10);
@@ -297,24 +275,22 @@ public class MainMenu extends ScreenAdapter {
 
 
     // testdata,to check with online data
-    private List<Lobby> showLobbies() {
-        List<Lobby> lobbies = new ArrayList<>();
-        lobbies.add(new Lobby("Ayakoji"));
-        lobbies.add(new Lobby("Hana"));
-        lobbies.add(new Lobby("Luxort"));
-        lobbies.add(new Lobby("Zhuxin"));
-        lobbies.add(new Lobby("Beras"));
-        lobbies.add(new Lobby("Ino"));
-        lobbies.add(new Lobby("Kalavoi"));
-        lobbies.add(new Lobby("Albert"));
-        lobbies.add(new Lobby("Sius"));
-        lobbies.add(new Lobby("Demonzone"));
-        lobbies.add(new Lobby("Angels"));
-        lobbies.add(new Lobby("Classrom of"));
+    private List<LobbyModel> showLobbies() {
+        List<LobbyModel> lobbies = new ArrayList<>();
+        lobbies.add(new LobbyModel("Lukas"));
+        lobbies.add(new LobbyModel("Hana"));
+        lobbies.add(new LobbyModel("Luxort"));
+        lobbies.add(new LobbyModel("Zhuxin"));
+        lobbies.add(new LobbyModel("Beras"));
+        lobbies.add(new LobbyModel("Ino"));
+        lobbies.add(new LobbyModel("Kalavoi"));
+        lobbies.add(new LobbyModel("Albert"));
+        lobbies.add(new LobbyModel("Sius"));
+        lobbies.add(new LobbyModel("Demonzone"));
+        lobbies.add(new LobbyModel("Angels"));
+        lobbies.add(new LobbyModel("Classrom of"));
         return lobbies;
     }
-
-
 
     // private user1 = new User("Xene");
     @Override

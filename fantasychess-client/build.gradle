@@ -10,7 +10,6 @@ buildscript {
   }
   dependencies {
     classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
-
   }
 }
 
