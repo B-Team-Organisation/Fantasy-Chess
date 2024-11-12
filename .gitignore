@@ -28,3 +28,7 @@ replay_pid*
 
 # IDE Files
 .idea
+
+common/.gradle/
+common/build/
+fantasychess-client/assets/image.png
