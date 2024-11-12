@@ -9,7 +9,12 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 public class UserInterfaceUtil {
 
     /**
-     * Makes it easy to attach an ChangeListener
+     * Private constructor to hide it
+     */
+    private UserInterfaceUtil(){}
+
+    /**
+     * Makes it easy to attach a ChangeListener
      *
      * @param actor the {@link Actor} that should trigger the runnable
      * @param runnable the {@link Runnable} given to the actor
@@ -22,7 +27,4 @@ public class UserInterfaceUtil {
             }
         });
     }
-
-
-
 }
