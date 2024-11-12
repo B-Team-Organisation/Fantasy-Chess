@@ -5,6 +5,9 @@ package models;
  * Interface for pattern storage.
  * <p>
  * Different implementations for client and server.
+ *
+ * @author Lukas
+ * @version 1.0
  */
 public interface PatternStore {
 

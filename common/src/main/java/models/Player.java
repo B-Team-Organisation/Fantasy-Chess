@@ -4,7 +4,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 /**
+ * A class representing a player.
+ * <p>
  * Represents a player in the game, holding their associated name, playerId and status.
+ *
+ * @author Adnan
+ * @version 1.0
  */
 public class Player {
     private String username;
@@ -19,10 +24,9 @@ public class Player {
 
     /**
      * Constructor for a Player.
-     * username: name of the players
-     * playerId: id of the player
-     * isReady: status of the player(ready, not ready)
      *
+     * @param username name of the players
+     * @param playerId id of the player
      */
     public Player(String username, UUID playerId) {
         this.username = username;
