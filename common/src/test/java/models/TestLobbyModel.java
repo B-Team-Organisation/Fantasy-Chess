@@ -60,9 +60,17 @@ public class TestLobbyModel {
     @Test
     public void testRemovePlayer() {
         lobby.addPlayer(player1);
-
         lobby.removePlayer(player1);
+
         assertEquals(1, lobby.getPlayers().size());
         assertEquals(LobbyModel.GameState.OPEN, lobby.getGameState());
+    }
+
+    @Test
+    public void setGameState() {
+        lobby.addPlayer(player1);
+        lobby.setGameState(LobbyModel.GameState.FULL);
+
+        assertEquals(LobbyModel.GameState.FULL, lobby.getGameState());
     }
 }

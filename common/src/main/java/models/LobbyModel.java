@@ -20,7 +20,8 @@ public class LobbyModel {
     enum GameState {
         CLOSED,
         OPEN,
-        FULL
+        FULL,
+        RUNNING
     }
 
     /**
