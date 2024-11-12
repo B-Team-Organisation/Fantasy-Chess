@@ -11,7 +11,7 @@ import entities.CharacterEntity;
  * <p>
  * This class wraps a gridModel instance and provides useful functions for grid-manipulation and data-retrieval.
  *
- * @author lukas albano
+ * @author Lukas, Albano
  * @version 1.0
  */
 public class GridService {

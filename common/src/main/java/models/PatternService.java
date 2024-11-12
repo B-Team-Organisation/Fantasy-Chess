@@ -11,7 +11,7 @@ import java.util.*;
  * Validates the pattern upon creation.
  * Makes it possible to get possible targets and tiles affected by actions of said targets.
  *
- * @author lukas
+ * @author Lukas
  * @version 1.0
  */
 public class PatternService {
@@ -201,10 +201,10 @@ public class PatternService {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PatternService patternService
-                && this.patternModel.equals(patternService.patternModel)
-                && this.relativeTargetMappings.equals(patternService.relativeTargetMappings)
-                && this.patternStore.equals(patternService.patternStore);
+        return o instanceof PatternService
+                && this.patternModel.equals(((PatternService) o).patternModel)
+                && this.relativeTargetMappings.equals(((PatternService) o).relativeTargetMappings)
+                && this.patternStore.equals(((PatternService) o).patternStore);
     }
 
     @Override

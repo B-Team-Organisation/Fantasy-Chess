@@ -15,7 +15,7 @@ import java.util.Objects;
  * The rows correspond to y-coordinated, the columns represent the x-coordinates.
  * By this definition, a tile is addressed by tileGrid[row][column].
  *
- * @author lukas albano
+ * @author Lukas, Albano
  * @version 1.0
  */
 public class GridModel{
