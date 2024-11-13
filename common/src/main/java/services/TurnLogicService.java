@@ -1,8 +1,13 @@
 package services;
 
-import com.bteam.fantasychess_server.utils.Pair;
+import utils.Pair;
 import entities.CharacterEntity;
+import models.AttackDataModel;
 import models.MovementDataModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Service for turn-based logic checks.
@@ -54,8 +59,11 @@ public class TurnLogicService {
      *
      * @return Array of character pairs that are moving to the same location, or null if not applicable
      */
-    public Pair<CharacterEntity, CharacterEntity>[] movingToSameLocation() {
-        return null;
+
+    //public Pair<CharacterEntity, CharacterEntity>[] movingToSameLocation() {
+    public List<Pair<CharacterEntity, CharacterEntity>> movingToSameLocation(MovementDataModel[] charactersMoves) {
+
+        return new ArrayList<>();
     }
 
     /**
@@ -66,7 +74,7 @@ public class TurnLogicService {
      * @param character The character to be tested
      * @return True if attack is legal, or False if not
      */
-    public boolean isAttackLegal(CharacterEntity character) {
+    public boolean isAttackLegal(CharacterEntity character, AttackDataModel attacks) {
         // Try out attack character, catch exceptions and if so, return false
         // Same for movement patterns etc.
         return true;
@@ -78,7 +86,10 @@ public class TurnLogicService {
      * @return Array of dead characters as {@link CharacterEntity} or empty list
      */
     public CharacterEntity[] checkForDeaths() {
-        return new CharacterEntity[0]; // Implementation
+
+        List<CharacterEntity> deadCharacters = new ArrayList<>();
+        return deadCharacters.toArray(new CharacterEntity[0]);
+
     }
 
     /**
@@ -94,5 +105,7 @@ public class TurnLogicService {
         // Check if
         return Winner.NONE; // Logic
     }
+
+    //TODO methode getAllCharacters
 
 }
