@@ -1,9 +1,8 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 
 /**
@@ -16,7 +15,7 @@ import java.util.UUID;
  * @link 1.0
  */
 public class LobbyModel {
-    private UUID lobbyId;
+    private String lobbyId;
     private int maxPlayers = 2;
     private List<Player> players;
     private Player host;
@@ -38,7 +37,7 @@ public class LobbyModel {
      * @param host player who is the host of the lobby and is added at index 0 in the players list
      * @param lobbyName name of the lobby
      */
-    public LobbyModel(UUID lobbyId, List<Player> players, Player host, String lobbyName) {
+    public LobbyModel(String lobbyId, List<Player> players, Player host, String lobbyName) {
         this.lobbyId = lobbyId;
         this.gameState = GameState.OPEN;
         this.players = new ArrayList<>();
@@ -48,7 +47,7 @@ public class LobbyModel {
         this.players.add(host);
     }
 
-    public UUID getLobbyId() {
+    public String getLobbyId() {
         return lobbyId;
     }
 

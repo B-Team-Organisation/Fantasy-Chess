@@ -1,4 +1,4 @@
-package models;
+package com.bteam.common.models;
 
 
 /**

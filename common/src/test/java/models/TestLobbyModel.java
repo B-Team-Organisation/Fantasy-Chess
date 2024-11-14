@@ -20,9 +20,9 @@ public class TestLobbyModel {
     public void setUp() {
         UUID lobbyId = UUID.randomUUID();
         List<Player> players = new ArrayList<>();  // Leere Liste, um initial keine Spieler hinzuzufügen
-        player1 = new Player("Player1",  UUID.randomUUID());
-        player2 = new Player("Player2",  UUID.randomUUID());
-        player3 = new Player("Player3",  UUID.randomUUID());  // für das Testen der vollen Kapazität
+        player1 = new Player("Player1",  "1");
+        player2 = new Player("Player2",  "2");
+        player3 = new Player("Player3",  "3");  // für das Testen der vollen Kapazität
 
         // Erstellen des LobbyModel-Objekts mit allen benötigten Parametern
         lobby = new LobbyModel(lobbyId, players, player1, "lobby1"); // player1 ist der Host
