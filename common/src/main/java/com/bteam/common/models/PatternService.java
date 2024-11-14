@@ -1,7 +1,7 @@
-package models;
+package com.bteam.common.models;
 
-import Exceptions.InvalidSubpatternMappingException;
-import Exceptions.PatternShapeInvalidException;
+import com.bteam.common.exceptions.InvalidSubpatternMappingException;
+import com.bteam.common.exceptions.PatternShapeInvalidException;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class PatternService {
      * Validated the given {@link PatternModel} in terms of shape and completeness
      * <p>
      * Extracts the lines of the patternString and validates them.
-     * The working horse of this method is the method {@link models.PatternService#arePatternMappingsInvalid(PatternModel).
+     * The working horse of this method is the method {@link PatternService#arePatternMappingsInvalid(PatternModel).
      *
      * @param patternModel the {@link PatternModel} to validate
      * @throws PatternShapeInvalidException if the shape of the pattern is invalid

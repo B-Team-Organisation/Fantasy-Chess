@@ -1,7 +1,6 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * A class representing a player.
@@ -13,7 +12,7 @@ import java.util.UUID;
  */
 public class Player {
     private String username;
-    private UUID playerId;
+    private String playerId;
     private Status status;
 
     enum Status{
@@ -28,7 +27,7 @@ public class Player {
      * @param username name of the players
      * @param playerId id of the player
      */
-    public Player(String username, UUID playerId) {
+    public Player(String username, String playerId) {
         this.username = username;
         this.playerId = playerId;
         this.status = Status.NOT_READY;
@@ -39,7 +38,7 @@ public class Player {
         return username;
     }
 
-    public UUID getPlayerId() {
+    public String getPlayerId() {
         return playerId;
     }
 

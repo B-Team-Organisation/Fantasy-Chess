@@ -18,7 +18,7 @@
   <inherits name="com.bteam.fantasychess_client.Main" />
   <inherits name="com.github.czyzby.websocket.GdxWebSocket" />
   <inherits name="com.github.czyzby.websocket.GdxWebSocketGwt" />
-
+  <inherits name="com.bteam.common" />
   <!-- You must change this if you rename packages later, or rename GwtLauncher. -->
   <entry-point class="com.bteam.fantasychess_client.gwt.GwtLauncher" />
 

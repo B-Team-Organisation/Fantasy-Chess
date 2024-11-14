@@ -1,7 +1,7 @@
-package entities;
+package com.bteam.common.entities;
 
-import models.Vector2D;
-import models.CharacterDataModel;
+import com.bteam.common.models.Vector2D;
+import com.bteam.common.models.CharacterDataModel;
 
 import java.util.Objects;
 

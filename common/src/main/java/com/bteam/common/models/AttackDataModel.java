@@ -1,7 +1,7 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.Objects;
-import entities.CharacterEntity;
+import com.bteam.common.entities.CharacterEntity;
 
 /**
  * Represents the position of an attack as a model.
