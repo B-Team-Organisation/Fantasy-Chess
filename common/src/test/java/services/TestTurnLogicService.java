@@ -10,11 +10,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static services.TurnLogicService.*;
 
 
 class TestTurnLogicService {
 
-    TurnLogicService turnLogicService = new TurnLogicService();
+
     private CharacterEntity normalCharacter1;
     private CharacterEntity normalCharacter2;
     private CharacterEntity closeToDyingCharacter;
@@ -28,6 +29,9 @@ class TestTurnLogicService {
     AttackDataModel legalAttack;
     AttackDataModel illegalAttack;
     AttackDataModel forbiddenPatternAttack ;
+
+    Player player1 ;
+    Player player2 ;
 
     @BeforeEach
     void setUp() {
@@ -82,15 +86,22 @@ class TestTurnLogicService {
                 15, farPosition
         );
 
+        player1 = new Player("Username1",12121222)
+
     }
+
     @Test
     void testIsMovementLegal() {
+        assertTrue(isMovementLegal(normalCharacter1, legalMovement),
+                "Expected " + normalCharacter1 + " to legally move to " + legalMovement);
+        assertFalse(isMovementLegal(normalCharacter2, illegalMovement),
+                "Expected " + normalCharacter2 + " to be forbidden from moving to " + illegalMovement);
+        assertFalse(isMovementLegal(closeToDyingCharacter,forbiddenPatternMovement),
+                "Expected " + closeToDyingCharacter + " to be forbidden from moving to "
+                        + forbiddenPatternMovement);
+        assertFalse(isMovementLegal(longAttackCharacter,occupiedMovement),
+                "Expected " + normalCharacter2 + " to be forbidden from moving to " + occupiedMovement);
 
-
-        assertTrue(turnLogicService.isMovementLegal(normalCharacter1, legalMovement));
-        assertFalse(turnLogicService.isMovementLegal(normalCharacter2, illegalMovement));
-        assertFalse(turnLogicService.isMovementLegal(closeToDyingCharacter,forbiddenPatternMovement));
-        assertFalse(turnLogicService.isMovementLegal(longAttackCharacter,occupiedMovement));
     }
 
 
@@ -99,18 +110,18 @@ class TestTurnLogicService {
     void testCheckForWinner() {
 
         //TODO player1 win, player2 win, list of Characters
-        assertEquals(TurnLogicService.Winner.NONE, turnLogicService.checkForWinner());
+        assertEquals(TurnLogicService.Winner.NONE, checkForWinner(new Pair<>()));
 
 
         closeToDyingCharacter.setHealth(0);
-        assertEquals(TurnLogicService.Winner.NONE, turnLogicService.checkForWinner());
+        assertEquals(TurnLogicService.Winner.NONE, checkForWinner(new Pair<>()));
 
 
         normalCharacter1.setHealth(0);
         normalCharacter2.setHealth(0);
         longAttackCharacter.setHealth(0);
         closeToDyingCharacter.setHealth(0);
-        assertEquals(TurnLogicService.Winner.DRAW, turnLogicService.checkForWinner());
+        assertEquals(TurnLogicService.Winner.DRAW, checkForWinner());
 
 
         normalCharacter1.setHealth(100);
@@ -119,12 +130,12 @@ class TestTurnLogicService {
 
     @Test
     void testCheckForDeaths(){
-        CharacterEntity[] noDeathCharacters = turnLogicService.checkForDeaths();
+        CharacterEntity[] noDeathCharacters = checkForDeaths();
 
         closeToDyingCharacter.setHealth(0);
         normalCharacter2.setHealth(0);
 
-        CharacterEntity[] twoDeadCharacters = turnLogicService.checkForDeaths();
+        CharacterEntity[] twoDeadCharacters = checkForDeaths();
 
 
         assertEquals(0 , noDeathCharacters.length);
@@ -136,9 +147,9 @@ class TestTurnLogicService {
 
     @Test
     void testIsAttackLegal(){
-        assertTrue(turnLogicService.isAttackLegal(normalCharacter1,legalAttack));
-        assertFalse(turnLogicService.isAttackLegal(normalCharacter2,illegalAttack));
-        assertFalse(turnLogicService.isAttackLegal(closeToDyingCharacter,forbiddenPatternAttack));
+        assertTrue(isAttackLegal(normalCharacter1,legalAttack));
+        assertFalse(isAttackLegal(normalCharacter2,illegalAttack));
+        assertFalse(isAttackLegal(closeToDyingCharacter,forbiddenPatternAttack));
 
     }
 
@@ -155,7 +166,7 @@ class TestTurnLogicService {
 
         MovementDataModel[] turnMoves = new MovementDataModel[]{move1, move2, move3, move4};
 
-        List<Pair<CharacterEntity,CharacterEntity>> result= turnLogicService.movingToSameLocation(turnMoves);
+        List<Pair<CharacterEntity,CharacterEntity>> result= movingToSameLocation(turnMoves);
         assertEquals(1, result.size());
         Pair<CharacterEntity, CharacterEntity> pair = result.getFirst();
 
