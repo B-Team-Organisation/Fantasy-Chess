@@ -22,7 +22,7 @@ public class LobbyModel {
     private GameState gameState;
     private String lobbyName;
 
-    enum GameState {
+    public enum GameState {
         CLOSED,
         OPEN,
         FULL,

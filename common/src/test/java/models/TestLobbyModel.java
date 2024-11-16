@@ -3,6 +3,8 @@ package models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import com.bteam.common.models.Player;
+import com.bteam.common.models.LobbyModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class TestLobbyModel {
 
     @BeforeEach
     public void setUp() {
-        UUID lobbyId = UUID.randomUUID();
+        String lobbyId ="exampleLobbyId";
         List<Player> players = new ArrayList<>();  // Leere Liste, um initial keine Spieler hinzuzufügen
         player1 = new Player("Player1",  "1");
         player2 = new Player("Player2",  "2");

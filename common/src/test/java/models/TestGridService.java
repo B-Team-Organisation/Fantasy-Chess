@@ -1,10 +1,14 @@
 package models;
 
-import Exceptions.DestinationAlreadyOccupiedException;
-import Exceptions.DestinationInvalidException;
-import Exceptions.NoCharacterFoundException;
-import Exceptions.NotAStartPositionException;
-import entities.CharacterEntity;
+
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
+import com.bteam.common.exceptions.NoCharacterFoundException;
+import com.bteam.common.exceptions.NotAStartPositionException;
+import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.models.Vector2D;
+import com.bteam.common.models.GridService;
+import com.bteam.common.models.GridModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
