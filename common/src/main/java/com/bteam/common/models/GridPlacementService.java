@@ -1,7 +1,10 @@
-package models;
+package com.bteam.common.models;
 
-import Exceptions.*;
-import entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.FullStartTilesException;
+import com.bteam.common.exceptions.NotAStartPositionException;
+import com.bteam.common.entities.CharacterEntity;
 
 import java.util.Arrays;
 import java.util.List;

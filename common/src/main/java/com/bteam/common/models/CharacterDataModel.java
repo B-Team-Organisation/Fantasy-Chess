@@ -1,4 +1,4 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.Arrays;
 import java.util.Objects;

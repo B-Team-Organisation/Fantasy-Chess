@@ -1,6 +1,6 @@
-package models;
+package com.bteam.common.models;
 
-import entities.CharacterEntity;
+import com.bteam.common.entities.CharacterEntity;
 
 import java.util.Objects;
 

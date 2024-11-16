@@ -1,10 +1,10 @@
-package models;
+package com.bteam.common.models;
 
-import Exceptions.DestinationInvalidException;
-import Exceptions.NoCharacterFoundException;
-import Exceptions.DestinationAlreadyOccupiedException;
-import Exceptions.NotAStartPositionException;
-import entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.NoCharacterFoundException;
+import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
+import com.bteam.common.exceptions.NotAStartPositionException;
+import com.bteam.common.entities.CharacterEntity;
 
 /**
  * Service class for the {@link GridModel}

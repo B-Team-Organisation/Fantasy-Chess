@@ -1,6 +1,6 @@
-package Exceptions;
+package com.bteam.common.exceptions;
 
-import models.Vector2D;
+import com.bteam.common.models.Vector2D;
 
 public class NoCharacterFoundException extends Exception{
     public NoCharacterFoundException(Vector2D position){

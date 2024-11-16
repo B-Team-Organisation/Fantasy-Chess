@@ -1,6 +1,6 @@
-package Exceptions;
+package com.bteam.common.exceptions;
 
-import models.Vector2D;
+import com.bteam.common.models.Vector2D;
 
 public class NotAStartPositionException extends Exception{
     public NotAStartPositionException(Vector2D position){

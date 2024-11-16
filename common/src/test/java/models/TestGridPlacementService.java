@@ -1,6 +1,5 @@
 package models;
 
-import Exceptions.*;
 import entities.CharacterEntity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
