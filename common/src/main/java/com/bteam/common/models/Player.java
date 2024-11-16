@@ -16,7 +16,7 @@ import java.util.UUID;
  */
 public class Player {
     private String username;
-    private UUID playerId;
+    private String playerId;
     private Status status;
     private List<CharacterEntity> characters;
 
@@ -33,7 +33,7 @@ public class Player {
      * @param playerId id of the player
      * @param characters list of characters associated with the player
      */
-    public Player(String username, UUID playerId, List<CharacterEntity> characters) {
+    public Player(String username, String playerId, List<CharacterEntity> characters) {
         this.username = username;
         this.playerId = playerId;
         this.status = Status.NOT_READY;
@@ -45,7 +45,7 @@ public class Player {
         return username;
     }
 
-    public UUID getPlayerId() {
+    public String getPlayerId() {
         return playerId;
     }
 
