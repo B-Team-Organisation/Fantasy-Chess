@@ -1,6 +1,6 @@
 # Character Stats Indicator 
 
-
+* See Figma Example https://www.figma.com/design/UBKCqhJdGT1nt1KMNF5DEH/Untitled?node-id=0-1&node-type=canvas&t=QWnWi1FAYMrMBg9c-0
 ## 1.Game Screen(Choosing Moves)
 
 * ### Left Side sidebar (PLAYER1)
@@ -22,7 +22,6 @@
           * Health(Number) -> example 90(yellow)/ 200 hp( black)
           * (PLAYER1)Attack pattern ( if clicked ,shown the @Attack Pattern) -> BUTTON RED
           * (PLAYER2)Movement pattern ( if clicked ,shown the @Movement Pattern) -> BUTTON YELLOW
-   
     
 * ### Movement Pattern -> see Preview Concept Indication
    * Light YELLOW Tiles highlight for Movement possible 
