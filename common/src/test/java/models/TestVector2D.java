@@ -1,5 +1,6 @@
 package models;
 
+import com.bteam.common.models.Vector2D;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

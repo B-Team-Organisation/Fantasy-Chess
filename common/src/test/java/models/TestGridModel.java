@@ -1,6 +1,7 @@
 package models;
 
 import org.junit.jupiter.api.Test;
+import com.bteam.common.models.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
