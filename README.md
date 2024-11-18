@@ -19,3 +19,25 @@ Albano Vukelaj
 ## Prototype
 
 ![alt text](/assets/image.png)
+
+## How to get running (for now)
+
+*SETUP:*
+```sh
+    fantasychess-server/gradlew wrapper && fantasychess-client/gradlew wrapper && common/gradlew wrapper
+```
+
+*Start Server:*
+```sh
+    fantasychess-server/gradlew bootRun
+```
+
+*Start Client:*
+```sh
+    fantasychess-client/gradlew superDev
+```
+
+*Build Docker Container*
+```sh
+    # TODO
+```
