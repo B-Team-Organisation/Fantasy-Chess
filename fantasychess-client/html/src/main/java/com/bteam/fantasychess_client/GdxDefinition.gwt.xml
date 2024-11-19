@@ -22,7 +22,6 @@
     <inherits name="com.bteam.common"/>
     <inherits name="com.google.gwt.logging.Logging"/>
     <inherits name="com.google.gwt.resources.Resources"/>
-    <inherits name="com.google.gwt.dev"/>
     <!-- You must change this if you rename packages later, or rename GwtLauncher. -->
     <entry-point class="com.bteam.fantasychess_client.gwt.GwtLauncher"/>
 

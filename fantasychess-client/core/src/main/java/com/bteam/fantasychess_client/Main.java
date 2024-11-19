@@ -3,6 +3,7 @@ package com.bteam.fantasychess_client;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.bteam.fantasychess_client.networking.WebSocketClient;
 import com.bteam.fantasychess_client.networking.WebSocketService;
 import com.bteam.fantasychess_client.ui.SplashScreen;
 
@@ -15,33 +16,32 @@ import java.util.logging.Logger;
 public class Main extends Game {
 
     Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
-    WebSocketService socketService;
+    private final WebSocketService socketService;
 
-    public static Main GetInstance() {
+    public static Main getInstance() {
         return (Main) Gdx.app.getApplicationListener();
     }
 
-    public static Logger GetLogger() {
-        return GetInstance().logger;
+    public static Logger getLogger() {
+        return getInstance().logger;
+    }
+
+    public static WebSocketService getWebSocketService() {
+        return getInstance().socketService;
+    }
+
+    public Main() {
+        socketService = new WebSocketService("127.0.0.1", 5050, new WebSocketClient());
     }
 
     @Override
     public void create() {
-        var address = "";
-        var port = 5050;
-        socketService = new WebSocketService(address, port);
-        logger.log(Level.SEVERE, "Websocket Address: " + address + port);
-        var config = Gdx.files.internal("application.properties").readString();
-        logger.log(Level.SEVERE, config);
+
         Skin skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
         setScreen(new SplashScreen(skin));
     }
 
     public WebSocketService getSocketService() {
         return socketService;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 }

@@ -9,7 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
+import com.bteam.fantasychess_client.networking.Packet;
+
+import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -122,6 +126,15 @@ public class SplashScreen extends ScreenAdapter {
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+
+        Main.getWebSocketService().addPacketHandler("TEST", this::onTestPacket);
+        Main.getWebSocketService().handlePacket(new Packet("HELLO", "TEST"));
+
+    }
+
+    public void onTestPacket(Packet packet){
+        var data = packet.getDataAs(String.class);
+        Main.getLogger().log(Level.SEVERE, data);
     }
 
     @Override
