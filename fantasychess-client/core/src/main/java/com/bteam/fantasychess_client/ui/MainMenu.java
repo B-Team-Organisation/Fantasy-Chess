@@ -13,7 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import models.LobbyModel;
+import com.bteam.common.models.LobbyModel;
 
 
 import java.util.List;
@@ -277,18 +277,18 @@ public class MainMenu extends ScreenAdapter {
     // testdata,to check with online data
     private List<LobbyModel> showLobbies() {
         List<LobbyModel> lobbies = new ArrayList<>();
-        lobbies.add(new LobbyModel("Lukas"));
-        lobbies.add(new LobbyModel("Hana"));
-        lobbies.add(new LobbyModel("Luxort"));
-        lobbies.add(new LobbyModel("Zhuxin"));
-        lobbies.add(new LobbyModel("Beras"));
-        lobbies.add(new LobbyModel("Ino"));
-        lobbies.add(new LobbyModel("Kalavoi"));
-        lobbies.add(new LobbyModel("Albert"));
-        lobbies.add(new LobbyModel("Sius"));
-        lobbies.add(new LobbyModel("Demonzone"));
-        lobbies.add(new LobbyModel("Angels"));
-        lobbies.add(new LobbyModel("Classrom of"));
+        lobbies.add(new LobbyModel("Lukas",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Hana",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Luxort",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Zhuxin",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Beras",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Ino",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Kalavoi",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Albert",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Sius",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Demonzone",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Angels",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Classrom of",new ArrayList<>(),null,"Lobyb1"));
         return lobbies;
     }
 
