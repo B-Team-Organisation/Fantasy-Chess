@@ -1,7 +1,7 @@
-package models;
+package com.bteam.common.models;
 
-import Exceptions.InvalidSubpatternMappingException;
-import Exceptions.PatternShapeInvalidException;
+import com.bteam.common.exceptions.InvalidSubpatternMappingException;
+import com.bteam.common.exceptions.PatternShapeInvalidException;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ import java.util.*;
  * Validates the pattern upon creation.
  * Makes it possible to get possible targets and tiles affected by actions of said targets.
  *
- * @author lukas
+ * @author Lukas
  * @version 1.0
  */
 public class PatternService {
@@ -39,7 +39,7 @@ public class PatternService {
      * Validated the given {@link PatternModel} in terms of shape and completeness
      * <p>
      * Extracts the lines of the patternString and validates them.
-     * The working horse of this method is the method {@link models.PatternService#arePatternMappingsInvalid(PatternModel).
+     * The working horse of this method is the method {@link PatternService#arePatternMappingsInvalid(PatternModel).
      *
      * @param patternModel the {@link PatternModel} to validate
      * @throws PatternShapeInvalidException if the shape of the pattern is invalid
@@ -201,10 +201,10 @@ public class PatternService {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PatternService patternService
-                && this.patternModel.equals(patternService.patternModel)
-                && this.relativeTargetMappings.equals(patternService.relativeTargetMappings)
-                && this.patternStore.equals(patternService.patternStore);
+        return o instanceof PatternService
+                && this.patternModel.equals(((PatternService) o).patternModel)
+                && this.relativeTargetMappings.equals(((PatternService) o).relativeTargetMappings)
+                && this.patternStore.equals(((PatternService) o).patternStore);
     }
 
     @Override

@@ -1,23 +1,28 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 
 /**
  * This class represents the game lobby.
+ * <p>
+ * A lobby, consisting of its name, ID, Players, Player Limit and the current
+ * {@link GameState}
+ *
+ * @author Adnan
+ * @link 1.0
  */
 public class LobbyModel {
-    private UUID lobbyId;
+    private String lobbyId;
     private int maxPlayers = 2;
     private List<Player> players;
     private Player host;
     private GameState gameState;
     private String lobbyName;
 
-    enum GameState {
+    public enum GameState {
         CLOSED,
         OPEN,
         FULL,
@@ -27,12 +32,12 @@ public class LobbyModel {
     /**
      * Constructor for a LobbyModel.
      *
-     * @param lobbyId: unique identifier for the lobby.
-     * @param players: List of the players that can enter the lobby
-     * @param host: player who is the host of the lobby and is added at index 0 in the players list
-     * @param lobbyName: name of the lobby
+     * @param lobbyId unique identifier for the lobby.
+     * @param players List of the players that can enter the lobby
+     * @param host player who is the host of the lobby and is added at index 0 in the players list
+     * @param lobbyName name of the lobby
      */
-    public LobbyModel(UUID lobbyId, List<Player> players, Player host, String lobbyName) {
+    public LobbyModel(String lobbyId, List<Player> players, Player host, String lobbyName) {
         this.lobbyId = lobbyId;
         this.gameState = GameState.OPEN;
         this.players = new ArrayList<>();
@@ -42,11 +47,7 @@ public class LobbyModel {
         this.players.add(host);
     }
 
-    public LobbyModel(String lobbyName){
-        this(UUID.randomUUID(), List.of(), null, lobbyName);
-    }
-
-    public UUID getLobbyId() {
+    public String getLobbyId() {
         return lobbyId;
     }
 
@@ -73,7 +74,7 @@ public class LobbyModel {
     /**
      * Checks if the specified player is the host of the lobby.
      *
-     * @param player - the player to check
+     * @param player the player to check
      * @return true if the player is the host, false otherwise
      */
     public boolean isHost(Player player){
@@ -101,7 +102,7 @@ public class LobbyModel {
     /**
      * Removes a player from the lobby and updates the game state if necessary.
      *
-     * @param player - the player to remove
+     * @param player the player to remove
      */
     public void removePlayer(Player player){
         this.players.remove(player);

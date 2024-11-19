@@ -1,4 +1,4 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -8,8 +8,7 @@ import java.util.Objects;
  * <p>
  * This class represents a Character Model to model characters.
  * It contains static attributes about a character, including all
- * movement and attack patterns as arrays of {@link PatternDataModel}
- * and {@link AttackPatternDataModel}.
+ * movement and attack patterns as arrays of {@link PatternModel}
  *
  * @author Jacinto
  * @version 1.0
@@ -18,25 +17,27 @@ public class CharacterDataModel {
     private String name;
     private String description;
     private int health;
-    private AttackPatternDataModel[] attackPatterns;
-    private PatternDataModel[] movementPatterns;
+    private PatternModel[] attackPatterns;
+    private PatternModel[] movementPatterns;
 
 
     /**
      * Creates a new CharacterDataModel.
      *
-     * @param name - name of the character
-     * @param description - a description for the character
-     * @param health - the damage from the character
-     * @param attackPatterns - all attack patterns that the character can perform
-     * @param movementPatterns - the movement pattern that the character can perform
+     * @param name name of the character
+     * @param description a description for the character
+     * @param health the damage from the character
+     * @param damage the damage of the attack
+     * @param attackPatterns all attack patterns that the character can perform
+     * @param movementPatterns the movement pattern that the character can perform
      */
     public CharacterDataModel(
             String name,
             String description,
             int health,
-            AttackPatternDataModel[] attackPatterns,
-            PatternDataModel[] movementPatterns
+            int damage,
+            PatternModel[] attackPatterns,
+            PatternModel[] movementPatterns
     ) {
         this.name = name;
         this.description = description;
@@ -57,11 +58,11 @@ public class CharacterDataModel {
         return this.health;
     }
 
-    public AttackPatternDataModel[] getAttackPatterns() {
+    public PatternModel[] getAttackPatterns() {
         return Arrays.copyOf(attackPatterns, attackPatterns.length);
     }
 
-    public PatternDataModel[] getMovementPatterns() {
+    public PatternModel[] getMovementPatterns() {
         return Arrays.copyOf(movementPatterns, attackPatterns.length);
     }
 
@@ -77,11 +78,11 @@ public class CharacterDataModel {
         this.health = health;
     }
 
-    public void setAttackPatterns(AttackPatternDataModel[] attackPatterns) {
+    public void setAttackPatterns(PatternModel[] attackPatterns) {
         this.attackPatterns = attackPatterns;
     }
 
-    public void setMovementPatterns(PatternDataModel[] movementPatterns) {
+    public void setMovementPatterns(PatternModel[] movementPatterns) {
         this.movementPatterns = movementPatterns;
     }
 

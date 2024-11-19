@@ -1,10 +1,15 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.Objects;
 
 /**
- * Represents a 2D vector used primarily for movement and positioning.
- * Contains calculation methods like addition and subtraction.
+ * A class for creating 2D vectors.
+ * <p>
+ * Represents a 2D vector used primarily for movement and positioning
+ * Contains calculation methods like addition and subtraction
+ *
+ * @author Jacinto
+ * @version 1.0
  */
 public class Vector2D {
     private final int x;

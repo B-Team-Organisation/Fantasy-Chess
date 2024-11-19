@@ -1,7 +1,10 @@
 package models;
 
-import Exceptions.*;
-import entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.FullStartTilesException;
+import com.bteam.common.models.*;
+import com.bteam.common.entities.CharacterEntity;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +13,7 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static models.GridPlacementService.placeCharacters;
+import static com.bteam.common.models.GridPlacementService.placeCharacters;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGridPlacementService {

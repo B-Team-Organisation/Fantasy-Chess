@@ -1,6 +1,6 @@
-package models;
+package com.bteam.common.models;
 
-import entities.CharacterEntity;
+import com.bteam.common.entities.CharacterEntity;
 
 import java.util.Objects;
 
@@ -11,8 +11,7 @@ import java.util.Objects;
  *  {@link CharacterEntity}, which might occupy this tile
  *  {@code isStartTile}, if this tile is a start tile
  *
- *
- * @author lukas albano
+ * @author Lukas, Albano
  * @version 1.0
  */
 public class TileModel {
