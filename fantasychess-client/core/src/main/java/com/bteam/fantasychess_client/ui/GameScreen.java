@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -24,6 +25,9 @@ public class GameScreen extends ScreenAdapter {
 
     private Stage stage;
     private Skin skin;
+
+    private SpriteBatch batch;
+
     private TextureAtlas atlas;
 
     public GameScreen (Skin skin){
@@ -34,8 +38,10 @@ public class GameScreen extends ScreenAdapter {
         extendViewport = new ExtendViewport(1920,1080,camera);
         extendViewport.apply();
 
+        batch = new SpriteBatch();
+
         this.skin = skin;
-        atlas = new TextureAtlas(Gdx.files.internal("tileset.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
     }
 
     @Override
@@ -47,6 +53,11 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+
+        batch.end();
 
         stage.act();
         stage.draw();
@@ -76,5 +87,6 @@ public class GameScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+        atlas.dispose();
     }
 }
