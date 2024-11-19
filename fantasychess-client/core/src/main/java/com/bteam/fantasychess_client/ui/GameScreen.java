@@ -56,7 +56,7 @@ public class GameScreen extends ScreenAdapter {
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-
+        batch.draw(atlas.findRegion("boar-front"), 0, 0, 1920, 1080);
         batch.end();
 
         stage.act();
