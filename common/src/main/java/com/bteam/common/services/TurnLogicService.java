@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.models.Player;
-import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.models.AttackDataModel;
-import com.bteam.common.models.CharacterDataModel;
+import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
 
 /**
@@ -25,45 +22,62 @@ public class TurnLogicService {
 
     private TurnLogicService() {}
 
-     public enum Winner{None,Draw,Player1,Player2}
-     public void applyCommands(List<MovementDataModel> moves,List<CharacterEntity> characters,List<AttackDataModel> attacks){}
+    /**
+     * Apply all the commands to the characters
+     * <p>
+     * Applies the commands , moves and attacks , to the given characters
+     * @param moves List of the movement received
+     * @param characters List of all characters
+     * @param attacks List of the attacks received
+     * @param grid model with number of rows and columns
+     */
+    public static List <CharacterEntity> applyCommands(List<MovementDataModel> moves, List<CharacterEntity> characters,
+                                                List<AttackDataModel> attacks, GridModel grid) {
+        return new ArrayList<>();
+    }
+
+
     /**
      * Apply all movement to the characters
+     * <p>
      * @param intendedMovements intended moves given to each character
      * @param characters list of all the Characters
      * @return List of dead characters as {@link CharacterEntity} or empty list
      */
-    public static List<CharacterEntity> applyMovement(List <MovementDataModel> intendedMovements,List<CharacterEntity> characters) {
+
+    private static List<CharacterEntity> applyMovement(List <MovementDataModel> intendedMovements,List<CharacterEntity> characters) {
        return new ArrayList<>();
     }
 
+
     /**
-     * Checks if a player (or both) have died.
+     * Apply all attacks to the characters
+     * @param intendedAttacks intended moves given to each character
+     * @param characters list of all the Characters
+     * @return List of dead characters as {@link CharacterEntity} or empty list
+     */
+
+    private static List<CharacterEntity> applyAttacks(List <AttackDataModel> intendedAttacks,List<CharacterEntity> characters) {
+        return new ArrayList<>();
+    }
+
+    /**
+     * Checks if the Game has a Winner
      * <p>
      * If one player dies, the other is returned as the winner
      * This method won't check for a draw, since that means no
      * {@link CharacterEntity}'s left to pass.
      *
-     * @param players The two players competing
+     * @param  characters List of the characters
      * @return The id of the winning player or {@code null} if no result.
      */
-    public static Winner checkForWinner(Pair<Player, Player> players) {
+    public static String checkForWinner(List<CharacterEntity> characters) {
         List<CharacterEntity> deadCharacters = new ArrayList<>();
 
-        return Winner.None;
-    }
-    /**
-     * List all characters that are moving to the same position
-     *
-     * @param characterMovements characters and their respective movement to check, {@code null} for no movement
-     * @return Array of characters that are moving to the same position
-     */
-    private static CharacterEntity[] movingToSamePosition(Pair<CharacterEntity, MovementDataModel>[] characterMovements) {
-        ArrayList<CharacterEntity> illegalMovers = new ArrayList<>();
-        // checks with methods below
-        return illegalMovers.toArray(new CharacterEntity[illegalMovers.size()]);
+        return "example";
     }
 
-    /**
+
+
 
 }
