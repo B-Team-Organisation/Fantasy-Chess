@@ -11,36 +11,25 @@ by colors and paths.
 ## Indicator Types:
 
 ### Movement Preview:
-* Marks the path a piece will take when moved
 * Highlights all possible destination tiles of the selected piece (in yellow)
-* (Illegal moves will also get displayed but labelled as "illegal")
+* Illegal moves will be filtered out earlier
+* Strong highlight when hovering over destination tile
+
 
 ### Attack Preview:
-* Marks the path a piece will take when it attacks
 * Highlights all possible tiles that can get attacked (in red)
-* Shows how much damage the attacked piece will take
-* (Illegal attacks will also get displayed but labelled as "illegal")
+* Shows how much damage the hit pieces will take
+* Illegal moves will be filtered out earlier
+* Strong highlight of to be attacked tiles when hovering over destination tile
+
+---
+## Implementation idea:
+
+* create highlight as tiles to render on top of the map tiles
+* same for damage
 
 ---
 
-## Preview Activation:
+## Figma Concept:
 
-* Hovering over a piece will show the attack and movement preview in different colors
-    * (Draft) yellow for movement 
-    * (Draft) red for attack
-* Clicking on a piece opens a Sidebar with general information about the movement and attack patterns of the 
-selected piece
-
----
-
-## Sidebar Content:
-
-### Piece Info:
-* Piece Name
-
-### Movement Patterns of Piece:
-* Highlights all destination tiles of the selected piece (whether legal or not) in a small display of the field
-
-### Attack Patterns of Piece:
-* Highlights all tiles under attack of the selected piece (whether legal or not) in a small display of the field
-* Shows how much damage the attack will make on each tile
+https://www.figma.com/design/n5RoY75WL2p77ALjyK8HXU/Command-Preview-Indicator--Concept?node-id=0-1&t=5t2vm8P9FjaiH7s5-1
