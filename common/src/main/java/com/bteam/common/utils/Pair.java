@@ -1,4 +1,4 @@
-package utils;
+package com.bteam.common.utils;
 
 /**
  * A simple helper Class to allow for Pairs
