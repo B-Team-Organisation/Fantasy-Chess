@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -28,6 +33,9 @@ public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
 
+    private IsometricTiledMapRenderer mapRenderer;
+    private TiledMap tiledMap;
+
     private TextureAtlas atlas;
 
     public GameScreen (Skin skin){
@@ -40,6 +48,9 @@ public class GameScreen extends ScreenAdapter {
 
         batch = new SpriteBatch();
 
+        tiledMap = new TmxMapLoader().load("maps/Map3.tmx");
+        mapRenderer = new IsometricTiledMapRenderer(tiledMap);
+
         this.skin = skin;
         atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
     }
@@ -48,15 +59,18 @@ public class GameScreen extends ScreenAdapter {
     public void show() {
         stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f,.12f,.16f,1);
+
+        mapRenderer.setView(camera);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        mapRenderer.render();
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(atlas.findRegion("boar-front"), 0, 0, 1920, 1080);
         batch.end();
 
         stage.act();
