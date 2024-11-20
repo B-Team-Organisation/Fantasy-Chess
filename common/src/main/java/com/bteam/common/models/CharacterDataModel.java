@@ -17,8 +17,9 @@ public class CharacterDataModel {
     private String name;
     private String description;
     private int health;
-    private PatternModel[] attackPatterns;
-    private PatternModel[] movementPatterns;
+    private int attackPower;
+    private PatternService[] attackPatterns;
+    private PatternService[] movementPatterns;
 
 
     /**
@@ -26,8 +27,8 @@ public class CharacterDataModel {
      *
      * @param name name of the character
      * @param description a description for the character
-     * @param health the damage from the character
-     * @param damage the damage of the attack
+     * @param health the health of the character
+     * @param attackPower the power  of the attack
      * @param attackPatterns all attack patterns that the character can perform
      * @param movementPatterns the movement pattern that the character can perform
      */
@@ -35,13 +36,14 @@ public class CharacterDataModel {
             String name,
             String description,
             int health,
-            int damage,
-            PatternModel[] attackPatterns,
-            PatternModel[] movementPatterns
+            int attackPower,
+            PatternService[] attackPatterns,
+            PatternService[] movementPatterns
     ) {
         this.name = name;
         this.description = description;
         this.health = health;
+        this.attackPower = attackPower;
         this.attackPatterns = Arrays.copyOf(attackPatterns, attackPatterns.length);
         this.movementPatterns = Arrays.copyOf(movementPatterns, attackPatterns.length);
     }
@@ -58,11 +60,13 @@ public class CharacterDataModel {
         return this.health;
     }
 
-    public PatternModel[] getAttackPatterns() {
+    public int getAttackPower(){return this.attackPower;}
+
+    public PatternService[] getAttackPatterns() {
         return Arrays.copyOf(attackPatterns, attackPatterns.length);
     }
 
-    public PatternModel[] getMovementPatterns() {
+    public PatternService[] getMovementPatterns() {
         return Arrays.copyOf(movementPatterns, attackPatterns.length);
     }
 
@@ -78,11 +82,13 @@ public class CharacterDataModel {
         this.health = health;
     }
 
-    public void setAttackPatterns(PatternModel[] attackPatterns) {
+    public void setAttackPower(int attackPower) {this.attackPower=attackPower;}
+
+    public void setAttackPatterns(PatternService[] attackPatterns) {
         this.attackPatterns = attackPatterns;
     }
 
-    public void setMovementPatterns(PatternModel[] movementPatterns) {
+    public void setMovementPatterns(PatternService[] movementPatterns) {
         this.movementPatterns = movementPatterns;
     }
 
@@ -92,6 +98,7 @@ public class CharacterDataModel {
                 + "[name=" + name
                 + ", description=" + description
                 + ", health=" + health
+                + ", attackPower" + attackPower
                 + ", movementData=" + Arrays.toString(movementPatterns)
                 + ", attackData=" + Arrays.toString(attackPatterns)
                 + "]";
@@ -103,6 +110,7 @@ public class CharacterDataModel {
                 && ((CharacterDataModel) o).name.equals(this.name)
                 && ((CharacterDataModel) o).description.equals(this.description)
                 && ((CharacterDataModel) o).health == this.health
+                && ((CharacterDataModel) o).attackPower == this.attackPower
                 && Arrays.equals(((CharacterDataModel) o).movementPatterns, this.movementPatterns)
                 && Arrays.equals(((CharacterDataModel) o).attackPatterns, attackPatterns);
     }
@@ -110,7 +118,7 @@ public class CharacterDataModel {
     @Override
     public int hashCode() {
         return Objects.hash(
-                name, description, health,
+                name, description, health, attackPower,
                 Arrays.hashCode(movementPatterns),
                 Arrays.hashCode(attackPatterns));
     }
