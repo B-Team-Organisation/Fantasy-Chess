@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-up" width="9" height="9" tilewidth="32" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.0" orientation="isometric" renderorder="right-up" width="9" height="9" tilewidth="32" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="1">
  <tileset firstgid="1" source="Tiles.tsx"/>
- <layer id="1" name="Kachelebene 1" width="9" height="9">
+ <layer id="4" name="Hintergrund" width="9" height="9">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <layer id="1" name="Playingfield" width="9" height="9">
   <data encoding="csv">
 70,70,70,70,70,70,70,70,70,
 70,70,70,70,70,70,70,70,70,
