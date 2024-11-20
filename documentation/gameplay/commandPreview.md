@@ -32,4 +32,4 @@ by colors and paths.
 
 ## Figma Concept:
 
-https://www.figma.com/design/n5RoY75WL2p77ALjyK8HXU/Command-Preview-Indicator--Concept?node-id=0-1&t=5t2vm8P9FjaiH7s5-1
+https://www.figma.com/proto/n5RoY75WL2p77ALjyK8HXU/Command-Preview-Indicator--Concept?node-id=9-607&node-type=canvas&t=FHLvobGeF1STHIpP-1&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=9%3A607&share=1
