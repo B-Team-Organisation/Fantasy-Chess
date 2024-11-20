@@ -49,18 +49,8 @@ class TestTurnLogicService {
         player1 = new Player("Username1","1111",new ArrayList<>());
         player2 = new Player("Username2","2222",new ArrayList<>());
 
-
         HashMap<Character, String> map = new HashMap<>();
         map.put('x',"subpattern");
-
-
-        legalMovement = new MovementDataModel(normalCharacter1,new Vector2D(0,5) );
-        legalMovement2 = new MovementDataModel(normalCharacter2,new Vector2D(2,2) );
-        legalMovement3 = new MovementDataModel(closeToDyingCharacter1,new Vector2D(1,1) );
-
-        legalAttack = new AttackDataModel(new Vector2D(0,1),normalCharacter1);
-        legalAttack2 = new AttackDataModel(new Vector2D(2,1),normalCharacter2);
-        legalAttack3 = new AttackDataModel(new Vector2D(1,1),longAttackCharacter2);
 
         PatternModel longRangeAttack = new PatternModel("   x   \n   x   \nxxxxxxx\n   x   \n   x   ", map, "longRangeAttack");
         PatternModel shortMovement = new PatternModel(" x \n x \n x ", map, "shortMovement");
@@ -74,30 +64,56 @@ class TestTurnLogicService {
 
 
         normalCharacter1= new CharacterEntity(
-                new CharacterDataModel("Hallo", "Hehe", 10, 34,longRangeAttacks, shortMovements ),
+                new CharacterDataModel("Hallo", "Hehe",
+                        10, 34,longRangeAttacks, shortMovements ),
                 10,cornerPosition, player1.getPlayerId()
         );
 
         normalCharacter2 = new CharacterEntity(
-                new CharacterDataModel("Amon", "Test1", 20, 15, longRangeAttacks, shortMovements),
+                new CharacterDataModel("Amon", "Test1",
+                        20, 15, longRangeAttacks, shortMovements),
                 20, centerPosition, player2.getPlayerId()
         );
 
         closeToDyingCharacter1 = new CharacterEntity(
-                new CharacterDataModel("Granger", "A character with low health", 5, 10, longRangeAttacks, shortMovements),
+                new CharacterDataModel("Granger", "A character with low health",
+                        5, 10, longRangeAttacks, shortMovements),
                 5, borderPosition, player1.getPlayerId()
         );
 
         longAttackCharacter2 = new CharacterEntity(
-                new CharacterDataModel("Lud Yi", "Specializes in long-range attacks", 15, 20, longRangeAttacks, shortMovements),
+                new CharacterDataModel("Lud Yi", "Specializes in long-range attacks",
+                        15, 20, longRangeAttacks, shortMovements),
                 15, farPosition, player2.getPlayerId()
         );
+
+
+
+
+
+
+        legalMovement = new MovementDataModel(normalCharacter1,new Vector2D(0,5) );
+        legalMovement2 = new MovementDataModel(normalCharacter2,new Vector2D(2,2) );
+        legalMovement3 = new MovementDataModel(closeToDyingCharacter1,new Vector2D(1,1) );
+
+        legalAttack = new AttackDataModel(new Vector2D(0,1),normalCharacter1);
+        legalAttack2 = new AttackDataModel(new Vector2D(2,1),normalCharacter2);
+        legalAttack3 = new AttackDataModel(new Vector2D(1,1),longAttackCharacter2);
+
+
+
+
 
 
        /* player1.addCharacter(normalCharacter1);
         player2.addCharacter(normalCharacter2);
         player1.addCharacter(closeToDyingCharacter);
         player2.addCharacter(longAttackCharacter);*/
+
+        charactersBefore = new ArrayList<>();
+        charactersAfter = new ArrayList<>();
+        movementsBefore = new ArrayList<>();
+        attacksBefore = new ArrayList<>();
 
 
         charactersAfter.add(normalCharacter1);
@@ -125,6 +141,7 @@ class TestTurnLogicService {
 
         charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
 
+
        assertEquals(charactersAfter,applyCommands(movementsBefore,charactersBefore,attacksBefore,new GridModel(10,10)));
 
     }
@@ -149,7 +166,7 @@ class TestTurnLogicService {
          charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
          normalCharacter1.setPosition(new Vector2D(0,5));
          normalCharacter2.setPosition(new Vector2D(7,7));
-         longAttackCharacter2.setPosition(new Vector2D(9,9));
+         closeToDyingCharacter1.setPosition(new Vector2D(10,1));
          Method method = TurnLogicService.class.getDeclaredMethod("applyMovement", List.class, List.class);
          method.setAccessible(true);
 
@@ -157,13 +174,14 @@ class TestTurnLogicService {
 
 
          assertEquals(charactersAfter,result);
+
      }
 
 
     @Test
     void testCheckForWinner() {;
 
-        //assertNull(checkForWinner(characters));
+        assertNull(checkForWinner(charactersAfter));
         charactersAfter.remove(normalCharacter1);
         charactersAfter.remove(normalCharacter2);
         //characters.remove(closeToDyingCharacter1);
@@ -175,6 +193,7 @@ class TestTurnLogicService {
         assertNull(checkForWinner(charactersBefore));
     }
 
+    //test for after applycommands
 
 
 

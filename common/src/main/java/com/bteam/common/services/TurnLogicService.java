@@ -31,10 +31,30 @@ public class TurnLogicService {
      * @param attacks List of the attacks received
      * @param grid model with number of rows and columns
      */
-    public static List <CharacterEntity> applyCommands(List<MovementDataModel> moves, List<CharacterEntity> characters,
+    public static  List <CharacterEntity> applyCommands(List<MovementDataModel> moves, List<CharacterEntity> characters,
                                                 List<AttackDataModel> attacks, GridModel grid) {
-        return new ArrayList<>();
+
+
+        CommandValidator validatorAllCommands = new CommandValidator();
+        List<CharacterEntity> invalidMovers = validatorAllCommands.validateCommands(characters, moves, attacks,grid);
+
+        List<MovementDataModel> validMovements = new ArrayList<>();
+        for (MovementDataModel move : moves) {
+            if (!invalidMovers.contains(move.getCharacterEntity())) {
+                validMovements.add(move);
+            }
+        }
+        List<AttackDataModel> validAttacks = new ArrayList<>();
+        for (AttackDataModel attack : attacks) {
+            if (!invalidMovers.contains(attack.getAttacker())) {
+                validAttacks.add(attack);
+            }
+        }
+
+        List<CharacterEntity> charactersAfterMovement = applyMovement(validMovements, characters);
+        return applyAttacks(validAttacks, charactersAfterMovement);
     }
+
 
 
     /**
@@ -45,9 +65,27 @@ public class TurnLogicService {
      * @return List of dead characters as {@link CharacterEntity} or empty list
      */
 
-    private static List<CharacterEntity> applyMovement(List <MovementDataModel> intendedMovements,List<CharacterEntity> characters) {
-       return new ArrayList<>();
+    private static List<CharacterEntity> applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters) {
+        List<CharacterEntity> characterAfterMovement = new ArrayList<>(characters);
+
+        for (MovementDataModel movement : intendedMovements) {
+            CharacterEntity characterToMove = movement.getCharacterEntity();
+
+            for (CharacterEntity character : characterAfterMovement) {
+                if (character.getCharacterBaseModel().equals(characterToMove.getCharacterBaseModel())
+                        && character.getPlayerId().equals(characterToMove.getPlayerId())) {
+
+                    character.setPosition(character.getPosition().add(movement.getMovementVector()));
+                    break;
+                }
+            }
+        }
+
+        return characterAfterMovement;
     }
+
+
+
 
 
     /**
@@ -58,9 +96,21 @@ public class TurnLogicService {
      */
 
     private static List<CharacterEntity> applyAttacks(List <AttackDataModel> intendedAttacks,List<CharacterEntity> characters) {
-        return new ArrayList<>();
-    }
+        List<CharacterEntity> charactersAfterAttacks = new ArrayList<>();
 
+        for (AttackDataModel attackMove : intendedAttacks) {
+            CharacterEntity attacker = attackMove.getAttacker();
+            Vector2D attackPoint = attacker.getPosition().add(attackMove.getAttackPosition());
+
+            // List<Vector2D> attackArea=  area of attack per character.
+            //for attack per attackArea: do damage if a character there
+            //set health,
+            // if not dead list.add()
+
+
+        }
+        return new ArrayList<>(characters);
+    }
     /**
      * Checks if the Game has a Winner
      * <p>
@@ -72,12 +122,19 @@ public class TurnLogicService {
      * @return The id of the winning player or {@code null} if no result.
      */
     public static String checkForWinner(List<CharacterEntity> characters) {
-        List<CharacterEntity> deadCharacters = new ArrayList<>();
 
-        return "example";
+        String playerId = null;
+
+        for (CharacterEntity character : characters) {
+            if (playerId ==null) {
+                playerId = character.getPlayerId();
+            }
+            else if (!playerId.equals(character.getPlayerId() )) {
+                return null;
+            }
+        }
+        return playerId;
     }
-
-
 
 
 }
