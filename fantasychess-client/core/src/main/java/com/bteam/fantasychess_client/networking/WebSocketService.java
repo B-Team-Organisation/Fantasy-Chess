@@ -1,26 +1,42 @@
 package com.bteam.fantasychess_client.networking;
 
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.bteam.common.dto.Packet;
+import com.bteam.common.dto.StatusDTO;
+import com.bteam.fantasychess_client.Main;
+import com.bteam.fantasychess_client.data.errors.UnhandledPacketException;
 import com.github.czyzby.websocket.WebSocket;
-import com.github.czyzby.websocket.WebSocketListener;
 import com.github.czyzby.websocket.WebSockets;
 import com.github.czyzby.websocket.data.WebSocketState;
 
-import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.logging.Level;
+
+import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
 
 public class WebSocketService {
-    Map<String, PacketHandler> listeners = new HashMap<>();
-    WebSocket webSocket;
+    private final Map<String, PacketHandler> listeners = new HashMap<>();
     private final Json json = new Json();
 
-    public WebSocketService(String address, int port, WebSocketListener listener) {
-        WebSocket socket = WebSockets.newSocket(WebSockets.toWebSocketUrl(address, port));
-        socket.setSendGracefully(true);
-        socket.addListener(listener);
-        this.webSocket = socket;
+    WebSocket webSocket;
+    WebSocketClient client;
+
+    public WebSocketService(String address, WebSocketClient listener) {
+        webSocket = WebSockets.newSocket(address);
+        webSocket.setSendGracefully(true);
+        client = listener;
+        webSocket.addListener(client);
+        client.onTextEvent.addListener(this::handlePacket);
+
+        client.onOpenEvent.addListener(payload ->
+            Main.getLogger().log(Level.SEVERE, "Client has connected"));
+
+        addPacketHandler(CONNECTED_STATUS, packet -> {
+            Main.getLogger().log(Level.SEVERE, "It is now forwarded: " + packet);
+        });
     }
 
     public WebSocketState getState() {
@@ -28,10 +44,15 @@ public class WebSocketService {
     }
 
     public void connect() {
-        webSocket.connect();
+        Main.getLogger().log(Level.SEVERE, "Connecting to server...");
+        try{
+            webSocket.connect();
+        } catch (Exception e){
+            Main.getLogger().log(Level.SEVERE, e.getMessage());
+        }
     }
 
-    public <T> void addPacketHandler(String id, PacketHandler packetHandler){
+    public void addPacketHandler(String id, PacketHandler packetHandler){
         listeners.put(id, packetHandler);
     }
 
@@ -40,10 +61,26 @@ public class WebSocketService {
     }
 
     public void handlePacket(String packet){
-        handlePacket(json.fromJson(Packet.class, packet));
+        Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
+        JsonValue fromJson = new JsonReader().parse(packet);
+        var id = fromJson.getString("id");
+        try{
+            Main.getLogger().log(Level.SEVERE, "Deserialized with id: " +id);
+            if (!listeners.containsKey(id))
+                throw new UnhandledPacketException("Packet with id: " + id +
+                    " has no registered packet Handlers!\nIs your client version out of sync?");
+            listeners.get(id).handle(packet);
+        } catch (Exception e) {
+            Main.getLogger().log(Level.SEVERE, e.getMessage());
+        }
     }
 
-    public void handlePacket(Packet packet){
-        listeners.get(packet.id).handle(packet);
+    public void send(Packet packet){
+        var string = json.toJson(packet, Packet.class);
+        webSocket.send(string);
+    }
+
+    public WebSocketClient getClient() {
+        return client;
     }
 }
