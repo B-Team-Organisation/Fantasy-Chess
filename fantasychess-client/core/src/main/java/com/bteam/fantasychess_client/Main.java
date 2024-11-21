@@ -14,9 +14,9 @@ import java.util.logging.Logger;
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
 public class Main extends Game {
-
     Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
     private final WebSocketService socketService;
+    private static final String WEBSOCKET_ADDRESS = "ws://127.0.0.1:5050/ws";
 
     public static Main getInstance() {
         return (Main) Gdx.app.getApplicationListener();
@@ -31,7 +31,7 @@ public class Main extends Game {
     }
 
     public Main() {
-        socketService = new WebSocketService("ws://127.0.0.1:5050/ws", new WebSocketClient());
+        socketService = new WebSocketService(WEBSOCKET_ADDRESS, new WebSocketClient());
     }
 
     @Override
