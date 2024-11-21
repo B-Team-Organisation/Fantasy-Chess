@@ -31,7 +31,7 @@ public class Main extends Game {
     }
 
     public Main() {
-        socketService = new WebSocketService("127.0.0.1", 5050, new WebSocketClient());
+        socketService = new WebSocketService("ws://127.0.0.1:5050/ws", new WebSocketClient());
     }
 
     @Override

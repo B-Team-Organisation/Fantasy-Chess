@@ -1,4 +1,4 @@
-package com.bteam.fantasychess_client.networking;
+package com.bteam.common.dto;
 
 public class Packet{
     Object data;

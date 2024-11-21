@@ -11,9 +11,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
-import com.bteam.fantasychess_client.networking.Packet;
-
-import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -94,7 +91,7 @@ public class SplashScreen extends ScreenAdapter {
         // Playbutton logic
         onChange(playButton, () -> {
             Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
-            Gdx.app.postRunnable(() -> ((Game)(Gdx.app.getApplicationListener())).setScreen(new MainMenu(skin)));
+            Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new MainMenu(skin)));
         });
 
         // Main scene composition
@@ -126,17 +123,7 @@ public class SplashScreen extends ScreenAdapter {
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
-
-        Main.getWebSocketService().addPacketHandler("TEST", this::onTestPacket);
-        Main.getWebSocketService().handlePacket(new Packet("HELLO", "TEST"));
-
     }
-
-    public void onTestPacket(Packet packet){
-        var data = packet.getDataAs(String.class);
-        Main.getLogger().log(Level.SEVERE, data);
-    }
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
