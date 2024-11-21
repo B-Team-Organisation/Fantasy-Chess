@@ -136,7 +136,7 @@ public class PatternService {
      * Returns all positions the player can target
      *
      * @param player the {@link Vector2D}-position of the player
-     * Returns all positions the player can target with this pattern.
+     *
      * @return a {@link Vector2D}[] containing the {@link Vector2D}-positions of all the possible positions the player can target with this pattern
      */
     public Vector2D[] getPossibleTargetPositions(Vector2D player){
