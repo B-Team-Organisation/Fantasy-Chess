@@ -40,7 +40,7 @@ Albano Vukelaj
     fantasychess-client/gradlew superDev
 ```
 
-*Build Docker Container*
+*Build Docker Container:*
 
 ```sh
     # TODO
