@@ -1,5 +1,7 @@
 package com.bteam.fantasychess_server.service;
 
+import com.bteam.common.dto.Packet;
+import com.bteam.common.dto.StatusDTO;
 import com.bteam.fantasychess_server.client.Client;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
@@ -10,6 +12,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
 
 /**
  * {@link Service} Singleton that provides a Map of all connected clients and methods
@@ -33,7 +37,10 @@ public class WebSocketService {
 
     public Client registerSession(WebSocketSession session) {
         var sessionID = session.getId();
-        return clients.put(sessionID, new Client(sessionID, session));
+        var client = clients.put(sessionID, new Client(sessionID, session));
+        var packet = new Packet(new StatusDTO("CONNECTED"), CONNECTED_STATUS);
+        sendToClient(sessionID, packet);
+        return client;
     }
 
     public Client removeSession(String sessionID, CloseStatus status) {
