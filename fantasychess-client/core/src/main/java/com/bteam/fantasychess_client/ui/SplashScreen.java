@@ -91,7 +91,8 @@ public class SplashScreen extends ScreenAdapter {
         // Playbutton logic
         onChange(playButton, () -> {
             Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
-            Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new MainMenu(skin)));
+            Main.getWebSocketService().connect();
+            Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new GameScreen(skin)));
         });
 
         // Main scene composition

@@ -11,10 +11,4 @@ public class MainMenu extends ScreenAdapter {
     public MainMenu(Skin skin) {
         this.skin = skin;
     }
-
-    @Override
-    public void show() {
-        super.show();
-        Main.getWebSocketService().connect();
-    }
 }
