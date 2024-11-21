@@ -133,10 +133,11 @@ public class PatternService {
     }
 
     /**
-     * Returns all positions the player can attack
+     * Returns all positions the player can target
      *
      * @param player the {@link Vector2D}-position of the player
-     * @return a {@link Vector2D}[] containing the {@link Vector2D}-positions of all the possible positions the player can attack with this pattern
+     * Returns all positions the player can target with this pattern.
+     * @return a {@link Vector2D}[] containing the {@link Vector2D}-positions of all the possible positions the player can target with this pattern
      */
     public Vector2D[] getPossibleTargetPositions(Vector2D player){
         return Arrays.stream(relativeTargetMappings.keySet().toArray(new Vector2D[0])).map(player::add).toArray(Vector2D[]::new);
@@ -166,7 +167,7 @@ public class PatternService {
     /**
      * Checks if the pattern mapping tree is invalid
      * <p>
-     * Iterates over the pattern and makes sure that all non empty chars in the string are either without a mapping or
+     * Iterates over the pattern and makes sure that all non-empty chars in the string are either without a mapping or
      * mapped to an existing and valid subpattern.
      *
      * @param patternModel the {@link PatternModel} that is being investigated
