@@ -28,7 +28,7 @@ public class CharacterDataModel {
      * @param name name of the character
      * @param description a description for the character
      * @param health the health of the character
-     * @param attackPower the power  of the attack
+     * @param attackPower the power of the characters attack
      * @param attackPatterns all attack patterns that the character can perform
      * @param movementPatterns the movement pattern that the character can perform
      */
