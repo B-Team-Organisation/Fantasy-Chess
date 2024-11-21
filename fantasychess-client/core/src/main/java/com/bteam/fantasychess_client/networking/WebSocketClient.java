@@ -7,6 +7,13 @@ import com.github.czyzby.websocket.WebSocketListener;
 
 import java.util.logging.Level;
 
+/**
+ * A Websocket Listener which converts method calls into event invocations, which
+ * can be listened to.
+ *
+ * @author Marc
+ */
+
 public class WebSocketClient implements WebSocketListener {
     public final Event<WebSocket> onOpenEvent = new Event<>();
     public final Event<String> onCloseEvent = new Event<>();

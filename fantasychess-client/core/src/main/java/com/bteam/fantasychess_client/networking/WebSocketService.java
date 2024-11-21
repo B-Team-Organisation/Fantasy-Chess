@@ -17,6 +17,12 @@ import java.util.logging.Level;
 
 import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
 
+/**
+ * Websocket Service to establish communication with the Server,
+ * features assignable packet handlers which will automatically
+ * be called upon package arrival
+ * @author Marc
+ */
 public class WebSocketService {
     private final Map<String, PacketHandler> listeners = new HashMap<>();
     private final Json json = new Json();
@@ -60,6 +66,10 @@ public class WebSocketService {
         listeners.remove(id);
     }
 
+    /**
+     * Takes the arrived packet in, reads it's ID and calls it's corresponding handler function
+     * @param packet - Packet to handle
+     */
     public void handlePacket(String packet){
         Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
         JsonValue fromJson = new JsonReader().parse(packet);
@@ -75,6 +85,10 @@ public class WebSocketService {
         }
     }
 
+    /**
+     * Sends the given packet to the server
+     * @param packet - Packet to handle
+     */
     public void send(Packet packet){
         var string = json.toJson(packet, Packet.class);
         webSocket.send(string);

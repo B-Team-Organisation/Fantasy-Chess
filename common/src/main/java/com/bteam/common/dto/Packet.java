@@ -1,5 +1,9 @@
 package com.bteam.common.dto;
 
+/**
+ * Packet data structure for moving data between Client and Server
+ * @author Marc
+ */
 public class Packet{
     Object data;
     String id;
