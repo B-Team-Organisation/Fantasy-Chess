@@ -8,6 +8,7 @@ import com.bteam.common.models.LobbyModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +27,7 @@ public class TestLobbyModel {
         player3 = new Player("Player3",  "3",new ArrayList<>());  // für das Testen der vollen Kapazität
 
         // Erstellen des LobbyModel-Objekts mit allen benötigten Parametern
-        lobby = new LobbyModel(lobbyId, players, player1, "lobby1"); // player1 ist der Host
+        lobby = new LobbyModel(lobbyId, players, player1, "lobby1", 2); // player1 ist der Host
     }
 
     @Test

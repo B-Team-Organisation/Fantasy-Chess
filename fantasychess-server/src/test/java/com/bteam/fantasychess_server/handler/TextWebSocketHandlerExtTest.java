@@ -1,5 +1,7 @@
 package com.bteam.fantasychess_server.handler;
 
+import com.bteam.fantasychess_server.service.PlayerService;
+import com.bteam.fantasychess_server.service.TokenService;
 import com.bteam.fantasychess_server.service.WebSocketService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,11 +31,17 @@ class TextWebSocketHandlerExtTest {
     @Mock
     private WebSocketService webSocketService;
 
+    @Mock
+    private TokenService tokenService;
+
+    @Mock
+    private PlayerService playerService;
+
     @BeforeEach
     void setUp() {
         session = mock(WebSocketSession.class);
         webSocketService = mock(WebSocketService.class);
-        handler = new TextWebSocketHandlerExt(webSocketService);
+        handler = new TextWebSocketHandlerExt(webSocketService,tokenService,playerService);
     }
 
     @Test
@@ -42,7 +50,7 @@ class TextWebSocketHandlerExtTest {
 
         handler.afterConnectionEstablished(session);
 
-        verify(webSocketService, times(1)).registerSession(any());
+        verify(webSocketService, times(1)).registerSession(any(),any());
     }
 
     @Test
