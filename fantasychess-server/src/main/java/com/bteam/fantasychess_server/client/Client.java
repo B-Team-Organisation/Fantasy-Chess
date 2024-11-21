@@ -1,5 +1,7 @@
 package com.bteam.fantasychess_server.client;
 
+import com.bteam.common.dto.Packet;
+import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.utils.Event;
 import com.bteam.fantasychess_server.utils.Result;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +18,7 @@ import org.springframework.web.socket.WebSocketSession;
 public class Client {
     private final String id;
     private final WebSocketSession session;
+    private final Player player;
     private final ObjectMapper mapper = new ObjectMapper();
 
     /**
@@ -28,9 +31,10 @@ public class Client {
      */
     private final Event<CloseStatus> onClientDisconnected = new Event<>();
 
-    public Client(String id, WebSocketSession session) {
+    public Client(String id, WebSocketSession session, Player player) {
         this.id = id;
         this.session = session;
+        this.player = player;
     }
 
     public String getId() {
@@ -47,6 +51,10 @@ public class Client {
 
     public Event<CloseStatus> getOnClientDisconnected() {
         return onClientDisconnected;
+    }
+
+    public Result<Boolean> sendPacket(Packet packet) {
+        return sendMessage(packet);
     }
 
     /**

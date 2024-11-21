@@ -30,7 +30,7 @@ public class Player {
      * Constructor for a Player.
      *
      * @param username name of the players
-     * @param playerId id of the player
+     * @param playerId id of the player as stringified UUID
      * @param characters list of characters associated with the player
      */
     public Player(String username, String playerId, List<CharacterEntity> characters) {
@@ -45,6 +45,9 @@ public class Player {
         return username;
     }
 
+    /**
+     * @return playerId as stringified UUID
+     */
     public String getPlayerId() {
         return playerId;
     }
