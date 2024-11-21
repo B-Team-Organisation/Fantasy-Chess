@@ -1,5 +1,8 @@
 package com.bteam.common.dto;
 
+/**
+ * @author Marc
+ */
 public class StatusDTO {
     public String status;
 
