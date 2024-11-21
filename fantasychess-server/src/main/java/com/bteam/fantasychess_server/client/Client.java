@@ -71,4 +71,8 @@ public class Client {
             return Result.asFailure(e);
         }
     }
+
+    public Player getPlayer() {
+        return player;
+    }
 }
