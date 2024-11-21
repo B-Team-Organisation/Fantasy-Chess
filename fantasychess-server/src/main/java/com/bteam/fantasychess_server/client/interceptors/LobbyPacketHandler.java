@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
+import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
@@ -25,6 +26,17 @@ public class LobbyPacketHandler implements PacketHandler {
                 } catch (Exception e){
                     e.printStackTrace();
                 }
+                break;
+            case "LOBBY_CREATE":
+                try{
+                    ObjectMapper mapper = new ObjectMapper();
+                    var lobbyDTO = packet.getDataAs(CreateLobbyDTO.class);
+                    var lobby = lobbyService.createNewLobby(client.getPlayer(),lobbyDTO.getLobbyName(),2);
+                    client.sendPacket(new Packet("LOBBY_CREATED", mapper.writeValueAsString(lobby)));
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 break;
             default:
                 System.out.println("Unhandled packet: " + packet.getId());
