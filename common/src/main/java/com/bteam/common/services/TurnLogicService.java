@@ -2,6 +2,7 @@ package com.bteam.common.services;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
@@ -75,7 +76,7 @@ public class TurnLogicService {
                 if (character.getCharacterBaseModel().equals(characterToMove.getCharacterBaseModel())
                         && character.getPlayerId().equals(characterToMove.getPlayerId())) {
 
-                    character.setPosition(character.getPosition().add(movement.getMovementVector()));
+                    character.setPosition((movement.getMovementVector()));
                     break;
                 }
             }
@@ -95,21 +96,43 @@ public class TurnLogicService {
      * @return List of dead characters as {@link CharacterEntity} or empty list
      */
 
-    private static List<CharacterEntity> applyAttacks(List <AttackDataModel> intendedAttacks,List<CharacterEntity> characters) {
-        List<CharacterEntity> charactersAfterAttacks = new ArrayList<>();
+    private static List<CharacterEntity> applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters) {
+        List<CharacterEntity> charactersAfterAttacks = new ArrayList<>(characters);
 
         for (AttackDataModel attackMove : intendedAttacks) {
             CharacterEntity attacker = attackMove.getAttacker();
-            Vector2D attackPoint = attacker.getPosition().add(attackMove.getAttackPosition());
+            Vector2D attackPoint = attackMove.getAttackPosition();
 
-            // List<Vector2D> attackArea=  area of attack per character.
-            //for attack per attackArea: do damage if a character there
-            //set health,
-            // if not dead list.add()
+            System.out.println("Attacker: " + attacker);
+            System.out.println("Attack Position: " + attackPoint);
 
+            Vector2D[] attackArea = attacker.getCharacterBaseModel()
+                    .getAttackPatterns()[0]
+                    .getAreaOfEffect(attacker.getPosition(), attackPoint);
 
+            System.out.println("Attack Area: " + Arrays.toString(attackArea));
+
+            for (Vector2D affectedPosition : attackArea) {
+                for (CharacterEntity target : new ArrayList<>(charactersAfterAttacks)) {
+                    if (target.getPosition().equals(affectedPosition) &&
+                            !target.getPlayerId().equals(attacker.getPlayerId())) {
+
+                        System.out.println("Character hit: " + target);
+
+                        int newHealth = target.getHealth() - attacker.getCharacterBaseModel().getAttackPower();
+                        target.setHealth(newHealth);
+
+                        System.out.println("New Health: " + target.getHealth());
+                        if (newHealth <= 0) {
+                            System.out.println("Character died: " + target);
+                            charactersAfterAttacks.remove(target);
+                        }
+                    }
+                }
+            }
         }
-        return new ArrayList<>(characters);
+
+        return charactersAfterAttacks;
     }
     /**
      * Checks if the Game has a Winner
