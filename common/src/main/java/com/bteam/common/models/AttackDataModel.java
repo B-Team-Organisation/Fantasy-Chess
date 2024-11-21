@@ -19,7 +19,7 @@ public class AttackDataModel {
     /**
      * Create a new AttackDataModel.
      *
-     * @param attackPosition a 2DVector that points to the position of attack relative to the character
+     * @param attackPosition a 2DVector pointing to the absolut Position of attack
      * @param attacker reference to the attacking character entity
      */
     public AttackDataModel(Vector2D attackPosition, CharacterEntity attacker) {
