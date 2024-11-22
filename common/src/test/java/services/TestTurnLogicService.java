@@ -78,14 +78,14 @@ class TestTurnLogicService {
 
 
         Vector2D cornerPosition = new Vector2D(0, 0);
-        Vector2D centerPosition = new Vector2D(5, 5);
+        Vector2D centerPosition = new Vector2D(4,5);
         Vector2D borderPosition = new Vector2D(9, 0);
         Vector2D farPosition = new Vector2D(8, 8);
 
 
         //movement
         normalCharacter1 = new CharacterEntity(
-                new CharacterDataModel("Hallo", "Hehe", 10, 34, new PatternService[]{longRangeAttackService}, new PatternService[]{shortMovementService}),
+                new CharacterDataModel("Hallo", "Hehe", 10, 21, new PatternService[]{longRangeAttackService}, new PatternService[]{shortMovementService}),
                 10, cornerPosition, player1.getPlayerId()
         );
 
@@ -114,7 +114,7 @@ class TestTurnLogicService {
 
         lowHealthCharacter2 = new CharacterEntity(
                 new CharacterDataModel("Martis", "character with low health", 10, 25, new PatternService[]{longRangeAttackService}, new PatternService[]{shortMovementService}),
-                20, centerPosition, player2.getPlayerId()
+                10, new Vector2D(0,3), player2.getPlayerId()
         );
 
         highHealthcharacter1 = new CharacterEntity(
@@ -135,7 +135,7 @@ class TestTurnLogicService {
         legalMovement2 = new MovementDataModel(normalCharacter2, new Vector2D(6, 6));
         legalMovement3 = new MovementDataModel(closeToDyingCharacter1, new Vector2D(8, 1));
 
-        legalAttack = new AttackDataModel(new Vector2D(2, 7), normalCharacter1);
+        legalAttack = new AttackDataModel(new Vector2D(0, 3), normalCharacter1);
         legalAttack2 = new AttackDataModel(new Vector2D(4,2), normalCharacter2);
         legalAttack3 = new AttackDataModel(new Vector2D(4, 4), highHealthcharacter1);
         legalAttack4 = new AttackDataModel(new Vector2D(0,0), lowHealthCharacter1);
@@ -182,9 +182,11 @@ class TestTurnLogicService {
     @Test
     void testApplyAttacks()  throws Exception {
         charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
-        charactersAfter.remove(normalCharacter1);// legalattack4
-        highHealthcharacter2.setHealth(25);//legalattack3
-        highHealthcharacter1.setHealth(15);//legalAttack2
+
+        charactersAfter.remove(lowHealthCharacter2); //legalattack1 martis died--
+        //charactersAfter.remove(normalCharacter1);// legalattack4 hallo died
+        highHealthcharacter2.setHealth(25);//legalattack3 melissa health 25
+        highHealthcharacter1.setHealth(15);//legalAttack2 estes health 15
 
 
         Method method = TurnLogicService.class.getDeclaredMethod("applyAttacks", List.class, List.class);
@@ -219,6 +221,10 @@ class TestTurnLogicService {
         assertNull(checkForWinner(charactersAfter));
         charactersAfter.remove(normalCharacter1);
         charactersAfter.remove(normalCharacter2);
+        charactersAfter.remove(lowHealthCharacter1);
+        charactersAfter.remove(highHealthcharacter1);
+        charactersAfter.remove(lowHealthCharacter2);
+        charactersAfter.remove(highHealthcharacter2);
         //characters.remove(closeToDyingCharacter1);
         charactersAfter.remove(longAttackCharacter2);
         assertEquals("1111", checkForWinner(charactersAfter));

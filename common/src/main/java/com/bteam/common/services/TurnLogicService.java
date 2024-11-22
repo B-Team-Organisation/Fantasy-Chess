@@ -3,6 +3,7 @@ package com.bteam.common.services;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
@@ -99,6 +100,8 @@ public class TurnLogicService {
     private static List<CharacterEntity> applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters) {
         List<CharacterEntity> charactersAfterAttacks = new ArrayList<>(characters);
 
+
+
         for (AttackDataModel attackMove : intendedAttacks) {
             CharacterEntity attacker = attackMove.getAttacker();
             Vector2D attackPoint = attackMove.getAttackPosition();
@@ -110,6 +113,9 @@ public class TurnLogicService {
                     .getAttackPatterns()[0]
                     .getAreaOfEffect(attacker.getPosition(), attackPoint);
 
+            System.out.println("base model"+ attacker.getCharacterBaseModel());
+            System.out.println("attack pattern"+ attacker.getCharacterBaseModel().getAttackPatterns()[0]);
+
             System.out.println("Attack Area: " + Arrays.toString(attackArea));
 
             for (Vector2D affectedPosition : attackArea) {
@@ -117,14 +123,14 @@ public class TurnLogicService {
                     if (target.getPosition().equals(affectedPosition) &&
                             !target.getPlayerId().equals(attacker.getPlayerId())) {
 
-                        System.out.println("Character hit: " + target);
+                        System.out.println("_____________Character hit: " + target);
 
                         int newHealth = target.getHealth() - attacker.getCharacterBaseModel().getAttackPower();
                         target.setHealth(newHealth);
 
                         System.out.println("New Health: " + target.getHealth());
                         if (newHealth <= 0) {
-                            System.out.println("Character died: " + target);
+                            System.out.println("____________Character died: " + target);
                             charactersAfterAttacks.remove(target);
                         }
                     }
