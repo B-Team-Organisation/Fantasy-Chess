@@ -34,6 +34,7 @@ class TestTurnLogicService {
     MovementDataModel legalMovement;
     MovementDataModel legalMovement2;
     MovementDataModel legalMovement3;
+    MovementDataModel legalMovement4;
 
 
     AttackDataModel legalAttack;
@@ -79,7 +80,7 @@ class TestTurnLogicService {
 
         Vector2D cornerPosition = new Vector2D(0, 0);
         Vector2D centerPosition = new Vector2D(4,5);
-        Vector2D borderPosition = new Vector2D(9, 0);
+        Vector2D borderPosition = new Vector2D(9, 8);
         Vector2D farPosition = new Vector2D(8, 8);
 
 
@@ -131,9 +132,24 @@ class TestTurnLogicService {
 
 
 
-        legalMovement = new MovementDataModel(normalCharacter1, new Vector2D(0, 1));
-        legalMovement2 = new MovementDataModel(normalCharacter2, new Vector2D(6, 6));
-        legalMovement3 = new MovementDataModel(closeToDyingCharacter1, new Vector2D(8, 1));
+        legalMovement = new MovementDataModel(closeToDyingCharacter1, new Vector2D(9, 9));
+        legalMovement2 = new MovementDataModel(longAttackCharacter2, new Vector2D(9, 9));
+        legalMovement3 = new MovementDataModel(highHealthcharacter2, new Vector2D(3, 3));
+        legalMovement4 = new MovementDataModel(lowHealthCharacter2, new Vector2D(0, 2));
+
+
+        /*
+        normalcharacter1.  (0,0)-> attack (0,3)
+        normalcharacter2. (4,5)-> attack (4,2)
+        highHealthCharacter1. (4,2)-> attack (4,4)
+        lowHealthcharacter1. (0,1)-> attack ( 0,0)
+
+        closetoyiingcharacter1. (9,8)-> move (9,9)
+        longRangeCharacter2. (8,8) -> move ( 9,9)
+        highHealthCharacter2. (4,4)-> move ( 3,3)
+        lowHealthCharacter2. (0,3)-> move ( 0,2)
+         */
+
 
         legalAttack = new AttackDataModel(new Vector2D(0, 3), normalCharacter1);
         legalAttack2 = new AttackDataModel(new Vector2D(4,2), normalCharacter2);
@@ -158,6 +174,7 @@ class TestTurnLogicService {
         movementsBefore.add(legalMovement);
         movementsBefore.add(legalMovement2);
         movementsBefore.add(legalMovement3);
+        movementsBefore.add(legalMovement4);
 
         attacksBefore.add(legalAttack);
         attacksBefore.add(legalAttack2);
@@ -182,9 +199,8 @@ class TestTurnLogicService {
     @Test
     void testApplyAttacks()  throws Exception {
         charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
-
         charactersAfter.remove(lowHealthCharacter2); //legalattack1 martis died--
-        //charactersAfter.remove(normalCharacter1);// legalattack4 hallo died
+        //charactersAfter.remove(normalCharacter1);// legalattack4 invalid pattern
         highHealthcharacter2.setHealth(25);//legalattack3 melissa health 25
         highHealthcharacter1.setHealth(15);//legalAttack2 estes health 15
 
@@ -197,22 +213,36 @@ class TestTurnLogicService {
         assertEquals(charactersAfter, result);
     }
 
-     @Test
-     void testApplyMovement() throws Exception {
+    @Test
+    void testApplyMovement() throws Exception {
+        // Testvorbereitung
+        charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
 
-         charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
-         normalCharacter1.setPosition(new Vector2D(0,1));
-         normalCharacter2.setPosition(new Vector2D(6,6));
-         closeToDyingCharacter1.setPosition(new Vector2D(8,1));
-         Method method = TurnLogicService.class.getDeclaredMethod("applyMovement", List.class, List.class);
-         method.setAccessible(true);
+        // Setze Positionen für den Konfliktfall
+        highHealthcharacter2.setPosition(new Vector2D(3, 3));
+        lowHealthCharacter2.setPosition(new Vector2D(0, 2));
 
-         List<CharacterEntity> result = (List<CharacterEntity>) method.invoke(null, movementsBefore, charactersBefore);
+        Method method = TurnLogicService.class.getDeclaredMethod("applyMovement", List.class, List.class);
+        method.setAccessible(true);
 
+        // Rufe die Methode auf und erhalte das Pair
+        @SuppressWarnings("unchecked")
+        Pair<List<CharacterEntity>, List<Pair<CharacterEntity, CharacterEntity>>> result =
+                (Pair<List<CharacterEntity>, List<Pair<CharacterEntity, CharacterEntity>>>) method.invoke(null, movementsBefore, charactersBefore);
 
-         assertEquals(charactersAfter,result);
+        // Extrahiere die Liste der Charaktere und Konflikte
+        List<CharacterEntity> charactersAfterMovement = result.getFirst();
+        List<Pair<CharacterEntity, CharacterEntity>> conflicts = result.getSecond();
 
-     }
+        // Verifiziere die aktualisierten Charakterpositionen
+        assertEquals(charactersAfter, charactersAfterMovement);
+
+        // Erwarte spezifische Konflikte
+        assertEquals(1, conflicts.size());
+        Pair<CharacterEntity, CharacterEntity> expectedConflict = new Pair<>(closeToDyingCharacter1, longAttackCharacter2);
+        assertTrue(conflicts.contains(expectedConflict));
+    }
+
 
 
     @Test
