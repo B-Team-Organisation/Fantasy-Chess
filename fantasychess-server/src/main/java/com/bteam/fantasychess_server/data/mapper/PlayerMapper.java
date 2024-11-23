@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public final class PlayerMapper {
     public static Player fromEntity(PlayerEntity playerEntity) {
         return new Player(
-                playerEntity.getId().toString(),
                 playerEntity.getName(),
+                playerEntity.getId().toString(),
                 new ArrayList<>());
     }
 }

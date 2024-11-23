@@ -91,7 +91,7 @@ public class SplashScreen extends ScreenAdapter {
         // Playbutton logic
         onChange(playButton, () -> {
             Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
-            Main.getWebSocketService().connect();
+            Gdx.app.postRunnable(() -> Main.getWebSocketService().registerAndConnect(usernameInput.getText()));
             Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new GameScreen(skin)));
         });
 
