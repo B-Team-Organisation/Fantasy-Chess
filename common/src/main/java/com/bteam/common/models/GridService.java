@@ -16,7 +16,7 @@ import com.bteam.common.entities.CharacterEntity;
  */
 public class GridService {
 
-    private GridModel gridModel;
+    private final GridModel gridModel;
 
     /**
      * Constructor for the GridService class.
@@ -75,6 +75,9 @@ public class GridService {
         CharacterEntity characterOne = tileOne.getCharacter();
         tileOne.setCharacter(tileTwo.getCharacter());
         tileTwo.setCharacter(characterOne);
+
+        tileOne.getCharacter().setPosition(one);
+        tileTwo.getCharacter().setPosition(two);
     }
 
     /**
@@ -99,6 +102,8 @@ public class GridService {
 
         destinationTile.setCharacter(originTile.getCharacter());
         originTile.setCharacter(null);
+
+        destinationTile.getCharacter().setPosition(to);
     }
 
     /**
@@ -122,6 +127,7 @@ public class GridService {
             throw new NotAStartPositionException(to);
         }
         tile.setCharacter(character);
+        character.setPosition(to);
     }
 
     /**
@@ -138,6 +144,7 @@ public class GridService {
             throw new NoCharacterFoundException(position);
         }
         getTileAt(position).setCharacter(null);
+        character.setPosition(null);
         return character;
     }
 
