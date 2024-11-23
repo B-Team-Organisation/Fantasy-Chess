@@ -30,6 +30,8 @@ public class GameScreen extends ScreenAdapter {
     private final int TILE_PIXEL_SIZE = 32;
     private int mapwidth;
 
+    private final String DEFAULT_MAP_PATH = "maps/WaterMap1.tmx";
+
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
 
@@ -55,7 +57,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
-        tiledMap = new TmxMapLoader().load("maps/WaterMap1.tmx");
+        tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
         mapwidth = 37;
 
         mapRenderer = new IsometricTiledMapRenderer(tiledMap,UNIT_SCALE);
