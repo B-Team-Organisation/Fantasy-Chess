@@ -1,0 +1,110 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Map3.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "DetailedMap5.tmx": {
+            "scale": 1.3777199074074074,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 333.522073339774,
+                "y": 216.29940773722018
+            }
+        },
+        "Map1.tmx": {
+            "scale": 3.100694444444444,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 143.8387458006719,
+                "y": 143.8387458006719
+            }
+        },
+        "Map2.tmx": {
+            "scale": 3.417361111111111,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 143.97073765494818,
+                "y": 71.9853688274741
+            }
+        },
+        "Map3.tmx": {
+            "scale": 3.417361111111111,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 134.1678520625889,
+                "y": 71.9853688274741
+            }
+        },
+        "Map4.tmx": {
+            "scale": 1.937109375,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 309.48175035289376,
+                "y": 123.63783020770316
+            }
+        },
+        "MapTiles.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "Tiles.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1.2,
+            "scaleInEditor": 1
+        },
+        "WaterMap1.tmx": {
+            "scale": 0.7871199324324324,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 588.8556253017867,
+                "y": 296.01588068029406
+            }
+        },
+        "WaterMap2.tmx": {
+            "scale": 0.783910472972973,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 592.5421537467005,
+                "y": 295.95216290470285
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/lukas/IdeaProjects/Fantasy-Chess/fantasychess-client/assets/maps",
+    "map.height": 37,
+    "map.lastUsedFormat": "tmx",
+    "map.orientation": "2",
+    "map.renderOrder": "1",
+    "map.tileHeight": 16,
+    "map.width": 37,
+    "openFiles": [
+        "Tiles.tsx",
+        "Map1.tmx",
+        "Map2.tmx",
+        "Map3.tmx",
+        "Map4.tmx",
+        "DetailedMap5.tmx",
+        "WaterMap1.tmx",
+        "WaterMap2.tmx"
+    ],
+    "project": "FantasyChess.tiled-project",
+    "property.type": "int",
+    "recentFiles": [
+        "Tiles.tsx",
+        "Map1.tmx",
+        "Map2.tmx",
+        "WaterMap2.tmx",
+        "WaterMap1.tmx",
+        "DetailedMap5.tmx",
+        "Map4.tmx",
+        "Map3.tmx",
+        "MapTiles.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.type": 0
+}
