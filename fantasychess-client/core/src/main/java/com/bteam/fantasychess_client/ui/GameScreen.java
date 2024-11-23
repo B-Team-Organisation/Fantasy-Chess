@@ -6,6 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -15,10 +21,16 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
  * <p>
  * The player gets to this screen directly from the main menu.
  *
- * @author lukas
+ * @author lukas adnan
  * @version 1.0
  */
 public class GameScreen extends ScreenAdapter {
+
+    private final float UNIT_SCALE = 4.5f;
+    private final int TILE_PIXEL_SIZE = 32;
+    private int mapwidth;
+
+    private final String DEFAULT_MAP_PATH = "maps/WaterMap1.tmx";
 
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
@@ -28,9 +40,13 @@ public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
 
+    private IsometricTiledMapRenderer mapRenderer;
+    private TiledMap tiledMap;
+
     private TextureAtlas atlas;
 
     public GameScreen (Skin skin){
+
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1920,1080);
         camera.update();
@@ -39,6 +55,12 @@ public class GameScreen extends ScreenAdapter {
         extendViewport.apply();
 
         batch = new SpriteBatch();
+
+        // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
+        tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
+        mapwidth = 37;
+
+        mapRenderer = new IsometricTiledMapRenderer(tiledMap,UNIT_SCALE);
 
         this.skin = skin;
         atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
@@ -54,9 +76,13 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        camera.position.set(mapwidth/2f*TILE_PIXEL_SIZE*UNIT_SCALE,TILE_PIXEL_SIZE*UNIT_SCALE*1.5f,0);
+        camera.update();
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        batch.draw(atlas.findRegion("boar-front"), 0, 0, 1920, 1080);
         batch.end();
 
         stage.act();
@@ -66,21 +92,6 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         extendViewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
     }
 
     @Override

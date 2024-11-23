@@ -126,6 +126,11 @@ public class SplashScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(multiplexer);
     }
     @Override
+    public void resize(int width, int height) {
+        extendViewport.update(width, height, true);
+    }
+
+    @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
