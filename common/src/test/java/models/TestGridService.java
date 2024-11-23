@@ -6,6 +6,7 @@ import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
 import com.bteam.common.exceptions.NoCharacterFoundException;
 import com.bteam.common.exceptions.NotAStartPositionException;
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.models.CharacterDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.common.models.GridService;
 import com.bteam.common.models.GridModel;
@@ -44,14 +45,16 @@ public class TestGridService {
         vec6valid = new Vector2D(1,0);
         vec7valid = new Vector2D(2,0);
 
-        character1 = Mockito.mock(CharacterEntity.class);
-        character2 = Mockito.mock(CharacterEntity.class);
+
     }
 
     @BeforeEach
     void beforeEach() {
         gridModel = new GridModel(5,5);
         gridService = new GridService(gridModel);
+
+        character1 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),0,null,"");
+        character2 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),0,null,"");
     }
 
     @Test
@@ -88,13 +91,17 @@ public class TestGridService {
     void testSetCharacterTo(){
         // Check invalid position (not a starting position)
         assertThrows(NotAStartPositionException.class,()->{gridService.setCharacterTo(vec5valid,character1);});
+        assertNotEquals(vec5valid,character1.getPosition());
         // Check valid position
         gridModel.getTileGrid()[vec5valid.getY()][vec5valid.getX()].setStartTile(true);
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec5valid,character1);});
+        assertEquals(vec5valid,character1.getPosition());
         // Check invalid position (out of bounds)
         assertThrows(DestinationInvalidException.class, () -> {gridService.setCharacterTo(vec1invalid,character1);});
+        assertNotEquals(vec1invalid,character1.getPosition());
         // Check occupied position
         assertThrows(DestinationAlreadyOccupiedException.class, () -> {gridService.setCharacterTo(vec5valid,character2);});
+        assertNotEquals(vec5valid,character2.getPosition());
     }
 
     @Test
@@ -118,7 +125,9 @@ public class TestGridService {
         // Check swap successful
         assertDoesNotThrow(() -> {gridService.swapCharacters(vec5valid,vec6valid);});
         assertDoesNotThrow(() -> {assertEquals(character1,gridService.getCharacterAt(vec6valid));});
+        assertEquals(character1.getPosition(),vec6valid);
         assertDoesNotThrow(() -> {assertEquals(character2,gridService.getCharacterAt(vec5valid));});
+        assertEquals(character2.getPosition(),vec5valid);
     }
 
     @Test
@@ -145,6 +154,7 @@ public class TestGridService {
         assertDoesNotThrow(()->{gridService.setCharacterTo(vec5valid,character1);});
         // Check occupied position
         assertDoesNotThrow(()->{gridService.removeCharacterFrom(vec5valid);});
+        assertNull(character1.getPosition());
     }
 
     @Test
@@ -160,9 +170,12 @@ public class TestGridService {
         assertDoesNotThrow(() -> {gridService.setCharacterTo(vec6valid,character2);});
         // Check from valid occupied to invalid
         assertThrows(DestinationInvalidException.class, () -> {gridService.moveCharacter(vec5valid,vec1invalid);});
+        assertNotEquals(character1.getPosition(),vec1invalid);
         // Check from valid occupied to valid occupied
         assertThrows(DestinationAlreadyOccupiedException.class,()->{gridService.moveCharacter(vec5valid,vec6valid);});
+        assertNotEquals(character1.getPosition(),vec6valid);
         // Check from valid occupied to valid empty
         assertDoesNotThrow(() -> {gridService.moveCharacter(vec5valid,vec7valid);});
+        assertEquals(character1.getPosition(),vec7valid);
     }
 }
