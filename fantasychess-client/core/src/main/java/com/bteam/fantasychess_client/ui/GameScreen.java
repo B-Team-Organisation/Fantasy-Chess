@@ -70,7 +70,7 @@ public class GameScreen extends ScreenAdapter {
 
         // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
-        mapwidth = 9;
+        mapwidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getWidth();
 
         getMapCenter();
 
