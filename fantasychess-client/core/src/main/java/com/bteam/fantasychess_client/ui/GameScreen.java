@@ -35,10 +35,11 @@ import java.util.List;
 public class GameScreen extends ScreenAdapter {
 
     private final float UNIT_SCALE = 4.5f;
-    private final int TILE_PIXEL_SIZE = 32;
+    private final int TILE_PIXEL_WIDTH = 32;
+    private final int TILE_PIXEL_HEIGHT = 16;
     private int mapwidth;
 
-    private final String DEFAULT_MAP_PATH = "maps/WaterMap1.tmx";
+    private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
 
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
@@ -70,7 +71,7 @@ public class GameScreen extends ScreenAdapter {
 
         // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
-        mapwidth = 37;
+        mapwidth = 9;
 
         getMapCenter();
 
@@ -106,7 +107,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         camera.zoom = 1f;
-        camera.position.set(mapwidth/2f*TILE_PIXEL_SIZE*UNIT_SCALE,TILE_PIXEL_SIZE*UNIT_SCALE*1.5f,0);
+        camera.position.set(mapwidth/2f*TILE_PIXEL_WIDTH*UNIT_SCALE,150f,0);
         camera.update();
         mapRenderer.setView(camera);
         mapRenderer.render();
