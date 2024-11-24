@@ -34,7 +34,6 @@ import java.util.List;
  */
 public class GameScreen extends ScreenAdapter {
 
-    private final float UNIT_SCALE = 4.5f;
     private final int TILE_PIXEL_WIDTH = 32;
     private final int TILE_PIXEL_HEIGHT = 16;
     private int mapwidth;
@@ -61,10 +60,10 @@ public class GameScreen extends ScreenAdapter {
     public GameScreen (Skin skin){
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1920,1080);
+        camera.setToOrtho(false, 426,240);
         camera.update();
 
-        extendViewport = new ExtendViewport(1920,1080,camera);
+        extendViewport = new ExtendViewport(426,240,camera);
         extendViewport.apply();
 
         batch = new SpriteBatch();
@@ -75,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
 
         getMapCenter();
 
-        mapRenderer = new IsometricTiledMapRenderer(tiledMap,UNIT_SCALE);
+        mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
         this.skin = skin;
         atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
@@ -85,10 +84,10 @@ public class GameScreen extends ScreenAdapter {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         int mapWidthInTiles = layer.getWidth();
         int mapHeightInTiles = layer.getHeight();
-        float tileWidth = layer.getTileWidth() * UNIT_SCALE;
-        float tileHeight = layer.getTileHeight()/2f;
-        float centerX = (mapWidthInTiles * tileWidth) / 2.0f;
-        float centerY = (mapHeightInTiles * tileHeight) / 2.0f;
+        float tileWidth = layer.getTileWidth();
+        float tileHeight = layer.getTileHeight() / 2f;
+        float centerX = (mapWidthInTiles * tileWidth)/2.0f;
+        float centerY = (mapHeightInTiles * tileHeight)/4.0f;
         center = new Vector2D((int)centerX,(int)centerY);
     }
 
@@ -107,7 +106,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         camera.zoom = 1f;
-        camera.position.set(mapwidth/2f*TILE_PIXEL_WIDTH*UNIT_SCALE,150f,0);
+        camera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
         camera.update();
         mapRenderer.setView(camera);
         mapRenderer.render();
@@ -120,8 +119,8 @@ public class GameScreen extends ScreenAdapter {
         Sprite boar = new Sprite(atlas.findRegion("boar-back"));
         float x = center.getX() - boar.getWidth();
         float y = center.getY() - boar.getHeight();
-        batch.draw(boar,x,y,boar.getWidth()*2,boar.getHeight()*2);
-        batch.draw(boar,mouse.x - boar.getWidth(),mouse.y - boar.getHeight(),boar.getWidth()*2,boar.getHeight()*2);
+        batch.draw(boar,x,y,boar.getWidth(),boar.getHeight());
+        batch.draw(boar,mouse.x - boar.getWidth(),mouse.y - boar.getHeight(),boar.getWidth(),boar.getHeight());
 
         batch.end();
 
@@ -139,5 +138,6 @@ public class GameScreen extends ScreenAdapter {
         stage.dispose();
         skin.dispose();
         atlas.dispose();
+        batch.dispose();
     }
 }
