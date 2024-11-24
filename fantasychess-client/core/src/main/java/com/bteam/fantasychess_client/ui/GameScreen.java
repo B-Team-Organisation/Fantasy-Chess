@@ -4,18 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.entities.CharacterEntity;
@@ -36,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
 
     private final int TILE_PIXEL_WIDTH = 32;
     private final int TILE_PIXEL_HEIGHT = 16;
-    private int mapwidth;
+    private int mapTileWidth;
 
     private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
 
@@ -70,7 +67,7 @@ public class GameScreen extends ScreenAdapter {
 
         // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
-        mapwidth = 9;
+        mapTileWidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getWidth();
 
         getMapCenter();
 
