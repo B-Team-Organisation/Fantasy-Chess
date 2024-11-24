@@ -116,11 +116,13 @@ public class GameScreen extends ScreenAdapter {
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-        Sprite boar = new Sprite(atlas.findRegion("boar-back"));
-        float x = center.getX() - boar.getWidth();
-        float y = center.getY() - boar.getHeight();
-        batch.draw(boar,x,y,boar.getWidth(),boar.getHeight());
-        batch.draw(boar,mouse.x - boar.getWidth(),mouse.y - boar.getHeight(),boar.getWidth(),boar.getHeight());
+        Sprite badger = new Sprite(atlas.findRegion("badger-back"));
+        float x = center.getX() - badger.getWidth()/2;
+        float y = center.getY() - badger.getHeight()/2;
+        batch.draw(badger,x,y);
+        batch.draw(badger,mouse.x - badger.getWidth()/2,mouse.y - badger.getHeight()/2);
+
+        batch.draw(badger,x-4.5f*TILE_PIXEL_WIDTH,y);
 
         batch.end();
 
