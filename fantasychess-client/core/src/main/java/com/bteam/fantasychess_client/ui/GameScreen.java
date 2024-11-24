@@ -77,7 +77,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
         this.skin = skin;
-        atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
     }
 
     private void getMapCenter() {
@@ -116,7 +116,7 @@ public class GameScreen extends ScreenAdapter {
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
 
-        Sprite badger = new Sprite(atlas.findRegion("badger-back"));
+        Sprite badger = new Sprite(atlas.findRegion("badger/badger-back"));
         float x = center.getX() - badger.getWidth()/2;
         float y = center.getY() - badger.getHeight()/2;
         batch.draw(badger,x,y);
