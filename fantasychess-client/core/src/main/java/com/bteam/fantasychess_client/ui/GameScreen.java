@@ -11,12 +11,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
+import com.bteam.fantasychess_client.graphics.CharacterSprite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,7 @@ public class GameScreen extends ScreenAdapter {
     private TextureAtlas atlas;
 
     // Placeholder
-    private List<CharacterEntity> characters = new ArrayList<CharacterEntity>();
+    private List<CharacterSprite> characterSprites = new ArrayList<>();
     private Vector2D center;
 
     public GameScreen (Skin skin){
@@ -93,9 +95,10 @@ public class GameScreen extends ScreenAdapter {
         stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f,.12f,.16f,1);
 
-        CharacterDataModel characterDataModel = new CharacterDataModel("boar","A dummy for testing the graphical character representation",10,10,new PatternService[0],new PatternService[0]);
-        CharacterEntity character = new CharacterEntity(characterDataModel,0,new Vector2D(10,5),"");
-        characters.add(character);
+
+        CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger-front"),center,null);
+        movingBadger.moveTo(center.add(new Vector2D(-100,-50)));
+        characterSprites.add(movingBadger);
     }
 
     @Override
@@ -112,6 +115,7 @@ public class GameScreen extends ScreenAdapter {
         batch.begin();
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        characterSprites.get(0).moveTo(new Vector2D((int)mouse.x,(int)mouse.y));
 
         Sprite badger = new Sprite(atlas.findRegion("badger-back"));
         float x = center.getX() - badger.getWidth()/2;
@@ -120,6 +124,10 @@ public class GameScreen extends ScreenAdapter {
         batch.draw(badger,mouse.x - badger.getWidth()/2,mouse.y - badger.getHeight()/2);
 
         batch.draw(badger,x-4.5f*TILE_PIXEL_WIDTH,y);
+
+        for (CharacterSprite sprite : characterSprites) {
+            sprite.draw(batch);
+        }
 
         batch.end();
 
