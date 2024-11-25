@@ -12,6 +12,8 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 
+import java.util.logging.Level;
+
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -92,7 +94,10 @@ public class SplashScreen extends ScreenAdapter {
         onChange(playButton, () -> {
             Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
             Gdx.app.postRunnable(() -> Main.getWebSocketService().registerAndConnect(usernameInput.getText()));
-            Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new GameScreen(skin)));
+            Main.getWebSocketService().getClient().onOpenEvent.addListener((s) -> {
+                Main.getLogger().log(Level.SEVERE,"Jetzt ist er offen");
+                Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new MainMenu(skin)));
+            });
         });
 
         // Main scene composition

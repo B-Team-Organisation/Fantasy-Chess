@@ -12,12 +12,23 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.bteam.common.dto.CreateLobbyDTO;
+import com.bteam.common.dto.LobbyDTO;
+import com.bteam.common.dto.LobbyListDTO;
+import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
+import com.bteam.common.models.Player;
+import com.bteam.fantasychess_client.Main;
+import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
@@ -49,7 +60,7 @@ public class MainMenu extends ScreenAdapter {
     private Skin skin;
 
     private Table centerContent;
-    private List<LobbyModel> allLobbies;
+    private List<LobbyModel> allLobbies = new ArrayList<>();
     private Label noMatchingLobbyLabel;
     private TextField lobbyNameInput;
 
@@ -109,7 +120,7 @@ public class MainMenu extends ScreenAdapter {
 
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         onChange(refreshButton,()-> {
-            // Todo get new Lobbies
+            Gdx.app.postRunnable(()->Main.getWebSocketService().send(new Packet(null,"LOBBY_ALL")));
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
         onChange(createLobby, this::createLobbyDialog);// this instead of ()->
@@ -136,11 +147,29 @@ public class MainMenu extends ScreenAdapter {
         table.row();
         table.add(noMatchingLobbyLabel).padTop(10);
 
+        Main.getWebSocketService().addPacketHandler("LOBBY_INFO",(packet)->{
+            Gdx.app.postRunnable(()-> {
+                JsonValue data = new JsonReader().parse(packet).get("data");
+                allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
+                lobbyNameInput.clear();
+                loadLobbies(allLobbies);
+            });
+        });
+        Main.getWebSocketService().addPacketHandler("LOBBY_CREATED",(packet)->{
+            Gdx.app.postRunnable(()-> {
+                JsonValue data = new JsonReader().parse(packet).get("data");
+                LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
+                goToGameScreen();
+            });
+        });
+
+        Gdx.app.postRunnable(()->{
+            Packet packet = new Packet(null,"LOBBY_ALL");
+            Main.getWebSocketService().send(packet);
+        });
+
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
-
-        allLobbies = showLobbies();
-        loadLobbies(allLobbies);
     }
 
     /**
@@ -152,11 +181,17 @@ public class MainMenu extends ScreenAdapter {
      * in your own lobby if clicked.
      */
     private void createLobbyDialog() {
+
+        TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
+
         Dialog dialog = new Dialog("Lobby creation", skin) {
             @Override
             protected void result(Object object) {
                 if ("create".equals(object)) {
-                       goToGameScreen();
+                    Gdx.app.postRunnable(()->{
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()),"LOBBY_CREATE");
+                        Main.getWebSocketService().send(packet);
+                    });
                 }
             }
         };
@@ -170,7 +205,6 @@ public class MainMenu extends ScreenAdapter {
 
         Label lobbyNameLabel = new Label("Lobby Name:", skin);
 
-        TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
         lobbyNameField.setMessageText("Enter lobby name");
         onChange(lobbyNameField,() -> {
             createButton.setDisabled(lobbyNameField.getText().length() < 4);

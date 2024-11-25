@@ -65,22 +65,22 @@ public class LobbyDTO implements JsonDTO{
     public String toJson() {
         StringBuffer sb = new StringBuffer();
         sb.append("{");
-        sb.append("lobbyId\":\"");
+        sb.append("\"lobbyId\":\"");
         sb.append(lobbyId);
         sb.append("\",");
-        sb.append("name\":\"");
+        sb.append("\"name\":\"");
         sb.append(lobbyName);
         sb.append("\",");
-        sb.append("maxPlayers\":");
+        sb.append("\"maxPlayers\":");
         sb.append(maxPlayers);
         sb.append(",");
-        sb.append("playerIds\":[");
+        sb.append("\"playerIds\":[");
         sb.append(playerIds.stream().collect(Collectors.joining(",")));
         sb.append("],");
-        sb.append("hostId\":\"");
+        sb.append("\"hostId\":\"");
         sb.append(hostId);
         sb.append("\",");
-        sb.append("gameState\":\"");
+        sb.append("\"gameState\":\"");
         sb.append(gameState.name());
         sb.append("\"");
         sb.append("}");

@@ -53,19 +53,14 @@ public class Client {
         return onClientDisconnected;
     }
 
-    public Result<Boolean> sendPacket(Packet packet) {
-        return sendMessage(packet);
-    }
-
     /**
-     * @param payload The payload sent to the client
-     * @param <T>     The type of the Payload, sent to the client
+     * @param packet The packet sent to the client
      * @return Success Result if the message was sent without errors,
      * otherwise returns a Failure result
      */
-    public <T> Result<Boolean> sendMessage(T payload) {
+    public Result<Boolean> sendPacket(Packet packet) {
         try {
-            session.sendMessage(new TextMessage(mapper.writeValueAsString(payload)));
+            session.sendMessage(new TextMessage(packet.toString()));
             return Result.asSuccess(true);
         } catch (Exception e) {
             return Result.asFailure(e);
