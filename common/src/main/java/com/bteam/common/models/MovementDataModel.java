@@ -20,7 +20,7 @@ public class MovementDataModel {
      * Create a new movement model from the current position and the movement vector.
      *
      * @param characterEntity reference to the character that is supposed to be moved
-     * @param movementVector the movement vector to be added to the position
+     * @param movementVector a 2DVector pointing to the absolut position the character should move to
      */
     public MovementDataModel(CharacterEntity characterEntity, Vector2D movementVector) {
         this.characterEntity = characterEntity;

@@ -1,6 +1,9 @@
 package com.bteam.fantasychess_server.config;
 
 import com.bteam.fantasychess_server.handler.TextWebSocketHandlerExt;
+import com.bteam.fantasychess_server.interceptors.ClientIdentificationInterceptor;
+import com.bteam.fantasychess_server.service.PlayerService;
+import com.bteam.fantasychess_server.service.TokenService;
 import com.bteam.fantasychess_server.service.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,11 +20,16 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @Configuration
 public class WebSocketConfig implements WebSocketConfigurer {
 
-    final
-    WebSocketService service;
+    private final WebSocketService socketService;
+    private final TokenService tokenService;
+    private final PlayerService playerService;
 
-    public WebSocketConfig(@Autowired WebSocketService service) {
-        this.service = service;
+    public WebSocketConfig(@Autowired WebSocketService service,
+                           @Autowired TokenService tokenService,
+                           @Autowired PlayerService playerService) {
+        this.socketService = service;
+        this.tokenService = tokenService;
+        this.playerService = playerService;
     }
 
     /**
@@ -47,12 +55,13 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(createHandler(), "/ws")
                 .setAllowedOrigins("*")
+                .addInterceptors(new ClientIdentificationInterceptor(tokenService))
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setHandshakeHandler(new DefaultHandshakeHandler());
     }
 
     @Bean
     public WebSocketHandler createHandler() {
-        return new TextWebSocketHandlerExt(service);
+        return new TextWebSocketHandlerExt(socketService,tokenService,playerService);
     }
 }

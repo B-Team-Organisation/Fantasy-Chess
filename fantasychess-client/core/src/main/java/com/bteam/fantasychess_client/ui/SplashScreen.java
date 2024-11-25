@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
@@ -90,7 +91,8 @@ public class SplashScreen extends ScreenAdapter {
         // Playbutton logic
         onChange(playButton, () -> {
             Gdx.app.getPreferences("usersettings").putString("username", usernameInput.getText());
-            Gdx.app.postRunnable(() -> ((Game)(Gdx.app.getApplicationListener())).setScreen(new MainMenu(skin)));
+            Gdx.app.postRunnable(() -> Main.getWebSocketService().registerAndConnect(usernameInput.getText()));
+            Gdx.app.postRunnable(() -> (Main.getInstance()).setScreen(new GameScreen(skin)));
         });
 
         // Main scene composition
@@ -122,6 +124,10 @@ public class SplashScreen extends ScreenAdapter {
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+    }
+    @Override
+    public void resize(int width, int height) {
+        extendViewport.update(width, height, true);
     }
 
     @Override

@@ -3,72 +3,101 @@ package com.bteam.fantasychess_client.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapGroupLayer;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 
+/**
+ * Screen on which the game plays out.
+ * <p>
+ * The player gets to this screen directly from the main menu.
+ *
+ * @author lukas adnan
+ * @version 1.0
+ */
 public class GameScreen extends ScreenAdapter {
+
+    private final float UNIT_SCALE = 4.5f;
+    private final int TILE_PIXEL_SIZE = 32;
+    private int mapwidth;
+
+    private final String DEFAULT_MAP_PATH = "maps/WaterMap1.tmx";
+
+    private final OrthographicCamera camera;
+    private final ExtendViewport extendViewport;
 
     private Stage stage;
     private Skin skin;
 
-    public GameScreen(Skin skin) {
+    private SpriteBatch batch;
+
+    private IsometricTiledMapRenderer mapRenderer;
+    private TiledMap tiledMap;
+
+    private TextureAtlas atlas;
+
+    public GameScreen (Skin skin){
+
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 1920,1080);
+        camera.update();
+
+        extendViewport = new ExtendViewport(1920,1080,camera);
+        extendViewport.apply();
+
+        batch = new SpriteBatch();
+
+        // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
+        tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
+        mapwidth = 37;
+
+        mapRenderer = new IsometricTiledMapRenderer(tiledMap,UNIT_SCALE);
+
         this.skin = skin;
-        stage = new Stage(new ScreenViewport());
-
-        createUI();
-    }
-
-    private void createUI() {
-        Table table = new Table();
-        table.setFillParent(true);
-
-
-        TextButton backButton = new TextButton("Back to Main Menu", skin);
-        backButton.addListener(event -> {
-            if (backButton.isPressed()) {
-                goToMainMenu();
-                return true;
-            }
-            return false;
-        });
-
-        table.add(backButton);
-        stage.addActor(table);
-    }
-
-    private void goToMainMenu() {
-        Gdx.app.postRunnable(() -> {
-            ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new MainMenu(skin));
-        });
+        atlas = new TextureAtlas(Gdx.files.internal("tiles.atlas"));
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        stage = new Stage(extendViewport);
+        Gdx.gl.glClearColor(.1f,.12f,.16f,1);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        camera.position.set(mapwidth/2f*TILE_PIXEL_SIZE*UNIT_SCALE,TILE_PIXEL_SIZE*UNIT_SCALE*1.5f,0);
+        camera.update();
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.end();
+
+        stage.act();
         stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
-    }
-
-    @Override
-    public void hide() {
-        Gdx.input.setInputProcessor(null);
+        extendViewport.update(width, height, true);
     }
 
     @Override
     public void dispose() {
         stage.dispose();
+        skin.dispose();
+        atlas.dispose();
     }
 }
