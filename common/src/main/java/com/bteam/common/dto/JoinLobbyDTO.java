@@ -2,6 +2,11 @@ package com.bteam.common.dto;
 
 import java.util.UUID;
 
+/**
+ * Data Transfer Object to let the server know all details about
+ * the lobby the client wants to join.
+ * @author Marc
+ */
 public class JoinLobbyDTO implements JsonDTO{
     String id;
 

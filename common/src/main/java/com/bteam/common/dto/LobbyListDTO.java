@@ -2,7 +2,11 @@ package com.bteam.common.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Data Transfer Object for a list of Lobbies
+ *
+ * @author Marc
+ */
 public class LobbyListDTO implements JsonDTO{
     List<LobbyDTO> lobbies;
 

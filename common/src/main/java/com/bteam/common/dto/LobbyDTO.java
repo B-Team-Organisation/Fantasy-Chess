@@ -6,7 +6,11 @@ import com.bteam.common.models.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+/**
+ * Data Transfer Object for all infos about a Lobby
+ *
+ * @author Marc
+ */
 public class LobbyDTO implements JsonDTO{
     private String lobbyId;
     private int maxPlayers;

@@ -1,5 +1,9 @@
 package com.bteam.common.dto;
-
+/**
+ * Data Transfer Object for tokens
+ *
+ * @author Marc
+ */
 public class TokenDTO implements JsonDTO{
     private String token;
     private long expires;
