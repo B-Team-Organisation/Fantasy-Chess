@@ -1,6 +1,6 @@
 package com.bteam.common.dto;
 
-public class CreateLobbyDTO {
+public class CreateLobbyDTO implements JsonDTO{
     private String lobbyName;
 
     public CreateLobbyDTO(String lobbyName) {
@@ -9,5 +9,10 @@ public class CreateLobbyDTO {
 
     public String getLobbyName() {
         return lobbyName;
+    }
+
+    @Override
+    public String toJson() {
+        return "{\"lobbyName\":\""+lobbyName+"\"}";
     }
 }
