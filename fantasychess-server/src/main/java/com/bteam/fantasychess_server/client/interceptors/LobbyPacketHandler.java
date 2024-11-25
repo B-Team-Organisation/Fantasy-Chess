@@ -1,6 +1,8 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
 import com.bteam.common.dto.CreateLobbyDTO;
+import com.bteam.common.dto.LobbyDTO;
+import com.bteam.common.dto.LobbyListDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
@@ -16,13 +18,14 @@ public class LobbyPacketHandler implements PacketHandler {
     private final String packetPattern = "LOBBY_";
 
     @Override
-    public void handle(Client client, Packet packet) {
-        switch (packet.getId()){
+    public void handle(Client client, String id, String packet) {
+        switch (id){
             case "LOBBY_ALL":
                 try{
                     var lobbies = lobbyService.getAllLobbies();
-                    ObjectMapper mapper = new ObjectMapper();
-                    client.sendPacket(new Packet("LOBBY_INFO", mapper.writeValueAsString(lobbies)));
+                    var dtos = lobbies.stream().map(LobbyDTO::new).toList();
+                    var lobbyListDTO = new LobbyListDTO(dtos);
+                    client.sendPacket(new Packet(lobbyListDTO,"LOBBY_INFO"));
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -30,16 +33,19 @@ public class LobbyPacketHandler implements PacketHandler {
             case "LOBBY_CREATE":
                 try{
                     ObjectMapper mapper = new ObjectMapper();
-                    var lobbyDTO = packet.getDataAs(CreateLobbyDTO.class);
-                    var lobby = lobbyService.createNewLobby(client.getPlayer(),lobbyDTO.getLobbyName(),2);
-                    client.sendPacket(new Packet("LOBBY_CREATED", mapper.writeValueAsString(lobby)));
+                    var tree = mapper.readTree(packet);
+                    var data = tree.get("data").asText();
+                    var dto = mapper.readValue(data, CreateLobbyDTO.class);
+                    var lobby = lobbyService.createNewLobby(client.getPlayer(),dto.getLobbyName(),2);
+                    var lobbyDTO = new LobbyDTO(lobby);
+                    client.sendPacket(new Packet(lobbyDTO, "LOBBY_CREATED"));
                 } catch (Exception e){
                     e.printStackTrace();
                 }
 
                 break;
             default:
-                System.out.println("Unhandled packet: " + packet.getId());
+                System.out.println("Unhandled packet: " + id);
         }
 
     }
