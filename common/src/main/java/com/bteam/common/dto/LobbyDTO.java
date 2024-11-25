@@ -24,6 +24,30 @@ public class LobbyDTO implements JsonDTO{
         this.lobbyName = lobbyModel.getLobbyName();
     }
 
+    public String getLobbyId() {
+        return lobbyId;
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
+    }
+
+    public List<String> getPlayerIds() {
+        return playerIds;
+    }
+
+    public String getHostId() {
+        return hostId;
+    }
+
+    public LobbyModel.GameState getGameState() {
+        return gameState;
+    }
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
     @Override
     public String toJson() {
         StringBuffer sb = new StringBuffer();
