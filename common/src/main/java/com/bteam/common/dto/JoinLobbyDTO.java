@@ -11,7 +11,7 @@ public class JoinLobbyDTO implements JsonDTO{
     String id;
 
     public JoinLobbyDTO() {
-        this.id = UUID.randomUUID().toString();
+        this.id = "";
     }
 
     public JoinLobbyDTO(String id) {
