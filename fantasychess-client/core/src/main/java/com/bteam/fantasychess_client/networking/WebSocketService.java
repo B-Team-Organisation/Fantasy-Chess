@@ -47,11 +47,6 @@ public class WebSocketService {
 
         addPacketHandler(CONNECTED_STATUS, packet -> {
             Main.getLogger().log(Level.SEVERE, "It is now forwarded: " + packet);
-            send(new Packet(new CreateLobbyDTO("EXAMPLE"), "CREATE_LOBBY"));
-        });
-
-        addPacketHandler("LOBBY_CREATED", packet -> {
-            Main.getLogger().log(Level.SEVERE, "Created Lobby: " + packet);
         });
     }
 

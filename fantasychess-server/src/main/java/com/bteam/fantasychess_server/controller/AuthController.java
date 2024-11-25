@@ -1,7 +1,6 @@
 package com.bteam.fantasychess_server.controller;
 
 import com.bteam.common.dto.TokenDTO;
-import com.bteam.fantasychess_server.data.dto.UsernameDTO;
 import com.bteam.fantasychess_server.service.PlayerService;
 import com.bteam.fantasychess_server.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;

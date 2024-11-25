@@ -1,6 +1,6 @@
 package com.bteam.common.dto;
 /**
- * Data Transfer Object to let the server know all details about
+ * Data Transfer Object sent to let the client know all details about
  * the result of joining a lobby, weather it failed or succeded
  * @author Marc
  */
