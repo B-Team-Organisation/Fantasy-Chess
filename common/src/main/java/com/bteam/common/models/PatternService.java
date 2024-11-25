@@ -25,13 +25,12 @@ public class PatternService {
      *
      * @param patternModel the services {@link PatternModel}
      * @param patternStore the {@link PatternStore} containing all patterns
-     * @throws PatternShapeInvalidException if the shape of the pattern is invalid
-     * @throws InvalidSubpatternMappingException if the patterns cant be traversed correctly
      */
-    public PatternService(PatternModel patternModel, PatternStore patternStore) throws PatternShapeInvalidException, InvalidSubpatternMappingException {
+    public PatternService(PatternModel patternModel, PatternStore patternStore){
         this.patternStore = patternStore;
         this.patternModel = patternModel;
-        validatePattern(patternModel);
+        /*validatePattern(patternModel);
+        **/
         relativeTargetMappings = createMappingsFromPattern(patternModel);
     }
 

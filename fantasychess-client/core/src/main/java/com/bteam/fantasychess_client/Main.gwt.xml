@@ -5,5 +5,5 @@
   <source path="" />
   <!-- Reflection includes may be needed for your code or library code. Each value is separated by periods ('.'). -->
   <!-- You can include a full package by not including the name of a type at the end. -->
-
+    <extend-configuration-property name="gdx.reflect.include" value="com.bteam.common" />
 </module>

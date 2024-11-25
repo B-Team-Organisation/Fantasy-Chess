@@ -6,6 +6,8 @@ import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.fantasychess_client.Main;
@@ -45,6 +47,7 @@ public class WebSocketService {
 
         addPacketHandler(CONNECTED_STATUS, packet -> {
             Main.getLogger().log(Level.SEVERE, "It is now forwarded: " + packet);
+            send(new Packet(new CreateLobbyDTO("EXAMPLE"), "CREATE_LOBBY"));
         });
 
         addPacketHandler("LOBBY_CREATED", packet -> {
@@ -102,8 +105,12 @@ public class WebSocketService {
      * @param packet - Packet to handle
      */
     public void send(Packet packet){
-        String string = json.toJson(packet, Packet.class);
-        webSocket.send(string);
+        try{
+            Main.getLogger().log(Level.SEVERE, "Sending packet: " + packet);
+            webSocket.send(packet.toString());
+        } catch (Exception e) {
+            Main.getLogger().log(Level.SEVERE, "Unable to reflect class: " + e.getMessage());
+        }
     }
 
     public WebSocketClient getClient() {

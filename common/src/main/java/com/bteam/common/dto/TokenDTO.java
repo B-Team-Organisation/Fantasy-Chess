@@ -1,6 +1,6 @@
 package com.bteam.common.dto;
 
-public class TokenDTO {
+public class TokenDTO implements JsonDTO{
     private String token;
     private long expires;
 
@@ -14,5 +14,9 @@ public class TokenDTO {
 
     public long getExpires() {
         return expires;
+    }
+    @Override
+    public String toJson() {
+        return "{\"token\":\""+token+"\",\"expires\":"+expires+"}";
     }
 }
