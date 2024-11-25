@@ -1,9 +1,14 @@
 package com.bteam.common.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyListDTO implements JsonDTO{
     List<LobbyDTO> lobbies;
+
+    public LobbyListDTO() {
+        lobbies = new ArrayList<LobbyDTO>();
+    }
 
     public LobbyListDTO(List<LobbyDTO> lobbies) {
         this.lobbies = lobbies;

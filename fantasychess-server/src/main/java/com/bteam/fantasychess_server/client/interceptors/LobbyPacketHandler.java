@@ -17,11 +17,15 @@ public class LobbyPacketHandler implements PacketHandler {
     private LobbyService lobbyService;
     private final String packetPattern = "LOBBY_";
 
+    public LobbyPacketHandler(LobbyService lobbyService) {
+        this.lobbyService = lobbyService;
+    }
+
     @Override
     public void handle(Client client, String id, String packet) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         var tree = mapper.readTree(packet);
-        var data = tree.get("data").asText();
+        var data = tree.get("data");
 
         switch (id){
             case "LOBBY_ALL":
@@ -36,7 +40,7 @@ public class LobbyPacketHandler implements PacketHandler {
                 break;
             case "LOBBY_CREATE":
                 try{
-                    var dto = mapper.readValue(data, CreateLobbyDTO.class);
+                    var dto = mapper.convertValue(data, CreateLobbyDTO.class);
                     var lobby = lobbyService.createNewLobby(client.getPlayer(),dto.getLobbyName(),2);
                     var lobbyDTO = new LobbyDTO(lobby);
                     client.sendPacket(new Packet(lobbyDTO, "LOBBY_CREATED"));
@@ -47,7 +51,7 @@ public class LobbyPacketHandler implements PacketHandler {
                 break;
             case "LOBBY_JOIN":
                 try{
-                    var dto = mapper.readValue(data, JoinLobbyDTO.class);
+                    var dto = mapper.convertValue(data, JoinLobbyDTO.class);
                     var lobbyID = UUID.fromString(dto.getId());
                     var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                     var result = lobbyService.joinLobby(lobbyID,playerId);

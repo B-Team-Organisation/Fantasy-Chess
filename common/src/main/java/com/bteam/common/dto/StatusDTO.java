@@ -6,6 +6,10 @@ package com.bteam.common.dto;
 public class StatusDTO implements JsonDTO {
     public String status;
 
+    public StatusDTO() {
+        status = "";
+    }
+
     public StatusDTO( String status ) {
         this.status = status;
     }

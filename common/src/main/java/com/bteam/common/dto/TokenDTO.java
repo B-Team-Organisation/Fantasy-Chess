@@ -4,6 +4,11 @@ public class TokenDTO implements JsonDTO{
     private String token;
     private long expires;
 
+    public TokenDTO() {
+        token = null;
+        expires = 0;
+    }
+
     public TokenDTO(String token, long expires) {
         this.token = token;
         this.expires = expires;

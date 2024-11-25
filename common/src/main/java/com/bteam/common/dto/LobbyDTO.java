@@ -15,6 +15,15 @@ public class LobbyDTO implements JsonDTO{
     private LobbyModel.GameState gameState;
     private String lobbyName;
 
+    public LobbyDTO() {
+        lobbyId = "";
+        maxPlayers = 0;
+        playerIds = new ArrayList<>();
+        hostId = "";
+        gameState = LobbyModel.GameState.OPEN;
+        lobbyName = "";
+    }
+
     public LobbyDTO(LobbyModel lobbyModel) {
         this.lobbyId = lobbyModel.getLobbyId();
         this.maxPlayers = lobbyModel.getPlayers().size();

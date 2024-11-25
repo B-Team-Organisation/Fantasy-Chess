@@ -3,6 +3,10 @@ package com.bteam.common.dto;
 public class JoinLobbyResultDTO implements JsonDTO{
     private String result;
 
+    public JoinLobbyResultDTO() {
+        result = "SUCCESS";
+    }
+
     public JoinLobbyResultDTO(String result) {
         this.result = result;
     }
