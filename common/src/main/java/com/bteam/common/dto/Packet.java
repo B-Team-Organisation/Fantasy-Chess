@@ -23,6 +23,7 @@ public class Packet {
 
     @Override
     public String toString() {
-        return "{\"id\":\"" + id + "\",\"data\":" + data.toJson() + "}";
+        var dataString = data == null ? "null" : data.toString();
+        return "{\"id\":\"" + id + "\",\"data\":" + dataString + "}";
     }
 }
