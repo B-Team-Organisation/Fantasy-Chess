@@ -277,18 +277,18 @@ public class MainMenu extends ScreenAdapter {
     // testdata,to check with online data
     private List<LobbyModel> showLobbies() {
         List<LobbyModel> lobbies = new ArrayList<>();
-        lobbies.add(new LobbyModel("Lukas",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Hana",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Luxort",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Zhuxin",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Beras",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Ino",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Kalavoi",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Albert",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Sius",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Demonzone",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Angels",new ArrayList<>(),null,"Lobyb1"));
-        lobbies.add(new LobbyModel("Classrom of",new ArrayList<>(),null,"Lobyb1"));
+        lobbies.add(new LobbyModel("Lukas",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Hana",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Luxort",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Zhuxin",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Beras",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Ino",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Kalavoi",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Albert",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Sius",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Demonzone",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Angels",new ArrayList<>(),null,"Lobyb1",2));
+        lobbies.add(new LobbyModel("Classrom of",new ArrayList<>(),null,"Lobyb1",2));
         return lobbies;
     }
 
