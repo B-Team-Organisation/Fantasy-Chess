@@ -76,7 +76,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
         this.skin = skin;
-        atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));//"auto-generated-atlas.atlas"));
     }
 
     private void getMapCenter() {
@@ -96,7 +96,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(.1f,.12f,.16f,1);
 
 
-        CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger-front"),center,null);
+        CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),center,null);
         movingBadger.moveTo(center.add(new Vector2D(-100,-50)));
         characterSprites.add(movingBadger);
     }
@@ -117,7 +117,7 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         characterSprites.get(0).moveTo(new Vector2D((int)mouse.x,(int)mouse.y));
 
-        Sprite badger = new Sprite(atlas.findRegion("badger/badger-back"));
+        Sprite badger = new Sprite(atlas.findRegion("badger/badger-front"));
         float x = center.getX() - badger.getWidth()/2;
         float y = center.getY() - badger.getHeight()/2;
         batch.draw(badger,x,y);
