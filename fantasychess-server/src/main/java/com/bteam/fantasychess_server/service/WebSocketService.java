@@ -69,7 +69,7 @@ public class WebSocketService {
         try{
             var packet = mapper.readValue(payload, Packet.class);
             var client = getClientBySession(session.getId());
-            getHandlerForId(packet.getId()).handle(client,packet);
+            getHandlerForId(packet.getId()).handle(client,packet.getId(),message.getPayload());
         } catch (Exception e) {
             e.printStackTrace();
         }
