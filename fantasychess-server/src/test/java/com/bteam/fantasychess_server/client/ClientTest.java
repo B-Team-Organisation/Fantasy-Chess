@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_server.client;
 
+import com.bteam.common.models.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -8,6 +9,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,10 +23,12 @@ class ClientTest {
     @Mock
     WebSocketSession session;
 
+    Player player = new Player("","",new ArrayList<>());
+
     @BeforeEach
     void setUp() {
         session = mock(WebSocketSession.class);
-        client = new Client(TEST_ID, session);
+        client = new Client(TEST_ID, session, player);
     }
 
     @Test

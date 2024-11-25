@@ -1,10 +1,15 @@
 package com.bteam.fantasychess_client.networking;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
+import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.StatusDTO;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.errors.UnhandledPacketException;
 import com.github.czyzby.websocket.WebSocket;
@@ -29,12 +34,12 @@ public class WebSocketService {
 
     WebSocket webSocket;
     WebSocketClient client;
+    String userid;
+    String baseAddress;
 
     public WebSocketService(String address, WebSocketClient listener) {
-        webSocket = WebSockets.newSocket(address);
-        webSocket.setSendGracefully(true);
+        this.baseAddress = address;
         client = listener;
-        webSocket.addListener(client);
         client.onTextEvent.addListener(this::handlePacket);
 
         client.onOpenEvent.addListener(payload ->
@@ -49,10 +54,15 @@ public class WebSocketService {
         return webSocket.getState();
     }
 
-    public void connect() {
+    private void connect(String token) {
         Main.getLogger().log(Level.SEVERE, "Connecting to server...");
+        String address = baseAddress + "?token=" + token;
+        webSocket = WebSockets.newSocket(address);
+        webSocket.setSendGracefully(true);
+        webSocket.addListener(client);
         try{
             webSocket.connect();
+            send(new Packet(new CreateLobbyDTO("EXAMPLE"),"LOBBY_CREATE"));
         } catch (Exception e){
             Main.getLogger().log(Level.SEVERE, e.getMessage());
         }
@@ -73,7 +83,7 @@ public class WebSocketService {
     public void handlePacket(String packet){
         Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
         JsonValue fromJson = new JsonReader().parse(packet);
-        var id = fromJson.getString("id");
+        String id = fromJson.getString("id");
         try{
             Main.getLogger().log(Level.SEVERE, "Deserialized with id: " +id);
             if (!listeners.containsKey(id))
@@ -90,11 +100,53 @@ public class WebSocketService {
      * @param packet - Packet to handle
      */
     public void send(Packet packet){
-        var string = json.toJson(packet, Packet.class);
-        webSocket.send(string);
+        try{
+            Main.getLogger().log(Level.SEVERE, "Sending packet: " + packet);
+            webSocket.send(packet.toString());
+        } catch (Exception e) {
+            Main.getLogger().log(Level.SEVERE, "Unable to reflect class: " + e.getMessage());
+        }
     }
 
     public WebSocketClient getClient() {
         return client;
+    }
+
+    public void registerAndConnect(String username){
+        registerClient(username);
+    }
+
+    private void registerClient(String username){
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+        Net.HttpRequest httpRequest = requestBuilder
+            .newRequest()
+            .method(Net.HttpMethods.POST)
+            .url("http://127.0.0.1:5050/api/v1/register")
+            .content(username)
+            .build();
+
+        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onRegisterResult));
+    }
+
+    private void onRegisterResult(Net.HttpResponse response){
+        userid = response.getResultAsString();
+        getToken(userid);
+    }
+
+    private void getToken(String userid){
+        HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
+        Net.HttpRequest httpRequest = requestBuilder
+            .newRequest()
+            .method(Net.HttpMethods.GET)
+            .url("http://127.0.0.1:5050/api/v1/token")
+            .header("X-USER-ID", userid)
+            .build();
+        Gdx.net.sendHttpRequest(httpRequest,new HttpResponseCallbackListener(this::onTokenResult));
+    }
+
+    private void onTokenResult(Net.HttpResponse response){
+        JsonReader reader = new JsonReader();
+        String token = reader.parse(response.getResultAsString()).getString("token");
+        connect(token);
     }
 }

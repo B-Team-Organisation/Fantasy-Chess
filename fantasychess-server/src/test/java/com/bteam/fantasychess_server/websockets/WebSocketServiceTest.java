@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_server.websockets;
 
+import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.service.WebSocketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +16,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,6 +41,9 @@ class WebSocketServiceTest {
     @InjectMocks
     private WebSocketService webSocketService;
 
+    @Mock
+    private Player player = new Player("","",new ArrayList<>());
+
     @BeforeAll
     static void setUp() throws JsonProcessingException {
         testPayloadString = new ObjectMapper().writeValueAsString(testPayloadString);
@@ -56,7 +61,7 @@ class WebSocketServiceTest {
     void testClientRegistration() {
         when(mockSession.getId()).thenReturn(TEST_ID);
 
-        webSocketService.registerSession(mockSession);
+        webSocketService.registerSession(mockSession, player);
 
         assertEquals(1, webSocketService.getClients().size());
         assertTrue(webSocketService.getClients().containsKey(TEST_ID));
@@ -67,7 +72,7 @@ class WebSocketServiceTest {
     void testClientUnregistration() {
         when(mockSession.getId()).thenReturn(TEST_ID);
 
-        webSocketService.registerSession(mockSession);
+        webSocketService.registerSession(mockSession,player);
 
         assertEquals(1, webSocketService.getClients().size());
         assertEquals(TEST_ID, Objects.requireNonNull(webSocketService.getClients().get(TEST_ID)).getId());
@@ -81,7 +86,7 @@ class WebSocketServiceTest {
     void testSendMessage() throws IOException {
         when(mockSession.getId()).thenReturn(TEST_ID);
 
-        webSocketService.registerSession(mockSession);
+        webSocketService.registerSession(mockSession,player);
         webSocketService.sendToClient(TEST_ID, TEST_PAYLOAD);
 
         verify(mockSession, times(1)).sendMessage(any());
@@ -92,7 +97,7 @@ class WebSocketServiceTest {
         when(mockSession.getId()).thenReturn(TEST_ID);
         when(mockTextMessage.getPayload()).thenReturn(testPayloadString);
 
-        webSocketService.registerSession(mockSession);
+        webSocketService.registerSession(mockSession,player);
 
         Objects.requireNonNull(webSocketService.getClients().get(TEST_ID))
                 .getOnMessageReceivedEvent()

@@ -37,14 +37,17 @@ public class LobbyModel {
      * @param host player who is the host of the lobby and is added at index 0 in the players list
      * @param lobbyName name of the lobby
      */
-    public LobbyModel(String lobbyId, List<Player> players, Player host, String lobbyName) {
+    public LobbyModel(String lobbyId, List<Player> players, Player host, String lobbyName, int maxPlayers) {
         this.lobbyId = lobbyId;
         this.gameState = GameState.OPEN;
-        this.players = new ArrayList<>();
+        this.players = players;
         this.host = host;
+        this.maxPlayers = maxPlayers;
         this.lobbyName = lobbyName;
 
-        this.players.add(host);
+        if (!this.players.contains(host)) {
+            this.players.add(host);
+        }
     }
 
     public String getLobbyId() {
