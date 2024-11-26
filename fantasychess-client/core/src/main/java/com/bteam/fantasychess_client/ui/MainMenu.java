@@ -6,34 +6,27 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.CreateLobbyDTO;
-import com.bteam.common.dto.LobbyDTO;
-import com.bteam.common.dto.LobbyListDTO;
+import com.bteam.common.dto.JoinLobbyDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
-import com.bteam.common.models.Player;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
-
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
-
-
 
 
 // every lobby in lower case for search handling
@@ -42,23 +35,22 @@ import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 // Bug1: after pressing create and cancel to lobby, search panel doenst dissapear .
 // --Fix1: no mistakes in the writing, just mid search
-  //-> fixed, suggestions label, ( maybe link to input later?),
+//-> fixed, suggestions label, ( maybe link to input later?),
 
 // Fix2: event handler -> Lukas
 // Problem1: Refresh Button ?
 //
 
 
-
-/** First screen of the application. Displayed after the application is created. */
+/**
+ * First screen of the application. Displayed after the application is created.
+ */
 public class MainMenu extends ScreenAdapter {
 
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
-
+    private final Skin skin;
     private Stage stage;
-    private Skin skin;
-
     private Table centerContent;
     private List<LobbyModel> allLobbies = new ArrayList<>();
     private Label noMatchingLobbyLabel;
@@ -71,7 +63,7 @@ public class MainMenu extends ScreenAdapter {
         camera.setToOrtho(false, 1920, 1080);
         camera.update();
 
-        extendViewport = new ExtendViewport(1920,1080, camera);
+        extendViewport = new ExtendViewport(1920, 1080, camera);
         extendViewport.apply();
 
         this.skin = skin;
@@ -114,13 +106,13 @@ public class MainMenu extends ScreenAdapter {
                 }
             }
         });
-        onChange(lobbyNameInput,() ->{
+        onChange(lobbyNameInput, () -> {
             filterLobbies(lobbyNameInput.getText());
         });
 
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
-        onChange(refreshButton,()-> {
-            Gdx.app.postRunnable(()->Main.getWebSocketService().send(new Packet(null,"LOBBY_ALL")));
+        onChange(refreshButton, () -> {
+            Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
         onChange(createLobby, this::createLobbyDialog);// this instead of ()->
@@ -147,24 +139,12 @@ public class MainMenu extends ScreenAdapter {
         table.row();
         table.add(noMatchingLobbyLabel).padTop(10);
 
-        Main.getWebSocketService().addPacketHandler("LOBBY_INFO",(packet)->{
-            Gdx.app.postRunnable(()-> {
-                JsonValue data = new JsonReader().parse(packet).get("data");
-                allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
-                lobbyNameInput.clear();
-                loadLobbies(allLobbies);
-            });
-        });
-        Main.getWebSocketService().addPacketHandler("LOBBY_CREATED",(packet)->{
-            Gdx.app.postRunnable(()-> {
-                JsonValue data = new JsonReader().parse(packet).get("data");
-                LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
-                goToGameScreen();
-            });
-        });
+        Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
+        Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
+        Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
 
-        Gdx.app.postRunnable(()->{
-            Packet packet = new Packet(null,"LOBBY_ALL");
+        Gdx.app.postRunnable(() -> {
+            Packet packet = new Packet(null, "LOBBY_ALL");
             Main.getWebSocketService().send(packet);
         });
 
@@ -184,19 +164,7 @@ public class MainMenu extends ScreenAdapter {
 
         TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
 
-        Dialog dialog = new Dialog("Lobby creation", skin) {
-            @Override
-            protected void result(Object object) {
-                if ("create".equals(object)) {
-                    Gdx.app.postRunnable(()->{
-                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()),"LOBBY_CREATE");
-                        Main.getWebSocketService().send(packet);
-                    });
-                }
-            }
-        };
-        dialog.setResizable(false);
-        dialog.setMovable(false);
+        Dialog dialog = getBaseLobbyDialog(lobbyNameField);
 
         Table contentTable = dialog.getContentTable();
         contentTable.defaults().pad(20);
@@ -206,7 +174,7 @@ public class MainMenu extends ScreenAdapter {
         Label lobbyNameLabel = new Label("Lobby Name:", skin);
 
         lobbyNameField.setMessageText("Enter lobby name");
-        onChange(lobbyNameField,() -> {
+        onChange(lobbyNameField, () -> {
             createButton.setDisabled(lobbyNameField.getText().length() < 4);
         });
 
@@ -222,6 +190,23 @@ public class MainMenu extends ScreenAdapter {
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
+    private Dialog getBaseLobbyDialog(TextField lobbyNameField) {
+        Dialog dialog = new Dialog("Lobby creation", skin) {
+            @Override
+            protected void result(Object object) {
+                if ("create".equals(object)) {
+                    Gdx.app.postRunnable(() -> {
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
+                        Main.getWebSocketService().send(packet);
+                    });
+                }
+            }
+        };
+        dialog.setResizable(false);
+        dialog.setMovable(false);
+        return dialog;
+    }
+
 
     /**
      * Function to be directed to GameScreen
@@ -234,6 +219,7 @@ public class MainMenu extends ScreenAdapter {
 
     /**
      * filters the lobbies with the input live
+     *
      * @param input content of the input field
      */
     private void filterLobbies(String input) {
@@ -243,16 +229,12 @@ public class MainMenu extends ScreenAdapter {
 
         for (LobbyModel lobby : allLobbies) {
             String normalizedLobbyName = lobby.getLobbyName().toLowerCase();
-            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance(normalizedInput,normalizedLobbyName) <= 2) {
+            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance(normalizedInput, normalizedLobbyName) <= 2) {
                 filteredLobbies.add(lobby);
             }
         }
 
-        if (filteredLobbies.isEmpty()) {
-            noMatchingLobbyLabel.setVisible(true);
-        } else {
-            noMatchingLobbyLabel.setVisible(false);
-        }
+        noMatchingLobbyLabel.setVisible(filteredLobbies.isEmpty());
 
         loadLobbies(filteredLobbies);
     }
@@ -272,7 +254,11 @@ public class MainMenu extends ScreenAdapter {
                 lobbyMember.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        System.out.println("Creating lobby " + lobby.getLobbyName());
+                        Main.getLogger().log(Level.SEVERE, "Creating lobby " + lobby.getLobbyName());
+                        Gdx.app.postRunnable(() -> {
+                            var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
+                            Main.getWebSocketService().send(packet);
+                        });
                     }
                 });
 
@@ -307,26 +293,6 @@ public class MainMenu extends ScreenAdapter {
         return costs[s2.length()];
     }
 
-
-    // testdata,to check with online data
-    private List<LobbyModel> showLobbies() {
-        List<LobbyModel> lobbies = new ArrayList<>();
-        lobbies.add(new LobbyModel("Lukas",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Hana",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Luxort",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Zhuxin",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Beras",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Ino",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Kalavoi",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Albert",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Sius",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Demonzone",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Angels",new ArrayList<>(),null,"Lobyb1",2));
-        lobbies.add(new LobbyModel("Classrom of",new ArrayList<>(),null,"Lobyb1",2));
-        return lobbies;
-    }
-
-    // private user1 = new User("Xene");
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -364,6 +330,25 @@ public class MainMenu extends ScreenAdapter {
         // Destroy screen's assets here.
     }
 
+    private void onLobbyInfo(String packet) {
+        Gdx.app.postRunnable(() -> {
+            JsonValue data = new JsonReader().parse(packet).get("data");
+            allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
+            lobbyNameInput.clear();
+            loadLobbies(allLobbies);
+        });
+    }
 
+    private void onLobbyCreated(String packet) {
+        Gdx.app.postRunnable(() -> {
+            JsonValue data = new JsonReader().parse(packet).get("data");
+            LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
+            goToGameScreen();
+        });
+    }
+
+    private void onLobbyJoined(String packet) {
+
+    }
 }
 
