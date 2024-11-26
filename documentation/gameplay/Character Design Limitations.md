@@ -27,3 +27,5 @@ Minimum Movement: 0
 ## Visual
 
 Character Sprites should be 32px wide and 32px tall.
+When using the full size of the sprite, ensure not to fully
+obstruct the Character above.
