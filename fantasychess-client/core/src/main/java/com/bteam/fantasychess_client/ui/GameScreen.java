@@ -11,14 +11,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ import java.util.List;
  * <p>
  * The player gets to this screen directly from the main menu.
  *
- * @author lukas adnan
+ * @author lukas adnan jacinto
  * @version 1.0
  */
 public class GameScreen extends ScreenAdapter {
@@ -36,6 +35,7 @@ public class GameScreen extends ScreenAdapter {
     private final int TILE_PIXEL_WIDTH = 32;
     private final int TILE_PIXEL_HEIGHT = 16;
     private int mapTileWidth;
+    private int mapTileHeight;
 
     private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
 
@@ -70,24 +70,17 @@ public class GameScreen extends ScreenAdapter {
         // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
         mapTileWidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getWidth();
+        mapTileWidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getHeight();
 
-        getMapCenter();
+        TileMathService tileMathService = new TileMathService(
+            mapTileWidth, mapTileHeight, tiledMap, mapTileWidth, mapTileHeight
+        );
+        center = tileMathService.getMapCenter();
 
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
         this.skin = skin;
         atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
-    }
-
-    private void getMapCenter() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        int mapWidthInTiles = layer.getWidth();
-        int mapHeightInTiles = layer.getHeight();
-        float tileWidth = layer.getTileWidth();
-        float tileHeight = layer.getTileHeight() / 2f;
-        float centerX = (mapWidthInTiles * tileWidth)/2.0f;
-        float centerY = (mapHeightInTiles * tileHeight)/4.0f;
-        center = new Vector2D((int)centerX,(int)centerY);
     }
 
     @Override
