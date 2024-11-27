@@ -18,9 +18,11 @@ import java.util.Objects;
  */
 public class CharacterEntity {
     private CharacterDataModel characterBaseModel;
+    private  String Id;
     private int health;
     private Vector2D position;
     private String playerId;
+
 
     /**
      * Creates a new Character
@@ -29,8 +31,9 @@ public class CharacterEntity {
      * @param health Current health of the character
      * @param position Current position of the character
      */
-    public CharacterEntity(CharacterDataModel characterBaseModel, int health, Vector2D position, String playerId) {
+    public CharacterEntity(CharacterDataModel characterBaseModel,String Id, int health, Vector2D position, String playerId) {
         this.characterBaseModel = characterBaseModel;
+        this.Id = Id;
         this.health = health;
         this.position = position;
         this.playerId = playerId;
@@ -39,6 +42,8 @@ public class CharacterEntity {
     public CharacterDataModel getCharacterBaseModel() {
         return this.characterBaseModel;
     }
+
+    public String getId() {return  this.Id;}
 
     public int getHealth() {
         return this.health;
@@ -53,6 +58,8 @@ public class CharacterEntity {
     public void setCharacterBaseModel(CharacterDataModel characterBaseModel) {
         this.characterBaseModel = characterBaseModel;
     }
+
+    public void setId(String Id) {this.Id = Id;}
 
     public void setHealth(int health) {
         this.health = health;
@@ -69,6 +76,7 @@ public class CharacterEntity {
     @Override
     public String toString() {
         return "CharacterEntity [characterBaseModel=" + characterBaseModel.toString()
+                + ", Id=" + Id
                 + ", health=" + health
                 + ", position =" + position
                 + ", playerId=" + playerId + "]";
@@ -78,6 +86,7 @@ public class CharacterEntity {
     public boolean equals(Object o) {
         return o instanceof CharacterEntity
                 && ((CharacterEntity) o).characterBaseModel.equals(this.characterBaseModel)
+                && ((CharacterEntity) o).Id.equals(this.Id)
                 && ((CharacterEntity) o).health == this.health
                 && ((CharacterEntity) o).position.equals(this.position)
                 && ((CharacterEntity) o).playerId.equals(this.playerId);
@@ -85,7 +94,7 @@ public class CharacterEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(characterBaseModel, health, position, playerId);
+        return Objects.hash(characterBaseModel, Id, health, position, playerId);
     }
 
 }
