@@ -15,7 +15,9 @@ public class TestUtils {
 
             CharacterEntity copiedEntity = new CharacterEntity(
                     entity.getCharacterBaseModel(),
+                    entity.getId(),
                     entity.getHealth(),
+
                     new Vector2D(entity.getPosition().getX(), entity.getPosition().getY()),
                     entity.getPlayerId()
             );

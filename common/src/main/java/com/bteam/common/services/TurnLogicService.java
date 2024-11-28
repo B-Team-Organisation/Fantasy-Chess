@@ -1,9 +1,7 @@
 package com.bteam.common.services;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
@@ -11,13 +9,12 @@ import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
 
 /**
- * Service for turn-based logic checks.
+ * Service for turn-based game logic.
  * <p>
- * A service class providing services to make checks which are
- * necessary for each turn, namely movement, attacks, character deaths
- * and winning the game.
+ * This service handles the logic for processing movements, attacks, character deaths,
+ * and determining the winner for each turn in the game.
  *
- * @author Jacinto, Albano
+ * @author Albano
  * @version 1.0
  */
 public class TurnLogicService {
@@ -25,13 +22,14 @@ public class TurnLogicService {
     private TurnLogicService() {}
 
     /**
-     * Apply all the commands to the characters
-     * <p>
-     * Applies the commands , moves and attacks , to the given characters
-     * @param moves List of the movement received
-     * @param characters List of all characters
-     * @param attacks List of the attacks received
-     * @param grid model with number of rows and columns
+     * Applies all the commands (movements and attacks) for a turn and updates the character states.
+     *
+     * @param moves      List of movement commands received.
+     * @param characters List of all characters in the game.
+     * @param attacks    List of attack commands received.
+     * @param grid       Grid model representing the game board.
+     * @return A {@link TurnResult} object containing the updated character states,
+     *         valid movements, valid attacks, and any movement conflicts.
      */
     public static TurnResult applyCommands(
             List<MovementDataModel> moves,
@@ -40,168 +38,91 @@ public class TurnLogicService {
             GridModel grid) {
 
         CommandValidator validatorAllCommands = new CommandValidator();
-        List<CharacterEntity> invalidMovers = validatorAllCommands.validateCommands(characters, moves, attacks, grid);
+        List<CharacterEntity> invalidMovers;
+
+        try {
+            invalidMovers = validatorAllCommands.validateCommands(characters, moves, attacks, grid);
+        } catch (Exception e) {
+            System.err.println("Command validation failure: " + e.getMessage());
+            return new TurnResult(characters, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+        }
 
         List<MovementDataModel> validMovements = new ArrayList<>();
+        List<AttackDataModel> validAttacks = new ArrayList<>();
+
         for (MovementDataModel move : moves) {
-            if (!invalidMovers.contains(move.getCharacterEntity())) {
+            if (!invalidMovers.contains(move.getCharacterId())) {
                 validMovements.add(move);
             }
         }
 
-        List<AttackDataModel> validAttacks = new ArrayList<>();
         for (AttackDataModel attack : attacks) {
             if (!invalidMovers.contains(attack.getAttacker())) {
                 validAttacks.add(attack);
             }
         }
 
-        Pair<List<CharacterEntity>, List<Pair<CharacterEntity, CharacterEntity>>> movementResult =
-                applyMovement(validMovements, characters);
-
-        List<CharacterEntity> charactersAfterMovement = movementResult.getFirst();
-        List<Pair<CharacterEntity, CharacterEntity>> conflicts = movementResult.getSecond();
-
+        List<CharacterEntity> charactersAfterMovement = applyMovement(validMovements, characters);
         List<CharacterEntity> charactersAfterAttacks = applyAttacks(validAttacks, charactersAfterMovement);
 
-
-        return new TurnResult(charactersAfterAttacks, conflicts);
-
-
+        return new TurnResult(charactersAfterAttacks, new ArrayList<>(), validMovements, validAttacks);
     }
 
-        /**
-         * Apply all movement to the characters
-         * <p>
-         * @param intendedMovements intended moves given to each character
-         * @param characters list of all the Characters
-         * @return List of dead characters as {@link CharacterEntity} or empty list
-         */
+    /**
+     * Applies all valid movements to the characters.
+     *
+     * @param intendedMovements List of valid movement commands.
+     * @param characters        List of all characters in the game.
+     * @return The updated list of characters after movements are applied.
+     */
+    private static List<CharacterEntity> applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters) {
+        List<CharacterEntity> charactersAfterMovement = new ArrayList<>(characters);
 
-        private static Pair<List<CharacterEntity>, List<Pair<CharacterEntity, CharacterEntity>>> applyMovement(
-                List<MovementDataModel> intendedMovements, List<CharacterEntity> characters) {
+        for (MovementDataModel movement : intendedMovements) {
+            String characterToMove = movement.getCharacterId();
 
-
-            List<CharacterEntity> charactersAfterMovement = new ArrayList<>(characters);
-
-
-            HashMap<Vector2D, List<CharacterEntity>> positionMap = new HashMap<>();
-            List<Pair<CharacterEntity, CharacterEntity>> conflicts = new ArrayList<>();
-
-
-            for (MovementDataModel movement : intendedMovements) {
-                CharacterEntity characterToMove = movement.getCharacterEntity();
-                Vector2D newPosition = movement.getMovementVector();
-
-
-
-                positionMap.putIfAbsent(newPosition, new ArrayList<>());
-                positionMap.get(newPosition).add(characterToMove);
-
-                System.out.println("actualize positionMap: " + positionMap);
-                System.out.println("fine");
-            }
-
-            for (CharacterEntity character : characters) {
-                Vector2D intendedPosition = null;
-
-                System.out.println("number moves: " + intendedMovements.size());
-                for (MovementDataModel movement : intendedMovements) {
-                    System.out.println("move: Character = " + movement.getCharacterEntity().getCharacterBaseModel().getName()
-                            + ", destination = " + movement.getMovementVector());
-
-                    System.out.println("" +movement.getCharacterEntity());
-                    System.out.println(
-                                    "=============chararacter"+ character +"move"+movement.getMovementVector());
-                    System.out.println("?????"+movement.getCharacterEntity().equals(character)+"ergebnis");
-                    if (movement.getCharacterEntity().equals(character)) {
-
-                        intendedPosition = movement.getMovementVector();
-                        break;
-                    }
-                }
-
-                if (intendedPosition == null) {
-                    System.out.println("No move for " + character.getCharacterBaseModel().getName());
-                    continue;
-                }
-
-                System.out.println("Character " + character.getCharacterBaseModel().getName()
-                        + " wants to go to  " + intendedPosition);
-
-                List<CharacterEntity> charactersAtPosition = positionMap.get(intendedPosition);
-                if (charactersAtPosition.size() > 1) {
-                    System.out.println("conflict in position: " + intendedPosition
-                            + " w Characters: " + charactersAtPosition);
-                    for (CharacterEntity conflictingCharacter : charactersAtPosition) {
-                        if (!conflictingCharacter.equals(character)) {
-                            conflicts.add(new Pair<>(character, conflictingCharacter));
-                            System.out.println("Conflict added: "
-                                    + character.getCharacterBaseModel().getName() + " <-> "
-                                    + conflictingCharacter.getCharacterBaseModel().getName());
-                        }
-                    }
-                } else {
-
-                    for (CharacterEntity charAfterMovement : charactersAfterMovement) {
-                        if (charAfterMovement.equals(character)) {
-                            System.out.println("Move Character " + character.getCharacterBaseModel().getName()
-                                    + " to Position: " + intendedPosition);
-                            charAfterMovement.setPosition(intendedPosition);
-                            break;
-                        }
-                    }
+            for (CharacterEntity character : charactersAfterMovement) {
+                if (character.getId().equals(characterToMove)) {
+                    character.setPosition(movement.getMovementVector());
+                    break;
                 }
             }
-
-
-            System.out.println("Gefundene conflicts: " + conflicts);
-
-
-            return new Pair<>(charactersAfterMovement, conflicts);
         }
 
-    /**
-     * Apply all attacks to the characters
-     * @param intendedAttacks intended moves given to each character
-     * @param characters list of all the Characters
-     * @return List of dead characters as {@link CharacterEntity} or empty list
-     */
+        return charactersAfterMovement;
+    }
 
+    /**
+     * Applies all valid attacks to the characters.
+     *
+     * @param intendedAttacks List of valid attack commands.
+     * @param characters      List of all characters in the game.
+     * @return The updated list of characters after attacks are applied.
+     */
     private static List<CharacterEntity> applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters) {
         List<CharacterEntity> charactersAfterAttacks = new ArrayList<>(characters);
 
-
-
         for (AttackDataModel attackMove : intendedAttacks) {
-            CharacterEntity attacker = attackMove.getAttacker();
+            String attackerId = attackMove.getAttacker();
             Vector2D attackPoint = attackMove.getAttackPosition();
 
-            System.out.println("Attacker: " + attacker);
-            System.out.println("Attack Position: " + attackPoint);
+            CharacterEntity attacker = findCharacterById(attackerId, charactersAfterAttacks);
+            if (attacker == null) {
+                continue;
+            }
 
             Vector2D[] attackArea = attacker.getCharacterBaseModel()
                     .getAttackPatterns()[0]
                     .getAreaOfEffect(attacker.getPosition(), attackPoint);
 
-            System.out.println("base model"+ attacker.getCharacterBaseModel());
-            System.out.println("attack pattern"+ attacker.getCharacterBaseModel().getAttackPatterns()[0]);
-
-            System.out.println("Attack Area: " + Arrays.toString(attackArea));
-
             for (Vector2D affectedPosition : attackArea) {
                 for (CharacterEntity target : new ArrayList<>(charactersAfterAttacks)) {
-                    if (target.getPosition().equals(affectedPosition) &&
-                            !target.getPlayerId().equals(attacker.getPlayerId())) {
-
-                        System.out.println("_____________Character hit: " + target);
+                    if (target.getPosition().equals(affectedPosition)) {
 
                         int newHealth = target.getHealth() - attacker.getCharacterBaseModel().getAttackPower();
                         target.setHealth(newHealth);
 
-                        System.out.println("New Health: " + target.getHealth());
                         if (newHealth <= 0) {
-                            System.out.println("____________Character died: " + target);
                             charactersAfterAttacks.remove(target);
                         }
                     }
@@ -211,30 +132,40 @@ public class TurnLogicService {
 
         return charactersAfterAttacks;
     }
+
     /**
-     * Checks if the Game has a Winner
-     * <p>
-     * If one player dies, the other is returned as the winner
-     * This method won't check for a draw, since that means no
-     * {@link CharacterEntity}'s left to pass.
+     * Finds a character by its unique ID from a list of characters.
      *
-     * @param  characters List of the characters
-     * @return The id of the winning player or {@code null} if no result.
+     * @param id         The ID of the character to find.
+     * @param characters The list of characters to search.
+     * @return The matching {@link CharacterEntity}, or {@code null} if not found.
+     */
+    private static CharacterEntity findCharacterById(String id, List<CharacterEntity> characters) {
+        for (CharacterEntity character : characters) {
+            if (character.getId().equals(id)) {
+                return character;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Checks if the game has a winner by determining if all remaining characters belong to one player.
+     *
+     * @param characters List of all characters in the game.
+     * @return The player ID of the winner, or {@code null} if no winner exists.
      */
     public static String checkForWinner(List<CharacterEntity> characters) {
-
         String playerId = null;
 
         for (CharacterEntity character : characters) {
-            if (playerId ==null) {
+            if (playerId == null) {
                 playerId = character.getPlayerId();
-            }
-            else if (!playerId.equals(character.getPlayerId() )) {
+            } else if (!playerId.equals(character.getPlayerId())) {
                 return null;
             }
         }
+
         return playerId;
     }
-
-
 }
