@@ -1,12 +1,10 @@
 package com.bteam.common.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
-import com.bteam.common.utils.Pair;
 
 /**
  * Service for turn-based game logic.

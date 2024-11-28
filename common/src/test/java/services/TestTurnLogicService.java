@@ -5,7 +5,6 @@ import com.bteam.common.models.*;
 import com.bteam.common.services.TurnResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.bteam.common.utils.Pair;
 import utils.TestUtils;
 
 
@@ -199,7 +198,7 @@ class TestTurnLogicService {
         //charactersAfter.remove(lowHealthCharacter2); //legalattack1 martis died--
         //charactersAfter.remove(normalCharacter1);// legalattack4 invalid pattern
         //highHealthcharacter2.setHealth(25);//legalattack3 melissa health 25
-        ;//legalAttack2 estes health 15
+        //legalAttack2 estes health 15
 
         TurnResult result =
                 new TurnResult(charactersAfter,new ArrayList<>(),movementsBefore,attacksBefore);
