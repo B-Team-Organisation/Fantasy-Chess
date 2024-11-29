@@ -14,7 +14,6 @@ buildscript {
   dependencies {
     classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
     classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-
   }
 }
 project.ext.texturePacker = [ "assets/tileset/", "assets", "auto-generated-atlas.atlas" ]
