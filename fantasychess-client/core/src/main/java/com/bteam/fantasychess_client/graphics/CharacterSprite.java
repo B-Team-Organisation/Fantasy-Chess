@@ -20,7 +20,7 @@ public class CharacterSprite extends Sprite {
     private CharacterEntity character;
     private TileMathService mathService;
 
-    private final float MOVEMENT_SPEED = 25f;
+    private final float MOVEMENT_SPEED = 40f^^;
     Vector2 destination;
     Vector2 direction;
     float distance;
@@ -35,7 +35,7 @@ public class CharacterSprite extends Sprite {
     public CharacterSprite(TextureRegion textureRegion, Vector2D position, CharacterEntity character, TileMathService mathService) {
         super(textureRegion);
         this.mathService = mathService;
-        setPosition(mathService.gridToWorld(position.getX(), position.getY()));
+        setPositionInWorld(mathService.gridToWorld(position.getX(), position.getY()));
         this.character = character;
     }
 
@@ -66,10 +66,26 @@ public class CharacterSprite extends Sprite {
         //step = distanceVector.scl(1/distance);
     }
 
-    public void setPosition(Vector2 position) {
+    /**
+     * Sets the position of the character in world coordinates
+     * <p>
+     * This method makes it possible to call setPosition using a Vector2 as input.
+     *
+     * @param position the {@link Vector2} that contains the x and y coordinates passed through to the setPosition method
+     */
+    public void setPositionInWorld(Vector2 position) {
         setPosition(position.x, position.y);
     }
 
+    /**
+     * Updates the sprite
+     * <p>
+     * Updates the sprites position if its moving
+     *
+     * @param delta the time in seconds since the last frame
+     *
+     * @return the {@link CharacterEntity} for chaining
+     */
     public CharacterSprite update(float delta){
         if (destination != null) {
             if (distance > 0){
@@ -86,6 +102,13 @@ public class CharacterSprite extends Sprite {
         return this;
     }
 
+    /**
+     * Draws the sprite using the batch
+     * <p>
+     * The offset is calculated using the width and height of the sprite so it's centered around its position.
+     *
+     * @param batch the {@link Batch} object used for drawing
+     */
     @Override
     public void draw (Batch batch) {
         batch.draw(this, getX()-getWidth()/2, getY()-getHeight()/2);

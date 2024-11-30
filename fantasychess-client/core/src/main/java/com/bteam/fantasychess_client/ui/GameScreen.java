@@ -3,16 +3,13 @@ package com.bteam.fantasychess_client.ui;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -22,9 +19,6 @@ import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -48,10 +42,10 @@ public class GameScreen extends ScreenAdapter {
 
     private SpriteBatch batch;
 
-    private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
+    private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
 
-    private final int TILE_PIXEL_WIDTH = 32;
-    private final int TILE_PIXEL_HEIGHT = 16;
+    private static final int TILE_PIXEL_WIDTH = 32;
+    private static final int TILE_PIXEL_HEIGHT = 16;
 
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
@@ -98,7 +92,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer.setView(camera);
 
         CharacterSprite clickBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),new Vector2D(4,4),null,mathService);
-        clickBadger.setPosition(mathService.gridToWorld(4,4));
+        clickBadger.setPositionInWorld(mathService.gridToWorld(4,4));
         characterSprites.add(clickBadger);
 
         CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),new Vector2D(4,4),null, mathService);
@@ -132,7 +126,8 @@ public class GameScreen extends ScreenAdapter {
                 if (button == Input.Buttons.LEFT){
                     Main.getLogger().log(Level.SEVERE,"Click");
                     Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-                    clickBadger.moveToWorldPos(new Vector2(pos.x, pos.y));
+                    Vector2D grid = mathService.worldToGrid(pos.x,pos.y);
+                    clickBadger.moveToGridPos(grid);
                     return true;
                 }
                 return false;
@@ -166,21 +161,19 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        camera.zoom = 1f; // Debug tool
         camera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
         camera.update();
         mapRenderer.setView(camera);
 
         mapRenderer.render();
 
-        camera.zoom = 1f;
-        camera.update();
-
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
-        characterSprites.get(1).setPosition(mathService.gridToWorld(grid.getX(),grid.getY()));
+        characterSprites.get(1).setPositionInWorld(mathService.gridToWorld(grid.getX(),grid.getY()));
 
         for (CharacterSprite sprite : characterSprites) {
             sprite.update(delta).draw(batch);
