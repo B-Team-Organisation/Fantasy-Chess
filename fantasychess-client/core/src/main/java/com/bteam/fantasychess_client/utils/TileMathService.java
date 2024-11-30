@@ -8,6 +8,8 @@ import com.bteam.common.models.Vector2D;
 /**
  * Mathematical Functions for Grid
  * <p>
+ * Offers methods for easy coordinate transformation between world and grid coordinates.
+ *
  *
  * @author Jacinto, Lukas
  */
@@ -15,7 +17,7 @@ public class TileMathService {
     private final int mapWidth;
     private final int mapHeight;
 
-    private final Vector2 fakeTopCorner;
+    private final Vector2 doubleTopCorner;
     private final Vector2 bottomCorner;
 
     private final Vector2 topCorner;
@@ -50,8 +52,8 @@ public class TileMathService {
         this.topCorner = new Vector2(center.getX(),center.getY()+(mapHeight/2f)*tilePixelHeight);
         this.bottomCorner = new Vector2(center.getX(),center.getY()-(mapHeight/2f)*tilePixelHeight);
 
-        this.fakeTopCorner = new Vector2(center.getX(),center.getY()+(mapHeight/2f)*tilePixelWidth);
-
+        // tilePixelWidth is correct in this context, because it makes sure the map is treated is a square.
+        this.doubleTopCorner = new Vector2(center.getX(),center.getY()+(mapHeight/2f)*tilePixelWidth);
     }
 
     /**
@@ -94,14 +96,14 @@ public class TileMathService {
         float rowTileUnit = 1f / mapHeight;
 
         // Use fake top corner because the edges aren't perpendicular, avoids angle transformation
-        Vector2 columnProjection = pointLineProjection(fakeTopCorner, rightCorner, point.cpy());
-        Vector2 rowProjection = pointLineProjection(fakeTopCorner, leftCorner, point.cpy());
+        Vector2 columnProjection = pointLineProjection(doubleTopCorner, rightCorner, point.cpy());
+        Vector2 rowProjection = pointLineProjection(doubleTopCorner, leftCorner, point.cpy());
 
-        float colPercent = percentOnLine(rowProjection, fakeTopCorner.cpy(), leftCorner.cpy());
+        float colPercent = percentOnLine(rowProjection, doubleTopCorner.cpy(), leftCorner.cpy());
         int column = (int)(colPercent/rowTileUnit);
         if (column >= mapWidth) column = mapWidth-1; // cap at grid limit
 
-        float rowPercent = percentOnLine(columnProjection, fakeTopCorner.cpy(), rightCorner.cpy());
+        float rowPercent = percentOnLine(columnProjection, doubleTopCorner.cpy(), rightCorner.cpy());
         int row = (int)(rowPercent/columnTileUnit);
         if (row >= mapHeight) row = mapHeight-1;
 

@@ -1,7 +1,6 @@
 package com.bteam.fantasychess_client.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,16 +10,24 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.models.*;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * Screen on which the game plays out.
@@ -32,32 +39,30 @@ import java.util.List;
  */
 public class GameScreen extends ScreenAdapter {
 
-    private final int TILE_PIXEL_WIDTH = 32;
-    private final int TILE_PIXEL_HEIGHT = 16;
-    private int mapTileWidth;
-    private int mapTileHeight;
-
-    private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
-
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
 
     private Stage stage;
-    private Skin skin;
+    private final Skin skin;
+    private TextureAtlas atlas;
 
     private SpriteBatch batch;
+
+    private final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
+
+    private final int TILE_PIXEL_WIDTH = 32;
+    private final int TILE_PIXEL_HEIGHT = 16;
 
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
 
-    private TextureAtlas atlas;
+    private TileMathService mathService;
 
     // Placeholder
-    private List<CharacterSprite> characterSprites = new ArrayList<>();
+    private final List<CharacterSprite> characterSprites = new ArrayList<>();
     private Vector2D center;
 
     public GameScreen (Skin skin){
-
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 426,240);
         camera.update();
@@ -65,61 +70,120 @@ public class GameScreen extends ScreenAdapter {
         extendViewport = new ExtendViewport(426,240,camera);
         extendViewport.apply();
 
-        batch = new SpriteBatch();
-
-        // Todo: Adjust mapwidth dynamicly as soon as we let the player choose maps
-        tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
-        mapTileWidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getWidth();
-        mapTileWidth = ((TiledMapTileLayer)(tiledMap.getLayers().get(0))).getHeight();
-
-        TileMathService tileMathService = new TileMathService(
-            mapTileWidth, mapTileHeight, tiledMap, mapTileWidth, mapTileHeight
-        );
-        center = tileMathService.getMapCenter();
-
-        mapRenderer = new IsometricTiledMapRenderer(tiledMap);
-
         this.skin = skin;
-        atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));//"auto-generated-atlas.atlas"));
     }
 
     @Override
     public void show() {
-        stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f,.12f,.16f,1);
 
+        stage = new Stage(extendViewport);
 
-        CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),center,null);
-        movingBadger.moveTo(center.add(new Vector2D(-100,-50)));
+        atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
+        batch = new SpriteBatch();
+
+        // Todo: Keep in mind that this method of dimension retrieval is
+        //  bound to run into issues as soon as the map also contains surrounding foliage.
+        tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
+        mapRenderer = new IsometricTiledMapRenderer(tiledMap);
+
+        int mapTileWidth = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getWidth();
+        int mapTileHeight = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getHeight();
+
+        mathService = new TileMathService(
+            mapTileWidth, mapTileHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
+        );
+        center = mathService.getMapCenter();
+
+        mapRenderer.setView(camera);
+
+        CharacterSprite clickBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),new Vector2D(4,4),null,mathService);
+        clickBadger.setPosition(mathService.gridToWorld(4,4));
+        characterSprites.add(clickBadger);
+
+        CharacterSprite movingBadger = new CharacterSprite(atlas.findRegion("badger/badger-front"),new Vector2D(4,4),null, mathService);
         characterSprites.add(movingBadger);
+
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(new FullscreenInputListener());
+        multiplexer.addProcessor(new InputProcessor() {
+            @Override
+            public boolean keyDown(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyUp(int keycode) {
+                return false;
+            }
+
+            @Override
+            public boolean keyTyped(char character) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                if (button == Input.Buttons.LEFT){
+                    Main.getLogger().log(Level.SEVERE,"Click");
+                    Vector3 pos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+                    clickBadger.moveToWorldPos(new Vector2(pos.x, pos.y));
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                return false;
+            }
+
+            @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                return false;
+            }
+
+            @Override
+            public boolean scrolled(float amountX, float amountY) {
+                return false;
+            }
+        });
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        camera.zoom = 1f;
         camera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
         camera.update();
         mapRenderer.setView(camera);
+
         mapRenderer.render();
+
+        camera.zoom = 1f;
+        camera.update();
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        characterSprites.get(0).moveTo(new Vector2D((int)mouse.x,(int)mouse.y));
-
-        Sprite badger = new Sprite(atlas.findRegion("badger/badger-front"));
-        float x = center.getX() - badger.getWidth()/2;
-        float y = center.getY() - badger.getHeight()/2;
-        batch.draw(badger,x,y);
-        batch.draw(badger,mouse.x - badger.getWidth()/2,mouse.y - badger.getHeight()/2);
-
-        batch.draw(badger,x-4.5f*TILE_PIXEL_WIDTH,y);
+        Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
+        characterSprites.get(1).setPosition(mathService.gridToWorld(grid.getX(),grid.getY()));
 
         for (CharacterSprite sprite : characterSprites) {
-            sprite.draw(batch);
+            sprite.update(delta).draw(batch);
         }
 
         batch.end();
