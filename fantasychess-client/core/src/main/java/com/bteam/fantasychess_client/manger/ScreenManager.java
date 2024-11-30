@@ -5,6 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.ui.MainMenu;
+import com.bteam.fantasychess_client.ui.Screens;
 import com.bteam.fantasychess_client.ui.SplashScreen;
 
 import java.util.logging.Level;
@@ -17,10 +18,6 @@ import java.util.logging.Level;
  */
 
 public class ScreenManager {
-    public static final String MAIN_MENU_SCREEN = "main_menu";
-    public static final String SPLASH_SCREEN = "splash";
-    public static final String GAME_SCREEN = "game";
-
     private Skin skin;
 
     public ScreenManager() {
@@ -30,19 +27,19 @@ public class ScreenManager {
         this.skin = skin;
     }
 
-    public void navigateTo(String screen) {
+    public void navigateTo(Screens screen) {
         Gdx.app.postRunnable(() -> navigateToNonRunnable(screen));
     }
 
-    public void navigateToNonRunnable(String screen) {
+    public void navigateToNonRunnable(Screens screen) {
         switch (screen) {
-            case MAIN_MENU_SCREEN:
+            case MainMenu:
                 (Main.getInstance()).setScreen(new MainMenu(skin));
                 break;
-            case SPLASH_SCREEN:
+            case Splash:
                 (Main.getInstance()).setScreen(new SplashScreen(skin));
                 break;
-            case GAME_SCREEN:
+            case Game:
                 (Main.getInstance()).setScreen(new GameScreen(skin));
                 break;
             default:

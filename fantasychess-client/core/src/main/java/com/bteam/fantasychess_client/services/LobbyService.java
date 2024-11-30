@@ -2,7 +2,7 @@ package com.bteam.fantasychess_client.services;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.bteam.common.models.LobbyModel;
-import com.bteam.fantasychess_client.manger.ScreenManager;
+import com.bteam.fantasychess_client.ui.Screens;
 
 import java.util.Objects;
 import java.util.logging.Level;
@@ -43,6 +43,6 @@ public class LobbyService {
         getLogger().log(Level.SEVERE, reason);
 
         if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return;
-        getScreenManager().navigateTo(ScreenManager.MAIN_MENU_SCREEN);
+        getScreenManager().navigateTo(Screens.MainMenu);
     }
 }

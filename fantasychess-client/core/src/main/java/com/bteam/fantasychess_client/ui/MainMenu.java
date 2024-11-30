@@ -23,7 +23,6 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
-import com.bteam.fantasychess_client.manger.ScreenManager;
 
 import java.util.List;
 import java.util.*;
@@ -247,7 +246,7 @@ public class MainMenu extends ScreenAdapter {
      * Function to be directed to GameScreen
      */
     private void goToGameScreen() {
-        getScreenManager().navigateTo(ScreenManager.GAME_SCREEN);
+        getScreenManager().navigateTo(Screens.Game);
     }
 
     /**
