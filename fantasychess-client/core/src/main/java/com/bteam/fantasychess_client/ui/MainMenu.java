@@ -2,7 +2,6 @@ package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,20 +30,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
-
-
-// every lobby in lower case for search handling
-// distance algo 2
-
-
-// Bug1: after pressing create and cancel to lobby, search panel doenst dissapear .
-// --Fix1: no mistakes in the writing, just mid search
-//-> fixed, suggestions label, ( maybe link to input later?),
-
-// Fix2: event handler -> Lukas
-// Problem1: Refresh Button ?
-//
-
 
 /**
  * First screen of the application. Displayed after the application is created.
@@ -212,11 +197,22 @@ public class MainMenu extends ScreenAdapter {
      * in your own lobby if clicked.
      */
     private void createLobbyDialog() {
-
         TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
         addNameFilter(lobbyNameField);
 
-        Dialog dialog = getBaseLobbyDialog(lobbyNameField);
+        Dialog dialog = new Dialog("Lobby creation", skin) {
+            @Override
+            protected void result(Object object) {
+                if ("create".equals(object)) {
+                    Gdx.app.postRunnable(() -> {
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
+                        Main.getWebSocketService().send(packet);
+                    });
+                }
+            }
+        };
+        dialog.setResizable(false);
+        dialog.setMovable(false);
 
         Table contentTable = dialog.getContentTable();
         contentTable.defaults().pad(20);
@@ -240,23 +236,6 @@ public class MainMenu extends ScreenAdapter {
 
         dialog.show(stage);
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
-    }
-
-    private Dialog getBaseLobbyDialog(TextField lobbyNameField) {
-        Dialog dialog = new Dialog("Lobby creation", skin) {
-            @Override
-            protected void result(Object object) {
-                if ("create".equals(object)) {
-                    Gdx.app.postRunnable(() -> {
-                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
-                        Main.getWebSocketService().send(packet);
-                    });
-                }
-            }
-        };
-        dialog.setResizable(false);
-        dialog.setMovable(false);
-        return dialog;
     }
 
 
@@ -295,6 +274,11 @@ public class MainMenu extends ScreenAdapter {
         loadLobbies(filteredLobbies);
     }
 
+    /**
+     * Loads the given lobbies into the lobby list
+     *
+     * @param lobbies the list of lobbies to be loaded
+     */
     private void loadLobbies(List<LobbyModel> lobbies) {
         centerContent.clearChildren();
 
@@ -329,6 +313,15 @@ public class MainMenu extends ScreenAdapter {
     }
 
 
+    /**
+     * Calculates the levenshtein distance between s1 and s2
+     * <p>
+     * The result can be used in combination with a threshold to filter the shown lobbies.
+     *
+     * @param s1 the first String of the comparison
+     * @param s2 the second String of the comparison
+     * @return the levenshtein distance between {@code s1} and {@code s2}
+     */
     private int levenshteinDistance(String s1, String s2) {
         int[] costs = new int[s2.length() + 1];
         for (int i = 0; i <= s1.length(); i++) {
@@ -361,23 +354,7 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
         extendViewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
-
-    @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
-
-    @Override
-    public void hide() {
-        // This method is called when another screen replaces this one.
     }
 
     @Override
@@ -387,24 +364,39 @@ public class MainMenu extends ScreenAdapter {
         // Destroy screen's assets here.
     }
 
-    private void onLobbyInfo(String packet) {
+    /**
+     * Method that handles receiving a LOBBY_INFO package
+     *
+     * @param packetJson the packet in Json format
+     */
+    private void onLobbyInfo(String packetJson) {
         Gdx.app.postRunnable(() -> {
-            JsonValue data = new JsonReader().parse(packet).get("data");
+            JsonValue data = new JsonReader().parse(packetJson).get("data");
             allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
             lobbyNameInput.setText(defaultSearchString);
             loadLobbies(allLobbies);
         });
     }
 
-    private void onLobbyCreated(String packet) {
+    /**
+     * Method that handles receiving a LOBBY_CREATED package
+     *
+     * @param packetJson the packet as Json format
+     */
+    private void onLobbyCreated(String packetJson) {
         Gdx.app.postRunnable(() -> {
-            JsonValue data = new JsonReader().parse(packet).get("data");
+            JsonValue data = new JsonReader().parse(packetJson).get("data");
             LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
             LobbyService.getInstance().setCurrentLobby(lobby);
             goToGameScreen();
         });
     }
 
+    /**
+     * Method that handles receiving a LOBBY_JOINED package
+     *
+     * @param packetJson the packet as Json format
+     */
     private void onLobbyJoined(String packetJson) {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packetJson).get("data");
