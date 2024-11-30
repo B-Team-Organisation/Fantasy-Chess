@@ -5,10 +5,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -49,12 +51,17 @@ public class GameScreen extends ScreenAdapter {
 
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
+    TiledMapTileLayer highlightLayer;
+    TiledMapTileLayer previewLayer;
+    TiledMapTileLayer damageLayer;
 
     private TileMathService mathService;
 
     // Placeholder
     private final List<CharacterSprite> characterSprites = new ArrayList<>();
     private Vector2D center;
+
+    private Vector2D focussedTile;
 
     public GameScreen (Skin skin){
         camera = new OrthographicCamera();
@@ -81,11 +88,18 @@ public class GameScreen extends ScreenAdapter {
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
-        int mapTileWidth = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getWidth();
-        int mapTileHeight = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getHeight();
+        int mapWidth = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getWidth();
+        int mapHeight = ((TiledMapTileLayer) (tiledMap.getLayers().get(0))).getHeight();
+
+        highlightLayer = new TiledMapTileLayer(mapWidth,mapHeight,TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        tiledMap.getLayers().add(highlightLayer);
+        previewLayer = new TiledMapTileLayer(mapWidth,mapHeight,TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        tiledMap.getLayers().add(previewLayer);
+        damageLayer = new TiledMapTileLayer(mapWidth,mapHeight,TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        tiledMap.getLayers().add(damageLayer);
 
         mathService = new TileMathService(
-            mapTileWidth, mapTileHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
+            mapWidth, mapHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
         );
         center = mathService.getMapCenter();
 
@@ -173,6 +187,11 @@ public class GameScreen extends ScreenAdapter {
 
         Vector3 mouse = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
+
+        if (!grid.equals(focussedTile)){
+            changeFocussedTile(grid);
+        }
+
         characterSprites.get(1).setPositionInWorld(mathService.gridToWorld(grid.getX(),grid.getY()));
 
         for (CharacterSprite sprite : characterSprites) {
@@ -183,6 +202,22 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
+    }
+
+    public void changeFocussedTile(Vector2D newFocussedPos){
+        if (focussedTile == null){
+            focussedTile = newFocussedPos;
+            TiledMapTileLayer.Cell highlightCell = new TiledMapTileLayer.Cell();
+            TextureRegion highlightRegion = atlas.findRegion("special_tiles/highlight");
+            highlightCell.setTile(new StaticTiledMapTile(highlightRegion));
+            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),highlightCell);
+        } else {
+            TiledMapTileLayer.Cell highlightCell = highlightLayer.getCell(focussedTile.getX(),focussedTile
+                .getY());
+            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),null);
+            focussedTile = newFocussedPos;
+            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),highlightCell);
+        }
     }
 
     @Override

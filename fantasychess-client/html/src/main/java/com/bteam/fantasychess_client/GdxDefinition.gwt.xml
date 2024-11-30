@@ -38,5 +38,4 @@
     <collapse-property name="user.agent" values="*"/>
     <!-- Remove the "user.agent" lines above if you encounter issues with Safari or other Gecko browsers. -->
     <!-- Reflected Packages-->
-    <extend-configuration-property name="gdx.reflect.include" value="com.bteam.common" />
 </module>
