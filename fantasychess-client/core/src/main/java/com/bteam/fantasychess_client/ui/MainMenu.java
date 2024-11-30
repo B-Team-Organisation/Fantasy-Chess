@@ -17,10 +17,12 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.JoinLobbyDTO;
+import com.bteam.common.dto.JoinLobbyResultDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
+import com.bteam.fantasychess_client.services.LobbyService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,10 +145,7 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
 
-        Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(null, "LOBBY_ALL");
-            Main.getWebSocketService().send(packet);
-        });
+        Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
         stage.addActor(table);
         Gdx.input.setInputProcessor(stage);
@@ -258,6 +257,7 @@ public class MainMenu extends ScreenAdapter {
                         Gdx.app.postRunnable(() -> {
                             var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
                             Main.getWebSocketService().send(packet);
+                            LobbyService.getInstance().setCurrentLobby(lobby);
                         });
                     }
                 });
@@ -343,12 +343,21 @@ public class MainMenu extends ScreenAdapter {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packet).get("data");
             LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
+            LobbyService.getInstance().setCurrentLobby(lobby);
             goToGameScreen();
         });
     }
 
-    private void onLobbyJoined(String packet) {
-
+    private void onLobbyJoined(String packetJson) {
+        Gdx.app.postRunnable(() -> {
+            JsonValue data = new JsonReader().parse(packetJson).get("data");
+            var packet = new JoinLobbyResultDTO(data.getString("result"));
+            if (packet.isSuccess()) goToGameScreen();
+            else {
+                Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + packet.getResult());
+                LobbyService.getInstance().setCurrentLobby(null);
+            }
+        });
     }
 }
 
