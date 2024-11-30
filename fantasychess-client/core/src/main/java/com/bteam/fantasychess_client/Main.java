@@ -3,11 +3,13 @@ package com.bteam.fantasychess_client;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.bteam.fantasychess_client.manger.ScreenManager;
 import com.bteam.fantasychess_client.networking.WebSocketClient;
 import com.bteam.fantasychess_client.networking.WebSocketService;
 import com.bteam.fantasychess_client.services.LobbyService;
 import com.bteam.fantasychess_client.ui.SplashScreen;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -15,14 +17,18 @@ import java.util.logging.Logger;
  */
 public class Main extends Game {
     private static final String WEBSOCKET_ADDRESS = "ws://127.0.0.1:5050/ws";
+
     private final WebSocketService socketService;
     private final LobbyService lobbyService;
-    Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
+    private final ScreenManager screenManager;
+
+    private final Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
     private Skin skin;
 
     public Main() {
         socketService = new WebSocketService(WEBSOCKET_ADDRESS, new WebSocketClient());
         lobbyService = new LobbyService();
+        screenManager = new ScreenManager();
     }
 
     public static Main getInstance() {
@@ -37,14 +43,21 @@ public class Main extends Game {
         return getInstance().socketService;
     }
 
-    @Override
-    public void create() {
-        skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
-        setScreen(new SplashScreen(skin));
+    public static LobbyService getLobbyService() {
+        return getInstance().lobbyService;
     }
 
-    public WebSocketService getSocketService() {
-        return socketService;
+    public static ScreenManager getScreenManager() {
+        return getInstance().screenManager;
+    }
+
+    @Override
+    public void create() {
+        logger.log(Level.SEVERE, "Creating Screen");
+        skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
+        screenManager.setSkin(skin);
+        setScreen(new SplashScreen(skin));
+        logger.log(Level.SEVERE, "Set Screen");
     }
 
     @Override

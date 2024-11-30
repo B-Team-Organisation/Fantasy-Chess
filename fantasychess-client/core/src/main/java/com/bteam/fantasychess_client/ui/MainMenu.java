@@ -22,12 +22,13 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
-import com.bteam.fantasychess_client.services.LobbyService;
+import com.bteam.fantasychess_client.manger.ScreenManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import static com.bteam.fantasychess_client.Main.getLobbyService;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 
@@ -144,6 +145,7 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
         Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
+        Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", Main.getLobbyService()::onLobbyClosed);
 
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
@@ -211,9 +213,7 @@ public class MainMenu extends ScreenAdapter {
      * Function to be directed to GameScreen
      */
     private void goToGameScreen() {
-        Gdx.app.postRunnable(() -> {
-            ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(skin));
-        });
+        Main.getScreenManager().navigateTo(ScreenManager.GAME_SCREEN);
     }
 
     /**
@@ -257,7 +257,7 @@ public class MainMenu extends ScreenAdapter {
                         Gdx.app.postRunnable(() -> {
                             var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
                             Main.getWebSocketService().send(packet);
-                            LobbyService.getInstance().setCurrentLobby(lobby);
+                            getLobbyService().setCurrentLobby(lobby);
                         });
                     }
                 });
@@ -343,7 +343,7 @@ public class MainMenu extends ScreenAdapter {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packet).get("data");
             LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
-            LobbyService.getInstance().setCurrentLobby(lobby);
+            getLobbyService().setCurrentLobby(lobby);
             goToGameScreen();
         });
     }
@@ -355,7 +355,7 @@ public class MainMenu extends ScreenAdapter {
             if (packet.isSuccess()) goToGameScreen();
             else {
                 Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + packet.getResult());
-                LobbyService.getInstance().setCurrentLobby(null);
+                getLobbyService().setCurrentLobby(null);
             }
         });
     }
