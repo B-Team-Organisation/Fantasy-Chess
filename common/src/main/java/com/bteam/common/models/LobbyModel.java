@@ -28,6 +28,24 @@ public class LobbyModel {
         FULL,
         RUNNING
     }
+    /**
+     * Basic constructor for a LobbyModel.
+     * <p>
+     * Use this one if you only have the minimum information about the lobby
+     *
+     * @param lobbyId unique identifier for the lobby.
+     * @param lobbyName name of the lobby
+     * @param gameState {@link GameState} of the lobby
+     * @param maxPlayers max players in the lobby
+     */
+    public LobbyModel(String lobbyId, String lobbyName, GameState gameState, int maxPlayers) {
+        this.lobbyId = lobbyId;
+        this.lobbyName = lobbyName;
+        this.gameState = gameState;
+        this.maxPlayers = maxPlayers;
+        this.players = new ArrayList<>();
+        this.host = null;
+    }
 
     /**
      * Constructor for a LobbyModel.

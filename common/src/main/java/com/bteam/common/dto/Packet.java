@@ -8,6 +8,11 @@ public class Packet {
     JsonDTO data;
     String id;
 
+    public Packet(){
+        data = null;
+        id = "";
+    }
+
     public Packet(JsonDTO data, String id) {
         this.data = data;
         this.id = id;
@@ -23,6 +28,7 @@ public class Packet {
 
     @Override
     public String toString() {
-        return "{\"id\":\"" + id + "\",\"data\":" + data.toJson() + "}";
+        var dataString = data == null ? "null" : data.toJson();
+        return "{\"id\":\"" + id + "\",\"data\":" + dataString + "}";
     }
 }
