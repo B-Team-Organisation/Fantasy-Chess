@@ -25,7 +25,7 @@ import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 import com.bteam.fantasychess_client.services.LobbyService;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -112,6 +112,7 @@ public class MainMenu extends ScreenAdapter {
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         onChange(refreshButton, () -> {
             Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+            stage.setKeyboardFocus(null);
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
         onChange(createLobby, this::createLobbyDialog);
@@ -180,7 +181,7 @@ public class MainMenu extends ScreenAdapter {
      */
     private void addNameFilter(TextField textField) {
         textField.setTextFieldFilter(new TextField.TextFieldFilter() {
-            private final String otherAcceptedChars = "\' ";
+            private final String otherAcceptedChars = "\' !";
             @Override
             public boolean acceptChar(TextField textField, char c) {
                 return Character.isLetterOrDigit(c) || otherAcceptedChars.indexOf(c) >= 0;
@@ -262,11 +263,20 @@ public class MainMenu extends ScreenAdapter {
             return;
         }
 
+        List<Map.Entry<LobbyModel, Integer>> lobbiesWithDistances = new ArrayList<>();
+
         for (LobbyModel lobby : allLobbies) {
             String normalizedLobbyName = lobby.getLobbyName().toLowerCase();
-            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance(normalizedInput, normalizedLobbyName) <= 2) {
-                filteredLobbies.add(lobby);
+            int levenshteinDistance = calculateLevenshteinDistance(normalizedInput, normalizedLobbyName);
+            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance <= 2) {
+                lobbiesWithDistances.add(new AbstractMap.SimpleEntry<>(lobby, levenshteinDistance));
             }
+        }
+
+        lobbiesWithDistances.sort(Comparator.comparingInt(Map.Entry::getValue));
+
+        for (Map.Entry<LobbyModel, Integer> entry : lobbiesWithDistances) {
+            filteredLobbies.add(entry.getKey());
         }
 
         noMatchingLobbyLabel.setVisible(filteredLobbies.isEmpty());
@@ -322,7 +332,7 @@ public class MainMenu extends ScreenAdapter {
      * @param s2 the second String of the comparison
      * @return the levenshtein distance between {@code s1} and {@code s2}
      */
-    private int levenshteinDistance(String s1, String s2) {
+    private int calculateLevenshteinDistance(String s1, String s2) {
         int[] costs = new int[s2.length() + 1];
         for (int i = 0; i <= s1.length(); i++) {
             int lastValue = i;
