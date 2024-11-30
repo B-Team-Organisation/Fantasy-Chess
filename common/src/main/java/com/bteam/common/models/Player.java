@@ -1,10 +1,10 @@
 package com.bteam.common.models;
 
-import java.util.ArrayList;
 import com.bteam.common.entities.CharacterEntity;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * A class representing a player.
@@ -15,22 +15,16 @@ import java.util.UUID;
  * @version 1.1
  */
 public class Player {
+    private final String playerId;
     private String username;
-    private String playerId;
     private Status status;
     private List<CharacterEntity> characters;
-
-    enum Status{
-        NOT_READY,
-        READY,
-    }
-
 
     /**
      * Constructor for a Player.
      *
-     * @param username name of the players
-     * @param playerId id of the player as stringified UUID
+     * @param username   name of the players
+     * @param playerId   id of the player as stringified UUID
      * @param characters list of characters associated with the player
      */
     public Player(String username, String playerId, List<CharacterEntity> characters) {
@@ -40,9 +34,12 @@ public class Player {
         this.characters = new ArrayList<>();
     }
 
-
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**
@@ -56,22 +53,17 @@ public class Player {
         return status;
     }
 
-    public List<CharacterEntity> getCharacters(){
-        return characters;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public List<CharacterEntity> getCharacters() {
+        return characters;
     }
 
     public void setCharacters(List<CharacterEntity> characters) {
         this.characters = characters != null ? characters : new ArrayList<>();
     }
-
 
     /**
      * Adds a character to the player's character list.
@@ -97,10 +89,9 @@ public class Player {
         return false;
     }
 
-
     @Override
     public String toString() {
-        return "Username: " + username + "PlayerId: " + playerId + "Status: "+ status+ "Characters: " + characters;
+        return "Username: " + username + "PlayerId: " + playerId + "Status: " + status + "Characters: " + characters;
     }
 
     @Override
@@ -108,12 +99,17 @@ public class Player {
         return Objects.hash(playerId, username, status, characters);
     }
 
-    public boolean equals(Object o){
+    public boolean equals(Object o) {
         return o instanceof Player
-                && ((Player)o).playerId.equals(playerId)
-                && ((Player)o).username.equals(username)
-                && ((Player)o).status.equals(status)
-                && ((Player)o).characters.equals(characters);
+            && ((Player) o).playerId.equals(playerId)
+            && ((Player) o).username.equals(username)
+            && ((Player) o).status.equals(status)
+            && ((Player) o).characters.equals(characters);
 
+    }
+
+    public enum Status {
+        NOT_READY,
+        READY,
     }
 }

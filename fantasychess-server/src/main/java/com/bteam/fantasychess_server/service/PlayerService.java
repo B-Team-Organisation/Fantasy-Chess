@@ -7,12 +7,12 @@ import com.bteam.fantasychess_server.data.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 @Service
 public class PlayerService {
     final PlayerRepository playerRepository;
+
     public PlayerService(@Autowired PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
@@ -27,5 +27,13 @@ public class PlayerService {
     public Player createPlayer(String name) {
         var savedPlayer = playerRepository.save(new PlayerEntity(name));
         return PlayerMapper.fromEntity(savedPlayer);
+    }
+
+    public void setPlayerStatus(UUID uuid, Player.Status status) {
+        var player = playerRepository.findById(uuid);
+        if (player.isEmpty()) return;
+        var updatedPlayer = player.get();
+        updatedPlayer.setStatus(status);
+        playerRepository.save(updatedPlayer);
     }
 }

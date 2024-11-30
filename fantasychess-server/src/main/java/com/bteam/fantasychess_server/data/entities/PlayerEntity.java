@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_server.data.entities;
 
+import com.bteam.common.models.Player;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -17,13 +18,18 @@ public class PlayerEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Player.Status status;
+
     public PlayerEntity(String name) {
         this.name = name;
+        this.status = Player.Status.NOT_READY;
     }
 
     public PlayerEntity() {
         id = UUID.randomUUID();
         name = "";
+        status = Player.Status.NOT_READY;
     }
 
     public UUID getId() {
@@ -40,5 +46,13 @@ public class PlayerEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Player.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Player.Status status) {
+        this.status = status;
     }
 }
