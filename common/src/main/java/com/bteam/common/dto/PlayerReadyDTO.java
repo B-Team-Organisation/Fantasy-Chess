@@ -28,11 +28,15 @@ public class PlayerReadyDTO implements JsonDTO {
         return status;
     }
 
+    public String getClientId() {
+        return clientId;
+    }
+
     @Override
     public String toJson() {
         return "{" +
             "\"status\":\"" + status + "\"," +
-            ", \"clientId\":\"" + clientId + "\"" +
+            "\"clientId\":\"" + clientId + "\"" +
             "}";
     }
 }
