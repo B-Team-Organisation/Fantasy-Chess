@@ -897,23 +897,16 @@ special_tiles/highlight
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/highlight_new
+special_tiles/red-border
   rotate: false
   xy: 36, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/red-border
-  rotate: false
-  xy: 70, 36
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
 special_tiles/small-yellow-circle
   rotate: false
-  xy: 70, 2
+  xy: 70, 36
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
