@@ -22,28 +22,13 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
-import com.bteam.fantasychess_client.manger.ScreenManager;
+import com.bteam.fantasychess_client.services.LobbyService;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 
-import static com.bteam.fantasychess_client.Main.getLobbyService;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
-
-
-// every lobby in lower case for search handling
-// distance algo 2
-
-
-// Bug1: after pressing create and cancel to lobby, search panel doenst dissapear .
-// --Fix1: no mistakes in the writing, just mid search
-//-> fixed, suggestions label, ( maybe link to input later?),
-
-// Fix2: event handler -> Lukas
-// Problem1: Refresh Button ?
-//
-
 
 /**
  * First screen of the application. Displayed after the application is created.
@@ -58,6 +43,7 @@ public class MainMenu extends ScreenAdapter {
     private List<LobbyModel> allLobbies = new ArrayList<>();
     private Label noMatchingLobbyLabel;
     private TextField lobbyNameInput;
+    private final String defaultSearchString = "Search Lobby name!";
 
     private String username;
 
@@ -74,19 +60,16 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void show() {
-        stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
+
+        stage = new Stage(extendViewport);
 
         Table table = new Table();
         table.setFillParent(true);
 
-        username = Gdx.app.getPreferences("usersettings").getString("username");
-        Label usernameLabel = new Label(username, skin);
-        usernameLabel.setFontScale(4f);
-        usernameLabel.setAlignment(Align.left);
+        Label usernameLabel = createUserNameLabel();
 
-        Label titleLabel = new Label("FantasyChess", skin);
-        titleLabel.setFontScale(6f);
+        Label titleLabel = createTitleLabel();
 
         Table topContent = new Table();
         topContent.setBackground(skin.getDrawable("round-dark-gray"));
@@ -94,19 +77,31 @@ public class MainMenu extends ScreenAdapter {
         noMatchingLobbyLabel = new Label("No matching lobby found!", skin);
         noMatchingLobbyLabel.setVisible(false);
 
-        lobbyNameInput = new TextField("Search lobby name", skin);
+        lobbyNameInput = new TextField(defaultSearchString, skin);
+        addNameFilter(lobbyNameInput);
         lobbyNameInput.addListener(new FocusListener() {
             @Override
             public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
                 if (focused) {
-                    if (lobbyNameInput.getText().equals("Search lobby name")) {
+                    if (lobbyNameInput.getText().equals(defaultSearchString)) {
                         lobbyNameInput.setText("");
                     }
                 } else {
                     if (lobbyNameInput.getText().isEmpty()) {
-                        lobbyNameInput.setText("Search Lobby Name");
+                        lobbyNameInput.setText(defaultSearchString);
                     }
                 }
+            }
+        });
+        lobbyNameInput.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.DEL) {
+                    lobbyNameInput.setText("");
+                    filterLobbies("");
+                    return true;
+                }
+                return false;
             }
         });
         onChange(lobbyNameInput, () -> {
@@ -116,9 +111,10 @@ public class MainMenu extends ScreenAdapter {
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         onChange(refreshButton, () -> {
             Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+            stage.setKeyboardFocus(null);
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
-        onChange(createLobby, this::createLobbyDialog);// this instead of ()->
+        onChange(createLobby, this::createLobbyDialog);
 
         topContent.add(lobbyNameInput).growX().pad(10);
         topContent.add(refreshButton).pad(10);
@@ -145,12 +141,51 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
         Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
-        Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", Main.getLobbyService()::onLobbyClosed);
 
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
         stage.addActor(table);
+
         Gdx.input.setInputProcessor(stage);
+    }
+
+    /**
+     * Creates the label that shows the game title
+     *
+     * @return the {@link Label}
+     */
+    private Label createTitleLabel() {
+        Label titleLabel = new Label("FantasyChess", skin);
+        titleLabel.setFontScale(6f);
+        return titleLabel;
+    }
+
+    /**
+     * Creates the label that shows the user his name
+     *
+     * @return the {@link Label}
+     */
+    private Label createUserNameLabel() {
+        username = Gdx.app.getPreferences("usersettings").getString("username");
+        Label usernameLabel = new Label(username, skin);
+        usernameLabel.setFontScale(4f);
+        usernameLabel.setAlignment(Align.left);
+        return usernameLabel;
+    }
+
+    /**
+     * Makes the {@link TextField} only accept letters, digits and other defined chars as input
+     *
+     * @param textField the {@link TextField} to apply the filter to
+     */
+    private void addNameFilter(TextField textField) {
+        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
+            private final String otherAcceptedChars = "\' !";
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return Character.isLetterOrDigit(c) || otherAcceptedChars.indexOf(c) >= 0;
+            }
+        });
     }
 
     /**
@@ -162,10 +197,22 @@ public class MainMenu extends ScreenAdapter {
      * in your own lobby if clicked.
      */
     private void createLobbyDialog() {
-
         TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
+        addNameFilter(lobbyNameField);
 
-        Dialog dialog = getBaseLobbyDialog(lobbyNameField);
+        Dialog dialog = new Dialog("Lobby creation", skin) {
+            @Override
+            protected void result(Object object) {
+                if ("create".equals(object)) {
+                    Gdx.app.postRunnable(() -> {
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
+                        Main.getWebSocketService().send(packet);
+                    });
+                }
+            }
+        };
+        dialog.setResizable(false);
+        dialog.setMovable(false);
 
         Table contentTable = dialog.getContentTable();
         contentTable.defaults().pad(20);
@@ -191,29 +238,14 @@ public class MainMenu extends ScreenAdapter {
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
-    private Dialog getBaseLobbyDialog(TextField lobbyNameField) {
-        Dialog dialog = new Dialog("Lobby creation", skin) {
-            @Override
-            protected void result(Object object) {
-                if ("create".equals(object)) {
-                    Gdx.app.postRunnable(() -> {
-                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
-                        Main.getWebSocketService().send(packet);
-                    });
-                }
-            }
-        };
-        dialog.setResizable(false);
-        dialog.setMovable(false);
-        return dialog;
-    }
-
 
     /**
      * Function to be directed to GameScreen
      */
     private void goToGameScreen() {
-        Main.getScreenManager().navigateTo(ScreenManager.GAME_SCREEN);
+        Gdx.app.postRunnable(() -> {
+            ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(skin));
+        });
     }
 
     /**
@@ -226,11 +258,24 @@ public class MainMenu extends ScreenAdapter {
 
         List<LobbyModel> filteredLobbies = new ArrayList<LobbyModel>();
 
+        if (allLobbies.isEmpty()){
+            return;
+        }
+
+        List<Map.Entry<LobbyModel, Integer>> lobbiesWithDistances = new ArrayList<>();
+
         for (LobbyModel lobby : allLobbies) {
             String normalizedLobbyName = lobby.getLobbyName().toLowerCase();
-            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance(normalizedInput, normalizedLobbyName) <= 2) {
-                filteredLobbies.add(lobby);
+            int levenshteinDistance = calculateLevenshteinDistance(normalizedInput, normalizedLobbyName);
+            if (normalizedLobbyName.contains(normalizedInput) || levenshteinDistance <= 2) {
+                lobbiesWithDistances.add(new AbstractMap.SimpleEntry<>(lobby, levenshteinDistance));
             }
+        }
+
+        lobbiesWithDistances.sort(Comparator.comparingInt(Map.Entry::getValue));
+
+        for (Map.Entry<LobbyModel, Integer> entry : lobbiesWithDistances) {
+            filteredLobbies.add(entry.getKey());
         }
 
         noMatchingLobbyLabel.setVisible(filteredLobbies.isEmpty());
@@ -238,6 +283,11 @@ public class MainMenu extends ScreenAdapter {
         loadLobbies(filteredLobbies);
     }
 
+    /**
+     * Loads the given lobbies into the lobby list
+     *
+     * @param lobbies the list of lobbies to be loaded
+     */
     private void loadLobbies(List<LobbyModel> lobbies) {
         centerContent.clearChildren();
 
@@ -257,7 +307,7 @@ public class MainMenu extends ScreenAdapter {
                         Gdx.app.postRunnable(() -> {
                             var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
                             Main.getWebSocketService().send(packet);
-                            getLobbyService().setCurrentLobby(lobby);
+                            LobbyService.getInstance().setCurrentLobby(lobby);
                         });
                     }
                 });
@@ -272,7 +322,16 @@ public class MainMenu extends ScreenAdapter {
     }
 
 
-    private int levenshteinDistance(String s1, String s2) {
+    /**
+     * Calculates the levenshtein distance between s1 and s2
+     * <p>
+     * The result can be used in combination with a threshold to filter the shown lobbies.
+     *
+     * @param s1 the first String of the comparison
+     * @param s2 the second String of the comparison
+     * @return the levenshtein distance between {@code s1} and {@code s2}
+     */
+    private int calculateLevenshteinDistance(String s1, String s2) {
         int[] costs = new int[s2.length() + 1];
         for (int i = 0; i <= s1.length(); i++) {
             int lastValue = i;
@@ -304,23 +363,7 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // Resize your screen here. The parameters represent the new window size.
         extendViewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-        // Invoked when your application is paused.
-    }
-
-    @Override
-    public void resume() {
-        // Invoked when your application is resumed after pause.
-    }
-
-    @Override
-    public void hide() {
-        // This method is called when another screen replaces this one.
     }
 
     @Override
@@ -330,24 +373,39 @@ public class MainMenu extends ScreenAdapter {
         // Destroy screen's assets here.
     }
 
-    private void onLobbyInfo(String packet) {
+    /**
+     * Method that handles receiving a LOBBY_INFO package
+     *
+     * @param packetJson the packet in Json format
+     */
+    private void onLobbyInfo(String packetJson) {
         Gdx.app.postRunnable(() -> {
-            JsonValue data = new JsonReader().parse(packet).get("data");
+            JsonValue data = new JsonReader().parse(packetJson).get("data");
             allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
-            lobbyNameInput.clear();
+            lobbyNameInput.setText(defaultSearchString);
             loadLobbies(allLobbies);
         });
     }
 
-    private void onLobbyCreated(String packet) {
+    /**
+     * Method that handles receiving a LOBBY_CREATED package
+     *
+     * @param packetJson the packet as Json format
+     */
+    private void onLobbyCreated(String packetJson) {
         Gdx.app.postRunnable(() -> {
-            JsonValue data = new JsonReader().parse(packet).get("data");
+            JsonValue data = new JsonReader().parse(packetJson).get("data");
             LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
-            getLobbyService().setCurrentLobby(lobby);
+            LobbyService.getInstance().setCurrentLobby(lobby);
             goToGameScreen();
         });
     }
 
+    /**
+     * Method that handles receiving a LOBBY_JOINED package
+     *
+     * @param packetJson the packet as Json format
+     */
     private void onLobbyJoined(String packetJson) {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packetJson).get("data");
@@ -355,7 +413,7 @@ public class MainMenu extends ScreenAdapter {
             if (packet.isSuccess()) goToGameScreen();
             else {
                 Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + packet.getResult());
-                getLobbyService().setCurrentLobby(null);
+                LobbyService.getInstance().setCurrentLobby(null);
             }
         });
     }

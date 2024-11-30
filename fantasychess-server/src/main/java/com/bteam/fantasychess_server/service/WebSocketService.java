@@ -38,6 +38,10 @@ public class WebSocketService {
         this.lobbyService = lobbyService;
     }
 
+    public WebSocketService(@Autowired LobbyService lobbyService) {
+        addPacketHandler(new LobbyPacketHandler(lobbyService));
+    }
+
     public ImmutableMap<String, Client> getClients() {
         return ImmutableMap.copyOf(clients);
     }

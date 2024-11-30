@@ -17,6 +17,8 @@ import static com.bteam.fantasychess_client.Main.getScreenManager;
  * @author Marc
  */
 public class LobbyService {
+    private static LobbyService instance;
+
     private LobbyModel currentLobby;
 
     /**

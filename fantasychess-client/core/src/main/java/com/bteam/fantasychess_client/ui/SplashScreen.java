@@ -17,6 +17,8 @@ import com.bteam.fantasychess_client.manger.ScreenManager;
 
 import java.util.logging.Level;
 
+import java.util.logging.Level;
+
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**

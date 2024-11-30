@@ -9,7 +9,6 @@ import com.bteam.fantasychess_client.networking.WebSocketService;
 import com.bteam.fantasychess_client.services.LobbyService;
 import com.bteam.fantasychess_client.ui.SplashScreen;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -17,6 +16,15 @@ import java.util.logging.Logger;
  */
 public class Main extends Game {
     private static final String WEBSOCKET_ADDRESS = "ws://127.0.0.1:5050/ws";
+    private final WebSocketService socketService;
+    private final LobbyService lobbyService;
+    Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
+    private Skin skin;
+
+    public Main() {
+        socketService = new WebSocketService(WEBSOCKET_ADDRESS, new WebSocketClient());
+        lobbyService = new LobbyService();
+    }
 
     private final WebSocketService socketService;
     private final LobbyService lobbyService;
@@ -58,6 +66,11 @@ public class Main extends Game {
         screenManager.setSkin(skin);
         setScreen(new SplashScreen(skin));
         logger.log(Level.SEVERE, "Set Screen");
+    }
+
+    @Override
+    public void dispose() {
+        skin.dispose();
     }
 
     @Override
