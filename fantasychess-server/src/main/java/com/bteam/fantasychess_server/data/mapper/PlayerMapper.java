@@ -7,9 +7,11 @@ import java.util.ArrayList;
 
 public final class PlayerMapper {
     public static Player fromEntity(PlayerEntity playerEntity) {
-        return new Player(
-                playerEntity.getName(),
-                playerEntity.getId().toString(),
-                new ArrayList<>());
+        var player = new Player(
+            playerEntity.getName(),
+            playerEntity.getId().toString(),
+            new ArrayList<>());
+        player.setStatus(playerEntity.getStatus());
+        return player;
     }
 }
