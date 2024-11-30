@@ -14,6 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Packet handler for any player related data, such as setting the player's status
+ * (or receiving player details)
+ *
+ * @author Marc
+ */
+
 public class PlayerPacketHandler implements PacketHandler {
     private final PlayerService playerService;
     private final LobbyService lobbyService;
