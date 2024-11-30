@@ -20,7 +20,7 @@ public class CharacterSprite extends Sprite {
     private CharacterEntity character;
     private TileMathService mathService;
 
-    private final float MOVEMENT_SPEED = 40f^^;
+    private final float MOVEMENT_SPEED = 40f;
     Vector2 destination;
     Vector2 direction;
     float distance;
