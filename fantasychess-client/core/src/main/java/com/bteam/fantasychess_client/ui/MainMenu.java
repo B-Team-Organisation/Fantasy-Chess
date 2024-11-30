@@ -2,11 +2,13 @@ package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -57,6 +59,7 @@ public class MainMenu extends ScreenAdapter {
     private List<LobbyModel> allLobbies = new ArrayList<>();
     private Label noMatchingLobbyLabel;
     private TextField lobbyNameInput;
+    private final String defaultSearchString = "Search Lobby name!";
 
     private String username;
 
@@ -73,19 +76,16 @@ public class MainMenu extends ScreenAdapter {
 
     @Override
     public void show() {
-        stage = new Stage(extendViewport);
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
+
+        stage = new Stage(extendViewport);
 
         Table table = new Table();
         table.setFillParent(true);
 
-        username = Gdx.app.getPreferences("usersettings").getString("username");
-        Label usernameLabel = new Label(username, skin);
-        usernameLabel.setFontScale(4f);
-        usernameLabel.setAlignment(Align.left);
+        Label usernameLabel = createUserNameLabel();
 
-        Label titleLabel = new Label("FantasyChess", skin);
-        titleLabel.setFontScale(6f);
+        Label titleLabel = createTitleLabel();
 
         Table topContent = new Table();
         topContent.setBackground(skin.getDrawable("round-dark-gray"));
@@ -93,19 +93,31 @@ public class MainMenu extends ScreenAdapter {
         noMatchingLobbyLabel = new Label("No matching lobby found!", skin);
         noMatchingLobbyLabel.setVisible(false);
 
-        lobbyNameInput = new TextField("Search lobby name", skin);
+        lobbyNameInput = new TextField(defaultSearchString, skin);
+        addNameFilter(lobbyNameInput);
         lobbyNameInput.addListener(new FocusListener() {
             @Override
             public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {
                 if (focused) {
-                    if (lobbyNameInput.getText().equals("Search lobby name")) {
+                    if (lobbyNameInput.getText().equals(defaultSearchString)) {
                         lobbyNameInput.setText("");
                     }
                 } else {
                     if (lobbyNameInput.getText().isEmpty()) {
-                        lobbyNameInput.setText("Search Lobby Name");
+                        lobbyNameInput.setText(defaultSearchString);
                     }
                 }
+            }
+        });
+        lobbyNameInput.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.FORWARD_DEL || keycode == Input.Keys.DEL) {
+                    lobbyNameInput.setText("");
+                    filterLobbies("");
+                    return true;
+                }
+                return false;
             }
         });
         onChange(lobbyNameInput, () -> {
@@ -117,7 +129,7 @@ public class MainMenu extends ScreenAdapter {
             Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
-        onChange(createLobby, this::createLobbyDialog);// this instead of ()->
+        onChange(createLobby, this::createLobbyDialog);
 
         topContent.add(lobbyNameInput).growX().pad(10);
         topContent.add(refreshButton).pad(10);
@@ -148,7 +160,47 @@ public class MainMenu extends ScreenAdapter {
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
         stage.addActor(table);
+
         Gdx.input.setInputProcessor(stage);
+    }
+
+    /**
+     * Creates the label that shows the game title
+     *
+     * @return the {@link Label}
+     */
+    private Label createTitleLabel() {
+        Label titleLabel = new Label("FantasyChess", skin);
+        titleLabel.setFontScale(6f);
+        return titleLabel;
+    }
+
+    /**
+     * Creates the label that shows the user his name
+     *
+     * @return the {@link Label}
+     */
+    private Label createUserNameLabel() {
+        username = Gdx.app.getPreferences("usersettings").getString("username");
+        Label usernameLabel = new Label(username, skin);
+        usernameLabel.setFontScale(4f);
+        usernameLabel.setAlignment(Align.left);
+        return usernameLabel;
+    }
+
+    /**
+     * Makes the {@link TextField} only accept letters, digits and other defined chars as input
+     *
+     * @param textField the {@link TextField} to apply the filter to
+     */
+    private void addNameFilter(TextField textField) {
+        textField.setTextFieldFilter(new TextField.TextFieldFilter() {
+            private final String otherAcceptedChars = "\' ";
+            @Override
+            public boolean acceptChar(TextField textField, char c) {
+                return Character.isLetterOrDigit(c) || otherAcceptedChars.indexOf(c) >= 0;
+            }
+        });
     }
 
     /**
@@ -162,6 +214,7 @@ public class MainMenu extends ScreenAdapter {
     private void createLobbyDialog() {
 
         TextField lobbyNameField = new TextField(username + "'s Lobby", skin);
+        addNameFilter(lobbyNameField);
 
         Dialog dialog = getBaseLobbyDialog(lobbyNameField);
 
@@ -225,6 +278,10 @@ public class MainMenu extends ScreenAdapter {
         String normalizedInput = input.toLowerCase();
 
         List<LobbyModel> filteredLobbies = new ArrayList<LobbyModel>();
+
+        if (allLobbies.isEmpty()){
+            return;
+        }
 
         for (LobbyModel lobby : allLobbies) {
             String normalizedLobbyName = lobby.getLobbyName().toLowerCase();
@@ -334,7 +391,7 @@ public class MainMenu extends ScreenAdapter {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packet).get("data");
             allLobbies = LobbyMapper.lobbiesFromJson(data.get("lobbies"));
-            lobbyNameInput.clear();
+            lobbyNameInput.setText(defaultSearchString);
             loadLobbies(allLobbies);
         });
     }
