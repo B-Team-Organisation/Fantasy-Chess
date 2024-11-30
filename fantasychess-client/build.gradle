@@ -1,3 +1,5 @@
+import org.gradle.api.Task
+
 buildscript {
   repositories {
     mavenCentral()
@@ -11,9 +13,23 @@ buildscript {
   }
   dependencies {
     classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
-
+    classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
   }
 }
+project.ext.texturePacker = [ "assets/tileset/", "assets", "auto-generated-atlas.atlas" ]
+
+import com.badlogic.gdx.tools.texturepacker.TexturePacker
+
+
+task texturePacker {
+  doLast {
+    if (project.ext.has('texturePacker')) {
+      logger.info "Calling TexturePacker: "+texturePacker
+      TexturePacker.process(texturePacker[0], texturePacker[1], texturePacker[2])
+    }
+  }
+}
+
 
 allprojects {
   apply plugin: 'eclipse'
@@ -68,3 +84,5 @@ subprojects {
 }
 
 eclipse.project.name = 'fantasychess-client' + '-parent'
+
+

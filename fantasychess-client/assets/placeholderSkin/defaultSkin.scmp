@@ -744,11 +744,11 @@ jsonData: {
 	]
 	freeTypeFonts: []
 	classStyleMap: {
-		com.badlogic.gdx.scenes.scene2d.ui.SplitPane: [
+		com.badlogic.gdx.scenes.scene2d.utils.SplitPane: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-horizontal
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.SplitPane
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.SplitPane
 				properties: {
 					handle: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -763,7 +763,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-vertical
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.SplitPane
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.SplitPane
 				properties: {
 					handle: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -776,11 +776,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Tree: [
+		com.badlogic.gdx.scenes.scene2d.utils.Tree: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Tree
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Tree
 				properties: {
 					plus: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -817,11 +817,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.ProgressBar: [
+		com.badlogic.gdx.scenes.scene2d.utils.ProgressBar: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-horizontal
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ProgressBar
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ProgressBar
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -878,7 +878,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-vertical
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ProgressBar
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ProgressBar
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -933,11 +933,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.ImageButton: [
+		com.badlogic.gdx.scenes.scene2d.utils.ImageButton: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ImageButton
 				properties: {
 					imageUp: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1054,7 +1054,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: toggle
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ImageButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ImageButton
 				properties: {
 					imageUp: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1169,11 +1169,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.SelectBox: [
+		com.badlogic.gdx.scenes.scene2d.utils.SelectBox: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.SelectBox
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.SelectBox
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -1200,13 +1200,13 @@ jsonData: {
 						value: null
 					}
 					scrollStyle: {
-						type: com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle
+						type: com.badlogic.gdx.scenes.scene2d.utils.ScrollPane$ScrollPaneStyle
 						name: scrollStyle
 						optional: false
 						value: default
 					}
 					listStyle: {
-						type: com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle
+						type: com.badlogic.gdx.scenes.scene2d.utils.List$ListStyle
 						name: listStyle
 						optional: false
 						value: default
@@ -1234,11 +1234,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.TextButton: [
+		com.badlogic.gdx.scenes.scene2d.utils.TextButton: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.TextButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.TextButton
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -1361,7 +1361,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: toggle
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.TextButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.TextButton
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -1484,7 +1484,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: special
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.TextButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.TextButton
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -1605,11 +1605,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.ScrollPane: [
+		com.badlogic.gdx.scenes.scene2d.utils.ScrollPane: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ScrollPane
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ScrollPane
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1652,11 +1652,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Window: [
+		com.badlogic.gdx.scenes.scene2d.utils.Window: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Window
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Window
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1689,7 +1689,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: dialog
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Window
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Window
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1720,11 +1720,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Button: [
+		com.badlogic.gdx.scenes.scene2d.utils.Button: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Button
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Button
 				properties: {
 					up: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1805,7 +1805,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: toggle
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Button
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Button
 				properties: {
 					up: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1884,11 +1884,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Slider: [
+		com.badlogic.gdx.scenes.scene2d.utils.Slider: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-horizontal
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Slider
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Slider
 				properties: {
 					knobOver: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -1957,7 +1957,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default-vertical
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Slider
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Slider
 				properties: {
 					knobOver: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -2024,11 +2024,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.List: [
+		com.badlogic.gdx.scenes.scene2d.utils.List: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.List
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.List
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -2065,14 +2065,14 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.TextTooltip: [
+		com.badlogic.gdx.scenes.scene2d.utils.TextTooltip: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.TextTooltip
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.TextTooltip
 				properties: {
 					label: {
-						type: com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle
+						type: com.badlogic.gdx.scenes.scene2d.utils.Label$LabelStyle
 						name: label
 						optional: false
 						value: default
@@ -2094,11 +2094,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Label: [
+		com.badlogic.gdx.scenes.scene2d.utils.Label: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Label
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -2125,7 +2125,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: title
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Label
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Label
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -2150,11 +2150,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.CheckBox: [
+		com.badlogic.gdx.scenes.scene2d.utils.CheckBox: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.CheckBox
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.CheckBox
 				properties: {
 					checkboxOn: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -2305,11 +2305,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton: [
+		com.badlogic.gdx.scenes.scene2d.utils.ImageTextButton: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ImageTextButton
 				properties: {
 					imageUp: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -2468,7 +2468,7 @@ jsonData: {
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: toggle
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.ImageTextButton
 				properties: {
 					imageUp: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -2625,11 +2625,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.Touchpad: [
+		com.badlogic.gdx.scenes.scene2d.utils.Touchpad: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.Touchpad
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.Touchpad
 				properties: {
 					background: {
 						type: com.badlogic.gdx.scenes.scene2d.utils.Drawable
@@ -2648,11 +2648,11 @@ jsonData: {
 				parent: null
 			}
 		]
-		com.badlogic.gdx.scenes.scene2d.ui.TextField: [
+		com.badlogic.gdx.scenes.scene2d.utils.TextField: [
 			{
 				class: com.ray3k.skincomposer.data.StyleData
 				name: default
-				clazz: com.badlogic.gdx.scenes.scene2d.ui.TextField
+				clazz: com.badlogic.gdx.scenes.scene2d.utils.TextField
 				properties: {
 					font: {
 						type: com.badlogic.gdx.graphics.g2d.BitmapFont
