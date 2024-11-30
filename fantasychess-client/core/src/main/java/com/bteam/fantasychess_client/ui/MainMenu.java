@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -22,12 +23,14 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
-import com.bteam.fantasychess_client.services.LobbyService;
+import com.bteam.fantasychess_client.manger.ScreenManager;
 
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.fantasychess_client.Main.getLobbyService;
+import static com.bteam.fantasychess_client.Main.getScreenManager;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -38,13 +41,12 @@ public class MainMenu extends ScreenAdapter {
     private final OrthographicCamera camera;
     private final ExtendViewport extendViewport;
     private final Skin skin;
+    private final String defaultSearchString = "Search Lobby name!";
     private Stage stage;
     private Table centerContent;
     private List<LobbyModel> allLobbies = new ArrayList<>();
     private Label noMatchingLobbyLabel;
     private TextField lobbyNameInput;
-    private final String defaultSearchString = "Search Lobby name!";
-
     private String username;
 
     public MainMenu(Skin skin) {
@@ -141,6 +143,7 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
         Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
+        Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
 
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
@@ -180,7 +183,8 @@ public class MainMenu extends ScreenAdapter {
      */
     private void addNameFilter(TextField textField) {
         textField.setTextFieldFilter(new TextField.TextFieldFilter() {
-            private final String otherAcceptedChars = "\' !";
+            private final String otherAcceptedChars = "' !";
+
             @Override
             public boolean acceptChar(TextField textField, char c) {
                 return Character.isLetterOrDigit(c) || otherAcceptedChars.indexOf(c) >= 0;
@@ -243,9 +247,7 @@ public class MainMenu extends ScreenAdapter {
      * Function to be directed to GameScreen
      */
     private void goToGameScreen() {
-        Gdx.app.postRunnable(() -> {
-            ((com.badlogic.gdx.Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(skin));
-        });
+        getScreenManager().navigateTo(ScreenManager.GAME_SCREEN);
     }
 
     /**
@@ -258,7 +260,7 @@ public class MainMenu extends ScreenAdapter {
 
         List<LobbyModel> filteredLobbies = new ArrayList<LobbyModel>();
 
-        if (allLobbies.isEmpty()){
+        if (allLobbies.isEmpty()) {
             return;
         }
 
@@ -307,7 +309,7 @@ public class MainMenu extends ScreenAdapter {
                         Gdx.app.postRunnable(() -> {
                             var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
                             Main.getWebSocketService().send(packet);
-                            LobbyService.getInstance().setCurrentLobby(lobby);
+                            getLobbyService().setCurrentLobby(lobby);
                         });
                     }
                 });
@@ -396,7 +398,7 @@ public class MainMenu extends ScreenAdapter {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packetJson).get("data");
             LobbyModel lobby = LobbyMapper.lobbyFromJson(data);
-            LobbyService.getInstance().setCurrentLobby(lobby);
+            getLobbyService().setCurrentLobby(lobby);
             goToGameScreen();
         });
     }
@@ -413,7 +415,7 @@ public class MainMenu extends ScreenAdapter {
             if (packet.isSuccess()) goToGameScreen();
             else {
                 Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + packet.getResult());
-                LobbyService.getInstance().setCurrentLobby(null);
+                getLobbyService().setCurrentLobby(null);
             }
         });
     }
