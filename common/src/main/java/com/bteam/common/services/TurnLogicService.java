@@ -6,13 +6,15 @@ import java.util.List;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 
+import static com.bteam.common.services.CommandValidator.validateCommands;
+
 /**
  * Service for turn-based game logic.
  * <p>
  * This service handles the logic for processing movements, attacks, character deaths,
  * and determining the winner for each turn in the game.
  *
- * @author Albano
+ * @author Albano, Jacinto
  * @version 1.0
  */
 public class TurnLogicService {
@@ -30,40 +32,21 @@ public class TurnLogicService {
      *         valid movements, valid attacks, and any movement conflicts.
      */
     public static TurnResult applyCommands(
-            List<MovementDataModel> moves,
-            List<CharacterEntity> characters,
-            List<AttackDataModel> attacks,
-            GridModel grid) {
+        List<MovementDataModel> moves,
+        List<CharacterEntity> characters,
+        List<AttackDataModel> attacks,
+        GridModel grid) {
 
-        CommandValidator validatorAllCommands = new CommandValidator();
-        List<CharacterEntity> invalidMovers;
+        TurnResult result = validateCommands(characters, moves, attacks, new GridService(grid));
 
-        try {
-            invalidMovers = validatorAllCommands.validateCommands(characters, moves, attacks, grid);
-        } catch (Exception e) {
-            System.err.println("Command validation failure: " + e.getMessage());
-            return new TurnResult(characters, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
-        }
-
-        List<MovementDataModel> validMovements = new ArrayList<>();
-        List<AttackDataModel> validAttacks = new ArrayList<>();
-
-        for (MovementDataModel move : moves) {
-            if (!invalidMovers.contains(move.getCharacterId())) {
-                validMovements.add(move);
-            }
-        }
-
-        for (AttackDataModel attack : attacks) {
-            if (!invalidMovers.contains(attack.getAttacker())) {
-                validAttacks.add(attack);
-            }
-        }
+        List<MovementDataModel> validMovements = result.getValidMoves();
+        List<AttackDataModel> validAttacks = result.getValidAttacks();
 
         List<CharacterEntity> charactersAfterMovement = applyMovement(validMovements, characters);
         List<CharacterEntity> charactersAfterAttacks = applyAttacks(validAttacks, charactersAfterMovement);
 
-        return new TurnResult(charactersAfterAttacks, new ArrayList<>(), validMovements, validAttacks);
+        result.setUpdatedCharacters(charactersAfterAttacks);
+        return result;
     }
 
     /**
