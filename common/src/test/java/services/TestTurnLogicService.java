@@ -253,7 +253,7 @@ class TestTurnLogicService {
 
 
     @Test
-    void testCheckForWinner() {;
+    void testCheckForWinner() {
 
         assertNull(checkForWinner(charactersAfter));
         charactersAfter.remove(normalCharacter1);
