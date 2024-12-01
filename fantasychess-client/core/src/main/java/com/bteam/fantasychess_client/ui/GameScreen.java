@@ -210,13 +210,12 @@ public class GameScreen extends ScreenAdapter {
             TiledMapTileLayer.Cell highlightCell = new TiledMapTileLayer.Cell();
             TextureRegion highlightRegion = atlas.findRegion("special_tiles/highlight");
             highlightCell.setTile(new StaticTiledMapTile(highlightRegion));
-            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),highlightCell);
+            highlightLayer.setCell(focussedTile.getX(), mathService.getMapHeight()-1-focussedTile.getY(),highlightCell);
         } else {
-            TiledMapTileLayer.Cell highlightCell = highlightLayer.getCell(focussedTile.getX(),focussedTile
-                .getY());
-            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),null);
+            TiledMapTileLayer.Cell highlightCell = highlightLayer.getCell(focussedTile.getX(), mathService.getMapHeight()-1-focussedTile.getY());
+            highlightLayer.setCell(focussedTile.getX(), mathService.getMapHeight()-1-focussedTile.getY(),null);
             focussedTile = newFocussedPos;
-            highlightLayer.setCell(focussedTile.getX(),focussedTile.getY(),highlightCell);
+            highlightLayer.setCell(focussedTile.getX(), mathService.getMapHeight()-1-focussedTile.getY(),highlightCell);
         }
     }
 
