@@ -1,12 +1,15 @@
 package com.bteam.fantasychess_server.service;
 
+import com.bteam.common.dto.LobbyClosedDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.StatusDTO;
 import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
+import com.bteam.fantasychess_server.client.interceptors.LobbyPacketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -28,6 +31,12 @@ public class WebSocketService {
     private final Map<String, Client> clients = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final List<PacketHandler> packetHandlers = new ArrayList<>();
+    private final LobbyService lobbyService;
+
+    public WebSocketService(@Autowired LobbyService lobbyService) {
+        addPacketHandler(new LobbyPacketHandler(lobbyService));
+        this.lobbyService = lobbyService;
+    }
 
     public ImmutableMap<String, Client> getClients() {
         return ImmutableMap.copyOf(clients);
@@ -44,8 +53,10 @@ public class WebSocketService {
 
     public Client registerSession(WebSocketSession session, Player player) {
         var sessionID = session.getId();
-        var client = clients.put(sessionID, new Client(sessionID, session,player));
+        var client = new Client(sessionID, session, player);
+        clients.put(sessionID, client);
         var packet = new Packet(new StatusDTO("CONNECTED"), CONNECTED_STATUS);
+        client.getOnClientDisconnected().addListener(status -> onClientDisconnect(client));
         sendToClient(sessionID, packet);
         return client;
     }
@@ -56,8 +67,8 @@ public class WebSocketService {
         return clients.remove(sessionID);
     }
 
-    public <T> void sendToClient(String id, T payload) {
-        clients.get(id).sendMessage(payload);
+    public void sendToClient(String id, Packet packet) {
+        clients.get(id).sendPacket(packet);
     }
 
     private Client getClientBySession(String sessionID) {
@@ -66,20 +77,48 @@ public class WebSocketService {
 
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
-        try{
-            var packet = mapper.readValue(payload, Packet.class);
+        try {
+            var packet = mapper.readTree(payload);
             var client = getClientBySession(session.getId());
-            getHandlerForId(packet.getId()).handle(client,packet.getId(),message.getPayload());
+            String packetId = packet.get("id").asText();
+            getHandlerForId(packetId).handle(client, packetId, message.getPayload());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private PacketHandler getHandlerForId(String packetId){
+    private PacketHandler getHandlerForId(String packetId) {
         for (PacketHandler packetInterceptor : packetHandlers) {
             if (packetId.contains(packetInterceptor.getPacketPattern().replace("*", "")))
                 return packetInterceptor;
         }
         return null;
     }
+
+    public Client getCurrentClientForPlayer(Player player) {
+        return clients.values().stream().filter(
+                client -> client.getPlayer().getPlayerId().equals(player.getPlayerId()))
+            .findFirst().orElse(null);
+    }
+
+    public void onClientDisconnect(Client client) {
+        var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
+        var hostedLobbies = lobbyService.getHostedLobbies(playerUUID);
+        for (var lobby : hostedLobbies) {
+            var players = lobby.getPlayers();
+            var packet = new Packet(new LobbyClosedDTO(lobby.getLobbyId(), "Host has Disconnected!"), "LOBBY_CLOSED");
+            for (var player : players) {
+                var playerClient = getCurrentClientForPlayer(player);
+                if (playerClient != null) {
+                    playerClient.sendPacket(packet);
+                }
+            }
+            lobbyService.removeLobby(UUID.fromString(lobby.getLobbyId()));
+        }
+    }
+
+    public void onSessionClose(WebSocketSession session, CloseStatus status) {
+        clients.get(session.getId()).getOnClientDisconnected().invoke(status);
+    }
+
 }

@@ -18,6 +18,10 @@ public class LobbyListDTO implements JsonDTO{
         this.lobbies = lobbies;
     }
 
+    public List<LobbyDTO> getLobbies() {
+        return lobbies;
+    }
+
     @Override
     public String toJson() {
         StringBuffer sb = new StringBuffer();
@@ -27,10 +31,10 @@ public class LobbyListDTO implements JsonDTO{
             sb.append(lobby.toJson());
             sb.append(",");
         }
-        sb.deleteCharAt(sb.length()-1);
+        if (!lobbies.isEmpty()) {
+            sb.deleteCharAt(sb.length()-1);
+        }
         sb.append("]}");
         return sb.toString();
     }
-
-
 }

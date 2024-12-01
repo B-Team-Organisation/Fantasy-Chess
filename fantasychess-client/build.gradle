@@ -1,5 +1,3 @@
-import org.gradle.api.Task
-
 buildscript {
   repositories {
     mavenCentral()
@@ -29,7 +27,6 @@ task texturePacker {
     }
   }
 }
-
 
 allprojects {
   apply plugin: 'eclipse'
@@ -84,5 +81,3 @@ subprojects {
 }
 
 eclipse.project.name = 'fantasychess-client' + '-parent'
-
-

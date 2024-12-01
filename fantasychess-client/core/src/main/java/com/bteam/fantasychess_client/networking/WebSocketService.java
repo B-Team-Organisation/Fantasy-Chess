@@ -62,7 +62,6 @@ public class WebSocketService {
         webSocket.addListener(client);
         try{
             webSocket.connect();
-            send(new Packet(new CreateLobbyDTO("EXAMPLE"),"LOBBY_CREATE"));
         } catch (Exception e){
             Main.getLogger().log(Level.SEVERE, e.getMessage());
         }
@@ -82,9 +81,11 @@ public class WebSocketService {
      */
     public void handlePacket(String packet){
         Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
+
         JsonValue fromJson = new JsonReader().parse(packet);
-        String id = fromJson.getString("id");
+
         try{
+            String id = fromJson.get("id").asString();
             Main.getLogger().log(Level.SEVERE, "Deserialized with id: " +id);
             if (!listeners.containsKey(id))
                 throw new UnhandledPacketException("Packet with id: " + id +

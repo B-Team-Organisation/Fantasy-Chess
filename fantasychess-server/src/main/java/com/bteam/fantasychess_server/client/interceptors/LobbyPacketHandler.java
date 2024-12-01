@@ -13,9 +13,9 @@ import java.util.UUID;
 
 @Component
 public class LobbyPacketHandler implements PacketHandler {
+    private final String packetPattern = "LOBBY_";
     @Autowired
     private LobbyService lobbyService;
-    private final String packetPattern = "LOBBY_";
 
     public LobbyPacketHandler(LobbyService lobbyService) {
         this.lobbyService = lobbyService;
@@ -27,39 +27,39 @@ public class LobbyPacketHandler implements PacketHandler {
         var tree = mapper.readTree(packet);
         var data = tree.get("data");
 
-        switch (id){
+        switch (id) {
             case "LOBBY_ALL":
-                try{
+                try {
                     var lobbies = lobbyService.getAllLobbies();
                     var dtos = lobbies.stream().map(LobbyDTO::new).toList();
                     var lobbyListDTO = new LobbyListDTO(dtos);
-                    client.sendPacket(new Packet(lobbyListDTO,"LOBBY_INFO"));
-                } catch (Exception e){
+                    client.sendPacket(new Packet(lobbyListDTO, "LOBBY_INFO"));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
             case "LOBBY_CREATE":
-                try{
+                try {
                     var dto = mapper.convertValue(data, CreateLobbyDTO.class);
-                    var lobby = lobbyService.createNewLobby(client.getPlayer(),dto.getLobbyName(),2);
+                    var lobby = lobbyService.createNewLobby(client.getPlayer(), dto.getLobbyName(), 2);
                     var lobbyDTO = new LobbyDTO(lobby);
                     client.sendPacket(new Packet(lobbyDTO, "LOBBY_CREATED"));
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
                 break;
             case "LOBBY_JOIN":
-                try{
+                try {
                     var dto = mapper.convertValue(data, JoinLobbyDTO.class);
                     var lobbyID = UUID.fromString(dto.getId());
                     var playerId = UUID.fromString(client.getPlayer().getPlayerId());
-                    var result = lobbyService.joinLobby(lobbyID,playerId);
+                    var result = lobbyService.joinLobby(lobbyID, playerId);
                     var resultPacket = new Packet(
-                            new JoinLobbyResultDTO(result ? "SUCCESS" : "FAILED"),
-                            "LOBBY_JOINED");
+                        result ? JoinLobbyResultDTO.success() : JoinLobbyResultDTO.error(),
+                        "LOBBY_JOINED");
                     client.sendPacket(resultPacket);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;

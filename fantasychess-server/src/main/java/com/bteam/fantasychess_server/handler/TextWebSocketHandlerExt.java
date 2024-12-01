@@ -36,7 +36,7 @@ public class TextWebSocketHandlerExt extends TextWebSocketHandler {
         var playerId = tokenService.getUUID(token);
         var player = playerService.getPlayer(playerId);
         tokenService.invalidateToken(token);
-        service.registerSession(session,player);
+        service.registerSession(session, player);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class TextWebSocketHandlerExt extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
+        service.onSessionClose(session, status);
         service.removeSession(session.getId(), status);
     }
 }
