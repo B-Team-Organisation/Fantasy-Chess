@@ -5,6 +5,7 @@ import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.utils.Pair;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
  * valid {@link AttackDataModel}attacks and movement conflicts where opponent characters
  * tried to move to the same position.
  *
- * @author Albano
+ * @author Albano, Jacinto
  * @version 1.0
   */
 public class TurnResult {
@@ -53,6 +54,10 @@ public class TurnResult {
         return movementConflicts;
     }
 
+    public List<MovementDataModel> getValidMoves() {
+        return validMoves;
+    }
+
     public List<AttackDataModel> getValidAttacks() {
         return validAttacks;
     }
@@ -61,11 +66,34 @@ public class TurnResult {
         this.validAttacks = validAttacks;
     }
 
-    public List<MovementDataModel> getValidMoves() {
-        return validMoves;
+    public void setMovementConflicts(List<Pair<CharacterEntity, CharacterEntity>> movementConflicts) {
+        this.movementConflicts = movementConflicts;
+    }
+
+    public void setUpdatedCharacters(List<CharacterEntity> updatedCharacters) {
+        this.updatedCharacters = updatedCharacters;
     }
 
     public void setValidMoves(List<MovementDataModel> validMoves) {
         this.validMoves = validMoves;
+    }
+
+    @Override
+    public String toString() {
+        return "TurnResult [updatedCharacters=" + updatedCharacters + ", movementConflicts=" + movementConflicts
+                + ", validMoves=" + validMoves + ", validAttacks=" + validAttacks + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof TurnResult && updatedCharacters.equals(((TurnResult) o).updatedCharacters)
+                && movementConflicts.equals(((TurnResult) o).movementConflicts)
+                && validMoves.equals(((TurnResult) o).validMoves)
+                && validAttacks.equals(((TurnResult) o).validAttacks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(updatedCharacters, movementConflicts, validMoves, validAttacks);
     }
 }

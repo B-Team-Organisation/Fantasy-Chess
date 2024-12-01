@@ -8,6 +8,8 @@ import java.util.List;
 
 public class CommandValidator {
 
+    //illegal moves: loggen
+
     /**
      * Test all commands for their legality.
      * <p>
@@ -17,26 +19,26 @@ public class CommandValidator {
      * @param characters all characters
      * @param intendedMovements all intended movements
      * @param intendedAttacks all intended attacks
-     * @param grid the playing field
+     * @param gridService gridService containing the playing field
      * @return list of all characters that are using illegal commands
      */
-    public List<CharacterEntity> validateCommands(
+    public static TurnResult validateCommands(
             List<CharacterEntity> characters,
             List<MovementDataModel> intendedMovements,
             List<AttackDataModel> intendedAttacks,
-            GridModel grid
+            GridService gridService
     ) {
-        ArrayList<CharacterEntity> charactersWithIllegalCommands = new ArrayList<>();
+        //charactersWithIllegalCommands.addAll(validateSingleCommandsOnly(intendedMovements, intendedAttacks));
+        // bouncing movements
+        //List<MovementDataModel> validMovements = validateMovements(intendedMovements, characters, gridService.getGridModel());
+        List<AttackDataModel> validAttacks = validateAttacks(intendedAttacks, characters, gridService);
 
-        charactersWithIllegalCommands.addAll(validateMovements(intendedMovements, characters, grid));
-        charactersWithIllegalCommands.addAll(validateAttacks(intendedAttacks, grid));
-        charactersWithIllegalCommands.addAll(validateSingleCommandsOnly(intendedMovements, intendedAttacks));
-
-        return charactersWithIllegalCommands;
+        return new TurnResult(null, null, null, validAttacks);
+        // Return valid and invalid commands instead -> TurnResult
     }
 
     /**
-     * Check a List of {@link CharacterEntity}'s for illegal movement.
+     * Check a List of movements.
      * <p>
      * Check for any of the following illegal movements:
      * <p><ul>
@@ -50,7 +52,7 @@ public class CommandValidator {
      * @param intendedMovements list of movements
      * @param characters list of all characters, including those that aren't moved
      * @param grid the playing field
-     * @return a list of illegal movers
+     * @return valid movements, extra method for collisions
      */
     public static List<CharacterEntity> validateMovements(
             List<MovementDataModel> intendedMovements,
@@ -62,7 +64,7 @@ public class CommandValidator {
         for (MovementDataModel intendedMovement : intendedMovements) {
             // ToDo: character for movingOutsideMovementPattern
             if (movementOutOfBounds(intendedMovement, grid) || movingOutsideMovementPattern(intendedMovement, null)) {
-                illegalMovers.add(intendedMovement.getCharacterEntity());
+                //illegalMovers.add(intendedMovement.getCharacterEntity());
             }
         }
 
@@ -73,7 +75,7 @@ public class CommandValidator {
     }
 
     /**
-     * Check if a Character has preformed an illegal attack. <br/>
+     * Check the validity of attacks and only return those that are legal <br/>
      * <p>
      * Check for any of the following illegal attacks:
      * <p><ul>
@@ -82,24 +84,27 @@ public class CommandValidator {
      * </ul>
      *
      * @param intendedAttacks list of attacks
-     * @param grid the playing field
-     * @return a list of illegal movers
+     * @param characters list of all characters
+     * @param gridService grid service containing the playing field
+     * @return a list of legal attacks
      */
-    public static List<CharacterEntity> validateAttacks(
+    public static List<AttackDataModel> validateAttacks(
             List<AttackDataModel> intendedAttacks,
-            GridModel grid
+            List<CharacterEntity> characters,
+            GridService gridService
     ) {
-        ArrayList<CharacterEntity> illegalAttackers = new ArrayList<>();
+        ArrayList<AttackDataModel> legalAttacks = new ArrayList<>();
 
         for (AttackDataModel intendedAttack : intendedAttacks) {
-            // ToDo replace null with actual character
-            if (attackOutOfBounds(intendedAttack, grid) || attackingOutsideAttackPattern(intendedAttack, null)) {
-                illegalAttackers.add(intendedAttack.getAttacker());
+            if (
+                    attackInsideBounds(intendedAttack, gridService)
+                    && attackingInsideAttackPattern(intendedAttack, characters)
+            ) {
+                legalAttacks.add(intendedAttack);
             }
         }
 
-
-        return illegalAttackers;
+        return legalAttacks;
     }
 
     /**
@@ -109,9 +114,9 @@ public class CommandValidator {
      * @param intendedAttacks the intended attacks
      * @return a list of all entities that have the multiple commands directed towards them.
      */
-    private static List<CharacterEntity> validateSingleCommandsOnly(
-        List<MovementDataModel> intendedMovements,
-        List<AttackDataModel> intendedAttacks
+    public static List<CharacterEntity> validateSingleCommandsOnly(
+            List<MovementDataModel> intendedMovements,
+            List<AttackDataModel> intendedAttacks
     ) {
         ArrayList<CharacterEntity> multipleCommandEntities = new ArrayList<>();
         return multipleCommandEntities;
@@ -124,7 +129,7 @@ public class CommandValidator {
      * @param character the character to apply the movement to
      * @return true if moving outside allowed patterns, false otherwise
      */
-    private static boolean movingOutsideMovementPattern(
+    public static boolean movingOutsideMovementPattern(
             MovementDataModel intendedMovement,
             CharacterEntity character
     ) {
@@ -138,7 +143,7 @@ public class CommandValidator {
      * @param grid the grid
      * @return the movement
      */
-    private static boolean movementOutOfBounds(
+    public static boolean movementOutOfBounds(
             MovementDataModel intendedMovement,
             GridModel grid
     ) {
@@ -151,7 +156,7 @@ public class CommandValidator {
      * @param intendedMovements all movements
      * @return a list of characters that are moving to the same spot
      */
-    private static List<CharacterEntity> movingToSamePosition(List<MovementDataModel> intendedMovements) {
+    public static List<CharacterEntity> movingToSamePosition(List<MovementDataModel> intendedMovements) {
         ArrayList<CharacterEntity> illegalAttackers = new ArrayList<>();
         return illegalAttackers;
     }
@@ -163,7 +168,7 @@ public class CommandValidator {
      * @param characters all characters
      * @return a list of characters that are moving to an occupied position
      */
-    private static List<CharacterEntity> movingToOccupiedPosition(
+    public static List<CharacterEntity> movingToOccupiedPosition(
             List<MovementDataModel> movements,
             List<CharacterEntity> characters
     ) {
@@ -175,28 +180,68 @@ public class CommandValidator {
      * Test if an attack is applied outside the grid
      *
      * @param intendedAttack intended attack
-     * @param grid the playing field
-     * @return true, if out of bounds, false otherwise
+     * @param gridService gridService containing the playing field
+     * @return true, if inside bounds, false otherwise
      */
-    private static boolean attackOutOfBounds(
-            AttackDataModel intendedAttack,
-            GridModel grid
+    public static boolean attackInsideBounds(AttackDataModel intendedAttack, GridService gridService) {
+        int attackX = intendedAttack.getAttackPosition().getX();
+        int attackY = intendedAttack.getAttackPosition().getY();
+        return !gridService.checkPositionInvalid(new Vector2D(attackX, attackY));
+    }
+
+    /**
+     * Test if character is attacking inside their allowed attack patterns
+     *
+     * @param attack the attack
+     * @param characters the available characterEntities
+     * @return true, if attacking inside allowed attack patterns, else false
+     */
+    public static boolean attackingInsideAttackPattern(
+            AttackDataModel attack,
+            List<CharacterEntity> characters
     ) {
+
+        if (attack == null || characters == null) {
+            return false;
+        }
+
+        List<CharacterEntity> availableCharacters = getCharactersWithId(characters, attack.getAttacker());
+        if (availableCharacters.size() != 1) {
+            return false;
+        }
+
+        CharacterEntity character = availableCharacters.getFirst();
+        Vector2D attackPosition = attack.getAttackPosition();
+        PatternService[] attackServices = character.getCharacterBaseModel().getAttackPatterns();
+
+        for (PatternService attackService : attackServices) {
+            for (Vector2D allowedAttack : attackService.getPossibleTargetPositions(character.getPosition())) {
+                if (allowedAttack.equals(attackPosition)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
     /**
-     * Test if character is attacking outside their allowed attack patterns
+     * Get the matching characterEntity given an id
      *
-     * @param attack the attack
-     * @param characters the available characterEntities
-     * @return true, if attacking outside allowed pattern, false otherwise
+     * @param characterEntities The entities
+     * @param characterId The id to search for
+     * @return List of all matching entities
      */
-    private static boolean attackingOutsideAttackPattern(
-        AttackDataModel attack,
-        CharacterEntity characters
+    private static List<CharacterEntity> getCharactersWithId(
+            List<CharacterEntity> characterEntities, String characterId
     ) {
-        return false;
+        ArrayList<CharacterEntity> charactersWithId = new ArrayList<>();
+        for (CharacterEntity character : characterEntities) {
+            if (characterId.equals(character.getId())) {
+                charactersWithId.add(character);
+            }
+        }
+        return charactersWithId;
     }
 
 }
