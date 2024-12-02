@@ -6,9 +6,13 @@ import com.bteam.common.models.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A service class providing methods for move validation
+ *
+ * @author Jacinto
+ * @version 1.0
+ */
 public class CommandValidator {
-
-    //illegal moves: loggen
 
     /**
      * Test all commands for their legality.
@@ -28,8 +32,8 @@ public class CommandValidator {
             List<AttackDataModel> intendedAttacks,
             GridService gridService
     ) {
-        //charactersWithIllegalCommands.addAll(validateSingleCommandsOnly(intendedMovements, intendedAttacks));
-        // bouncing movements
+        //validateSingleCommandsOnly(intendedMovements, intendedAttacks));
+        //List<MovementDataModel> movementConflicts = opponentMovementToSamePosition(intendedMovements, intendedAttacks));
         //List<MovementDataModel> validMovements = validateMovements(intendedMovements, characters, gridService.getGridModel());
         List<AttackDataModel> validAttacks = validateAttacks(intendedAttacks, characters, gridService);
 
@@ -108,18 +112,17 @@ public class CommandValidator {
     }
 
     /**
-     * Tests if there are multiple commands towards the same entity.
+     * Makes sure there aren't multiple commands to the same entity.
+     * <p>
+     * If there are multiple commands to one entity, they are all removed.
      *
      * @param intendedMovements the intended movements
      * @param intendedAttacks the intended attacks
-     * @return a list of all entities that have the multiple commands directed towards them.
      */
-    public static List<CharacterEntity> validateSingleCommandsOnly(
+    public static void validateSingleCommandsOnly(
             List<MovementDataModel> intendedMovements,
             List<AttackDataModel> intendedAttacks
     ) {
-        ArrayList<CharacterEntity> multipleCommandEntities = new ArrayList<>();
-        return multipleCommandEntities;
     }
 
     /**
@@ -137,21 +140,21 @@ public class CommandValidator {
     }
 
     /**
-     * Test if character is moving outside the grid
+     * Test if character is moving outside the grid.
      *
      * @param intendedMovement the movement
-     * @param grid the grid
+     * @param gridService grid service containing the grid
      * @return the movement
      */
     public static boolean movementOutOfBounds(
             MovementDataModel intendedMovement,
-            GridModel grid
+            GridService gridService
     ) {
         return false;
     }
 
     /**
-     * Test if multiple characters are moving to the same position
+     * Test if multiple characters are moving to the same position.
      *
      * @param intendedMovements all movements
      * @return a list of characters that are moving to the same spot
@@ -162,7 +165,7 @@ public class CommandValidator {
     }
 
     /**
-     * Test if the characters are moving to a position that is already occupied
+     * Test if the characters are moving to a position that is already occupied.
      *
      * @param movements all movements
      * @param characters all characters
@@ -177,7 +180,7 @@ public class CommandValidator {
     }
 
     /**
-     * Test if an attack is applied outside the grid
+     * Test if an attack is applied outside the grid.
      *
      * @param intendedAttack intended attack
      * @param gridService gridService containing the playing field
@@ -190,7 +193,7 @@ public class CommandValidator {
     }
 
     /**
-     * Test if character is attacking inside their allowed attack patterns
+     * Test if character is attacking inside their allowed attack patterns.
      *
      * @param attack the attack
      * @param characters the available characterEntities
@@ -226,7 +229,7 @@ public class CommandValidator {
     }
 
     /**
-     * Get the matching characterEntity given an id
+     * Get the matching characterEntity given an id.
      *
      * @param characterEntities The entities
      * @param characterId The id to search for
