@@ -54,7 +54,7 @@ public class CharacterSprite extends Sprite {
      *
      * @param destination the destination in world coordinates
      */
-    public void moveToWorldPos(Vector2 destination) {
+    private void moveToWorldPos(Vector2 destination) {
         this.destination = new Vector2(destination.x, destination.y);
 
         Vector2 distanceVector = this.destination.cpy().sub(new Vector2(getX(), getY()));
@@ -73,7 +73,7 @@ public class CharacterSprite extends Sprite {
      *
      * @param position the {@link Vector2} that contains the x and y coordinates passed through to the setPosition method
      */
-    public void setPositionInWorld(Vector2 position) {
+    private void setPositionInWorld(Vector2 position) {
         setPosition(position.x, position.y);
     }
 

@@ -53,8 +53,8 @@ public class TestGridService {
         gridModel = new GridModel(5,5);
         gridService = new GridService(gridModel);
 
-        character1 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),0,null,"");
-        character2 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),0,null,"");
+        character1 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),"id",0,null,"");
+        character2 = new CharacterEntity(Mockito.mock(CharacterDataModel.class),"id",0,null,"");
     }
 
     @Test

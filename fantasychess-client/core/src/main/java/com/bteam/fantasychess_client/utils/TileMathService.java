@@ -26,6 +26,8 @@ public class TileMathService {
 
     private final Vector2D center;
 
+
+
     /**
      * Create a new Service for a map.
      * <p>
@@ -176,6 +178,24 @@ public class TileMathService {
      */
     public Vector2D getMapCenter() {
         return this.center;
+    }
+
+    /**
+     * Getter for the map width
+     *
+     * @return map width
+     */
+    public int getMapWidth() {
+        return mapWidth;
+    }
+
+    /**
+     * Getter for the map height
+     *
+     * @return map height
+     */
+    public int getMapHeight() {
+        return mapHeight;
     }
 
 }
