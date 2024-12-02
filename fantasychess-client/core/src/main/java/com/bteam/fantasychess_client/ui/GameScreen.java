@@ -19,7 +19,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
-import com.bteam.common.models.Vector2D;
+import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.models.*;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
@@ -186,6 +188,15 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(createMapInputProcessor()); // Add when game starts
         Gdx.input.setInputProcessor(multiplexer);
+
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+
+        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
+        Gdx.app.postRunnable(() -> {
+            Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
+            getWebSocketService().send(packet);
+        });
     }
 
     /**
@@ -391,14 +402,6 @@ public class GameScreen extends ScreenAdapter {
                 return false;
             }
         };
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-
-        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
-        Gdx.app.postRunnable(() -> {
-            var packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
-            getWebSocketService().send(packet);
-        });
     }
 
 
