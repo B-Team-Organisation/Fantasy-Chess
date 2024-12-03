@@ -16,12 +16,12 @@ relevant gameplay statistics for both players. Additionally, a button is provide
 ### Game Score:
 * Shows the Game Score
 
-### Player Stats:
+### Player Stats (Non-MVP feature):
 * Moves: Shows the number of times the player chosed to move instead of attack 
 * Attacks: Shows the number of times the player chosed to attack instead of move
 * Total damage: The total damage dealt by the player.
 
-### Player Record:
+### Player Record (Non-MVP feature):
 * Shows the general record of the player ("Win / Draw / Loose")
 
 ### Game Time:
