@@ -65,7 +65,6 @@ public class GameScreen extends ScreenAdapter {
 
     private TileMathService mathService;
 
-    private final List<CharacterSprite> characterSprites = new ArrayList<>();
     private final Map<CharacterEntity,CharacterSprite> entityMapper = new HashMap<>();
 
     private Vector2D focussedTile;
