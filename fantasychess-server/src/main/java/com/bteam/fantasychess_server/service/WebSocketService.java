@@ -6,6 +6,7 @@ import com.bteam.common.dto.StatusDTO;
 import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
+import com.bteam.fantasychess_server.client.interceptors.GamePacketHandler;
 import com.bteam.fantasychess_server.client.interceptors.LobbyPacketHandler;
 import com.bteam.fantasychess_server.client.interceptors.PlayerPacketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +38,7 @@ public class WebSocketService {
     public WebSocketService(@Autowired LobbyService lobbyService, @Autowired PlayerService playerService) {
         addPacketHandler(new LobbyPacketHandler(lobbyService));
         addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this));
+        addPacketHandler(new GamePacketHandler());
         this.lobbyService = lobbyService;
     }
 
