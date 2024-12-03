@@ -80,6 +80,7 @@ public class WebSocketService {
 
     public void handleTextMessage(WebSocketSession session, TextMessage message) {
         String payload = message.getPayload();
+        System.out.println("Recieved Message:\n" + payload);
         try {
             var packet = mapper.readTree(payload);
             var client = getClientBySession(session.getId());

@@ -13,6 +13,12 @@ import java.util.Map;
 
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
+/**
+ * Command Mangement Service to store all commands the player currently wants
+ * it's charcters to make
+ *
+ * @author Marc
+ */
 public class CommandManagementService {
     private final Map<String, AttackDataModel> attacks;
     private final Map<String, MovementDataModel> movements;
@@ -27,14 +33,14 @@ public class CommandManagementService {
         movements.clear();
     }
 
-    public void setCommand(String characterEntityId, AttackDataModel attack) {
-        movements.remove(characterEntityId);
-        attacks.put(characterEntityId, attack);
+    public void setCommand(AttackDataModel attack) {
+        movements.remove(attack.getAttacker());
+        attacks.put(attack.getAttacker(), attack);
     }
 
-    public void setCommand(String characterEntityId, MovementDataModel movement) {
-        attacks.remove(characterEntityId);
-        movements.put(characterEntityId, movement);
+    public void setCommand(MovementDataModel movement) {
+        attacks.remove(movement.getCharacterId());
+        movements.put(movement.getCharacterId(), movement);
     }
 
     public Map<String, AttackDataModel> getAttacksCommands() {
@@ -52,6 +58,5 @@ public class CommandManagementService {
         CommandListDTO commandListDTO = new CommandListDTO(list);
         Packet packet = new Packet(commandListDTO, "GAME_COMMANDS");
         getWebSocketService().send(packet);
-        clearAll();
     }
 }

@@ -5,35 +5,49 @@ import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 
 public class CommandDTO implements JsonDTO {
-    Vector2D position;
+    int x;
+    int y;
     String characterId;
     CommandType commandType;
 
     public CommandDTO() {
-        this.position = new Vector2D(0, 0);
+        this.x = 0;
+        this.y = 0;
         this.characterId = "";
+        commandType = CommandType.MOVEMENT;
     }
 
     public CommandDTO(Vector2D position, String characterId, CommandType commandType) {
-        this.position = position;
+        this.x = position.getX();
+        this.y = position.getY();
         this.characterId = characterId;
         this.commandType = commandType;
     }
 
     public CommandDTO(AttackDataModel attack) {
-        position = attack.getAttackPosition();
+        this.x = attack.getAttackPosition().getX();
+        this.y = attack.getAttackPosition().getY();
         characterId = attack.getAttacker();
         commandType = CommandType.ATTACK;
     }
 
     public CommandDTO(MovementDataModel movement) {
-        position = movement.getMovementVector();
+        this.x = movement.getMovementVector().getX();
+        this.y = movement.getMovementVector().getY();
         characterId = movement.getCharacterId();
         commandType = CommandType.MOVEMENT;
     }
 
     public Vector2D getPosition() {
-        return position;
+        return new Vector2D(x, y);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public String getCharacterId() {
@@ -48,9 +62,8 @@ public class CommandDTO implements JsonDTO {
     public String toJson() {
         return "{" +
             "\"characterId\":\"" + characterId + "\"," +
-            "\"position\":\"" +
-            "{\"x\":" + position.getX() + "," +
-            "\"y\":" + position.getY() + "}," +
+            "\"x\":" + getX() + "," +
+            "\"y\":" + getY() + "," +
             "\"commandType\":\"" + commandType.name() + "\"" +
             "}";
     }
