@@ -4,6 +4,7 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.InvalidSubpatternMappingException;
 import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.models.*;
+import com.bteam.common.utils.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -106,39 +107,60 @@ public class TestCommandValidator {
 
 
     @Test
+    void testOpposingPlayersMovingToSamePosition() {
+
+        // character1 & 3 are player 1111 and character2 is player 2222
+        MovementDataModel player1move1 = new MovementDataModel(new Vector2D(2, 2), basicEntity1.getId());
+        MovementDataModel player2move1 = new MovementDataModel(new Vector2D(2, 2), basicEntity2.getId());
+        MovementDataModel player1move2 = new MovementDataModel(new Vector2D(2, 2), basicEntity2.getId());
+
+        assertEquals(
+                List.of(new Pair<>(player1move1, player1move2)),
+                opposingPlayersMovingToSamePosition(List.of(player1move1, player2move1))
+        );
+
+    }
+
+    @Test
     void testValidateSingleCommandsOnly() {
 
         AttackDataModel attack1 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
         AttackDataModel attack1_2 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
         AttackDataModel attack2 = new AttackDataModel(new Vector2D(0,0), basicEntity2.getId());
+        AttackDataModel attack3 = new AttackDataModel(new Vector2D(0,0), basicEntity3.getId());
+        
         MovementDataModel move1 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0,0));
         MovementDataModel move1_2 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0,0));
         MovementDataModel move2 = new MovementDataModel(basicEntity2.getId(), new Vector2D(0, 0));
+        MovementDataModel move3 = new MovementDataModel(basicEntity3.getId(), new Vector2D(0, 0));
 
-        List<AttackDataModel> badDoubleAttack = List.of(attack1, attack1_2);
-        List<AttackDataModel> badDoubleAttack2 = List.of(attack1, attack1_2);
-        List<AttackDataModel> goodDoubleAttack = List.of(attack1, attack2);
-        List<AttackDataModel> goodDoubleAttack2 = List.of(attack1, attack2);
-        List<MovementDataModel> badDoubleMove = List.of(move1, move1_2);
-        List<MovementDataModel> badDoubleMove2 = List.of(move1, move1_2);
-        List<MovementDataModel> goodDoubleMove = List.of(move1, move2);
-        List<MovementDataModel> goodDoubleMove2 = List.of(move1, move2);
+        //Two conflicting attacks, one none conflicting move
+        Pair<List<MovementDataModel>, List<AttackDataModel>> result1 =validateSingleCommandsOnly(
+                List.of(move2), List.of(attack1,attack1_2)
+        );
+        assertEquals(List.of(move2), result1.getFirst());
+        assertEquals(List.of(), result1.getSecond());
 
-        validateSingleCommandsOnly(goodDoubleMove, badDoubleAttack);
-        assertEquals(List.of(), badDoubleAttack);
-        assertEquals(goodDoubleMove, goodDoubleMove2);
+        //Two conflicting moves, one none conflicting attack
+        Pair<List<MovementDataModel>,List<AttackDataModel>> result2 = validateSingleCommandsOnly(
+                List.of(move1,move1_2), List.of(attack3)
+        );
+        assertEquals(List.of(), result2.getFirst());
+        assertEquals(List.of(attack3), result2.getSecond());
 
-        validateSingleCommandsOnly(badDoubleMove, List.of());
-        assertEquals(List.of(), badDoubleMove);
-        assertEquals(goodDoubleAttack, goodDoubleAttack2);
+        //Conflicting attack & move, and one non-conflicting attack and move each
+        Pair<List<MovementDataModel>,List<AttackDataModel>> result3 = validateSingleCommandsOnly(
+                List.of(move1,move3), List.of(attack1,attack2)
+        );
+        assertEquals(List.of(move3), result3.getFirst());
+        assertEquals(List.of(attack2), result3.getSecond());
 
-        validateSingleCommandsOnly(badDoubleMove2, badDoubleAttack2);
-        assertEquals(List.of(), badDoubleMove2);
-        assertEquals(List.of(), badDoubleAttack2);
-
-        validateSingleCommandsOnly(goodDoubleMove2, goodDoubleAttack2);
-        assertEquals(List.of(move1, move2), goodDoubleMove2);
-        assertEquals(List.of(attack1, attack2), goodDoubleAttack2);
+        //One of each non-conflicting attack and move
+        Pair<List<MovementDataModel>,List<AttackDataModel>> result4 = validateSingleCommandsOnly(
+                List.of(move1), List.of(attack2)
+        );
+        assertEquals(List.of(move1), result4.getFirst());
+        assertEquals(List.of(attack2), result4.getSecond());
 
     }
 

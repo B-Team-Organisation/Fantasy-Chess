@@ -2,6 +2,7 @@ package com.bteam.common.services;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
+import com.bteam.common.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +33,17 @@ public class CommandValidator {
             List<AttackDataModel> intendedAttacks,
             GridService gridService
     ) {
-        //validateSingleCommandsOnly(intendedMovements, intendedAttacks));
-        //List<MovementDataModel> movementConflicts = opponentMovementToSamePosition(intendedMovements, intendedAttacks));
-        //List<MovementDataModel> validMovements = validateMovements(intendedMovements, characters, gridService.getGridModel());
-        List<AttackDataModel> validAttacks = validateAttacks(intendedAttacks, characters, gridService);
+        Pair<List<MovementDataModel>, List<AttackDataModel>> cleaned = validateSingleCommandsOnly(
+          intendedMovements, intendedAttacks
+        );
+        List<MovementDataModel> cleanedMovements = cleaned.getFirst();
+        List<AttackDataModel> cleanedAttacks = cleaned.getSecond();
+        //List<MovementDataModel> validMovements = validateMovements(cleanedMovements, characters, gridService.getGridModel());
+        List<AttackDataModel> validAttacks = validateAttacks(cleanedAttacks, characters, gridService);
+        //List<MovementDataModel> movementConflicts = opposingPlayersMovingToSamePosition(validMovements));
+        //remove movementConflicts from validAttacks and validMovements
 
-        return new TurnResult(null, null, null, validAttacks);
-        // Return valid and invalid commands instead -> TurnResult
+        return new TurnResult(characters, null, null, validAttacks);
     }
 
     /**
@@ -118,15 +123,65 @@ public class CommandValidator {
      *
      * @param intendedMovements the intended movements
      * @param intendedAttacks the intended attacks
+     * @return pair of cleaned MovementDataModels and AttackDataModels
      */
-    public static void validateSingleCommandsOnly(
+    public static Pair<List<MovementDataModel>, List<AttackDataModel>> validateSingleCommandsOnly(
             List<MovementDataModel> intendedMovements,
             List<AttackDataModel> intendedAttacks
     ) {
+
+        ArrayList<String> ids = new ArrayList<>();
+        ArrayList<String> duplicates = new ArrayList<>();
+
+        for (MovementDataModel intendedMove : intendedMovements) {
+            if (ids.contains(intendedMove.getCharacterId())) {
+                duplicates.add(intendedMove.getCharacterId());
+            }
+            ids.add(intendedMove.getCharacterId());
+        }
+
+        for (AttackDataModel intendedAttack : intendedAttacks) {
+            if (ids.contains(intendedAttack.getAttacker())) {
+                duplicates.add(intendedAttack.getAttacker());
+            }
+            ids.add(intendedAttack.getAttacker());
+        }
+
+        ArrayList<MovementDataModel> cleanedMoves = new ArrayList<>();
+        for (MovementDataModel intendedMove : intendedMovements) {
+            if (!duplicates.contains(intendedMove.getCharacterId())) {
+                cleanedMoves.add(intendedMove);
+            }
+        }
+
+        ArrayList<AttackDataModel> cleanedAttacks = new ArrayList<>();
+        for (AttackDataModel intendedAttack : intendedAttacks) {
+            if (!duplicates.contains(intendedAttack.getAttacker())) {
+                cleanedAttacks.add(intendedAttack);
+            }
+        }
+        return new Pair<>(cleanedMoves,cleanedAttacks);
+
     }
 
     /**
-     * Test if character is moving outside their allowed movement patterns
+     * Test if opposing players are moving their characters to the same position
+     * <p>
+     * The result will only contain pairs, since the input should either be preprocessed by
+     * {@link #movingToSamePosition} or be free of such problems in the first place
+     *
+     * @param intendedMovements All movements from both players
+     * @return Movement conflicts in the form of {@link Pair}'s of {@link MovementDataModel}'s
+     */
+    public static List<Pair<MovementDataModel, MovementDataModel>> opposingPlayersMovingToSamePosition(
+            List<MovementDataModel> intendedMovements,
+            List<AttackDataModel> attackDataModel
+    ) {
+        return null;
+    }
+
+    /**
+     * Test if a character is moving outside their allowed movement patterns
      *
      * @param intendedMovement the intended movement
      * @param character the character to apply the movement to

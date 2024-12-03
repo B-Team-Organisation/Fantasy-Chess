@@ -20,7 +20,7 @@ import java.util.Objects;
   */
 public class TurnResult {
     private List<CharacterEntity> updatedCharacters;
-    private List<Pair<CharacterEntity, CharacterEntity>> movementConflicts;
+    private List<Pair<MovementDataModel, MovementDataModel>> movementConflicts;
     private List <MovementDataModel> validMoves;
     private List <AttackDataModel> validAttacks;
 
@@ -31,13 +31,13 @@ public class TurnResult {
      * @param updatedCharacters List of characters representing their final states
      *                          (positions and health) after the turn
      * @param movementConflicts List of pairs representing conflicts where two characters
-     *                          tried to move to the same position. Each pair contains the conflicting characters
+     *                          tried to move to the same position. Each pair contains the conflicting movements
      * @param validMoves        List of movement commands that were successfully executed during the turn
      * @param validAttacks      List of attack commands that were successfully executed during the turn
      */
 
     public TurnResult(List<CharacterEntity> updatedCharacters,
-                      List<Pair<CharacterEntity, CharacterEntity>> movementConflicts,
+                      List<Pair<MovementDataModel, MovementDataModel>> movementConflicts,
                       List<MovementDataModel> validMoves,
                       List<AttackDataModel> validAttacks) {
         this.updatedCharacters = updatedCharacters;
@@ -50,7 +50,7 @@ public class TurnResult {
         return updatedCharacters;
     }
 
-    public List<Pair<CharacterEntity, CharacterEntity>> getMovementConflicts() {
+    public List<Pair<MovementDataModel, MovementDataModel>> getMovementConflicts() {
         return movementConflicts;
     }
 
@@ -66,7 +66,7 @@ public class TurnResult {
         this.validAttacks = validAttacks;
     }
 
-    public void setMovementConflicts(List<Pair<CharacterEntity, CharacterEntity>> movementConflicts) {
+    public void setMovementConflicts(List<Pair<MovementDataModel, MovementDataModel>> movementConflicts) {
         this.movementConflicts = movementConflicts;
     }
 
