@@ -12,7 +12,7 @@ import java.util.*;
 import static com.bteam.common.services.CommandValidator.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestCommandValidator {
+public class TestCommandValidator {
 
     private GridService basicGrid;
     private CharacterDataModel baseModel1;
@@ -107,6 +107,7 @@ class TestCommandValidator {
 
     @Test
     void testValidateSingleCommandsOnly() {
+
         AttackDataModel attack1 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
         AttackDataModel attack1_2 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
         AttackDataModel attack2 = new AttackDataModel(new Vector2D(0,0), basicEntity2.getId());
@@ -115,15 +116,30 @@ class TestCommandValidator {
         MovementDataModel move2 = new MovementDataModel(basicEntity2.getId(), new Vector2D(0, 0));
 
         List<AttackDataModel> badDoubleAttack = List.of(attack1, attack1_2);
+        List<AttackDataModel> badDoubleAttack2 = List.of(attack1, attack1_2);
         List<AttackDataModel> goodDoubleAttack = List.of(attack1, attack2);
+        List<AttackDataModel> goodDoubleAttack2 = List.of(attack1, attack2);
         List<MovementDataModel> badDoubleMove = List.of(move1, move1_2);
+        List<MovementDataModel> badDoubleMove2 = List.of(move1, move1_2);
         List<MovementDataModel> goodDoubleMove = List.of(move1, move2);
+        List<MovementDataModel> goodDoubleMove2 = List.of(move1, move2);
 
+        validateSingleCommandsOnly(goodDoubleMove, badDoubleAttack);
+        assertEquals(List.of(), badDoubleAttack);
+        assertEquals(goodDoubleMove, goodDoubleMove2);
 
-        assertEquals(, validateSingleCommandsOnly(List.of(), List.of(attack1, attack1_2)));
-        assertEquals(List.of(), List.of(move1, move1_2));
-        assertEquals(List.of(), List.of(attack1, move1));
-        assertEquals(List.of(attack1, attack2), List.of(attack1, attack2));
+        validateSingleCommandsOnly(badDoubleMove, List.of());
+        assertEquals(List.of(), badDoubleMove);
+        assertEquals(goodDoubleAttack, goodDoubleAttack2);
+
+        validateSingleCommandsOnly(badDoubleMove2, badDoubleAttack2);
+        assertEquals(List.of(), badDoubleMove2);
+        assertEquals(List.of(), badDoubleAttack2);
+
+        validateSingleCommandsOnly(goodDoubleMove2, goodDoubleAttack2);
+        assertEquals(List.of(move1, move2), goodDoubleMove2);
+        assertEquals(List.of(attack1, attack2), goodDoubleAttack2);
+
     }
 
     @Test

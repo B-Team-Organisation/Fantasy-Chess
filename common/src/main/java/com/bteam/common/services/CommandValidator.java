@@ -67,7 +67,7 @@ public class CommandValidator {
 
         for (MovementDataModel intendedMovement : intendedMovements) {
             // ToDo: character for movingOutsideMovementPattern
-            if (movementOutOfBounds(intendedMovement, grid) || movingOutsideMovementPattern(intendedMovement, null)) {
+            if (movementOutOfBounds(intendedMovement, new GridService(grid)) || movingOutsideMovementPattern(intendedMovement, null)) {
                 //illegalMovers.add(intendedMovement.getCharacterEntity());
             }
         }
