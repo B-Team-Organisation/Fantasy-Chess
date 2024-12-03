@@ -148,7 +148,7 @@ public class TestCommandValidator {
 
         // insideBounds options
         AttackDataModel outOfBoundsAttack = new AttackDataModel(new Vector2D(10, 10), basicEntity1.getId());
-        AttackDataModel insideBoundsAttack = new AttackDataModel(new Vector2D(4, 4), basicEntity1.getId());
+        AttackDataModel insideBoundsAttack = new AttackDataModel(new Vector2D(5, 2), basicEntity1.getId());
 
         // insidePattern options
         List<Vector2D> character1Attacks = Arrays.asList(
@@ -167,10 +167,10 @@ public class TestCommandValidator {
         List<AttackDataModel> outsideBoundsInsidePattern = List.of(outOfBoundsAttack, insidePatternAttack);
         List<AttackDataModel> insideBoth = List.of(insidePatternAttack, insideBoundsAttack);
 
-        assertEquals(List.of(), validateAttacks(outOfBoundsAndPattern, availableCharacters, basicGrid));
-        assertEquals(List.of(), validateAttacks(insideBoundsOutsidePattern, availableCharacters, basicGrid));
-        assertEquals(List.of(insidePatternAttack), validateAttacks(outsideBoundsInsidePattern, availableCharacters, basicGrid));
-        assertEquals(List.of(insidePatternAttack), validateAttacks(insideBoth, availableCharacters, basicGrid));
+        assertEquals(List.of(), validateAttacks(outOfBoundsAndPattern, availableCharacters, basicGrid));//out of bounds attacks
+        assertEquals(List.of(insideBoundsAttack), validateAttacks(insideBoundsOutsidePattern, availableCharacters, basicGrid));//outside pattern
+        assertEquals(List.of(insidePatternAttack), validateAttacks(outsideBoundsInsidePattern, availableCharacters, basicGrid));//only the inside attacks
+        assertEquals(List.of(insidePatternAttack,insideBoundsAttack), validateAttacks(insideBoth, availableCharacters, basicGrid));
     }
 
     @Test
