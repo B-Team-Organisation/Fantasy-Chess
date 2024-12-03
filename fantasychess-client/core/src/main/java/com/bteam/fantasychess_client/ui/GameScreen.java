@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.bteam.common.dto.Packet;
+import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.models.*;
@@ -28,6 +30,8 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
+
 /**
  * Screen on which the game plays out.
  * <p>
@@ -38,23 +42,20 @@ import java.util.logging.Level;
  */
 public class GameScreen extends ScreenAdapter {
 
+    private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
+    private static final int TILE_PIXEL_WIDTH = 32;
+    private static final int TILE_PIXEL_HEIGHT = 16;
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
 
     private final OrthographicCamera uiCamera;
     private final ExtendViewport uiViewport;
-
-    private Stage stage;
     private final Skin skin;
+    // Placeholder
+    private final List<CharacterSprite> characterSprites = new ArrayList<>();
+    private Stage stage;
     private TextureAtlas atlas;
-
     private SpriteBatch batch;
-
-    private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
-
-    private static final int TILE_PIXEL_WIDTH = 32;
-    private static final int TILE_PIXEL_HEIGHT = 16;
-
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private TiledMapTileLayer highlightLayer;
@@ -76,6 +77,7 @@ public class GameScreen extends ScreenAdapter {
     private enum GameScreenMode {
         TURN_OUTCOME, GAME_INIT, LOBBY, GAME_SUMMARY, COMMAND_MODE
     }
+    private Vector2D center;
 
     private CommandMode commandMode = CommandMode.NO_SELECTION;
     private enum CommandMode {
@@ -87,12 +89,12 @@ public class GameScreen extends ScreenAdapter {
      *
      * @param skin the projects menu skin
      */
-    public GameScreen (Skin skin){
+    public GameScreen(Skin skin) {
         gameCamera = new OrthographicCamera();
-        gameCamera.setToOrtho(false, 426,240);
+        gameCamera.setToOrtho(false, 426, 240);
         gameCamera.update();
 
-        gameViewport = new ExtendViewport(426,240, gameCamera);
+        gameViewport = new ExtendViewport(426, 240, gameCamera);
 
         uiCamera = new OrthographicCamera();
         uiCamera.setToOrtho(false, 1920, 1080);
@@ -151,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        Gdx.gl.glClearColor(.1f,.12f,.16f,1);
+        Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
 
@@ -186,6 +188,15 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(createMapInputProcessor()); // Add when game starts
         Gdx.input.setInputProcessor(multiplexer);
+
+        multiplexer.addProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
+
+        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
+        Gdx.app.postRunnable(() -> {
+            Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
+            getWebSocketService().send(packet);
+        });
     }
 
     /**
@@ -341,12 +352,12 @@ public class GameScreen extends ScreenAdapter {
             }
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                if (button == Input.Buttons.LEFT){
+                if (button == Input.Buttons.LEFT) {
                     if (gameScreenMode != GameScreenMode.COMMAND_MODE){
                         return false;
                     }
                     Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
-                    Vector2D gridPos = mathService.worldToGrid(worldPos3.x,worldPos3.y);
+                    Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
                     switch (commandMode){
                         case NO_SELECTION: {
@@ -368,7 +379,6 @@ public class GameScreen extends ScreenAdapter {
                             break;
                         }
                     }
-
                     return true;
                 } else if (button == Input.Buttons.RIGHT){
                     resetCommandMode();

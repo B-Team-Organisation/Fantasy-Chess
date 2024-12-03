@@ -7,6 +7,7 @@ import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
 import com.bteam.fantasychess_server.client.interceptors.LobbyPacketHandler;
+import com.bteam.fantasychess_server.client.interceptors.PlayerPacketHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,9 @@ public class WebSocketService {
     private final List<PacketHandler> packetHandlers = new ArrayList<>();
     private final LobbyService lobbyService;
 
-    public WebSocketService(@Autowired LobbyService lobbyService) {
+    public WebSocketService(@Autowired LobbyService lobbyService, @Autowired PlayerService playerService) {
         addPacketHandler(new LobbyPacketHandler(lobbyService));
+        addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this));
         this.lobbyService = lobbyService;
     }
 
@@ -46,9 +48,8 @@ public class WebSocketService {
         return mapper;
     }
 
-    public WebSocketService addPacketHandler(PacketHandler packetHandler) {
+    public void addPacketHandler(PacketHandler packetHandler) {
         packetHandlers.add(packetHandler);
-        return this;
     }
 
     public Client registerSession(WebSocketSession session, Player player) {

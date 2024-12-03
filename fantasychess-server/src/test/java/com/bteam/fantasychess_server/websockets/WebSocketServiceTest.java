@@ -42,7 +42,7 @@ class WebSocketServiceTest {
     private WebSocketService webSocketService;
 
     @Mock
-    private Player player = new Player("","",new ArrayList<>());
+    private Player player = new Player("", "", new ArrayList<>());
 
     @BeforeAll
     static void setUp() throws JsonProcessingException {
@@ -51,7 +51,7 @@ class WebSocketServiceTest {
 
     @Test
     void testInitialization() {
-        webSocketService = new WebSocketService(null);
+        webSocketService = new WebSocketService(null, null);
 
         assertNotNull(webSocketService.getClients());
         assertNotNull(webSocketService.getMapper());
@@ -72,7 +72,7 @@ class WebSocketServiceTest {
     void testClientUnregistration() {
         when(mockSession.getId()).thenReturn(TEST_ID);
 
-        webSocketService.registerSession(mockSession,player);
+        webSocketService.registerSession(mockSession, player);
 
         assertEquals(1, webSocketService.getClients().size());
         assertEquals(TEST_ID, Objects.requireNonNull(webSocketService.getClients().get(TEST_ID)).getId());
@@ -86,7 +86,7 @@ class WebSocketServiceTest {
     void testSendMessage() throws IOException {
         when(mockSession.getId()).thenReturn(TEST_ID);
 
-        webSocketService.registerSession(mockSession,player);
+        webSocketService.registerSession(mockSession, player);
         // Todo
         //webSocketService.sendToClient(TEST_ID, TEST_PACKET);
 
@@ -98,11 +98,11 @@ class WebSocketServiceTest {
         when(mockSession.getId()).thenReturn(TEST_ID);
         when(mockTextMessage.getPayload()).thenReturn(testPayloadString);
 
-        webSocketService.registerSession(mockSession,player);
+        webSocketService.registerSession(mockSession, player);
 
         Objects.requireNonNull(webSocketService.getClients().get(TEST_ID))
-                .getOnMessageReceivedEvent()
-                .addListener(payload -> assertEquals(testPayloadString, payload));
+            .getOnMessageReceivedEvent()
+            .addListener(payload -> assertEquals(testPayloadString, payload));
 
         webSocketService.handleTextMessage(mockSession, mockTextMessage);
     }
