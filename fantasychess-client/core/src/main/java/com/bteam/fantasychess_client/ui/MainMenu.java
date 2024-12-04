@@ -20,7 +20,10 @@ import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.JoinLobbyDTO;
 import com.bteam.common.dto.JoinLobbyResultDTO;
 import com.bteam.common.dto.Packet;
+import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.LobbyModel;
+import com.bteam.common.models.MovementDataModel;
+import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 
@@ -143,6 +146,11 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
         Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
+
+        Main.getCommandManagementService().setCommand(new AttackDataModel(new Vector2D(1, 2), "TEST_ATTACK"));
+        Main.getCommandManagementService().setCommand(new MovementDataModel("TEST_MOVEMENT", new Vector2D(3, 1)));
+        Main.getCommandManagementService().sendCommandsToServer();
+
 
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 

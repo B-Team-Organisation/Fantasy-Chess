@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.bteam.fantasychess_client.manger.ScreenManager;
 import com.bteam.fantasychess_client.networking.WebSocketClient;
 import com.bteam.fantasychess_client.networking.WebSocketService;
+import com.bteam.fantasychess_client.services.CommandManagementService;
 import com.bteam.fantasychess_client.services.LobbyService;
 import com.bteam.fantasychess_client.ui.SplashScreen;
 
@@ -21,6 +22,7 @@ public class Main extends Game {
     private final WebSocketService socketService;
     private final LobbyService lobbyService;
     private final ScreenManager screenManager;
+    private final CommandManagementService commandManagementService;
 
     private final Logger logger = Logger.getLogger("com.bteam.fantasychess_client");
     private Skin skin;
@@ -29,6 +31,7 @@ public class Main extends Game {
         socketService = new WebSocketService(WEBSOCKET_ADDRESS, new WebSocketClient());
         lobbyService = new LobbyService();
         screenManager = new ScreenManager();
+        commandManagementService = new CommandManagementService();
     }
 
     public static Main getInstance() {
@@ -49,6 +52,10 @@ public class Main extends Game {
 
     public static ScreenManager getScreenManager() {
         return getInstance().screenManager;
+    }
+
+    public static CommandManagementService getCommandManagementService() {
+        return getInstance().commandManagementService;
     }
 
     @Override

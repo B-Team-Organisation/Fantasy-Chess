@@ -6,7 +6,6 @@ import com.bteam.fantasychess_server.client.PacketHandler;
 import com.bteam.fantasychess_server.service.LobbyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -14,8 +13,7 @@ import java.util.UUID;
 @Component
 public class LobbyPacketHandler implements PacketHandler {
     private final String packetPattern = "LOBBY_";
-    @Autowired
-    private LobbyService lobbyService;
+    private final LobbyService lobbyService;
 
     public LobbyPacketHandler(LobbyService lobbyService) {
         this.lobbyService = lobbyService;
