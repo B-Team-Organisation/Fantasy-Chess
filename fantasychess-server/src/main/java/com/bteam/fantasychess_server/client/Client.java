@@ -53,10 +53,6 @@ public class Client {
         return onClientDisconnected;
     }
 
-    public Result<Boolean> sendPacket(Packet packet) {
-        return sendMessage(packet);
-    }
-
     /**
      * @param packet The packet sent to the client
      * @return Success Result if the message was sent without errors,
