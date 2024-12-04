@@ -3,7 +3,7 @@ package com.bteam.common.services;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.utils.Pair;
+import com.bteam.common.utils.PairNoOrder;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +20,7 @@ import java.util.Objects;
   */
 public class TurnResult {
     private List<CharacterEntity> updatedCharacters;
-    private List<Pair<MovementDataModel, MovementDataModel>> movementConflicts;
+    private List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts;
     private List <MovementDataModel> validMoves;
     private List <AttackDataModel> validAttacks;
 
@@ -37,7 +37,7 @@ public class TurnResult {
      */
 
     public TurnResult(List<CharacterEntity> updatedCharacters,
-                      List<Pair<MovementDataModel, MovementDataModel>> movementConflicts,
+                      List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts,
                       List<MovementDataModel> validMoves,
                       List<AttackDataModel> validAttacks) {
         this.updatedCharacters = updatedCharacters;
@@ -50,7 +50,7 @@ public class TurnResult {
         return updatedCharacters;
     }
 
-    public List<Pair<MovementDataModel, MovementDataModel>> getMovementConflicts() {
+    public List<PairNoOrder<MovementDataModel, MovementDataModel>> getMovementConflicts() {
         return movementConflicts;
     }
 
@@ -66,7 +66,7 @@ public class TurnResult {
         this.validAttacks = validAttacks;
     }
 
-    public void setMovementConflicts(List<Pair<MovementDataModel, MovementDataModel>> movementConflicts) {
+    public void setMovementConflicts(List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts) {
         this.movementConflicts = movementConflicts;
     }
 
