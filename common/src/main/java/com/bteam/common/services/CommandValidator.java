@@ -3,29 +3,38 @@ package com.bteam.common.services;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
+import com.bteam.common.utils.PairNoOrder;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * A service class providing methods for move validation
  *
- * @author Jacinto
+ * @author Jacinto, Albano
  * @version 1.0
  */
 public class CommandValidator {
+
+    /**
+     * private constructor for hiding implicit public one
+     */
+    private CommandValidator() {}
 
     /**
      * Test all commands for their legality.
      * <p>
      * Check for any illegal movements using {@link #validateMovements},
      * {@link #validateAttacks} and {@link #validateSingleCommandsOnly}
+     * and collect movement conflicts ("bounces") between opposing players
+     * using {@link #opposingPlayersMovingToSamePosition}
      *
      * @param characters all characters
      * @param intendedMovements all intended movements
      * @param intendedAttacks all intended attacks
      * @param gridService gridService containing the playing field
-     * @return list of all characters that are using illegal commands
+     * @return {@link TurnResult} with unaltered characters but only
+     * valid movements & attacks as well as a list of movement conflicts
+     * between players
      */
     public static TurnResult validateCommands(
             List<CharacterEntity> characters,
@@ -33,17 +42,30 @@ public class CommandValidator {
             List<AttackDataModel> intendedAttacks,
             GridService gridService
     ) {
+
+
+
         Pair<List<MovementDataModel>, List<AttackDataModel>> cleaned = validateSingleCommandsOnly(
           intendedMovements, intendedAttacks
         );
         List<MovementDataModel> cleanedMovements = cleaned.getFirst();
         List<AttackDataModel> cleanedAttacks = cleaned.getSecond();
-        //List<MovementDataModel> validMovements = validateMovements(cleanedMovements, characters, gridService.getGridModel());
-        List<AttackDataModel> validAttacks = validateAttacks(cleanedAttacks, characters, gridService);
-        //List<MovementDataModel> movementConflicts = opposingPlayersMovingToSamePosition(validMovements));
-        //remove movementConflicts from validAttacks and validMovements
 
-        return new TurnResult(characters, null, null, validAttacks);
+        List<MovementDataModel> validMovements = validateMovements(cleanedMovements, characters, gridService);
+        List<AttackDataModel> validAttacks = validateAttacks(cleanedAttacks, characters, gridService);
+
+        List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts = opposingPlayersMovingToSamePosition(
+                characters, validMovements
+        );
+
+        validMovements.removeIf( // remove movementConflicts from movements
+                movement -> movementConflicts.stream()
+                        .anyMatch(conflict -> conflict.getFirst().equals(movement) ||
+                                conflict.getSecond().equals(movement)
+                        )
+        );
+
+        return new TurnResult(characters, movementConflicts, validMovements, validAttacks);
     }
 
     /**
@@ -60,27 +82,28 @@ public class CommandValidator {
      *
      * @param intendedMovements list of movements
      * @param characters list of all characters, including those that aren't moved
-     * @param grid the playing field
-     * @return valid movements, extra method for collisions
+     * @param gridService grid service containing the playing field
+     * @return valid movements, without collisions between opposing players' characters
+     * (done separately by {@link #opposingPlayersMovingToSamePosition})
      */
-    public static List<CharacterEntity> validateMovements(
+    public static List<MovementDataModel> validateMovements(
             List<MovementDataModel> intendedMovements,
             List<CharacterEntity> characters,
-            GridModel grid
+            GridService gridService
     ) {
-        ArrayList<CharacterEntity> illegalMovers = new ArrayList<>();
-
-        for (MovementDataModel intendedMovement : intendedMovements) {
-            // ToDo: character for movingOutsideMovementPattern
-            if (movementOutOfBounds(intendedMovement, new GridService(grid)) || movingOutsideMovementPattern(intendedMovement, null)) {
-                //illegalMovers.add(intendedMovement.getCharacterEntity());
+        ArrayList<MovementDataModel> booleanChecked = new ArrayList<>();
+        for (MovementDataModel intendedMove : intendedMovements) {
+            if (
+                    movingInsideBounds(intendedMove, gridService)
+                    && movingInsideMovementPattern(intendedMove, characters)
+            ) {
+                booleanChecked.add(intendedMove);
             }
         }
 
-        illegalMovers.addAll(movingToSamePosition(intendedMovements));
-        illegalMovers.addAll(movingToOccupiedPosition(intendedMovements, characters));
+        List<MovementDataModel> noSamePositions = (validateMovingToSamePosition(booleanChecked, characters));
 
-        return illegalMovers;
+        return validateMovingToOccupiedPosition(noSamePositions, characters);
     }
 
     /**
@@ -165,73 +188,150 @@ public class CommandValidator {
     }
 
     /**
-     * Test if opposing players are moving their characters to the same position
+     * Test if opposing players are moving their characters to the same position.
      * <p>
      * The result will only contain pairs, since the input should either be preprocessed by
-     * {@link #movingToSamePosition} or be free of such problems in the first place
+     * {@link #validateMovingToSamePosition} or be free of such problems in the first place
      *
-     * @param intendedMovements All movements from both players
-     * @return Movement conflicts in the form of {@link Pair}'s of {@link MovementDataModel}'s
+     * @param characterEntities The character entities (for player reference)
+     * @param intendedMovements All movements from two players
+     * @return Movement conflicts in the form of {@link PairNoOrder}'s of {@link MovementDataModel}'s
      */
-    public static List<Pair<MovementDataModel, MovementDataModel>> opposingPlayersMovingToSamePosition(
-            List<MovementDataModel> intendedMovements,
-            List<AttackDataModel> attackDataModel
+    public static List<PairNoOrder<MovementDataModel, MovementDataModel>> opposingPlayersMovingToSamePosition(
+            List<CharacterEntity> characterEntities,
+            List<MovementDataModel> intendedMovements
     ) {
-        return null;
+        ArrayList<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts = new ArrayList<>();
+        HashMap<String, ArrayList<MovementDataModel>> playerCharacters = orderMovesByPlayerId(intendedMovements,characterEntities);
+
+        String[] playerIds = playerCharacters.keySet().toArray(new String[0]);
+        if (playerIds.length != 2) return List.of();
+
+        for (MovementDataModel movementPlayer1 : playerCharacters.get(playerIds[0])) {
+            for (MovementDataModel movementPlayer2 : playerCharacters.get(playerIds[1])) {
+                if (movementPlayer1.getMovementVector().equals(movementPlayer2.getMovementVector())) {
+                    movementConflicts.add(new PairNoOrder<>(movementPlayer1, movementPlayer2));
+                }
+            }
+        }
+
+        return movementConflicts;
     }
 
     /**
      * Test if a character is moving outside their allowed movement patterns
      *
      * @param intendedMovement the intended movement
-     * @param character the character to apply the movement to
+     * @param characters all characters
      * @return true if moving outside allowed patterns, false otherwise
      */
-    public static boolean movingOutsideMovementPattern(
+    public static boolean movingInsideMovementPattern(
             MovementDataModel intendedMovement,
-            CharacterEntity character
+            List<CharacterEntity> characters
     ) {
+
+        if (intendedMovement == null || characters == null) {
+            return false;
+        }
+
+        List<CharacterEntity> availableCharacters = getCharactersWithId(characters, intendedMovement.getCharacterId());
+        if (availableCharacters.size() != 1) {
+            return false;
+        }
+
+        CharacterEntity character = availableCharacters.getFirst();
+        Vector2D movementVector = intendedMovement.getMovementVector();
+        PatternService[] movementServices = character.getCharacterBaseModel().getMovementPatterns();
+
+        for (PatternService movementService : movementServices) {
+            for (Vector2D allowedAttack : movementService.getPossibleTargetPositions(character.getPosition())) {
+                if (allowedAttack.equals(movementVector)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
     /**
-     * Test if character is moving outside the grid.
+     * Test if character is moving inside the grid.
      *
      * @param intendedMovement the movement
      * @param gridService grid service containing the grid
      * @return the movement
      */
-    public static boolean movementOutOfBounds(
+    public static boolean movingInsideBounds(
             MovementDataModel intendedMovement,
             GridService gridService
     ) {
-        return false;
+        int moveX = intendedMovement.getMovementVector().getX();
+        int moveY = intendedMovement.getMovementVector().getY();
+        return !gridService.checkPositionInvalid(new Vector2D(moveX, moveY));
     }
 
     /**
      * Test if multiple characters are moving to the same position.
      *
      * @param intendedMovements all movements
-     * @return a list of characters that are moving to the same spot
+     * @param characters all characters
+     * @return all moves that are not to the same position
      */
-    public static List<CharacterEntity> movingToSamePosition(List<MovementDataModel> intendedMovements) {
-        ArrayList<CharacterEntity> illegalAttackers = new ArrayList<>();
-        return illegalAttackers;
+    public static List<MovementDataModel> validateMovingToSamePosition(
+            List<MovementDataModel> intendedMovements, List<CharacterEntity> characters
+    ) {
+        ArrayList<MovementDataModel> legalMoves = new ArrayList<>();
+
+        HashMap<String,ArrayList<MovementDataModel>> playerMoves = orderMovesByPlayerId(intendedMovements, characters);
+        //Original Method
+
+        for (String playerId : playerMoves.keySet()) {
+            List<MovementDataModel> moves = playerMoves.get(playerId);
+
+            List<Vector2D> positions = moves.stream()
+                    .map(MovementDataModel::getMovementVector)
+                    .toList();
+
+            List<Vector2D> duplicatePositions = positions.stream()
+                    .filter(v -> Collections.frequency(positions, v) > 1)
+                    .toList();
+
+            for (MovementDataModel intendedMovement : moves) {
+                if (!duplicatePositions.contains(intendedMovement.getMovementVector())) {
+                    legalMoves.add(intendedMovement);
+                }
+            }
+        }
+
+        return legalMoves;
     }
 
     /**
      * Test if the characters are moving to a position that is already occupied.
+     * <p>
+     * Moving to a position that would be freed in the same round is also forbidden.
      *
-     * @param movements all movements
+     * @param intendedMovements all movements
      * @param characters all characters
-     * @return a list of characters that are moving to an occupied position
+     * @return all moves which are not trying to move to an occupied position
      */
-    public static List<CharacterEntity> movingToOccupiedPosition(
-            List<MovementDataModel> movements,
+    public static List<MovementDataModel> validateMovingToOccupiedPosition(
+            List<MovementDataModel> intendedMovements,
             List<CharacterEntity> characters
     ) {
-        ArrayList<CharacterEntity> illegalAttackers = new ArrayList<>();
-        return illegalAttackers;
+        ArrayList<MovementDataModel> legalMoves = new ArrayList<>();
+
+        List<Vector2D> positions = characters.stream()
+                .map(CharacterEntity::getPosition)
+                .toList();
+
+        for (MovementDataModel intendedMovement : intendedMovements) {
+            if(!positions.contains(intendedMovement.getMovementVector())) {
+                legalMoves.add(intendedMovement);
+            }
+        }
+
+        return legalMoves;
     }
 
     /**
@@ -302,4 +402,22 @@ public class CommandValidator {
         return charactersWithId;
     }
 
+    /**
+     * Get moves by playerId
+     * @return HashMap with {@code playerId : List<CharacterEntites>}
+     */
+    private static HashMap<String, ArrayList<MovementDataModel>> orderMovesByPlayerId(
+            List<MovementDataModel> intendedMovements, List<CharacterEntity> characterEntities
+    ) {
+        HashMap<String, ArrayList<MovementDataModel>> characterById = new HashMap<>();
+        for (MovementDataModel intendedMovement : intendedMovements) {
+            List<CharacterEntity> characters = getCharactersWithId(characterEntities, intendedMovement.getCharacterId());
+            if (characters.isEmpty()) continue;
+            CharacterEntity character = getCharactersWithId(characterEntities, intendedMovement.getCharacterId()).getFirst();
+            characterById.computeIfAbsent(character.getPlayerId(), key -> new ArrayList<>()).add(intendedMovement);
+        }
+
+        return characterById;
+
+    }
 }
