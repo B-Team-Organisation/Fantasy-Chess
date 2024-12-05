@@ -363,13 +363,10 @@ public class GameScreen extends ScreenAdapter {
                             getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
                             validCommandDestinations = selectedPiece.getCharacterBaseModel().getMovementPatterns()[0]
                                 .getPossibleTargetPositions(selectedPiece.getPosition());
-                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) {
-                                commandMode = CommandMode.NO_SELECTION;
-                                selectedPiece = null;
-                                break;
-                            }
+                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) break;
                             Main.getCommandManagementService().setCommand(new MovementDataModel(selectedPiece.getId(),gridPos));
-
+                            commandMode = CommandMode.NO_SELECTION;
+                            selectedPiece = null;
                             break;
                         }
 
@@ -377,11 +374,7 @@ public class GameScreen extends ScreenAdapter {
                             getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
                             validCommandDestinations = selectedPiece.getCharacterBaseModel().getAttackPatterns()[0]
                                 .getPossibleTargetPositions(selectedPiece.getPosition());
-                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) {
-                                commandMode = CommandMode.NO_SELECTION;
-                                selectedPiece = null;
-                                break;
-                            }
+                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) break;
                             Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, selectedPiece.getId()));
                             commandMode = CommandMode.NO_SELECTION;
                             selectedPiece = null;
