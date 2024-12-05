@@ -201,21 +201,20 @@ public class CommandValidator {
             List<CharacterEntity> characterEntities,
             List<MovementDataModel> intendedMovements
     ) {
-        ArrayList<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts = new ArrayList<>();
         HashMap<String, ArrayList<MovementDataModel>> playerCharacters = groupMovesByPlayerId(intendedMovements,characterEntities);
 
         String[] playerIds = playerCharacters.keySet().toArray(new String[0]);
         if (playerIds.length != 2) return List.of();
 
-        for (MovementDataModel movementPlayer1 : playerCharacters.get(playerIds[0])) {
-            for (MovementDataModel movementPlayer2 : playerCharacters.get(playerIds[1])) {
-                if (movementPlayer1.getMovementVector().equals(movementPlayer2.getMovementVector())) {
-                    movementConflicts.add(new PairNoOrder<>(movementPlayer1, movementPlayer2));
-                }
-            }
-        }
+        List<MovementDataModel> movementsPlayer1 = playerCharacters.get(playerIds[0]);
+        List<MovementDataModel> movementsPlayer2 = playerCharacters.get(playerIds[1]);
 
-        return movementConflicts;
+        return movementsPlayer1.stream()
+                .flatMap(movementPlayer1 -> movementsPlayer2.stream()
+                .filter(movementPlayer2 -> movementPlayer1.getMovementVector().equals(movementPlayer2.getMovementVector()))
+                        .map(movementPlayer2 -> new PairNoOrder<>(movementPlayer1, movementPlayer2))
+                )
+                .toList();
     }
 
     /**
