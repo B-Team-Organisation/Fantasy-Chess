@@ -7,7 +7,7 @@ import java.util.Objects;
  *
  * @param <T> Type of the first Object in the Pair
  * @param <U> type of the second Object in the Pair
- * @author Marc
+ * @author Marc, Jacinto
  */
 public class Pair<T, U> {
     T first;
