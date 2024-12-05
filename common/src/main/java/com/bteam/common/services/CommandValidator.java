@@ -202,7 +202,7 @@ public class CommandValidator {
             List<MovementDataModel> intendedMovements
     ) {
         ArrayList<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts = new ArrayList<>();
-        HashMap<String, ArrayList<MovementDataModel>> playerCharacters = orderMovesByPlayerId(intendedMovements,characterEntities);
+        HashMap<String, ArrayList<MovementDataModel>> playerCharacters = groupMovesByPlayerId(intendedMovements,characterEntities);
 
         String[] playerIds = playerCharacters.keySet().toArray(new String[0]);
         if (playerIds.length != 2) return List.of();
@@ -234,12 +234,9 @@ public class CommandValidator {
             return false;
         }
 
-        List<CharacterEntity> availableCharacters = getCharactersWithId(characters, intendedMovement.getCharacterId());
-        if (availableCharacters.size() != 1) {
-            return false;
-        }
+        CharacterEntity character = getCharacterWithId(characters, intendedMovement.getCharacterId());
+        if (character == null) return false;
 
-        CharacterEntity character = availableCharacters.getFirst();
         Vector2D movementVector = intendedMovement.getMovementVector();
         PatternService[] movementServices = character.getCharacterBaseModel().getMovementPatterns();
 
@@ -282,7 +279,7 @@ public class CommandValidator {
     ) {
         ArrayList<MovementDataModel> legalMoves = new ArrayList<>();
 
-        HashMap<String,ArrayList<MovementDataModel>> playerMoves = orderMovesByPlayerId(intendedMovements, characters);
+        HashMap<String,ArrayList<MovementDataModel>> playerMoves = groupMovesByPlayerId(intendedMovements, characters);
         //Original Method
 
         for (String playerId : playerMoves.keySet()) {
@@ -363,12 +360,9 @@ public class CommandValidator {
             return false;
         }
 
-        List<CharacterEntity> availableCharacters = getCharactersWithId(characters, attack.getAttacker());
-        if (availableCharacters.size() != 1) {
-            return false;
-        }
+        CharacterEntity character = getCharacterWithId(characters, attack.getAttacker());
+        if (character == null) return false;
 
-        CharacterEntity character = availableCharacters.getFirst();
         Vector2D attackPosition = attack.getAttackPosition();
         PatternService[] attackServices = character.getCharacterBaseModel().getAttackPatterns();
 
@@ -388,32 +382,30 @@ public class CommandValidator {
      *
      * @param characterEntities The entities
      * @param characterId The id to search for
-     * @return List of all matching entities
+     * @return The matching character
      */
-    private static List<CharacterEntity> getCharactersWithId(
+    private static CharacterEntity getCharacterWithId(
             List<CharacterEntity> characterEntities, String characterId
     ) {
-        ArrayList<CharacterEntity> charactersWithId = new ArrayList<>();
         for (CharacterEntity character : characterEntities) {
             if (characterId.equals(character.getId())) {
-                charactersWithId.add(character);
+                return character;
             }
         }
-        return charactersWithId;
+        return null;
     }
 
     /**
      * Get moves by playerId
-     * @return HashMap with {@code playerId : List<CharacterEntites>}
+     * @return HashMap with {@code playerId : List<CharacterEntities>}
      */
-    private static HashMap<String, ArrayList<MovementDataModel>> orderMovesByPlayerId(
+    private static HashMap<String, ArrayList<MovementDataModel>> groupMovesByPlayerId(
             List<MovementDataModel> intendedMovements, List<CharacterEntity> characterEntities
     ) {
         HashMap<String, ArrayList<MovementDataModel>> characterById = new HashMap<>();
         for (MovementDataModel intendedMovement : intendedMovements) {
-            List<CharacterEntity> characters = getCharactersWithId(characterEntities, intendedMovement.getCharacterId());
-            if (characters.isEmpty()) continue;
-            CharacterEntity character = getCharactersWithId(characterEntities, intendedMovement.getCharacterId()).getFirst();
+            CharacterEntity character = getCharacterWithId(characterEntities, intendedMovement.getCharacterId());
+            if (character == null) continue;
             characterById.computeIfAbsent(character.getPlayerId(), key -> new ArrayList<>()).add(intendedMovement);
         }
 
