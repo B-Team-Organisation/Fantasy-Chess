@@ -30,6 +30,7 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.fantasychess_client.Main.getLogger;
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
@@ -347,6 +348,48 @@ public class GameScreen extends ScreenAdapter {
             }
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (button == Input.Buttons.LEFT) {
+                    if (gameScreenMode != GameScreenMode.COMMAND_MODE) return false;
+
+                    Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
+                    Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
+
+                    switch (commandMode){
+                        case NO_SELECTION: {
+                            break;
+                        }
+
+                        case MOVE_MODE: {
+                            getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
+                            validCommandDestinations = selectedPiece.getCharacterBaseModel().getMovementPatterns()[0]
+                                .getPossibleTargetPositions(selectedPiece.getPosition());
+                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) {
+                                commandMode = CommandMode.NO_SELECTION;
+                                selectedPiece = null;
+                                break;
+                            }
+                            Main.getCommandManagementService().setCommand(new MovementDataModel(selectedPiece.getId(),gridPos));
+
+                            break;
+                        }
+
+                        case ATTACK_MODE: {
+                            getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
+                            validCommandDestinations = selectedPiece.getCharacterBaseModel().getAttackPatterns()[0]
+                                .getPossibleTargetPositions(selectedPiece.getPosition());
+                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) {
+                                commandMode = CommandMode.NO_SELECTION;
+                                selectedPiece = null;
+                                break;
+                            }
+                            Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, selectedPiece.getId()));
+                            commandMode = CommandMode.NO_SELECTION;
+                            selectedPiece = null;
+                            break;
+                        }
+                    }
+                }
+
                 return false;
             }
             @Override
