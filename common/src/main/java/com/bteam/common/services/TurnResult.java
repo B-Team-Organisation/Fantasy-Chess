@@ -19,10 +19,10 @@ import java.util.Objects;
  * @version 1.0
   */
 public class TurnResult {
-    private List<CharacterEntity> updatedCharacters;
-    private List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts;
-    private List <MovementDataModel> validMoves;
-    private List <AttackDataModel> validAttacks;
+    private final List<CharacterEntity> updatedCharacters;
+    private final List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts;
+    private final List <MovementDataModel> validMoves;
+    private final List <AttackDataModel> validAttacks;
 
 
     /**
@@ -60,22 +60,6 @@ public class TurnResult {
 
     public List<AttackDataModel> getValidAttacks() {
         return validAttacks;
-    }
-
-    public void setValidAttacks(List<AttackDataModel> validAttacks) {
-        this.validAttacks = validAttacks;
-    }
-
-    public void setMovementConflicts(List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts) {
-        this.movementConflicts = movementConflicts;
-    }
-
-    public void setUpdatedCharacters(List<CharacterEntity> updatedCharacters) {
-        this.updatedCharacters = updatedCharacters;
-    }
-
-    public void setValidMoves(List<MovementDataModel> validMoves) {
-        this.validMoves = validMoves;
     }
 
     @Override
