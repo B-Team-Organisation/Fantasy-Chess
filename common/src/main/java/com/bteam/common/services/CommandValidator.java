@@ -38,7 +38,7 @@ public class CommandValidator {
      * valid movements & attacks as well as a list of movement conflicts
      * between players
      */
-    public static TurnResult validateCommands(
+    public static ValidationResult validateCommands(
             List<CharacterEntity> characters,
             List<MovementDataModel> intendedMovements,
             List<AttackDataModel> intendedAttacks,
@@ -67,7 +67,7 @@ public class CommandValidator {
                         )
         );
 
-        return new TurnResult(characters, movementConflicts, validMovements, validAttacks);
+        return new ValidationResult(movementConflicts, validMovements, validAttacks);
     }
 
     /**

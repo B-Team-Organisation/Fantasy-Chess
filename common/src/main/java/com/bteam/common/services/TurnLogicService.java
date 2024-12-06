@@ -38,17 +38,17 @@ public class TurnLogicService {
         List<AttackDataModel> attacks,
         GridModel grid) {
 
-        TurnResult validated = validateCommands(characters, moves, attacks, new GridService(grid));
+        ValidationResult validation = validateCommands(characters, moves, attacks, new GridService(grid));
 
-        List<MovementDataModel> validMovements = validated.getValidMoves();
-        List<AttackDataModel> validAttacks = validated.getValidAttacks();
+        List<MovementDataModel> validMovements = validation.getValidMoves();
+        List<AttackDataModel> validAttacks = validation.getValidAttacks();
 
         List<CharacterEntity> charactersAfterMovement = applyMovement(validMovements, characters);
         List<CharacterEntity> charactersAfterAttacks = applyAttacks(validAttacks, charactersAfterMovement);
 
         return new TurnResult(
-                charactersAfterAttacks, validated.getMovementConflicts(),
-                validated.getValidMoves(), validated.getValidAttacks()
+                charactersAfterAttacks, validation.getMovementConflicts(),
+                validation.getValidMoves(), validation.getValidAttacks()
         );
     }
 

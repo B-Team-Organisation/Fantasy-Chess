@@ -1,6 +1,7 @@
 package utils;
 
 import com.bteam.common.services.TurnResult;
+import com.bteam.common.utils.ListNoOrder;
 
 public class TurnResultNoOrder {
     private final TurnResult turnResult;

@@ -4,13 +4,12 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.InvalidSubpatternMappingException;
 import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.models.*;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.services.ValidationResult;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import utils.ListNoOrder;
-import utils.TurnResultNoOrder;
+import com.bteam.common.utils.ListNoOrder;
 
 import java.util.*;
 
@@ -200,109 +199,51 @@ class TestCommandValidator {
 
         //empty
         assertEquals(
-                    new TurnResultNoOrder(new TurnResult(characters, List.of(), List.of(), List.of())),
-                    new TurnResultNoOrder(validateCommands(characters, List.of(), List.of(), basicGrid)
-                )
+            new ValidationResult(List.of(), List.of(), List.of()),
+            validateCommands(characters, List.of(), List.of(), basicGrid)
         );
         //all Valid
         assertEquals(
-                    new TurnResultNoOrder(
-                            new TurnResult(
-                                    characters, List.of(), List.of(validMove1, validMove2), List.of(validAttack3)
-                            )
-                    ),
-                    new TurnResultNoOrder(
-                            validateCommands(
-                                    characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid
-                            )
-                    )
+            new ValidationResult(List.of(), List.of(validMove1, validMove2), List.of(validAttack3)),
+            validateCommands(characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid)
         );
         // Bounce, forbidden attack
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(new PairNoOrder<>(validMove1, bounceWith1)),
-                                List.of(), List.of(validAttack2)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, bounceWith1),
-                                List.of(validAttack2, attack3Forbidden), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(
+                new PairNoOrder<>(validMove1, bounceWith1)), List.of(), List.of(validAttack2)
+            ),
+            validateCommands(
+                characters, List.of(validMove1, bounceWith1), List.of(validAttack2, attack3Forbidden), basicGrid
+            )
         );
         //non-single command, outOfBoundsAttack
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(),
-                                List.of(), List.of(validAttack2)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, doubleMoveOn1),
-                                List.of(validAttack2, attack3Forbidden), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(), List.of(), List.of(validAttack2)),
+            validateCommands(
+                characters, List.of(validMove1, doubleMoveOn1), List.of(validAttack2, attack3Forbidden), basicGrid
+            )
         );
         //checks from validateMoves + validAttack4
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(),
-                                List.of(validMove2), List.of(validAttack4)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, validMove2, moving3Like1),
-                                List.of(validAttack4), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(), List.of(validMove2), List.of(validAttack4)),
+            validateCommands(
+                characters, List.of(validMove1, validMove2, moving3Like1),
+                List.of(validAttack4), basicGrid
+            )
         );
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(),
-                                List.of(validMove1), List.of(validAttack4)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, moving3To1),
-                                List.of(validAttack4), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+            validateCommands(characters, List.of(validMove1, moving3To1), List.of(validAttack4), basicGrid)
         );
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(),
-                                List.of(validMove1), List.of(validAttack4)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, moving2OutOfBounds),
-                                List.of(validAttack4), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+            validateCommands(characters, List.of(validMove1, moving2OutOfBounds), List.of(validAttack4), basicGrid)
         );
         assertEquals(
-                new TurnResultNoOrder(
-                        new TurnResult(
-                                characters, List.of(),
-                                List.of(validMove1), List.of(validAttack4)
-                        )
-                ),
-                new TurnResultNoOrder(
-                        validateCommands(
-                                characters, List.of(validMove1, moving2ForbiddenMovement),
-                                List.of(validAttack4), basicGrid
-                        )
-                )
+            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+            validateCommands(
+                characters, List.of(validMove1, moving2ForbiddenMovement), List.of(validAttack4), basicGrid
+            )
         );
     }
 
