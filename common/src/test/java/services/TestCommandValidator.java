@@ -14,6 +14,7 @@ import com.bteam.common.utils.ListNoOrder;
 import java.util.*;
 
 import static com.bteam.common.services.CommandValidator.*;
+import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestCommandValidator {
@@ -364,6 +365,8 @@ class TestCommandValidator {
     void testMovingInsideMovementPattern() {
 
         List<CharacterEntity> availableCharacters = List.of(basicEntity1, basicEntity2, basicEntity3);
+        Map<String, CharacterEntity> availableCharactersMap = getIdCharacterMap(availableCharacters);
+
         // Get all possible moves from character1 and character3 (one with 1 pattern and 1 with multiple patterns
         List<Vector2D> character1Moves = Arrays.asList(
                 basicEntity1.getCharacterBaseModel().getMovementPatterns()[0].getPossibleTargetPositions(
@@ -395,10 +398,18 @@ class TestCommandValidator {
         List<MovementDataModel> failing1 = movesFromList(character1Outside, basicEntity1.getId());
         List<MovementDataModel> failing3 = movesFromList(character3Outside, basicEntity3.getId());
 
-        working1.forEach(movement -> assertTrue(movingInsideMovementPattern(movement, availableCharacters)));
-        working3.forEach(movement -> assertTrue(movingInsideMovementPattern(movement, availableCharacters)));
-        failing1.forEach(movement -> assertFalse(movingInsideMovementPattern(movement, availableCharacters)));
-        failing3.forEach(movement -> assertFalse(movingInsideMovementPattern(movement, availableCharacters)));
+        working1.forEach(movement -> assertTrue(movingInsideMovementPattern(
+                movement, availableCharactersMap.get(movement.getCharacterId())
+        )));
+        working3.forEach(movement -> assertTrue(movingInsideMovementPattern(
+                movement, availableCharactersMap.get(movement.getCharacterId())
+        )));
+        failing1.forEach(movement -> assertFalse(movingInsideMovementPattern(
+                movement, availableCharactersMap.get(movement.getCharacterId())
+        )));
+        failing3.forEach(movement -> assertFalse(movingInsideMovementPattern(
+                movement, availableCharactersMap.get(movement.getCharacterId())
+        )));
 
     }
 
@@ -543,6 +554,8 @@ class TestCommandValidator {
     void testAttackingInsideAttackPattern() {
 
         List<CharacterEntity> availableCharacters = List.of(basicEntity1, basicEntity2, basicEntity3);
+        Map<String, CharacterEntity> availableCharactersMap = getIdCharacterMap(availableCharacters);
+
         // Get all possible attacks from character1 and character3 (one with 1 pattern and 1 with multiple patterns
         List<Vector2D> character1Attacks = Arrays.asList(
                     basicEntity1.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(
@@ -575,10 +588,18 @@ class TestCommandValidator {
         List<AttackDataModel> failing1 = attacksFromList(character1Outside, basicEntity1.getId());
         List<AttackDataModel> failing3 = attacksFromList(character3Outside, basicEntity3.getId());
 
-        working1.forEach(attack -> assertTrue(attackingInsideAttackPattern(attack, availableCharacters)));
-        working3.forEach(attack -> assertTrue(attackingInsideAttackPattern(attack, availableCharacters)));
-        failing1.forEach(attack -> assertFalse(attackingInsideAttackPattern(attack, availableCharacters)));
-        failing3.forEach(attack -> assertFalse(attackingInsideAttackPattern(attack, availableCharacters)));
+        working1.forEach(attack -> assertTrue(attackingInsideAttackPattern(
+                attack, availableCharactersMap.get(attack.getAttacker())
+        )));
+        working3.forEach(attack -> assertTrue(attackingInsideAttackPattern(
+                attack, availableCharactersMap.get(attack.getAttacker())
+        )));
+        failing1.forEach(attack -> assertFalse(attackingInsideAttackPattern(
+                attack, availableCharactersMap.get(attack.getAttacker())
+        )));
+        failing3.forEach(attack -> assertFalse(attackingInsideAttackPattern(
+                attack, availableCharactersMap.get(attack.getAttacker())
+        )));
 
     }
 

@@ -6,6 +6,8 @@ import com.bteam.common.models.MovementDataModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Class containing helper methods for working with the relationships between classes.
@@ -35,11 +37,17 @@ public class RelationUtils {
         return null;
     }
 
+    public static Map<String, CharacterEntity> getIdCharacterMap(List<CharacterEntity> characterEntities) {
+        return characterEntities.stream().collect(Collectors.toMap(
+                CharacterEntity::getId, characterEntity -> characterEntity
+        ));
+    }
+
     /**
      * Get moves by playerId
      * @return HashMap with {@code playerId : List<CharacterEntities>}
      */
-    public static HashMap<String, ArrayList<MovementDataModel>> groupMovesByPlayerId(
+    public static Map<String, ArrayList<MovementDataModel>> groupMovesByPlayerId(
             List<MovementDataModel> intendedMovements, List<CharacterEntity> characterEntities
     ) {
         HashMap<String, ArrayList<MovementDataModel>> characterById = new HashMap<>();

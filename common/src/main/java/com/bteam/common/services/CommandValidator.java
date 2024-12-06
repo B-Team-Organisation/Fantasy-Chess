@@ -4,8 +4,8 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
-import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
 import static com.bteam.common.utils.RelationUtils.groupMovesByPlayerId;
+import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 
 import java.util.*;
 
@@ -94,10 +94,14 @@ public class CommandValidator {
             GridService gridService
     ) {
         ArrayList<MovementDataModel> booleanChecked = new ArrayList<>();
+        Map<String, CharacterEntity> idCharacterMap = getIdCharacterMap(characters);
+
         for (MovementDataModel intendedMove : intendedMovements) {
+            CharacterEntity character = idCharacterMap.get(intendedMove.getCharacterId());
             if (
-                    movingInsideBounds(intendedMove, gridService)
-                    && movingInsideMovementPattern(intendedMove, characters)
+                    character != null
+                    && movingInsideBounds(intendedMove, gridService)
+                    && movingInsideMovementPattern(intendedMove, character)
             ) {
                 booleanChecked.add(intendedMove);
             }
@@ -129,10 +133,13 @@ public class CommandValidator {
     ) {
         ArrayList<AttackDataModel> legalAttacks = new ArrayList<>();
 
+        Map<String, CharacterEntity> idCharacterMap = getIdCharacterMap(characters);
+
         for (AttackDataModel intendedAttack : intendedAttacks) {
+            CharacterEntity attacker = idCharacterMap.get(intendedAttack.getAttacker());
             if (
                     attackInsideBounds(intendedAttack, gridService)
-                    && attackingInsideAttackPattern(intendedAttack, characters)
+                    && attackingInsideAttackPattern(intendedAttack, attacker)
             ) {
                 legalAttacks.add(intendedAttack);
             }
@@ -203,7 +210,7 @@ public class CommandValidator {
             List<CharacterEntity> characterEntities,
             List<MovementDataModel> intendedMovements
     ) {
-        HashMap<String, ArrayList<MovementDataModel>> playerCharacters = groupMovesByPlayerId(intendedMovements,characterEntities);
+        Map<String, ArrayList<MovementDataModel>> playerCharacters = groupMovesByPlayerId(intendedMovements,characterEntities);
 
         String[] playerIds = playerCharacters.keySet().toArray(new String[0]);
         if (playerIds.length != 2) return List.of();
@@ -223,20 +230,15 @@ public class CommandValidator {
      * Test if a character is moving outside their allowed movement patterns
      *
      * @param intendedMovement the intended movement
-     * @param characters all characters
+     * @param character The moving character
      * @return true if moving outside allowed patterns, false otherwise
      */
     public static boolean movingInsideMovementPattern(
             MovementDataModel intendedMovement,
-            List<CharacterEntity> characters
+            CharacterEntity character
     ) {
 
-        if (intendedMovement == null || characters == null) {
-            return false;
-        }
-
-        CharacterEntity character = getCharacterWithId(characters, intendedMovement.getCharacterId());
-        if (character == null) return false;
+        if (intendedMovement == null) return false;
 
         Vector2D movementVector = intendedMovement.getMovementVector();
         PatternService[] movementServices = character.getCharacterBaseModel().getMovementPatterns();
@@ -280,8 +282,7 @@ public class CommandValidator {
     ) {
         ArrayList<MovementDataModel> legalMoves = new ArrayList<>();
 
-        HashMap<String,ArrayList<MovementDataModel>> playerMoves = groupMovesByPlayerId(intendedMovements, characters);
-        //Original Method
+        Map<String,ArrayList<MovementDataModel>> playerMoves = groupMovesByPlayerId(intendedMovements, characters);
 
         for (String playerId : playerMoves.keySet()) {
             List<MovementDataModel> moves = playerMoves.get(playerId);
@@ -349,26 +350,19 @@ public class CommandValidator {
      * Test if character is attacking inside their allowed attack patterns.
      *
      * @param attack the attack
-     * @param characters the available characterEntities
+     * @param attacker The attacking character
      * @return true, if attacking inside allowed attack patterns, else false
      */
     public static boolean attackingInsideAttackPattern(
             AttackDataModel attack,
-            List<CharacterEntity> characters
+            CharacterEntity attacker
     ) {
 
-        if (attack == null || characters == null) {
-            return false;
-        }
-
-        CharacterEntity character = getCharacterWithId(characters, attack.getAttacker());
-        if (character == null) return false;
-
         Vector2D attackPosition = attack.getAttackPosition();
-        PatternService[] attackServices = character.getCharacterBaseModel().getAttackPatterns();
+        PatternService[] attackServices = attacker.getCharacterBaseModel().getAttackPatterns();
 
         for (PatternService attackService : attackServices) {
-            for (Vector2D allowedAttack : attackService.getPossibleTargetPositions(character.getPosition())) {
+            for (Vector2D allowedAttack : attackService.getPossibleTargetPositions(attacker.getPosition())) {
                 if (allowedAttack.equals(attackPosition)) {
                     return true;
                 }
