@@ -7,6 +7,7 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 
 import static com.bteam.common.services.CommandValidator.validateCommands;
+import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
 
 /**
  * Service for turn-based game logic.
@@ -89,7 +90,7 @@ public class TurnLogicService {
             String attackerId = attackMove.getAttacker();
             Vector2D attackPoint = attackMove.getAttackPosition();
 
-            CharacterEntity attacker = findCharacterById(attackerId, charactersAfterAttacks);
+            CharacterEntity attacker = getCharacterWithId(charactersAfterAttacks, attackerId);
             if (attacker == null) {
                 continue;
             }
@@ -114,22 +115,6 @@ public class TurnLogicService {
         }
 
         return charactersAfterAttacks;
-    }
-
-    /**
-     * Finds a character by its unique ID from a list of characters.
-     *
-     * @param id         The ID of the character to find.
-     * @param characters The list of characters to search.
-     * @return The matching {@link CharacterEntity}, or {@code null} if not found.
-     */
-    private static CharacterEntity findCharacterById(String id, List<CharacterEntity> characters) {
-        for (CharacterEntity character : characters) {
-            if (character.getId().equals(id)) {
-                return character;
-            }
-        }
-        return null;
     }
 
     /**

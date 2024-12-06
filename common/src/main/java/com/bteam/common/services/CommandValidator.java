@@ -4,6 +4,8 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
+import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
+import static com.bteam.common.utils.RelationUtils.groupMovesByPlayerId;
 
 import java.util.*;
 
@@ -376,39 +378,4 @@ public class CommandValidator {
         return false;
     }
 
-    /**
-     * Get the matching characterEntity given an id.
-     *
-     * @param characterEntities The entities
-     * @param characterId The id to search for
-     * @return The matching character
-     */
-    private static CharacterEntity getCharacterWithId(
-            List<CharacterEntity> characterEntities, String characterId
-    ) {
-        for (CharacterEntity character : characterEntities) {
-            if (characterId.equals(character.getId())) {
-                return character;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get moves by playerId
-     * @return HashMap with {@code playerId : List<CharacterEntities>}
-     */
-    private static HashMap<String, ArrayList<MovementDataModel>> groupMovesByPlayerId(
-            List<MovementDataModel> intendedMovements, List<CharacterEntity> characterEntities
-    ) {
-        HashMap<String, ArrayList<MovementDataModel>> characterById = new HashMap<>();
-        for (MovementDataModel intendedMovement : intendedMovements) {
-            CharacterEntity character = getCharacterWithId(characterEntities, intendedMovement.getCharacterId());
-            if (character == null) continue;
-            characterById.computeIfAbsent(character.getPlayerId(), key -> new ArrayList<>()).add(intendedMovement);
-        }
-
-        return characterById;
-
-    }
 }
