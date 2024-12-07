@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.NoCharacterFoundException;
 import com.bteam.common.models.*;
 
 import static com.bteam.common.services.CommandValidator.validateCommands;
@@ -28,7 +30,7 @@ public class TurnLogicService {
      * @param moves      List of movement commands received.
      * @param characters List of all characters in the game.
      * @param attacks    List of attack commands received.
-     * @param grid       Grid model representing the game board.
+     * @param gridService Grid service for the game board.
      * @return A {@link TurnResult} object containing the updated character states,
      *         valid movements, valid attacks, and any movement conflicts.
      */
@@ -36,21 +38,42 @@ public class TurnLogicService {
         List<MovementDataModel> moves,
         List<CharacterEntity> characters,
         List<AttackDataModel> attacks,
-        GridModel grid)
+        GridService gridService)
     {
 
-        ValidationResult validation = validateCommands(characters, moves, attacks, new GridService(grid));
+        ValidationResult validation = validateCommands(characters, moves, attacks, gridService);
 
         List<MovementDataModel> validMovements = validation.getValidMoves();
         List<AttackDataModel> validAttacks = validation.getValidAttacks();
 
-        List<CharacterEntity> charactersAfterMovement = applyMovement(validMovements, characters);
-        List<CharacterEntity> charactersAfterAttacks = applyAttacks(validAttacks, charactersAfterMovement);
+        applyMovement(validMovements, characters, gridService);
+        applyAttacks(validAttacks, characters, gridService);
+
+        checkForDeaths(characters,gridService);
 
         return new TurnResult(
-                charactersAfterAttacks, validation.getMovementConflicts(),
+                characters, validation.getMovementConflicts(),
                 validation.getValidMoves(), validation.getValidAttacks()
         );
+    }
+
+    private static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {
+        List<CharacterEntity> deadCharacters = new ArrayList<>();
+
+        for (CharacterEntity character : characters) {
+            if (character.getHealth() <= 0){
+                deadCharacters.add(character);
+            }
+        }
+
+        for (CharacterEntity character : deadCharacters) {
+            characters.remove(character);
+			try {
+				gridService.removeCharacterFrom(character.getPosition());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
     }
 
     /**
@@ -58,23 +81,18 @@ public class TurnLogicService {
      *
      * @param intendedMovements List of valid movement commands.
      * @param characters        List of all characters in the game.
-     * @return The updated list of characters after movements are applied.
+     * @param gridService       The {@link GridService} of the game.
      */
-    private static List<CharacterEntity> applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters) {
-        List<CharacterEntity> charactersAfterMovement = new ArrayList<>(characters);
-
-        for (MovementDataModel movement : intendedMovements) {
-            String characterToMove = movement.getCharacterId();
-
-            for (CharacterEntity character : charactersAfterMovement) {
-                if (character.getId().equals(characterToMove)) {
-                    character.setPosition(movement.getMovementVector());
-                    break;
+    private static void applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters, GridService gridService) {
+            for (MovementDataModel movement : intendedMovements){
+                CharacterEntity character = getCharacterWithId(characters, movement.getCharacterId());
+				assert character != null;
+                try {
+				    gridService.moveCharacter(character.getPosition(),movement.getMovementVector());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        }
-
-        return charactersAfterMovement;
     }
 
     /**
@@ -82,40 +100,33 @@ public class TurnLogicService {
      *
      * @param intendedAttacks List of valid attack commands.
      * @param characters      List of all characters in the game.
-     * @return The updated list of characters after attacks are applied.
+     * @param gridService       The {@link GridService} of the game.
      */
-    private static List<CharacterEntity> applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters) {
-        List<CharacterEntity> charactersAfterAttacks = new ArrayList<>(characters);
+    private static void applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters, GridService gridService) {
 
         for (AttackDataModel attackMove : intendedAttacks) {
             String attackerId = attackMove.getAttacker();
             Vector2D attackPosition = attackMove.getAttackPosition();
 
-            CharacterEntity attacker = getCharacterWithId(charactersAfterAttacks, attackerId);
-            if (attacker == null) {
-                continue;
-            }
+            CharacterEntity attacker = getCharacterWithId(characters, attackerId);
+            assert attacker != null;
 
             Vector2D[] attackArea = attacker.getCharacterBaseModel()
                     .getAttackPatterns()[0]
                     .getAreaOfEffect(attacker.getPosition(), attackPosition);
 
+            int damage = attacker.getCharacterBaseModel().getAttackPower();
             for (Vector2D affectedPosition : attackArea) {
-                for (CharacterEntity target : new ArrayList<>(charactersAfterAttacks)) {
-                    if (target.getPosition().equals(affectedPosition)) {
-
-                        int newHealth = target.getHealth() - attacker.getCharacterBaseModel().getAttackPower();
-                        target.setHealth(newHealth);
-
-                        if (newHealth <= 0) {
-                            charactersAfterAttacks.remove(target);
-                        }
+                try {
+                    CharacterEntity target = gridService.getCharacterAt(affectedPosition);
+                    if (target != null) {
+                        target.setHealth(target.getHealth() - damage);
                     }
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
             }
         }
-
-        return charactersAfterAttacks;
     }
 
     /**

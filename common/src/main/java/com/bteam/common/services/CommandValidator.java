@@ -244,8 +244,8 @@ public class CommandValidator {
         PatternService[] movementServices = character.getCharacterBaseModel().getMovementPatterns();
 
         for (PatternService movementService : movementServices) {
-            for (Vector2D allowedAttack : movementService.getPossibleTargetPositions(character.getPosition())) {
-                if (allowedAttack.equals(movementVector)) {
+            for (Vector2D allowedMove : movementService.getPossibleTargetPositions(character.getPosition())) {
+                if (allowedMove.equals(movementVector)) {
                     return true;
                 }
             }
