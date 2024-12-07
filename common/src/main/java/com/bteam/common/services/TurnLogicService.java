@@ -36,7 +36,8 @@ public class TurnLogicService {
         List<MovementDataModel> moves,
         List<CharacterEntity> characters,
         List<AttackDataModel> attacks,
-        GridModel grid) {
+        GridModel grid)
+    {
 
         ValidationResult validation = validateCommands(characters, moves, attacks, new GridService(grid));
 
@@ -88,7 +89,7 @@ public class TurnLogicService {
 
         for (AttackDataModel attackMove : intendedAttacks) {
             String attackerId = attackMove.getAttacker();
-            Vector2D attackPoint = attackMove.getAttackPosition();
+            Vector2D attackPosition = attackMove.getAttackPosition();
 
             CharacterEntity attacker = getCharacterWithId(charactersAfterAttacks, attackerId);
             if (attacker == null) {
@@ -97,7 +98,7 @@ public class TurnLogicService {
 
             Vector2D[] attackArea = attacker.getCharacterBaseModel()
                     .getAttackPatterns()[0]
-                    .getAreaOfEffect(attacker.getPosition(), attackPoint);
+                    .getAreaOfEffect(attacker.getPosition(), attackPosition);
 
             for (Vector2D affectedPosition : attackArea) {
                 for (CharacterEntity target : new ArrayList<>(charactersAfterAttacks)) {
