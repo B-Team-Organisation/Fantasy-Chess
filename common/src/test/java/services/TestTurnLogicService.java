@@ -1,4 +1,6 @@
 package services;
+import com.bteam.common.exceptions.InvalidSubpatternMappingException;
+import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
@@ -9,6 +11,7 @@ import utils.TestUtils;
 import utils.TurnResultNoOrder;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -188,6 +191,59 @@ class TestTurnLogicService {
         assertEquals(charactersAfter, result);
     }
 
+    @Test
+
+    void testApplyAreaAttack() throws PatternShapeInvalidException, InvalidSubpatternMappingException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+
+        PatternModel deepModel = new PatternModel("   \n  I\n   ",new HashMap<Character,String>(){{
+            put('I',"LinePattern");
+        }},"RightLine");
+        PatternStore deepStore = new PatternStore(){
+            @Override
+            public PatternModel getPatternByName(String patternName) {
+                return patterns.get(patternName);
+            }
+
+            private Map<String, PatternModel> patterns = new HashMap<>(){
+                {
+                    put("LinePattern", new PatternModel(" x \n x \n x ", new HashMap<Character, String>() {
+                    },"LinePattern"));
+                }
+            };
+        };
+        PatternService deepService = new PatternService(deepModel,deepStore);
+
+        CharacterEntity areaDamageCharacter2 = new CharacterEntity(
+                new CharacterDataModel("Xavier", "", 50, 10, new PatternService[]{deepService}, new PatternService[]{}),
+                "9",50, new Vector2D(0,0), player2.getPlayerId()
+        );
+
+        CharacterEntity victim1 = new CharacterEntity (new CharacterDataModel("","",10,0,new PatternService[]{},new PatternService[]{}),"10",10,new Vector2D(0,1),player1.getPlayerId());
+        CharacterEntity victim2 = new CharacterEntity (new CharacterDataModel("","",11,0,new PatternService[]{},new PatternService[]{}),"11",11,new Vector2D(1,1),player1.getPlayerId());
+
+        AttackDataModel areaAttack = new AttackDataModel(new Vector2D(0,1),areaDamageCharacter2.getId());
+        attacks.clear();
+        attacks.add(areaAttack);
+
+        charactersAfter.clear();
+
+        charactersAfter.add(areaDamageCharacter2);
+        charactersAfter.add(victim1);
+        charactersAfter.add(victim2);
+
+        charactersBefore = TestUtils.deepCopyCharacterList(charactersAfter);
+
+        victim2.setHealth(1);
+        charactersAfter.remove(victim1);
+
+        Method method = TurnLogicService.class.getDeclaredMethod("applyAttacks", List.class, List.class);
+        method.setAccessible(true);
+        List<CharacterEntity> result = (List<CharacterEntity>) method.invoke(null, attacks, charactersBefore);
+
+        assertEquals(charactersAfter,result);
+
+
+    }
     @Test
     void testApplyMovement() throws Exception {
 
