@@ -105,7 +105,6 @@ public class GameScreen extends ScreenAdapter {
 
     private GridService gridService;
 
-
     /**
      * Creates a mock grid model for the purpose of showing the command preview
      * <p>
@@ -290,6 +289,10 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        if (gameScreenMode == GameScreenMode.TURN_OUTCOME){
+            progressTurnOutcomeAnimation();
+        }
+
         gameViewport.apply();
 
         gameCamera.zoom = 1f; // Debug tool
@@ -322,6 +325,29 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
+    }
+
+    private void progressTurnOutcomeAnimation() {
+        // Keine Commands mehr zu zeigen?
+            // Zu Command Mode wechseln
+        // Wenn es noch kollidierte moves gibt
+            // Wenn gerade keine Kollision gezeigt wird
+                // Neue Kollision anstoßen
+                // Return
+            // Wenn Kollision in progress
+                // Return
+        // Wenn es noch moves gibt
+            //      Wenn gerade kein Move gezeigt wird
+                // Neuen move anstoßen
+                // Return
+            // Wenn move in progress
+                // Return
+        // Wenn es noch Attacken gibt
+            // Wenn gerade keine Attacke gezeigt wird
+                // Neuen Attacke anstoßen
+                // Return
+            // Wenn Attak in progress
+                // Return
     }
 
     /**
