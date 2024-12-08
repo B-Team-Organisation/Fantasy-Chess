@@ -399,7 +399,7 @@ public class GameScreen extends ScreenAdapter {
                             try {
                                 CharacterEntity character = gridService.getCharacterAt(gridPos);
                                 selectedPiece = character;
-                                if (character != null){
+                                if (character != null && character.getPlayerId().equals(getWebSocketService().getUserid())){
                                     Gdx.app.postRunnable(() -> openCommandTypeDialog());
                                 }
                             } catch (DestinationInvalidException e) {
@@ -407,9 +407,7 @@ public class GameScreen extends ScreenAdapter {
                             }
                             break;
                         }
-                        case MOVE_MODE: {
-                            break;
-                        }
+                        case MOVE_MODE:
                         case ATTACK_MODE: {
                             break;
                         }
