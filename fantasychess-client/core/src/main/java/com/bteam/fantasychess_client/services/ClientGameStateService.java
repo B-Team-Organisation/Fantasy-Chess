@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_client.services;
 
+import com.badlogic.gdx.Gdx;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
@@ -72,13 +73,14 @@ public class ClientGameStateService {
      * Needs the playerId to check if the {@link CharacterEntity} is friendly or not.
      *
      * @param characters updated list of all {@link CharacterEntity}
-     * @param playerId your playerId
      */
-    public void updateCharacters(List<CharacterEntity> characters, String playerId) {
+    public void updateCharacters(List<CharacterEntity> characters) {
         this.characters = characters;
 
         friendlyCharacters.clear();
         enemyCharacters.clear();
+
+        String playerId = Gdx.app.getPreferences("userinfo").getString("playerId");
 
         for (CharacterEntity character : characters) {
             if (character.getPlayerId().equals(playerId)) {
