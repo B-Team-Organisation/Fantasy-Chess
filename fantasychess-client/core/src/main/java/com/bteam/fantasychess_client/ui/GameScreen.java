@@ -31,6 +31,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
+import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
  * Screen on which the game plays out.
@@ -155,6 +156,34 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
+
+
+
+        readyButton = new TextButton("Commands ready: \n" + validMoves + "/" + totalMoves, skin);
+        readyButton.setDisabled(true);
+        readyButton.setSize(400, 150);
+        readyButton.setPosition(stage.getWidth() - 450, 50);
+
+
+        if (validMoves==totalMoves) {
+            readyButton.setDisabled(false);
+        }
+        onChange(readyButton,()->{
+            readyButton.setText("READY");
+            turnTimer.stopTime();
+        });
+        turnTimer = new TurnTimer(skin, 15, readyButton );
+        turnTimer.setFontScale(4f);
+        turnTimer.setSize(200, 100);
+        turnTimer.setAlignment(Align.center);
+
+
+        turnTimer.setPosition((stage.getWidth() - turnTimer.getWidth()) / 2, stage.getHeight()-100);
+        stage.addActor(turnTimer);
+        stage.setDebugAll(true);
+
+
+        stage.addActor(readyButton);
 
         atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
         batch = new SpriteBatch();
@@ -404,6 +433,11 @@ public class GameScreen extends ScreenAdapter {
     }
 
 
+    private void updateCommandCount(){
+        totalMoves = Main.getGameStateService().getFriendlyCharacterCount();
+        validMoves = Main.getCommandManagementService().getAttacksCommands().size()+
+            Main.getCommandManagementService().getMovementsCommands().size();
+    }
 
     /**
      * Populates the {@code commandOptionLayer} with the attack options of the piece
