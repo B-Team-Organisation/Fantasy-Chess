@@ -1,0 +1,151 @@
+package com.bteam.common.services;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.exceptions.NoCharacterFoundException;
+import com.bteam.common.models.*;
+
+import static com.bteam.common.services.CommandValidator.validateCommands;
+import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
+
+/**
+ * Service for turn-based game logic.
+ * <p>
+ * This service handles the logic for processing movements, attacks, character deaths,
+ * and determining the winner for each turn in the game.
+ *
+ * @author Albano, Jacinto
+ * @version 1.0
+ */
+public class TurnLogicService {
+
+    private TurnLogicService() {}
+
+    /**
+     * Applies all the commands (movements and attacks) for a turn and updates the character states.
+     *
+     * @param moves      List of movement commands received.
+     * @param characters List of all characters in the game.
+     * @param attacks    List of attack commands received.
+     * @param gridService Grid service for the game board.
+     * @return A {@link TurnResult} object containing the updated character states,
+     *         valid movements, valid attacks, and any movement conflicts.
+     */
+    public static TurnResult applyCommands(
+        List<MovementDataModel> moves,
+        List<CharacterEntity> characters,
+        List<AttackDataModel> attacks,
+        GridService gridService)
+    {
+
+        ValidationResult validation = validateCommands(characters, moves, attacks, gridService);
+
+        List<MovementDataModel> validMovements = validation.getValidMoves();
+        List<AttackDataModel> validAttacks = validation.getValidAttacks();
+
+        applyMovement(validMovements, characters, gridService);
+        applyAttacks(validAttacks, characters, gridService);
+
+        checkForDeaths(characters,gridService);
+
+        return new TurnResult(
+                characters, validation.getMovementConflicts(),
+                validation.getValidMoves(), validation.getValidAttacks()
+        );
+    }
+
+    private static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {
+        List<CharacterEntity> deadCharacters = new ArrayList<>();
+
+        for (CharacterEntity character : characters) {
+            if (character.getHealth() <= 0){
+                deadCharacters.add(character);
+            }
+        }
+
+        for (CharacterEntity character : deadCharacters) {
+            characters.remove(character);
+			try {
+				gridService.removeCharacterFrom(character.getPosition());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+    }
+
+    /**
+     * Applies all valid movements to the characters.
+     *
+     * @param intendedMovements List of valid movement commands.
+     * @param characters        List of all characters in the game.
+     * @param gridService       The {@link GridService} of the game.
+     */
+    private static void applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters, GridService gridService) {
+            for (MovementDataModel movement : intendedMovements){
+                CharacterEntity character = getCharacterWithId(characters, movement.getCharacterId());
+				assert character != null;
+                try {
+				    gridService.moveCharacter(character.getPosition(),movement.getMovementVector());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    /**
+     * Applies all valid attacks to the characters.
+     *
+     * @param intendedAttacks List of valid attack commands.
+     * @param characters      List of all characters in the game.
+     * @param gridService       The {@link GridService} of the game.
+     */
+    private static void applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters, GridService gridService) {
+
+        for (AttackDataModel attackMove : intendedAttacks) {
+            String attackerId = attackMove.getAttacker();
+            Vector2D attackPosition = attackMove.getAttackPosition();
+
+            CharacterEntity attacker = getCharacterWithId(characters, attackerId);
+            assert attacker != null;
+
+            Vector2D[] attackArea = attacker.getCharacterBaseModel()
+                    .getAttackPatterns()[0]
+                    .getAreaOfEffect(attacker.getPosition(), attackPosition);
+
+            int damage = attacker.getCharacterBaseModel().getAttackPower();
+            for (Vector2D affectedPosition : attackArea) {
+                try {
+                    CharacterEntity target = gridService.getCharacterAt(affectedPosition);
+                    if (target != null) {
+                        target.setHealth(target.getHealth() - damage);
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks if the game has a winner by determining if all remaining characters belong to one player.
+     *
+     * @param characters List of all characters in the game.
+     * @return The player ID of the winner, or {@code null} if no winner exists.
+     */
+    public static String checkForWinner(List<CharacterEntity> characters) {
+        String playerId = null;
+
+        for (CharacterEntity character : characters) {
+            if (playerId == null) {
+                playerId = character.getPlayerId();
+            } else if (!playerId.equals(character.getPlayerId())) {
+                return null;
+            }
+        }
+
+        return playerId;
+    }
+}
