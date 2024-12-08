@@ -131,6 +131,8 @@ public class WebSocketService {
 
     private void onRegisterResult(Net.HttpResponse response){
         userid = response.getResultAsString();
+        Gdx.app.getPreferences("userinfo").putString("playerId", userid);
+        Gdx.app.getPreferences("userinfo").flush();
         getToken(userid);
     }
 

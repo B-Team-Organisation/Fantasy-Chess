@@ -171,7 +171,7 @@ public class MainMenu extends ScreenAdapter {
      * @return the {@link Label}
      */
     private Label createUserNameLabel() {
-        username = Gdx.app.getPreferences("usersettings").getString("username");
+        username = Gdx.app.getPreferences("userinfo").getString("username");
         Label usernameLabel = new Label(username, skin);
         usernameLabel.setFontScale(4f);
         usernameLabel.setAlignment(Align.left);
