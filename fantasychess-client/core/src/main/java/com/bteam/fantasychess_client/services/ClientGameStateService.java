@@ -12,6 +12,7 @@ import java.util.List;
  * <p>
  * A globally available service class that gives access to the current {@link GridService} and a lists of {@link CharacterEntity}.
  *
+ * @version 1.0
  * @author lukas
  */
 public class ClientGameStateService {
@@ -35,6 +36,9 @@ public class ClientGameStateService {
      * Registers a new game in the object
      * <p>
      * Resets all previous information
+     *
+     * @param rows row count of the new board
+     * @param cols col count of the new board
      */
     public void registerNewGame(int rows, int cols){
         gridService = new GridService(new GridModel(rows, cols));
@@ -95,11 +99,29 @@ public class ClientGameStateService {
     }
 
     /**
+     * Getter for {@code friendlyCharacters}
+     *
+     * @return list of all friendly characters on the board
+     */
+    public List<CharacterEntity> getFriendlyCharacters(){
+        return friendlyCharacters;
+    }
+
+    /**
      * Tells you how many {@link CharacterEntity} your enemy has on the board
      *
      * @return amount of enemy {@link CharacterEntity}
      */
     public int getEnemyCharacterCount(){
         return enemyCharacters.size();
+    }
+
+    /**
+     * Getter for {@code enemyCharacters}
+     *
+     * @return list of all enemy characters on the board
+     */
+    public List<CharacterEntity> getEnemyCharacters(){
+        return enemyCharacters;
     }
 }
