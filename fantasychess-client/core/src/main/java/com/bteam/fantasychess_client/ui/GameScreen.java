@@ -375,7 +375,7 @@ public class GameScreen extends ScreenAdapter {
                             Main.getCommandManagementService().setCommand(new MovementDataModel(selectedPiece.getId(),gridPos));
                             commandMode = CommandMode.NO_SELECTION;
                             selectedPiece = null;
-                            break;
+                            return true;
                         }
 
                         case ATTACK_MODE: {
@@ -386,7 +386,7 @@ public class GameScreen extends ScreenAdapter {
                             Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, selectedPiece.getId()));
                             commandMode = CommandMode.NO_SELECTION;
                             selectedPiece = null;
-                            break;
+                            return true;
                         }
                     }
                 }
