@@ -5,9 +5,11 @@ import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.exceptions.FullStartTilesException;
 import com.bteam.common.exceptions.NotAStartPositionException;
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.fantasychess_client.Main;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
@@ -39,37 +41,37 @@ public class GridPlacementService {
     public static void placeCharacters(GridService gridService, List<CharacterEntity> characters, int[] startTilesRows)
             throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException, FullStartTilesException {
 
-
         List<Integer> sortedRows = Arrays.stream(startTilesRows)
                 .boxed()
                 .sorted((a, b) -> Integer.compare(b, a))
                 .collect(Collectors.toList());
+
         int gridCols = gridService.getGridModel().getCols();
 
-
-
-        int availableSpaces = gridCols *sortedRows.size();
+        int availableSpaces = gridCols * sortedRows.size();
 
         if (characters.size() > availableSpaces) {
             throw new FullStartTilesException();
         }
 
-       int characterIndex = 0;
+        int characterIndex = 0;
         for (int row : sortedRows) {
             for (int col = 0; col < gridCols && characterIndex < characters.size(); col++) {
                 Vector2D position = new Vector2D(col, row);
 
-
-                if (gridService.getTileAt(position).getStartTile()) {
+                if (gridService.getTileAt(position).isStartTile()) {
                     if (gridService.getTileAt(position).getCharacter() != null) {
                         throw new DestinationAlreadyOccupiedException(position);
                     }
 
                     CharacterEntity character = characters.get(characterIndex);
                     gridService.setCharacterTo(position, character);
-                    character.setPosition(position);
 
                     characterIndex++;
+                }
+
+                if (characterIndex >= characters.size()){
+                    return;
                 }
             }
         }

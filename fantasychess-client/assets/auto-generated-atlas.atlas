@@ -1,45 +1,5 @@
 
 auto-generated-atlas.png
-size: 64, 32
-format: RGBA8888
-filter: Nearest, Nearest
-repeat: none
-badger/badger-back
-  rotate: false
-  xy: 2, 2
-  size: 28, 28
-  orig: 28, 28
-  offset: 0, 0
-  index: -1
-badger/badger-front
-  rotate: false
-  xy: 32, 2
-  size: 28, 28
-  orig: 28, 28
-  offset: 0, 0
-  index: -1
-
-auto-generated-atlas2.png
-size: 128, 64
-format: RGBA8888
-filter: Nearest, Nearest
-repeat: none
-boar/boar-back
-  rotate: false
-  xy: 2, 2
-  size: 46, 32
-  orig: 46, 32
-  offset: 0, 0
-  index: -1
-boar/boar-front
-  rotate: false
-  xy: 50, 2
-  size: 46, 32
-  orig: 46, 32
-  offset: 0, 0
-  index: -1
-
-auto-generated-atlas3.png
 size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
@@ -850,7 +810,7 @@ iso_tileset/tile
   offset: 0, 0
   index: 114
 
-auto-generated-atlas4.png
+auto-generated-atlas2.png
 size: 128, 128
 format: RGBA8888
 filter: Nearest, Nearest
@@ -876,46 +836,93 @@ special_tiles/filled-small-yellow-circle
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/filled-red
+special_tiles/filled-green
   rotate: false
   xy: 36, 70
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/filled-red-border
+special_tiles/filled-red
   rotate: false
   xy: 2, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/highlight
+special_tiles/filled-red-border
   rotate: false
   xy: 36, 36
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/red-border
+special_tiles/highlight
   rotate: false
   xy: 70, 70
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/red-filling
+special_tiles/red-border
   rotate: false
   xy: 36, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
-special_tiles/small-yellow-circle
+special_tiles/red-filling
   rotate: false
   xy: 70, 36
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/small-yellow-circle
+  rotate: false
+  xy: 70, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas3.png
+size: 64, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/badger/badger-back
+  rotate: false
+  xy: 2, 2
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+characters/badger/badger-front
+  rotate: false
+  xy: 32, 2
+  size: 28, 28
+  orig: 28, 28
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas4.png
+size: 128, 64
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/boar/boar-back
+  rotate: false
+  xy: 2, 2
+  size: 46, 32
+  orig: 46, 32
+  offset: 0, 0
+  index: -1
+characters/boar/boar-front
+  rotate: false
+  xy: 50, 2
+  size: 46, 32
+  orig: 46, 32
   offset: 0, 0
   index: -1
 
@@ -924,14 +931,14 @@ size: 128, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-stag/stag-back
+characters/stag/stag-back
   rotate: false
   xy: 2, 2
   size: 37, 37
   orig: 37, 37
   offset: 0, 0
   index: -1
-stag/stag-front
+characters/stag/stag-front
   rotate: false
   xy: 41, 3
   size: 36, 36
@@ -944,14 +951,14 @@ size: 128, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-wolf/wolf-back
+characters/wolf/wolf-back
   rotate: false
   xy: 2, 2
   size: 43, 43
   orig: 43, 43
   offset: 0, 0
   index: -1
-wolf/wolf-front
+characters/wolf/wolf-front
   rotate: false
   xy: 47, 2
   size: 43, 43
