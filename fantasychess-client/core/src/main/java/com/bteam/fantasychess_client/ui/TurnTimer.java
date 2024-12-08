@@ -25,7 +25,6 @@ public class TurnTimer extends Label {
         this.startTime = startTime;
         this.timeLeft = startTime;
         this.readyButton = readyButton;
-        // erstmal soll timer einfach resetet werden
         this.EndOfTimer = ()-> this.sendMoves();
         updateLabel();
     }

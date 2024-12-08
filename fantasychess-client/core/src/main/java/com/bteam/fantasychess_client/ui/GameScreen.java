@@ -165,7 +165,7 @@ public class GameScreen extends ScreenAdapter {
         readyButton.setPosition(stage.getWidth() - 450, 50);
 
 
-        if (validMoves==totalMoves) {
+        if (validMoves == totalMoves) {
             readyButton.setDisabled(false);
         }
         onChange(readyButton,()->{
