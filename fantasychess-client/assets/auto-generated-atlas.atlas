@@ -38,6 +38,13 @@ boar/boar-front
   orig: 46, 32
   offset: 0, 0
   index: -1
+  boar/blossom1
+    rotate: false
+    xy: 15, 15
+    size: 46, 32
+    orig: 46, 32
+    offset: 0, 0
+    index: -1
 
 auto-generated-atlas3.png
 size: 1024, 256
@@ -958,3 +965,5 @@ wolf/wolf-front
   orig: 43, 43
   offset: 0, 0
   index: -1
+
+
