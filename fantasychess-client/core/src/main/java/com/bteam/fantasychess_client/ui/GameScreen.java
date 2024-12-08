@@ -354,6 +354,14 @@ public class GameScreen extends ScreenAdapter {
                     Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
                     Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
+                    try {
+                        if (gridService.getCharacterAt(gridPos) != null) {
+                            return false;
+                        }
+                    } catch (DestinationInvalidException e) {
+                        Main.getLogger().log(Level.SEVERE, "Destination occupied");
+                    }
+
                     switch (commandMode){
                         case NO_SELECTION: {
                             break;
