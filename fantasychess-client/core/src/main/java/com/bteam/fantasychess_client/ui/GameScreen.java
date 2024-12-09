@@ -14,8 +14,11 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -26,6 +29,9 @@ import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.utils.TileMathService;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.graphics.Color;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -65,6 +71,12 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer damageLayer;
 
     private TileMathService mathService;
+
+    private TurnTimer turnTimer;
+    private TextButton readyButton;
+
+    private int validMoves ;
+    private int totalMoves;
 
     private final Map<CharacterEntity,CharacterSprite> entityMapper = new HashMap<>();
 
@@ -346,6 +358,9 @@ public class GameScreen extends ScreenAdapter {
 
         batch.end();
 
+
+        updateCommandCount();
+        turnTimer.updateTime(delta);
         uiViewport.apply();
 
         stage.act();
