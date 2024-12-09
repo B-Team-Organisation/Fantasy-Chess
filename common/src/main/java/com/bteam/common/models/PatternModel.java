@@ -1,4 +1,4 @@
-package models;
+package com.bteam.common.models;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +10,7 @@ import java.util.Objects;
  * This class stores a string representation of a pattern, its name and the {@code subpatternMappings} to decipher it.
  * It can be used to save data necessary to describe a pieces movement or attack capabilities.
  *
- * @author lukas
+ * @author Lukas
  * @version 1.0
  */
 public class PatternModel {
@@ -53,10 +53,10 @@ public class PatternModel {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PatternModel patternModel
-                && patternName.equals(patternModel.getPatternName())
-                && this.patternString.equals(patternModel.getPatternString())
-                && this.subpatternMappings.equals(patternModel.getSubpatternMappings());
+        return o instanceof PatternModel
+                && patternName.equals(((PatternModel) o).getPatternName())
+                && this.patternString.equals(((PatternModel) o).getPatternString())
+                && this.subpatternMappings.equals(((PatternModel) o).getSubpatternMappings());
     }
 
     @Override

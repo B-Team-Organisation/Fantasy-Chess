@@ -5,12 +5,12 @@ import com.bteam.common.enums.GameStatus;
 import com.bteam.common.models.*;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
-import com.bteam.fantasychess_server.utils.Pair;
-import models.GameSettingsModel;
+import com.bteam.common.utils.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -22,16 +22,28 @@ public class GameStateService {
 
     HashMap<UUID, GameModel> games = new HashMap<>();
 
-    public HashMap<UUID, GameModel> getGames() {
+    public void setPlayerMoves(UUID playerId, UUID gameId, List<MovementDataModel> moves, List<AttackDataModel> attacks) {
+        var pair = new Pair<>(attacks, moves);
+        var game = games.get(playerId);
+        game.getCommands().put(playerId.toString(), pair);
+    }
+
+    public Map<UUID, GameModel> getGames() {
         return games;
     }
 
-    public void startNewGame(List<Player> player, List<CharacterEntity> characters, GameSettingsModel settings) {
+    public GameModel getGame(UUID gameId) {
+        return games.get(gameId);
+    }
+
+    public GridModel startNewGame(List<CharacterEntity> characters,
+                                  GameSettingsModel settings, String lobbyId) {
         var id = UUID.randomUUID();
         var model = new GameModel(
                 new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
-                settings.getMaxTurnSeconds(), GameStatus.Running, characters);
+                settings.getMaxTurnSeconds(), GameStatus.Running, characters, lobbyId);
         games.put(id, model);
+        return model.getGrid();
     }
 
     public void cancelGame(UUID id) {
@@ -42,6 +54,7 @@ public class GameStateService {
         var game = games.get(gameId);
         GridService service = new GridService(game.getGrid());
         var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service);
+        game.getCommands().clear();
         return new Pair<>(result, service.getGridModel());
     }
 }

@@ -54,7 +54,7 @@ public class GridPlacementService {
             throw new FullStartTilesException();
         }
 
-        int characterIndex = 0;
+       int characterIndex = 0;
         for (int row : sortedRows) {
             for (int col = 0; col < gridCols && characterIndex < characters.size(); col++) {
                 Vector2D position = new Vector2D(col, row);
@@ -75,3 +75,4 @@ public class GridPlacementService {
         }
     }
 }
+

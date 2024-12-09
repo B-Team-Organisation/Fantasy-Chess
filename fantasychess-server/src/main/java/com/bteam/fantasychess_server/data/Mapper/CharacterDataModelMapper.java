@@ -1,8 +1,8 @@
-package com.bteam.fantasychess_server.data.Mapper;
+package com.bteam.fantasychess_server.data.mapper;
 
 import Exceptions.NotImplementedException;
+import com.bteam.common.models.CharacterDataModel;
 import com.bteam.fantasychess_server.data.entities.CharacterDataEntity;
-import models.CharacterDataModel;
 
 public class CharacterDataModelMapper {
     public CharacterDataModel EntityToModel(CharacterDataEntity characterEntity) {

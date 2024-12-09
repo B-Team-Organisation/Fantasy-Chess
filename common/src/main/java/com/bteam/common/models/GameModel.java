@@ -6,6 +6,7 @@ import com.bteam.common.utils.Pair;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Model Class for a Single game, which encapsulates information such as the current turn, how long each turn should
@@ -14,14 +15,16 @@ import java.util.List;
  */
 public class GameModel {
     private final String id;
+    private final String lobbyId;
     private final List<CharacterEntity> entities;
     private final HashMap<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> commands;
     private GridModel grid;
     private int turn;
     private int maxTurnSeconds;
     private GameStatus status;
+
     public GameModel(GridModel grid, String id, int turn, int maxTurnSeconds, GameStatus status,
-                     List<CharacterEntity> entities) {
+                     List<CharacterEntity> entities, String lobbyId) {
         this.grid = grid;
         this.id = id;
         this.turn = turn;
@@ -29,9 +32,10 @@ public class GameModel {
         this.status = status;
         this.entities = entities;
         this.commands = new HashMap<>();
+        this.lobbyId = lobbyId;
     }
 
-    public HashMap<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> getCommands() {
+    public Map<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> getCommands() {
         return commands;
     }
 
@@ -73,5 +77,9 @@ public class GameModel {
 
     public List<CharacterEntity> getEntities() {
         return entities;
+    }
+
+    public String getLobbyId() {
+        return lobbyId;
     }
 }

@@ -1,7 +1,7 @@
-package models;
+package com.bteam.common.models;
 
-import Exceptions.InvalidSubpatternMappingException;
-import Exceptions.PatternShapeInvalidException;
+import com.bteam.common.exceptions.InvalidSubpatternMappingException;
+import com.bteam.common.exceptions.PatternShapeInvalidException;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ import java.util.*;
  * Validates the pattern upon creation.
  * Makes it possible to get possible targets and tiles affected by actions of said targets.
  *
- * @author lukas
+ * @author Lukas
  * @version 1.0
  */
 public class PatternService {
@@ -39,7 +39,7 @@ public class PatternService {
      * Validated the given {@link PatternModel} in terms of shape and completeness
      * <p>
      * Extracts the lines of the patternString and validates them.
-     * The working horse of this method is the method {@link models.PatternService#arePatternMappingsInvalid(PatternModel).
+     * The working horse of this method is the method {@link PatternService#arePatternMappingsInvalid(PatternModel).
      *
      * @param patternModel the {@link PatternModel} to validate
      * @throws PatternShapeInvalidException if the shape of the pattern is invalid
@@ -133,10 +133,11 @@ public class PatternService {
     }
 
     /**
-     * Returns all positions the player can attack
+     * Returns all positions the player can target
      *
      * @param player the {@link Vector2D}-position of the player
-     * @return a {@link Vector2D}[] containing the {@link Vector2D}-positions of all the possible positions the player can attack with this pattern
+     *
+     * @return a {@link Vector2D}[] containing the {@link Vector2D}-positions of all the possible positions the player can target with this pattern
      */
     public Vector2D[] getPossibleTargetPositions(Vector2D player){
         return Arrays.stream(relativeTargetMappings.keySet().toArray(new Vector2D[0])).map(player::add).toArray(Vector2D[]::new);
@@ -166,7 +167,7 @@ public class PatternService {
     /**
      * Checks if the pattern mapping tree is invalid
      * <p>
-     * Iterates over the pattern and makes sure that all non empty chars in the string are either without a mapping or
+     * Iterates over the pattern and makes sure that all non-empty chars in the string are either without a mapping or
      * mapped to an existing and valid subpattern.
      *
      * @param patternModel the {@link PatternModel} that is being investigated
@@ -201,10 +202,10 @@ public class PatternService {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof PatternService patternService
-                && this.patternModel.equals(patternService.patternModel)
-                && this.relativeTargetMappings.equals(patternService.relativeTargetMappings)
-                && this.patternStore.equals(patternService.patternStore);
+        return o instanceof PatternService
+                && this.patternModel.equals(((PatternService) o).patternModel)
+                && this.relativeTargetMappings.equals(((PatternService) o).relativeTargetMappings)
+                && this.patternStore.equals(((PatternService) o).patternStore);
     }
 
     @Override

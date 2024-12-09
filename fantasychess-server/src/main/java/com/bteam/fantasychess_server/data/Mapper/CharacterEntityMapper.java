@@ -1,11 +1,11 @@
-package com.bteam.fantasychess_server.data.Mapper;
+package com.bteam.fantasychess_server.data.mapper;
 
 import Exceptions.NotImplementedException;
 import com.bteam.fantasychess_server.data.entities.CharacterEntity;
 
 public class CharacterEntityMapper {
 
-    public static entities.CharacterEntity EntityToModel(CharacterEntity characterEntity) {
+    public static com.bteam.common.entities.CharacterEntity EntityToModel(CharacterEntity characterEntity) {
         throw new NotImplementedException("EntityToModel");
     }
 

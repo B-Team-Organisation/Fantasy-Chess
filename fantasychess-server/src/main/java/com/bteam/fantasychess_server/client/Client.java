@@ -9,6 +9,8 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.UUID;
+
 
 /**
  * Wrapper class for a WebSocketSession to handle parsing
@@ -69,5 +71,9 @@ public class Client {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public UUID getPlayerId() {
+        return UUID.fromString(player.getPlayerId());
     }
 }
