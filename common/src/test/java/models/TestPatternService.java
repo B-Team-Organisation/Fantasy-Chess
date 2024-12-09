@@ -201,4 +201,21 @@ public class TestPatternService {
         returned = Set.of(deepDeepService.getPossibleTargetPositions(playerPosition));
         assertEquals(expected, returned);
     }
+
+    @Test
+    void testReversePattern(){
+        Vector2D[] oldAoE = deepService.getAreaOfEffect(playerPosition, targetPositionRight);
+        deepService.reversePattern();
+        Vector2D[] newAoE = deepService.getAreaOfEffect(playerPosition, targetPositionLeft);
+
+        assert oldAoE.length == newAoE.length;
+
+        for (int i = 0; i < oldAoE.length; i++) {
+            Vector2D oldRel = oldAoE[i].subtract(playerPosition);
+            Vector2D newRel = newAoE[i].subtract(playerPosition);
+
+            assert oldRel.getX() == -newRel.getX();
+            assert oldRel.getY() == -newRel.getY();
+        }
+    }
 }
