@@ -15,6 +15,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -32,6 +34,7 @@ import java.util.*;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.*;
+import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
  * Screen on which the game plays out.
@@ -54,7 +57,10 @@ public class GameScreen extends ScreenAdapter {
     private final Skin skin;
 
     private final List<CharacterSprite> characterSprites = new ArrayList<>();
+
     private Stage stage;
+    private TextButton readyButton;
+
     private TextureAtlas atlas;
     private SpriteBatch batch;
     private IsometricTiledMapRenderer mapRenderer;
@@ -79,8 +85,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private MapInputAdapter mapInputProcessor;
-
-
 
     /**
      * Constructor of GameScreen
@@ -107,6 +111,11 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
+
+        readyButton = createReadyButton();
+        readyButton.setPosition(stage.getWidth()-250,50);
+        stage.addActor(readyButton);
+
 
         atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
         batch = new SpriteBatch();
@@ -151,6 +160,45 @@ public class GameScreen extends ScreenAdapter {
         });
 
         initializeGame();
+    }
+
+    private TextButton createReadyButton() {
+        TextButton readyButton = new TextButton("",skin){
+            @Override
+            public void act(float delta) {
+                int commandCount = 0;
+                commandCount += Main.getCommandManagementService().getMovementsCommands().size();
+                commandCount += Main.getCommandManagementService().getAttacksCommands().size();
+
+                int requiredCommandCount = Main.getGameStateService().getFriendlyCharacterCount();
+
+                if (commandCount == requiredCommandCount) {
+                    setText("Send commands!");
+                    setDisabled(false);
+                } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)){
+                    setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
+                    setDisabled(true);
+                }
+            }
+        };
+
+        onChange(readyButton,()->{
+            if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
+                leaveInitPhase();
+            } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
+                mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
+            }
+
+            Main.getCommandManagementService().sendCommandsToServer();
+            Main.getCommandManagementService().clearAll();
+
+            readyButton.setDisabled(true);
+            readyButton.setText("Waiting for next\nturn to start!");
+        });
+
+        readyButton.setSize(200,100);
+
+        return readyButton;
     }
 
     private void createFreshSelectedCharacterLayer() {
@@ -206,6 +254,17 @@ public class GameScreen extends ScreenAdapter {
     }
 
     /**
+     * Transitions the game to the main phase
+     */
+    public void leaveInitPhase(){
+        Main.getCommandManagementService().sendCommandsToServer();
+        Main.getCommandManagementService().clearAll();
+
+        createFreshStartRowsLayer();
+        mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+    }
+
+    /**
      * Creates a {@link CharacterSprite} for every {@link CharacterEntity}
      */
     private void createSpritesForCharacters() {
@@ -249,15 +308,6 @@ public class GameScreen extends ScreenAdapter {
                 startRowsLayer.setCell(col,row,startCell);
             }
         }
-    }
-
-    /**
-     * Transitions the game to the main phase
-     */
-    public void leaveInitPhase(){
-        Main.getCommandManagementService().sendCommandsToServer();
-        createFreshStartRowsLayer();
-        mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
     }
 
     /**
@@ -381,7 +431,8 @@ public class GameScreen extends ScreenAdapter {
             sprite.update(delta).draw(batch);
         }
 
-        if (!getCommandManagementService().getMovementsCommands().isEmpty()){
+        if (!getCommandManagementService().getMovementsCommands().isEmpty()
+             && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
             batch.setColor(255,255,255,0.3f);
             for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
                 MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
