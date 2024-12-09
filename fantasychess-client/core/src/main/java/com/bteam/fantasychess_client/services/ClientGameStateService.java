@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class ClientGameStateService {
 
     private List<CharacterEntity> friendlyCharacters;
     private List<CharacterEntity> enemyCharacters;
+
+    private TurnResult turnResult;
 
     /**
      * Default constructor of {@link ClientGameStateService}
@@ -126,5 +129,13 @@ public class ClientGameStateService {
      */
     public List<CharacterEntity> getEnemyCharacters(){
         return enemyCharacters;
+    }
+
+    public TurnResult getTurnResult() {
+        return turnResult;
+    }
+
+    public void setTurnResult(TurnResult turnResult) {
+        this.turnResult = turnResult;
     }
 }

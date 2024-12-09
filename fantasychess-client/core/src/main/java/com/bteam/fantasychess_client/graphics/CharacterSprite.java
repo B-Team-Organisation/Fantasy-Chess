@@ -111,6 +111,10 @@ public class CharacterSprite extends Sprite {
         return this;
     }
 
+    public boolean isInAnimation(){
+        return destination != null;
+    }
+
     /**
      * Draws the sprite using the batch
      * <p>

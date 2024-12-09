@@ -22,8 +22,10 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationQueue;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.GameMockStore;
@@ -403,7 +405,7 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (gameScreenMode == GameScreenMode.TURN_OUTCOME){
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME){
             progressTurnOutcomeAnimation();
         }
 
@@ -454,7 +456,15 @@ public class GameScreen extends ScreenAdapter {
         stage.draw();
     }
 
+    private TurnResultAnimationQueue animationQueue;
+
     private void progressTurnOutcomeAnimation() {
+
+        if (animationQueue == null){
+            TurnResult turnResult = Main.getGameStateService().getTurnResult();
+            animationQueue = new TurnResultAnimationQueue(turnResult);
+        }
+
         // Keine Commands mehr zu zeigen?
             // Zu Command Mode wechseln
         // Wenn es noch kollidierte moves gibt
