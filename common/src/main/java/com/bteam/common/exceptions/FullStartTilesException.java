@@ -1,4 +1,6 @@
-package com.bteam.common.exceptions;
+package Exceptions;
+
+import models.Vector2D;
 
 public class FullStartTilesException extends Exception{
     public FullStartTilesException(){

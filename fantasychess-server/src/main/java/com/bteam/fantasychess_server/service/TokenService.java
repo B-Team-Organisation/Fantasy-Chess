@@ -2,10 +2,10 @@ package com.bteam.fantasychess_server.service;
 
 import com.bteam.fantasychess_server.data.entities.TokenEntity;
 import com.bteam.fantasychess_server.data.repositories.TokenRepository;
-import com.bteam.fantasychess_server.utils.CRC8;
 import com.bteam.fantasychess_server.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import security.CRC8;
 
 import java.security.SecureRandom;
 import java.time.Clock;
@@ -43,18 +43,6 @@ public class TokenService {
      * @return weather Token is valid or not
      */
     public boolean invalidateToken(String token) {
-        var valid = checkToken(token);
-        tokenRepository.deleteById(token);
-        return valid;
-    }
-
-    /**
-     * Checks if a Token is Valid
-     *
-     * @param token 16 Character long token
-     * @return weather Token is valid or not
-     */
-    public boolean checkToken(String token) {
         //Validate Checksum
         var checksum = getChecksum(token.substring(0, TOKEN_LENGTH));
         if (!token.substring(TOKEN_LENGTH).equals(checksum)) return false;
@@ -65,12 +53,14 @@ public class TokenService {
 
         //Validate if not Expired
         var expireDate = LocalDateTime.ofEpochSecond(tokenEntity.get().getExpires(), 0, ZoneOffset.UTC);
-        return !LocalDateTime.now(Clock.systemUTC()).isAfter(expireDate);
-    }
+        if (LocalDateTime.now(Clock.systemUTC()).isAfter(expireDate)) {
+            tokenRepository.deleteById(token);
+            return false;
+        }
 
-    public UUID getUUID(String token) {
-        var optionalToken = tokenRepository.findById(token);
-        return optionalToken.map(TokenEntity::getUserID).orElse(null);
+        //Token Valid
+        tokenRepository.deleteById(token);
+        return true;
     }
 
     /**
@@ -120,4 +110,3 @@ public class TokenService {
         return Long.toHexString(crc.getValue());
     }
 }
-

@@ -1,4 +1,4 @@
-package com.bteam.common.exceptions;
+package Exceptions;
 
 public class PatternShapeInvalidException extends Exception {
 }

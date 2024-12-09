@@ -3,7 +3,6 @@ package models;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import com.bteam.common.models.PatternModel;
 
 import static org.junit.jupiter.api.Assertions.*;
 

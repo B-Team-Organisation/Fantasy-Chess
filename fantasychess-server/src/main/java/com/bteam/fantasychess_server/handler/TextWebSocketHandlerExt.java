@@ -1,15 +1,10 @@
 package com.bteam.fantasychess_server.handler;
 
-import com.bteam.fantasychess_server.service.PlayerService;
-import com.bteam.fantasychess_server.service.TokenService;
 import com.bteam.fantasychess_server.service.WebSocketService;
-import com.bteam.fantasychess_server.utils.UriUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-import java.util.Objects;
 
 /**
  * {@link TextWebSocketHandler} extension, that maps the incoming methods to
@@ -18,25 +13,17 @@ import java.util.Objects;
  * @author Marc
  */
 public class TextWebSocketHandlerExt extends TextWebSocketHandler {
-    final WebSocketService service;
-    final TokenService tokenService;
-    final PlayerService playerService;
+    WebSocketService service;
 
-    public TextWebSocketHandlerExt(WebSocketService service, TokenService tokenService, PlayerService playerService) {
+    public TextWebSocketHandlerExt(WebSocketService service) {
         this.service = service;
-        this.tokenService = tokenService;
-        this.playerService = playerService;
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         super.afterConnectionEstablished(session);
-        var queryMap = UriUtils.getQueryParameters(Objects.requireNonNull(session.getUri()));
-        var token = queryMap.get("token");
-        var playerId = tokenService.getUUID(token);
-        var player = playerService.getPlayer(playerId);
-        tokenService.invalidateToken(token);
-        service.registerSession(session, player);
+        service.registerSession(session);
+        System.out.println(session.getUri());
     }
 
     @Override
@@ -48,7 +35,6 @@ public class TextWebSocketHandlerExt extends TextWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         super.afterConnectionClosed(session, status);
-        service.onSessionClose(session, status);
         service.removeSession(session.getId(), status);
     }
 }

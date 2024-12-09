@@ -46,6 +46,3 @@ Movement Commands mean, that Characters will move this turn and cannot attack. W
 ### Attack
 
 Attack commands describe a character, which will attack in this turn, they can either be single tile damage, or area-of-affect damage and target mutliple targets.
-
-
-

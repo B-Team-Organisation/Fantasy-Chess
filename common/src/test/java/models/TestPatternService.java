@@ -1,11 +1,7 @@
 package models;
 
-import com.bteam.common.exceptions.InvalidSubpatternMappingException;
-import com.bteam.common.exceptions.PatternShapeInvalidException;
-import com.bteam.common.models.PatternModel;
-import com.bteam.common.models.PatternStore;
-import com.bteam.common.models.PatternService;
-import com.bteam.common.models.Vector2D;
+import Exceptions.InvalidSubpatternMappingException;
+import Exceptions.PatternShapeInvalidException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
