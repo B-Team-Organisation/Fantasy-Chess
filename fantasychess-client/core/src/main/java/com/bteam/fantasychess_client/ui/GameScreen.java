@@ -23,8 +23,9 @@ import com.bteam.common.models.*;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
-import com.bteam.fantasychess_client.input.MapInputProcessor;
+import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.GameMockStore;
+import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
@@ -59,6 +60,7 @@ public class GameScreen extends ScreenAdapter {
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private TiledMapTileLayer startRowsLayer;
+    private TiledMapTileLayer selectedCharacterLayer;
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
@@ -73,7 +75,7 @@ public class GameScreen extends ScreenAdapter {
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
 
-    private MapInputProcessor mapInputProcessor;
+    private MapInputAdapter mapInputProcessor;
 
 
 
@@ -119,6 +121,7 @@ public class GameScreen extends ScreenAdapter {
         );
 
         createFreshStartRowsLayer();
+        createFreshSelectedCharacterLayer();
         createFreshHighlightLayer();
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
@@ -126,7 +129,7 @@ public class GameScreen extends ScreenAdapter {
 
         mapRenderer.setView(gameCamera);
 
-        mapInputProcessor = new MapInputProcessor(
+        mapInputProcessor = new MapInputAdapter(
             this,GameScreenMode.COMMAND_MODE,CommandMode.NO_SELECTION,mathService,gameCamera
         );
 
@@ -148,6 +151,34 @@ public class GameScreen extends ScreenAdapter {
         initializeGame();
     }
 
+    private void createFreshSelectedCharacterLayer() {
+        if (selectedCharacterLayer != null) {
+            tiledMap.getLayers().remove(selectedCharacterLayer);
+        }
+
+        selectedCharacterLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        selectedCharacterLayer.setOffsetY(-1f);
+        selectedCharacterLayer.setOffsetX(1f);
+        tiledMap.getLayers().add(selectedCharacterLayer);
+
+        if (selectedCharacter != null) {
+            TiledMapTileLayer.Cell selectedCharacterCell = new TiledMapTileLayer.Cell();
+            TextureRegion region = atlas.findRegion("special_tiles/filled-dark-green");
+            selectedCharacterCell.setTile(new StaticTiledMapTile(region));
+
+            Vector2D tilePosition = gridToTiled(selectedCharacter.getPosition());
+            selectedCharacterLayer.setCell(tilePosition.getX(), tilePosition.getY(),selectedCharacterCell);
+        }
+    }
+
+
+    /**
+     * Initialises the game
+     * <p>
+     * Takes the game parameters and character given by the server and initialises a new game with them.
+     * Puts the player in the game initialization phase, in which he can move his characters on his prefered
+     * starting positions.
+     */
     public void initializeGame(){
         mapInputProcessor.setGameScreenMode(GameScreenMode.GAME_INIT);
 
@@ -168,6 +199,9 @@ public class GameScreen extends ScreenAdapter {
         createSpritesForCharacters();
     }
 
+    /**
+     * Creates a {@link CharacterSprite} for every {@link CharacterEntity}
+     */
     private void createSpritesForCharacters() {
         for (CharacterEntity character : Main.getGameStateService().getCharacters()){
             String characterName = character.getCharacterBaseModel().getName();
@@ -180,20 +214,37 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+    /**
+     * Creates a fresh {@link TiledMapTileLayer} for displaying the start rows
+     */
     private void createFreshStartRowsLayer() {
+        if (startRowsLayer != null) {
+            tiledMap.getLayers().remove(startRowsLayer);
+        }
+
         startRowsLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
         startRowsLayer.setOffsetY(-1f);
         startRowsLayer.setOffsetX(1f);
         tiledMap.getLayers().add(startRowsLayer);
     }
 
+    /**
+     * Creates a fresh {@link TiledMapTileLayer} for displaying the damage numbers
+     */
     private void createFreshDamageLayer() {
+        if (damageLayer != null) {
+            tiledMap.getLayers().remove(damageLayer);
+        }
+
         damageLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
         damageLayer.setOffsetY(-1f);
         damageLayer.setOffsetX(1f);
         tiledMap.getLayers().add(damageLayer);
     }
 
+    /**
+     * Displays all start rows on the map
+     */
     private void showStartRows(int[] startrows){
 
         TiledMapTileLayer.Cell startCell = new TiledMapTileLayer.Cell();
@@ -290,6 +341,7 @@ public class GameScreen extends ScreenAdapter {
         if (commandOptionLayer != null) {
             tiledMap.getLayers().remove(commandOptionLayer);
         }
+
         commandOptionLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
         commandOptionLayer.setOffsetY(-1f);
         commandOptionLayer.setOffsetX(1f);
@@ -322,6 +374,7 @@ public class GameScreen extends ScreenAdapter {
             createFreshCommandPreviewLayer();
         }
 
+        SpriteSorter.sortByY(characterSprites);
         for (CharacterSprite sprite : characterSprites) {
             sprite.update(delta).draw(batch);
         }
@@ -366,24 +419,39 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
-    public void setSelectedCharacter(CharacterEntity selectedCharacter){
+    /**
+     * Updates the selected character in the scene.
+     * <p>
+     * Acts as a setter while also marking the character on the board.
+     */
+    public void updateSelectedCharacter(CharacterEntity selectedCharacter){
         this.selectedCharacter = selectedCharacter;
+        createFreshSelectedCharacterLayer();
     }
 
-    public CharacterEntity getSelectedChracter(){
+    /**
+     * Getter for the selected {@link CharacterEntity}
+     * @return
+     */
+    public CharacterEntity getSElectedCharacter(){
         return selectedCharacter;
     }
 
-    public CharacterSprite getMappedEntity(String id){
-       Main.getLogger().log(Level.SEVERE,"Getting mapped entity. "+spriteMapper.get(id));
-       return spriteMapper.get(id);
+    /**
+     * Returns the {@link CharacterSprite} representing the {@link CharacterEntity}
+     *
+     * @param id the id of the {@link CharacterEntity}
+     * @return the corresponding {@link CharacterSprite}
+     */
+    public CharacterSprite getMappedSprite(String id){
+        return spriteMapper.get(id);
     }
 
     /**
      * Resets all layers containing command information
      */
     public void resetSelection() {
-        selectedCharacter = null;
+        updateSelectedCharacter(null);
         validCommandDestinations = new Vector2D[0];
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();

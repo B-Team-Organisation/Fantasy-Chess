@@ -6,13 +6,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.Vector2D;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.utils.TileMathService;
+
+import java.util.logging.Level;
 
 /**
  * Combination of a {@link CharacterEntity} and a {@link Sprite}
  * <p>
  * Makes it convenient to render and move the entity on the {@link com.bteam.fantasychess_client.ui.GameScreen}
- *
  *
  * @author lukas
  */
@@ -111,6 +113,7 @@ public class CharacterSprite extends Sprite {
      */
     @Override
     public void draw (Batch batch) {
-        batch.draw(this, getX()-getWidth()/2, getY()-getHeight()/2);
+        float yOffset = Math.min(8,getHeight()/2);
+        batch.draw(this, getX()-getWidth()/2, getY()-yOffset);
     }
 }

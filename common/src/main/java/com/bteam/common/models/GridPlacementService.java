@@ -5,7 +5,6 @@ import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.exceptions.FullStartTilesException;
 import com.bteam.common.exceptions.NotAStartPositionException;
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.fantasychess_client.Main;
 
 import java.util.Arrays;
 import java.util.List;

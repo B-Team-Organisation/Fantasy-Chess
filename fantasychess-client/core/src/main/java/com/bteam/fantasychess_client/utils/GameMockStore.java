@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+/**
+ * Stores lists of mocks to render in the scene
+ *
+ * @author jacinto lukas
+ */
 public class GameMockStore {
     private static List<CharacterEntity> characters = new ArrayList<>();
 
@@ -103,12 +108,22 @@ public class GameMockStore {
             35, 15, new PatternService[]{frontAndBackService},new PatternService[]{jumpService}
         ));
 
+        mockBaseModels.put("blossom", new CharacterDataModel("blossom","Blossom",
+            35, 5, new PatternService[]{frontAndBackService},new PatternService[]{jumpService}
+        ));
+
         characters.add(new CharacterEntity(mockBaseModels.get("badger"), "0", mockBaseModels.get("badger").getHealth(), new Vector2D(-1,-1), "player1"));
         characters.add(new CharacterEntity(mockBaseModels.get("wolf"), "1", mockBaseModels.get("wolf").getHealth(), new Vector2D(-1,-1), "player1"));
         characters.add(new CharacterEntity(mockBaseModels.get("boar"), "2", mockBaseModels.get("boar").getHealth(), new Vector2D(-1,-1), "player1"));
         characters.add(new CharacterEntity(mockBaseModels.get("stag"), "3", mockBaseModels.get("stag").getHealth(), new Vector2D(-1,-1), "player1"));
+        characters.add(new CharacterEntity(mockBaseModels.get("blossom"), "4", mockBaseModels.get("blossom").getHealth(), new Vector2D(-1,-1), "player1"));
     }
 
+    /**
+     * Gives you a list of mock character entities to use for debugging purposes
+     *
+     * @return a list of {@link CharacterEntity}
+     */
     public static List<CharacterEntity> getCharacterMocks() {
         return characters;
     }
