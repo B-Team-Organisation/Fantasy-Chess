@@ -114,7 +114,6 @@ public class TurnTimer extends Label {
 
     public void sendMoves(){
         Main.getCommandManagementService().sendCommandsToServer();
-        //probiere mal !!!!!
 
         if( readyButton != null && !readyButton.isChecked()){
             readyButton.setDisabled(true);

@@ -158,7 +158,6 @@ public class GameScreen extends ScreenAdapter {
         stage = new Stage(uiViewport);
 
 
-
         readyButton = new TextButton("Commands ready: \n" + validMoves + "/" + totalMoves, skin);
         readyButton.setDisabled(true);
         readyButton.setSize(400, 150);
