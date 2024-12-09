@@ -34,6 +34,11 @@ public class WebSocketService {
 
     WebSocket webSocket;
     WebSocketClient client;
+
+    public String getUserid() {
+        return userid;
+    }
+
     String userid;
     String baseAddress;
 
