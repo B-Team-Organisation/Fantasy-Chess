@@ -12,13 +12,15 @@ import java.util.*;
  * Makes it possible to get possible targets and tiles affected by actions of said targets.
  *
  * @author Lukas
- * @version 1.0
+ * @version 2.0
  */
 public class PatternService {
 
     private final PatternStore patternStore;
     private final PatternModel patternModel;
     private final Map<Vector2D,Character> relativeTargetMappings;
+
+    private Map<Vector2D,Vector2D[]> attackAreasPerRelativePosition;
 
     /**
      * Constructor for PatternService
@@ -33,6 +35,40 @@ public class PatternService {
         this.patternModel = patternModel;
         validatePattern(patternModel);
         relativeTargetMappings = createMappingsFromPattern(patternModel);
+
+        attackAreasPerRelativePosition = new HashMap<>();
+        for (Vector2D target : relativeTargetMappings.keySet()) {
+            attackAreasPerRelativePosition.put(target,calculateAreaOfEffect(target));
+        }
+    }
+
+    /**
+     * Reverses the pattern to handle second player coordinate transformation
+     *
+     */
+    public void reversePattern(){
+        Map<Vector2D,Vector2D[]> newattackAreasPerRelativePosition = new HashMap<>();
+
+        for (Vector2D target : attackAreasPerRelativePosition.keySet()) {
+
+            Vector2D[] oldSubtargets = attackAreasPerRelativePosition.get(target);
+            Vector2D[] newSubtargets = new Vector2D[oldSubtargets.length];
+
+            for (int i = 0; i < oldSubtargets.length; i++) {
+                newSubtargets[i] = reversePosition(oldSubtargets[i]);
+            }
+
+            newattackAreasPerRelativePosition.put(reversePosition(target),newSubtargets);
+        }
+
+        attackAreasPerRelativePosition = newattackAreasPerRelativePosition;
+    }
+
+    /**
+     * Reverses the direction of the vector2D object
+     */
+    private Vector2D reversePosition(Vector2D position){
+        return new Vector2D(-position.getX(),-position.getY());
     }
 
     /**
@@ -67,12 +103,16 @@ public class PatternService {
      */
     public Vector2D[] getAreaOfEffect(Vector2D player, Vector2D targetPosition) {
         Vector2D relativePosition = targetPosition.subtract(player);
-
-        if (!relativeTargetMappings.containsKey(relativePosition)) {
+        if (!attackAreasPerRelativePosition.containsKey(relativePosition)) {
             return new Vector2D[0];
         }
 
-        char c = relativeTargetMappings.get(relativePosition);
+        Vector2D[] relativePositions = attackAreasPerRelativePosition.get(relativePosition);
+        return Arrays.stream(relativePositions).map(player::add).toArray(Vector2D[]::new);
+    }
+
+    private Vector2D[] calculateAreaOfEffect(Vector2D targetPosition){
+        char c = relativeTargetMappings.get(targetPosition);
 
         Set<Vector2D> targets = new HashSet<>();
 

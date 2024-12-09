@@ -64,8 +64,8 @@ public class TestGridService {
         // Check valid indices
         assertDoesNotThrow(() -> {gridService.setStartTiles(new int[]{0,1,2});});
         // Check worked
-        assertTrue(gridModel.getTileGrid()[0][0].getStartTile());
-        assertFalse(gridModel.getTileGrid()[3][0].getStartTile());
+        assertTrue(gridModel.getTileGrid()[0][0].isStartTile());
+        assertFalse(gridModel.getTileGrid()[3][0].isStartTile());
     }
 
     @Test

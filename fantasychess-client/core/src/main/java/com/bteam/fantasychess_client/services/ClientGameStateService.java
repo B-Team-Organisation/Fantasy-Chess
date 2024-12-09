@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
+import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class ClientGameStateService {
         friendlyCharacters.clear();
         enemyCharacters.clear();
 
-        String playerId = Gdx.app.getPreferences("userinfo").getString("playerId");
+        String playerId = Main.getWebSocketService().getUserid();
 
         for (CharacterEntity character : characters) {
             if (character.getPlayerId().equals(playerId)) {
