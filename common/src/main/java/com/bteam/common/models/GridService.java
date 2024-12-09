@@ -123,7 +123,7 @@ public class GridService {
         if (tile.getCharacter() != null){
             throw new DestinationAlreadyOccupiedException(to);
         }
-        if (!tile.getStartTile()){
+        if (!tile.isStartTile()){
             throw new NotAStartPositionException(to);
         }
         tile.setCharacter(character);

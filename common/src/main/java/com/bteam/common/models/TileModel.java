@@ -22,7 +22,7 @@ public class TileModel {
         this.isStartTile = isStartTile;
     }
 
-    public boolean getStartTile() {
+    public boolean isStartTile() {
         return isStartTile;
     }
 

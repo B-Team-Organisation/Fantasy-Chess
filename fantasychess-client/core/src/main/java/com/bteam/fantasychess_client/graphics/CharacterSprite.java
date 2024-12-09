@@ -1,18 +1,21 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.Vector2D;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.utils.TileMathService;
+
+import java.util.logging.Level;
 
 /**
  * Combination of a {@link CharacterEntity} and a {@link Sprite}
  * <p>
  * Makes it convenient to render and move the entity on the {@link com.bteam.fantasychess_client.ui.GameScreen}
- *
  *
  * @author lukas
  */
@@ -21,9 +24,12 @@ public class CharacterSprite extends Sprite {
     private TileMathService mathService;
 
     private final float MOVEMENT_SPEED = 40f;
-    Vector2 destination;
-    Vector2 direction;
-    float distance;
+    private Vector2 destination;
+    private Vector2 direction;
+    private float distance;
+
+    private final float xOffset;
+    private final float yOffset;
 
     /**
      * Constructor for CharacterSprites
@@ -37,6 +43,9 @@ public class CharacterSprite extends Sprite {
         this.mathService = mathService;
         setPositionInWorld(mathService.gridToWorld(position.getX(), position.getY()));
         this.character = character;
+
+        xOffset = getWidth()/2;
+        yOffset = Math.min(6,getHeight()/2);
     }
 
     /**
@@ -111,6 +120,10 @@ public class CharacterSprite extends Sprite {
      */
     @Override
     public void draw (Batch batch) {
-        batch.draw(this, getX()-getWidth()/2, getY()-getHeight()/2);
+        batch.draw(this, getX() - xOffset, getY() - yOffset);
+    }
+
+    public void drawAt(Batch batch, Vector2 position){
+        batch.draw(this, position.x - xOffset, position.y - yOffset);
     }
 }
