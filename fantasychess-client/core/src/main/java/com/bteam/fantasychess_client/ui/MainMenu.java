@@ -147,11 +147,6 @@ public class MainMenu extends ScreenAdapter {
         Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
         Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
 
-        Main.getCommandManagementService().setCommand(new AttackDataModel(new Vector2D(1, 2), "TEST_ATTACK"));
-        Main.getCommandManagementService().setCommand(new MovementDataModel("TEST_MOVEMENT", new Vector2D(3, 1)));
-        Main.getCommandManagementService().sendCommandsToServer();
-
-
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
         stage.addActor(table);
