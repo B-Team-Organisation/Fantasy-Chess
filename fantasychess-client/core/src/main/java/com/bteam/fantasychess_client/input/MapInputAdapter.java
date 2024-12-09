@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.DestinationInvalidException;
+import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.GridService;
+import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.CommandMode;
@@ -16,7 +18,11 @@ import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
+import java.util.Arrays;
 import java.util.logging.Level;
+
+import static com.bteam.fantasychess_client.Main.getLogger;
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
  * Manages all inputs on the chess board
@@ -37,8 +43,6 @@ public class MapInputAdapter extends InputAdapter {
      * Creates an {@link InputProcessor} that manages mouse input on the grid
      * <p>
      * Left click selects tiles or sets commands, right click resets status.
-     *
-     * @return the {@link InputProcessor}
      */
     public MapInputAdapter(
         GameScreen gameScreen, GameScreenMode gameScreenmode, CommandMode commandMode, TileMathService mathService, OrthographicCamera gameCamera
@@ -52,6 +56,13 @@ public class MapInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+
+        if (button == Input.Buttons.MIDDLE){
+            gameScreenMode = GameScreenMode.COMMAND_MODE;
+            gameScreen.leaveInitPhase();
+            Main.getLogger().log(Level.SEVERE,Main.getCommandManagementService().getMovementsCommands().toString());
+            return true;
+        }
 
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
@@ -112,14 +123,18 @@ public class MapInputAdapter extends InputAdapter {
                     }
 
                     CharacterEntity otherCharacter = gridService.getCharacterAt(gridPos);
+                    Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(),gridPos));
+
                     if (otherCharacter == null){
-                        gridService.moveCharacter(gameScreen.getSElectedCharacter().getPosition(),gridPos);
+                        gridService.moveCharacter(gameScreen.getSelectedCharacter().getPosition(),gridPos);
 
-                        gameScreen.getMappedSprite(gameScreen.getSElectedCharacter().getId()).moveToGridPos(gridPos);
+                        gameScreen.getMappedSprite(gameScreen.getSelectedCharacter().getId()).moveToGridPos(gridPos);
                     } else {
-                        gridService.swapCharacters(gameScreen.getSElectedCharacter().getPosition(),otherCharacter.getPosition());
+                        gridService.swapCharacters(gameScreen.getSelectedCharacter().getPosition(),otherCharacter.getPosition());
 
-                        gameScreen.getMappedSprite(gameScreen.getSElectedCharacter().getId()).moveToGridPos(gridPos);
+                        Main.getCommandManagementService().setCommand(new MovementDataModel(otherCharacter.getId(),otherCharacter.getPosition()));
+
+                        gameScreen.getMappedSprite(gameScreen.getSelectedCharacter().getId()).moveToGridPos(gridPos);
                         gameScreen.getMappedSprite(otherCharacter.getId()).moveToGridPos(otherCharacter.getPosition());
                     }
 
@@ -140,26 +155,39 @@ public class MapInputAdapter extends InputAdapter {
      * @param gridPos the clicked position in the grid
      */
     private void processClickInCommandMode(Vector2D gridPos) {
+
+        CharacterEntity character = null;
+        try {
+            character = Main.getGameStateService().getGridService().getCharacterAt(gridPos);
+        } catch (DestinationInvalidException e){
+            Main.getLogger().log(Level.SEVERE,e.getMessage());
+        }
+
         switch (commandMode){
             case NO_SELECTION: {
-                try {
-                    CharacterEntity character = Main.getGameStateService().getGridService().getCharacterAt(gridPos);
-                    gameScreen.updateSelectedCharacter(character);
-                    if (character != null){
-                        Gdx.app.postRunnable(() -> gameScreen.openCommandTypeDialog());
-                    }
-                } catch (DestinationInvalidException e) {
-                    Main.getLogger().log(Level.SEVERE,e.getMessage());
+                gameScreen.updateSelectedCharacter(character);
+                if (character != null && character.getPlayerId().equals(getWebSocketService().getUserid())) {
+                    getLogger().log(Level.SEVERE,"Selected character at: " + character.getPosition());
+                    Gdx.app.postRunnable(() -> gameScreen.openCommandTypeDialog());
                 }
                 break;
             }
             case MOVE_MODE: {
-                // Todo save move command
+                getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
+                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
+                Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(),gridPos));
+                commandMode = CommandMode.NO_SELECTION;
+                gameScreen.resetSelection();
                 break;
             }
+
             case ATTACK_MODE: {
+                getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
+                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
+                Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, gameScreen.getSelectedCharacter().getId()));
+                commandMode = CommandMode.NO_SELECTION;
+                gameScreen.resetSelection();
                 break;
-                // Todo save attack command
             }
         }
     }

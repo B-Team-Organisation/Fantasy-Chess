@@ -31,8 +31,7 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.bteam.fantasychess_client.Main.getLogger;
-import static com.bteam.fantasychess_client.Main.getWebSocketService;
+import static com.bteam.fantasychess_client.Main.*;
 
 /**
  * Screen on which the game plays out.
@@ -65,7 +64,6 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
-    private TiledMapTileLayer damageLayer;
 
     private TileMathService mathService;
 
@@ -75,6 +73,10 @@ public class GameScreen extends ScreenAdapter {
 
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
+
+    public Vector2D[] getValidCommandDestinations(){
+        return validCommandDestinations;
+    }
 
     private MapInputAdapter mapInputProcessor;
 
@@ -126,12 +128,11 @@ public class GameScreen extends ScreenAdapter {
         createFreshHighlightLayer();
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
-        createFreshDamageLayer();
 
         mapRenderer.setView(gameCamera);
 
         mapInputProcessor = new MapInputAdapter(
-            this,GameScreenMode.COMMAND_MODE,CommandMode.NO_SELECTION,mathService,gameCamera
+            this,GameScreenMode.GAME_INIT,CommandMode.NO_SELECTION,mathService,gameCamera
         );
 
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -183,17 +184,21 @@ public class GameScreen extends ScreenAdapter {
     public void initializeGame(){
         mapInputProcessor.setGameScreenMode(GameScreenMode.GAME_INIT);
 
-        int[] startRows = new int[]{6,7,8};
         List<CharacterEntity> characters = GameMockStore.getCharacterMocks();
 
         Main.getGameStateService().registerNewGame(9,9);
         Main.getGameStateService().updateCharacters(characters);
 
+        int[] startRows = new int[]{6,7,8};
         try {
             Main.getGameStateService().getGridService().setStartTiles(startRows);
             GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        }
+
+        for (CharacterEntity character : characters){
+            getCommandManagementService().setCommand(new MovementDataModel(character.getId(),character.getPosition()));
         }
 
         showStartRows(startRows);
@@ -206,7 +211,7 @@ public class GameScreen extends ScreenAdapter {
     private void createSpritesForCharacters() {
         for (CharacterEntity character : Main.getGameStateService().getCharacters()){
             String characterName = character.getCharacterBaseModel().getName();
-            String direction = "player1".equals(character.getPlayerId()) ? "back" : "front";
+            String direction = getWebSocketService().getUserid().equals(character.getPlayerId()) ? "back" : "front";
             TextureRegion textureRegion = atlas.findRegion("characters/"+characterName+"/"+characterName+"-"+direction);
             CharacterSprite sprite = new CharacterSprite(textureRegion,character.getPosition(),character,mathService);
             characterSprites.add(sprite);
@@ -230,20 +235,6 @@ public class GameScreen extends ScreenAdapter {
     }
 
     /**
-     * Creates a fresh {@link TiledMapTileLayer} for displaying the damage numbers
-     */
-    private void createFreshDamageLayer() {
-        if (damageLayer != null) {
-            tiledMap.getLayers().remove(damageLayer);
-        }
-
-        damageLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
-        damageLayer.setOffsetY(-1f);
-        damageLayer.setOffsetX(1f);
-        tiledMap.getLayers().add(damageLayer);
-    }
-
-    /**
      * Displays all start rows on the map
      */
     private void showStartRows(int[] startrows){
@@ -258,6 +249,15 @@ public class GameScreen extends ScreenAdapter {
                 startRowsLayer.setCell(col,row,startCell);
             }
         }
+    }
+
+    /**
+     * Transitions the game to the main phase
+     */
+    public void leaveInitPhase(){
+        Main.getCommandManagementService().sendCommandsToServer();
+        createFreshStartRowsLayer();
+        mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
     }
 
     /**
@@ -364,6 +364,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer.render();
 
         batch.setProjectionMatrix(gameCamera.combined);
+        batch.enableBlending();
         batch.begin();
 
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -380,136 +381,23 @@ public class GameScreen extends ScreenAdapter {
             sprite.update(delta).draw(batch);
         }
 
+        if (!getCommandManagementService().getMovementsCommands().isEmpty()){
+            batch.setColor(255,255,255,0.3f);
+            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
+                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
+                spriteMapper.get(moveId).drawAt(batch,mathService.gridToWorld(moveCommand.getMovementVector().getX(),moveCommand.getMovementVector().getY()));
+            }
+            batch.setColor(255,255,255,1f);
+        }
+
         batch.end();
+        batch.disableBlending();
 
         uiViewport.apply();
 
         stage.act();
         stage.draw();
     }
-
-    /**
-     * Populates the {@code commandOptionLayer} with the attack options of the character
-     * Creates an {@link InputProcessor} that manages mouse input on the grid
-     * <p>
-     * Left click selects tiles or sets commands, right click resets status.
-     *
-     * @return the {@link InputProcessor}
-     */
-    private InputProcessor createMapInputProcessor(){
-        return new InputProcessor() {
-            @Override
-            public boolean keyDown(int keycode) {
-                return false;
-            }
-            @Override
-            public boolean keyUp(int keycode) {
-                return false;
-            }
-            @Override
-            public boolean keyTyped(char character) {
-                return false;
-            }
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (button == Input.Buttons.LEFT) {
-                    if (gameScreenMode != GameScreenMode.COMMAND_MODE) return false;
-
-                    Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
-                    Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
-
-                    try {
-                        if (gridService.getCharacterAt(gridPos) != null) {
-                            return false;
-                        }
-                    } catch (DestinationInvalidException e) {
-                        Main.getLogger().log(Level.SEVERE, "Destination occupied");
-                    }
-
-                    switch (commandMode){
-                        case NO_SELECTION: {
-                            break;
-                        }
-
-                        case MOVE_MODE: {
-                            getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
-                            validCommandDestinations = selectedPiece.getCharacterBaseModel().getMovementPatterns()[0]
-                                .getPossibleTargetPositions(selectedPiece.getPosition());
-                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) break;
-                            Main.getCommandManagementService().setCommand(new MovementDataModel(selectedPiece.getId(),gridPos));
-                            commandMode = CommandMode.NO_SELECTION;
-                            selectedPiece = null;
-                            return true;
-                        }
-
-                        case ATTACK_MODE: {
-                            getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
-                            validCommandDestinations = selectedPiece.getCharacterBaseModel().getAttackPatterns()[0]
-                                .getPossibleTargetPositions(selectedPiece.getPosition());
-                            if (!Arrays.asList(validCommandDestinations).contains(gridPos)) break;
-                            Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, selectedPiece.getId()));
-                            commandMode = CommandMode.NO_SELECTION;
-                            selectedPiece = null;
-                            return true;
-                        }
-                    }
-                }
-
-                return false;
-            }
-            @Override
-            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                if (button == Input.Buttons.LEFT) {
-                    if (gameScreenMode != GameScreenMode.COMMAND_MODE){
-                        return false;
-                    }
-                    Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
-                    Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
-
-                    switch (commandMode){
-                        case NO_SELECTION: {
-                            try {
-                                CharacterEntity character = gridService.getCharacterAt(gridPos);
-                                selectedPiece = character;
-                                if (character != null && character.getPlayerId().equals(getWebSocketService().getUserid())){
-                                    Gdx.app.postRunnable(() -> openCommandTypeDialog());
-                                }
-                            } catch (DestinationInvalidException e) {
-                                Main.getLogger().log(Level.SEVERE,e.getMessage());
-                            }
-                            break;
-                        }
-                        case MOVE_MODE:
-                        case ATTACK_MODE: {
-                            break;
-                        }
-                    }
-                    return true;
-                } else if (button == Input.Buttons.RIGHT){
-                    resetCommandMode();
-                }
-                return false;
-            }
-            @Override
-            public boolean touchCancelled(int screenX, int screenY, int pointer, int button) {
-                return false;
-            }
-            @Override
-            public boolean touchDragged(int screenX, int screenY, int pointer) {
-                return false;
-            }
-            @Override
-            public boolean mouseMoved(int screenX, int screenY) {
-                return false;
-            }
-            @Override
-            public boolean scrolled(float amountX, float amountY) {
-                return false;
-            }
-        };
-    }
-
-
 
     /**
      * Populates the {@code commandOptionLayer} with the attack options of the piece
@@ -557,7 +445,7 @@ public class GameScreen extends ScreenAdapter {
      * Getter for the selected {@link CharacterEntity}
      * @return
      */
-    public CharacterEntity getSElectedCharacter(){
+    public CharacterEntity getSelectedCharacter(){
         return selectedCharacter;
     }
 

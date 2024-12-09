@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
+
 /**
  * Stores lists of mocks to render in the scene
  *
@@ -38,7 +40,7 @@ public class GameMockStore {
                     "jump", new PatternModel("xxxxx\nx   x\nx   x\nx   x\nxxxxx", new HashMap<>(), "jump")
                 );
                 put(
-                    "charge", new PatternModel("xxxxx\n xxx \n  x  \n    \n     \n     ", new HashMap<>(), "charge")
+                    "charge", new PatternModel("xxxxx\n xxx \n     \n     \n     ", new HashMap<>(), "charge")
                 );
             }};
 
@@ -56,6 +58,7 @@ public class GameMockStore {
         PatternService dodgeService = null;
         PatternService jumpService = null;
         PatternService chargeService = null;
+
         try {
             biteService = new PatternService(
                 mockPatternStore.getPatternByName("bite"),
@@ -68,22 +71,22 @@ public class GameMockStore {
             );
 
             tackleService = new PatternService(
-                mockPatternStore.getPatternByName("frontAndBack"),
+                mockPatternStore.getPatternByName("tackle"),
                 mockPatternStore
             );
 
             dodgeService = new PatternService(
-                mockPatternStore.getPatternByName("frontAndBack"),
+                mockPatternStore.getPatternByName("dodge"),
                 mockPatternStore
             );
 
             jumpService = new PatternService(
-                mockPatternStore.getPatternByName("frontAndBack"),
+                mockPatternStore.getPatternByName("jump"),
                 mockPatternStore
             );
 
             chargeService = new PatternService(
-                mockPatternStore.getPatternByName("frontAndBack"),
+                mockPatternStore.getPatternByName("charge"),
                 mockPatternStore
             );
         } catch (Exception e){
@@ -112,11 +115,11 @@ public class GameMockStore {
             35, 5, new PatternService[]{frontAndBackService},new PatternService[]{jumpService}
         ));
 
-        characters.add(new CharacterEntity(mockBaseModels.get("badger"), "0", mockBaseModels.get("badger").getHealth(), new Vector2D(-1,-1), "player1"));
-        characters.add(new CharacterEntity(mockBaseModels.get("wolf"), "1", mockBaseModels.get("wolf").getHealth(), new Vector2D(-1,-1), "player1"));
-        characters.add(new CharacterEntity(mockBaseModels.get("boar"), "2", mockBaseModels.get("boar").getHealth(), new Vector2D(-1,-1), "player1"));
-        characters.add(new CharacterEntity(mockBaseModels.get("stag"), "3", mockBaseModels.get("stag").getHealth(), new Vector2D(-1,-1), "player1"));
-        characters.add(new CharacterEntity(mockBaseModels.get("blossom"), "4", mockBaseModels.get("blossom").getHealth(), new Vector2D(-1,-1), "player1"));
+        characters.add(new CharacterEntity(mockBaseModels.get("badger"), "0", mockBaseModels.get("badger").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("wolf"), "1", mockBaseModels.get("wolf").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("boar"), "2", mockBaseModels.get("boar").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("stag"), "3", mockBaseModels.get("stag").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("blossom"), "4", mockBaseModels.get("blossom").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
     }
 
     /**
