@@ -64,6 +64,9 @@ public class PatternService {
         attackAreasPerRelativePosition = newattackAreasPerRelativePosition;
     }
 
+    /**
+     * Reverses the direction of the vector2D object
+     */
     private Vector2D reversePosition(Vector2D position){
         return new Vector2D(-position.getX(),-position.getY());
     }
