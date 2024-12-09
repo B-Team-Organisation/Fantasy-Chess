@@ -1,4 +1,4 @@
-package enums;
+package com.bteam.common.enums;
 
 public enum GameStatus {
     Running,

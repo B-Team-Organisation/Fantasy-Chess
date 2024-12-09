@@ -1,7 +1,7 @@
-package models;
+package com.bteam.common.models;
 
-import entities.CharacterEntity;
-import enums.GameStatus;
+import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.enums.GameStatus;
 
 import java.util.List;
 import java.util.Map;
