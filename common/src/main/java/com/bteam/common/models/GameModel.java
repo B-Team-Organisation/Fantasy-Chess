@@ -2,10 +2,10 @@ package com.bteam.common.models;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.enums.GameStatus;
+import com.bteam.common.utils.Pair;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Model Class for a Single game, which encapsulates information such as the current turn, how long each turn should
@@ -13,20 +13,26 @@ import java.util.UUID;
  * played on.
  */
 public class GameModel {
-    private final UUID id;
-    private final Map<UUID, List<CharacterEntity>> entities;
+    private final String id;
+    private final List<CharacterEntity> entities;
+    private final HashMap<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> commands;
     private GridModel grid;
     private int turn;
     private int maxTurnSeconds;
     private GameStatus status;
-
-    public GameModel(GridModel grid, UUID id, int turn, int maxTurnSeconds, GameStatus status, Map<UUID, List<CharacterEntity>> entities) {
+    public GameModel(GridModel grid, String id, int turn, int maxTurnSeconds, GameStatus status,
+                     List<CharacterEntity> entities) {
         this.grid = grid;
         this.id = id;
         this.turn = turn;
         this.maxTurnSeconds = maxTurnSeconds;
         this.status = status;
         this.entities = entities;
+        this.commands = new HashMap<>();
+    }
+
+    public HashMap<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> getCommands() {
+        return commands;
     }
 
     public GridModel getGrid() {
@@ -37,7 +43,7 @@ public class GameModel {
         this.grid = grid;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -65,7 +71,7 @@ public class GameModel {
         this.status = status;
     }
 
-    public Map<UUID, List<CharacterEntity>> getEntities() {
+    public List<CharacterEntity> getEntities() {
         return entities;
     }
 }

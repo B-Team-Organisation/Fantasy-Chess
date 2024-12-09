@@ -1,6 +1,6 @@
 package com.bteam.fantasychess_server.data.entities;
 
-import enums.GameStatus;
+import com.bteam.common.enums.GameStatus;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;

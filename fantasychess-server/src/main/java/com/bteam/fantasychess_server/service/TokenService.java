@@ -2,10 +2,10 @@ package com.bteam.fantasychess_server.service;
 
 import com.bteam.fantasychess_server.data.entities.TokenEntity;
 import com.bteam.fantasychess_server.data.repositories.TokenRepository;
+import com.bteam.fantasychess_server.utils.CRC8;
 import com.bteam.fantasychess_server.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import security.CRC8;
 
 import java.security.SecureRandom;
 import java.time.Clock;

@@ -1,4 +1,7 @@
-package models;
+package com.bteam.common.models;
+
+import models.AttackPatternDataModel;
+import models.PatternDataModel;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -25,10 +28,10 @@ public class CharacterDataModel {
     /**
      * Creates a new CharacterDataModel.
      *
-     * @param name - name of the character
-     * @param description - a description for the character
-     * @param health - the damage from the character
-     * @param attackPatterns - all attack patterns that the character can perform
+     * @param name             - name of the character
+     * @param description      - a description for the character
+     * @param health           - the damage from the character
+     * @param attackPatterns   - all attack patterns that the character can perform
      * @param movementPatterns - the movement pattern that the character can perform
      */
     public CharacterDataModel(
@@ -49,36 +52,36 @@ public class CharacterDataModel {
         return this.name;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public AttackPatternDataModel[] getAttackPatterns() {
-        return Arrays.copyOf(attackPatterns, attackPatterns.length);
-    }
-
-    public PatternDataModel[] getMovementPatterns() {
-        return Arrays.copyOf(movementPatterns, attackPatterns.length);
-    }
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 
     public void setDescription(String description) {
         this.description = description;
     }
 
+    public int getHealth() {
+        return this.health;
+    }
+
     public void setHealth(int health) {
         this.health = health;
     }
 
+    public AttackPatternDataModel[] getAttackPatterns() {
+        return Arrays.copyOf(attackPatterns, attackPatterns.length);
+    }
+
     public void setAttackPatterns(AttackPatternDataModel[] attackPatterns) {
         this.attackPatterns = attackPatterns;
+    }
+
+    public PatternDataModel[] getMovementPatterns() {
+        return Arrays.copyOf(movementPatterns, attackPatterns.length);
     }
 
     public void setMovementPatterns(PatternDataModel[] movementPatterns) {
