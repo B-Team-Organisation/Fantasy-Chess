@@ -26,11 +26,12 @@ import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
+import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
-import com.bteam.fantasychess_client.graphics.TurnResultAnimationQueue;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
@@ -174,6 +175,13 @@ public class GameScreen extends ScreenAdapter {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
+
+        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> {
+            TurnResult turnResult = TurnResultMapper.getTurnResult();
+            Main.getGameStateService().applyTurnResult(turnResult);
+        });
+
+        initializeGame();
     }
 
     private TextButton createReadyButton() {
@@ -410,12 +418,31 @@ public class GameScreen extends ScreenAdapter {
         tiledMap.getLayers().add(commandOptionLayer);
     }
 
+    private TurnResultAnimationHandler animationHandler;
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME){
+            if (Main.getGameStateService().getTurnResult() != null){
+                mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
+            }
+        }
+
         if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME){
-            progressTurnOutcomeAnimation();
+            if (animationHandler == null) {
+                TurnResult turnResult = Main.getGameStateService().getTurnResult();
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
+                animationHandler.startAnimation();
+            }
+
+            animationHandler.progressAnimation();
+
+            if (animationHandler.isDoneWithAnimation()){
+                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                animationHandler = null;
+            }
         }
 
         gameViewport.apply();
@@ -463,37 +490,6 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
-    }
-
-    private TurnResultAnimationQueue animationQueue;
-
-    private void progressTurnOutcomeAnimation() {
-
-        if (animationQueue == null){
-            TurnResult turnResult = Main.getGameStateService().getTurnResult();
-            animationQueue = new TurnResultAnimationQueue(turnResult);
-        }
-
-        // Keine Commands mehr zu zeigen?
-            // Zu Command Mode wechseln
-        // Wenn es noch kollidierte moves gibt
-            // Wenn gerade keine Kollision gezeigt wird
-                // Neue Kollision anstoßen
-                // Return
-            // Wenn Kollision in progress
-                // Return
-        // Wenn es noch moves gibt
-            //      Wenn gerade kein Move gezeigt wird
-                // Neuen move anstoßen
-                // Return
-            // Wenn move in progress
-                // Return
-        // Wenn es noch Attacken gibt
-            // Wenn gerade keine Attacke gezeigt wird
-                // Neuen Attacke anstoßen
-                // Return
-            // Wenn Attak in progress
-                // Return
     }
 
     /**
