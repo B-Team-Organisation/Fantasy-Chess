@@ -26,9 +26,11 @@ import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationQueue;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
@@ -412,6 +414,10 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME){
+            progressTurnOutcomeAnimation();
+        }
+
         gameViewport.apply();
 
         gameCamera.zoom = 1f; // Debug tool
@@ -457,6 +463,37 @@ public class GameScreen extends ScreenAdapter {
 
         stage.act();
         stage.draw();
+    }
+
+    private TurnResultAnimationQueue animationQueue;
+
+    private void progressTurnOutcomeAnimation() {
+
+        if (animationQueue == null){
+            TurnResult turnResult = Main.getGameStateService().getTurnResult();
+            animationQueue = new TurnResultAnimationQueue(turnResult);
+        }
+
+        // Keine Commands mehr zu zeigen?
+            // Zu Command Mode wechseln
+        // Wenn es noch kollidierte moves gibt
+            // Wenn gerade keine Kollision gezeigt wird
+                // Neue Kollision anstoßen
+                // Return
+            // Wenn Kollision in progress
+                // Return
+        // Wenn es noch moves gibt
+            //      Wenn gerade kein Move gezeigt wird
+                // Neuen move anstoßen
+                // Return
+            // Wenn move in progress
+                // Return
+        // Wenn es noch Attacken gibt
+            // Wenn gerade keine Attacke gezeigt wird
+                // Neuen Attacke anstoßen
+                // Return
+            // Wenn Attak in progress
+                // Return
     }
 
     /**

@@ -3,6 +3,7 @@ package com.bteam.fantasychess_client.services;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.networking.WebSocketService;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class ClientGameStateService {
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
+
+    private TurnResult turnResult;
 
     /**
      * Default constructor of {@link ClientGameStateService}
@@ -133,6 +136,14 @@ public class ClientGameStateService {
      */
     public List<CharacterEntity> getEnemyCharacters() {
         return enemyCharacters;
+    }
+
+    public TurnResult getTurnResult() {
+        return turnResult;
+    }
+
+    public void setTurnResult(TurnResult turnResult) {
+        this.turnResult = turnResult;
     }
 
     public String getGameId() {
