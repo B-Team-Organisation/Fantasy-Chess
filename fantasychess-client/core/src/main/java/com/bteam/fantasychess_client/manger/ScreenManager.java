@@ -39,8 +39,6 @@ public class ScreenManager {
             case Game:
                 (Main.getInstance()).setScreen(new GameScreen(skin));
                 break;
-            case EndGame:
-                (Main.getInstance()).setScreen(new GameEndScreen(skin));
             default:
                 Main.getLogger().log(Level.SEVERE, "Not able to navigate to " + screen);
                 break;

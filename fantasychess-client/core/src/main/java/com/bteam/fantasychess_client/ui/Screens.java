@@ -4,5 +4,4 @@ public enum Screens {
     MainMenu,
     Game,
     Splash,
-    EndGame
 }
