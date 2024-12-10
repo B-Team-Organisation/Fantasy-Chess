@@ -83,6 +83,7 @@ public class GameScreen extends ScreenAdapter {
     public Vector2D[] getValidCommandDestinations(){
         return validCommandDestinations;
     }
+    private GameEndScreen gameEndScreen;
 
     private MapInputAdapter mapInputProcessor;
 
@@ -553,6 +554,9 @@ public class GameScreen extends ScreenAdapter {
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
+    private void endGame(String winnerName) {
+        gameEndScreen.showEndGameDialog(winnerName);
+    }
     /**
      * Transforms grid coordinates into tiled map coordinates
      *
