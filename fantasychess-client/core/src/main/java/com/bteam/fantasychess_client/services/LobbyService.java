@@ -2,8 +2,11 @@ package com.bteam.fantasychess_client.services;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.bteam.common.models.LobbyModel;
+import com.bteam.common.models.Player;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.Screens;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -44,5 +47,10 @@ public class LobbyService {
 
         if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return;
         getScreenManager().navigateTo(Screens.MainMenu);
+    }
+
+    public void setPlayerReady(String id) {
+        currentLobby.addPlayer(new Player("", id, new ArrayList<>()));
+        if (currentLobby.getPlayers().size() == 2) Main.getGameStateService().initNewGame();
     }
 }

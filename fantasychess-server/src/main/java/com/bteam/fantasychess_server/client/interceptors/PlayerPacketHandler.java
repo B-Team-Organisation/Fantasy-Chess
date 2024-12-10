@@ -5,6 +5,7 @@ import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
+import com.bteam.fantasychess_server.service.GameStateService;
 import com.bteam.fantasychess_server.service.LobbyService;
 import com.bteam.fantasychess_server.service.PlayerService;
 import com.bteam.fantasychess_server.service.WebSocketService;
@@ -25,13 +26,16 @@ public class PlayerPacketHandler implements PacketHandler {
     private final PlayerService playerService;
     private final LobbyService lobbyService;
     private final WebSocketService webSocketService;
+    private final GameStateService gameStateService;
 
     public PlayerPacketHandler(PlayerService playerService,
                                LobbyService lobbyService,
-                               WebSocketService webSocketService) {
+                               WebSocketService webSocketService,
+                               GameStateService gameStateService) {
         this.playerService = playerService;
         this.lobbyService = lobbyService;
         this.webSocketService = webSocketService;
+        this.gameStateService = gameStateService;
     }
 
     @Override
@@ -46,14 +50,17 @@ public class PlayerPacketHandler implements PacketHandler {
                 var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                 var isReady = Objects.equals(dto.getStatus(), PlayerReadyDTO.PLAYER_READY);
                 playerService.setPlayerStatus(playerId, isReady ?
-                    Player.Status.READY : Player.Status.NOT_READY);
+                        Player.Status.READY : Player.Status.NOT_READY);
                 var playersToNotify = lobbyService.lobbyWithPlayer(playerId).getPlayers();
                 for (var player : playersToNotify) {
                     var readyPlayerId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
-                        PlayerReadyDTO.ready(readyPlayerId) :
-                        PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
+                            PlayerReadyDTO.ready(readyPlayerId) :
+                            PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
                     webSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
+                }
+                if (lobbyService.lobbyWithPlayer(playerId).getPlayers().size() == 2) {
+                    gameStateService.startNewGame();
                 }
                 break;
             default:

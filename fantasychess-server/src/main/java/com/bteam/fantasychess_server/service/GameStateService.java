@@ -34,6 +34,7 @@ public class GameStateService {
         game.getCommands().put(playerId.toString(), pair);
     }
 
+
     public Map<UUID, GameModel> getGames() {
         return games;
     }
@@ -44,6 +45,8 @@ public class GameStateService {
 
     public GridModel startNewGame(List<CharacterEntity> characters,
                                   GameSettingsModel settings, String lobbyId) {
+
+
         var id = UUID.randomUUID();
         var model = new GameModel(
                 new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
@@ -51,7 +54,7 @@ public class GameStateService {
         games.put(id, model);
         return model.getGrid();
     }
-    
+
     public void cancelGame(UUID id) {
         games.get(id).setStatus(GameStatus.Ended);
     }
