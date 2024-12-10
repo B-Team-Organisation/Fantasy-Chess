@@ -572,7 +572,7 @@ public class GameScreen extends ScreenAdapter {
             @Override
             protected void result(Object object) {
                 if ((boolean) object) {
-                    Main.getScreenManager().navigateToNonRunnable(Screens.MainMenu);
+                    Main.getScreenManager().navigateTo(Screens.MainMenu);
                 }
             }
         };
