@@ -8,6 +8,9 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+
 /**
  * Combination of a {@link CharacterEntity} and a {@link Sprite}
  * <p>
@@ -21,6 +24,9 @@ public class CharacterSprite extends Sprite {
 
     private final float MOVEMENT_SPEED = 40f;
     private Vector2 destination;
+
+    private ArrayDeque<Vector2> destinations;
+
     private Vector2 direction;
     private float distance;
 
@@ -39,6 +45,8 @@ public class CharacterSprite extends Sprite {
         this.mathService = mathService;
         setPositionInWorld(mathService.gridToWorld(position.getX(), position.getY()));
         this.character = character;
+
+        destinations = new ArrayDeque<>();
 
         xOffset = getWidth()/2;
         yOffset = Math.min(6,getHeight()/2);
@@ -59,13 +67,16 @@ public class CharacterSprite extends Sprite {
      *
      * @param destination the destination in world coordinates
      */
-    private void moveToWorldPos(Vector2 destination) {
+    public void moveToWorldPos(Vector2 destination) {
+        /*
         this.destination = new Vector2(destination.x, destination.y);
 
         Vector2 distanceVector = this.destination.cpy().sub(new Vector2(getX(), getY()));
         distance = (float)Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
 
         direction = distanceVector.nor();
+        */
+
 
         //steps = (int)distance;
         //step = distanceVector.scl(1/distance);
@@ -99,7 +110,13 @@ public class CharacterSprite extends Sprite {
             }
             if (distance <= 0){
                 setPosition(destination.x, destination.y);
-                destination = null;
+
+                if (destinations.isEmpty()){
+                    destination = null;
+                } else {
+                    destination = destinations.pop();
+                }
+
                 distance = 0;
                 direction = null;
             }
