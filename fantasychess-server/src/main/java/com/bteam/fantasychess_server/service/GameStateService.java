@@ -5,11 +5,13 @@ import com.bteam.common.enums.GameStatus;
 import com.bteam.common.models.*;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
+import com.bteam.common.stores.CharacterStore;
 import com.bteam.common.utils.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Service to manage the state of the currently played Games
@@ -22,8 +24,8 @@ public class GameStateService {
     LobbyService lobbyService;
     PlayerService playerService;
 
-
-    public GameStateService(@Autowired LobbyService lobbyService, @Autowired PlayerService playerService) {
+    public GameStateService(@Autowired LobbyService lobbyService,
+                            @Autowired PlayerService playerService) {
         this.lobbyService = lobbyService;
         this.playerService = playerService;
     }
@@ -43,16 +45,29 @@ public class GameStateService {
         return games.get(gameId);
     }
 
-    public GridModel startNewGame(List<CharacterEntity> characters,
-                                  GameSettingsModel settings, String lobbyId) {
-
-
+    public GameModel startNewGame(GameSettingsModel settings, String lobbyId, List<UUID> playerIds) {
+        var entities = generateInitialCharacters(playerIds);
         var id = UUID.randomUUID();
         var model = new GameModel(
                 new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
-                settings.getMaxTurnSeconds(), GameStatus.Running, characters, lobbyId);
+                settings.getMaxTurnSeconds(), GameStatus.Running, entities, lobbyId);
         games.put(id, model);
-        return model.getGrid();
+        return model;
+    }
+
+    private List<CharacterEntity> generateInitialCharacters(List<UUID> playerIds) {
+        AtomicInteger x = new AtomicInteger(0);
+        List<CharacterEntity> characters = new ArrayList<>();
+        var host = playerIds.get(0);
+        for (var p : playerIds) {
+            x.set(0);
+            var entities = CharacterStore.characters.values().stream().map(
+                    model -> new CharacterEntity(
+                            model, UUID.randomUUID().toString(), model.getHealth(),
+                            new Vector2D(x.incrementAndGet(), p.equals(host) ? 0 : 8), p.toString())).toList();
+            characters.addAll(entities);
+        }
+        return characters;
     }
 
     public void cancelGame(UUID id) {

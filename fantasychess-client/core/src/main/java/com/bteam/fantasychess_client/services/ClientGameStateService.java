@@ -1,7 +1,5 @@
 package com.bteam.fantasychess_client.services;
 
-import com.bteam.common.dto.GameInitDTO;
-import com.bteam.common.dto.Packet;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
@@ -37,8 +35,8 @@ public class ClientGameStateService {
 
     public void initNewGame() {
         WebSocketService net = getWebSocketService();
-        var data = new GameInitDTO();
-        net.send(new Packet(data, "GAME_INIT"));
+
+        //net.send(new Packet(data, "GAME_INIT"));
     }
 
     /**

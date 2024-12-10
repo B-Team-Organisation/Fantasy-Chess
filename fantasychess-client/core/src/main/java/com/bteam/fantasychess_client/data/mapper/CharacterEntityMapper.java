@@ -32,7 +32,7 @@ public final class CharacterEntityMapper {
     public static List<CharacterEntity> fromListDTO(String data) {
         JsonValue json = new JsonReader().parse(data);
         List<CharacterEntity> entities = new ArrayList<>();
-        json.get("data").get("entities").forEach(j -> entities.add(fromJson(j)));
+        json.get("data").get("characters").forEach(j -> entities.add(fromJson(j)));
         return entities;
     }
 }

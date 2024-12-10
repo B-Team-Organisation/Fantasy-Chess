@@ -1,7 +1,10 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
+import com.bteam.common.dto.CharacterEntityDTO;
+import com.bteam.common.dto.GameInitDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.models.GameSettingsModel;
 import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
@@ -49,9 +52,10 @@ public class PlayerPacketHandler implements PacketHandler {
                 var dto = mapper.convertValue(data, PlayerReadyDTO.class);
                 var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                 var isReady = Objects.equals(dto.getStatus(), PlayerReadyDTO.PLAYER_READY);
+                var lobby = lobbyService.lobbyWithPlayer(playerId);
                 playerService.setPlayerStatus(playerId, isReady ?
                         Player.Status.READY : Player.Status.NOT_READY);
-                var playersToNotify = lobbyService.lobbyWithPlayer(playerId).getPlayers();
+                var playersToNotify = lobby.getPlayers();
                 for (var player : playersToNotify) {
                     var readyPlayerId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
@@ -59,8 +63,15 @@ public class PlayerPacketHandler implements PacketHandler {
                             PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
                     webSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
-                if (lobbyService.lobbyWithPlayer(playerId).getPlayers().size() == 2) {
-                    gameStateService.startNewGame();
+                if (lobby.getPlayers().size() == 2) {
+                    var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
+                    var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
+                    var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
+                    var dataToSend = new GameInitDTO(dtos);
+                    var packetToSend = new Packet(dataToSend, "GAME_INIT");
+                    lobby.getPlayers().forEach(player -> webSocketService
+                            .getCurrentClientForPlayer(player)
+                            .sendPacket(packetToSend));
                 }
                 break;
             default:
