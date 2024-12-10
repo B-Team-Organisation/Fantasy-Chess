@@ -57,7 +57,7 @@ public class TurnLogicService {
         );
     }
 
-    private static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {
+    public static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {
         List<CharacterEntity> deadCharacters = new ArrayList<>();
 
         for (CharacterEntity character : characters) {
@@ -83,7 +83,7 @@ public class TurnLogicService {
      * @param characters        List of all characters in the game.
      * @param gridService       The {@link GridService} of the game.
      */
-    private static void applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters, GridService gridService) {
+    public static void applyMovement(List<MovementDataModel> intendedMovements, List<CharacterEntity> characters, GridService gridService) {
             for (MovementDataModel movement : intendedMovements){
                 CharacterEntity character = getCharacterWithId(characters, movement.getCharacterId());
 				assert character != null;
@@ -102,7 +102,7 @@ public class TurnLogicService {
      * @param characters      List of all characters in the game.
      * @param gridService       The {@link GridService} of the game.
      */
-    private static void applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters, GridService gridService) {
+    public static void applyAttacks(List<AttackDataModel> intendedAttacks, List<CharacterEntity> characters, GridService gridService) {
 
         for (AttackDataModel attackMove : intendedAttacks) {
             String attackerId = attackMove.getAttacker();

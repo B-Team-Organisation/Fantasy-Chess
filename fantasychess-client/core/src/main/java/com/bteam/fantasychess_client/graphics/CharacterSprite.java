@@ -1,16 +1,12 @@
 package com.bteam.fantasychess_client.graphics;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.Vector2D;
-import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.utils.TileMathService;
-
-import java.util.logging.Level;
 
 /**
  * Combination of a {@link CharacterEntity} and a {@link Sprite}

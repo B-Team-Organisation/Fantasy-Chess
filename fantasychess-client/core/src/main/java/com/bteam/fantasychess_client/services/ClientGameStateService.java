@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
+import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 
@@ -135,7 +136,10 @@ public class ClientGameStateService {
         return turnResult;
     }
 
-    public void setTurnResult(TurnResult turnResult) {
+    public void applyTurnResult(TurnResult turnResult) {
         this.turnResult = turnResult;
+
+        TurnLogicService.applyMovement(turnResult.getValidMoves(),characters,gridService);
+        TurnLogicService.applyAttacks(turnResult.getValidAttacks(),characters,gridService);
     }
 }
