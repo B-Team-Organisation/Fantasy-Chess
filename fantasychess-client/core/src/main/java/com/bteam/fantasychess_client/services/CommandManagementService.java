@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bteam.fantasychess_client.Main.getGameStateService;
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
@@ -55,7 +56,7 @@ public class CommandManagementService {
         List<CommandDTO> list = new ArrayList<>();
         for (var movement : movements.values()) list.add(new CommandDTO(movement));
         for (var attack : attacks.values()) list.add(new CommandDTO(attack));
-        CommandListDTO commandListDTO = new CommandListDTO(list);
+        CommandListDTO commandListDTO = new CommandListDTO(list, getGameStateService().getGameId());
         Packet packet = new Packet(commandListDTO, "GAME_COMMANDS");
         getWebSocketService().send(packet);
     }

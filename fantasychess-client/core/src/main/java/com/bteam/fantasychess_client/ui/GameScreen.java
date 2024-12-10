@@ -24,7 +24,6 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.models.GridPlacementService;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
@@ -32,7 +31,6 @@ import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
-import com.bteam.fantasychess_client.utils.GameMockStore;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
@@ -157,22 +155,23 @@ public class GameScreen extends ScreenAdapter {
             JsonReader reader = new JsonReader();
             JsonValue data = reader.parse(p).get("data");
             String clientId = data.getString("clientId");
-            boolean ready = data.getString("commandType").equals(PlayerReadyDTO.PLAYER_READY);
+            boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
             Main.getLobbyService().setPlayerReady(clientId);
         });
 
         getWebSocketService().addPacketHandler("GAME_INIT", str -> {
             getGameStateService().registerNewGame(9, 9);
             var characters = CharacterEntityMapper.fromListDTO(str);
+            String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+            getGameStateService().setGameId(gameId);
             getGameStateService().updateCharacters(characters);
+            initializeGame();
         });
 
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
-
-        initializeGame();
     }
 
     private TextButton createReadyButton() {
@@ -245,15 +244,12 @@ public class GameScreen extends ScreenAdapter {
     public void initializeGame() {
         mapInputProcessor.setGameScreenMode(GameScreenMode.GAME_INIT);
 
-        List<CharacterEntity> characters = GameMockStore.getCharacterMocks();
-
-        Main.getGameStateService().registerNewGame(9, 9);
-        Main.getGameStateService().updateCharacters(characters);
+        List<CharacterEntity> characters = getGameStateService().getCharacters();
 
         int[] startRows = new int[]{6, 7, 8};
         try {
             Main.getGameStateService().getGridService().setStartTiles(startRows);
-            GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
+            //GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

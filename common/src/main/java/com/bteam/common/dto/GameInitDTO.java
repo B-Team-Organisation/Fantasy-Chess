@@ -4,9 +4,16 @@ import java.util.List;
 
 public class GameInitDTO implements JsonDTO {
     List<CharacterEntityDTO> characters;
+    String gameId;
 
-    public GameInitDTO(List<CharacterEntityDTO> characters) {
+    public GameInitDTO() {
+        characters = List.of();
+        gameId = "";
+    }
+
+    public GameInitDTO(List<CharacterEntityDTO> characters, String gameId) {
         this.characters = characters;
+        this.gameId = gameId;
     }
 
     @Override
@@ -21,10 +28,9 @@ public class GameInitDTO implements JsonDTO {
         if (sb.length() > 1) {
             sb.deleteCharAt(sb.length() - 1);
         }
-        sb.append("]");
+        sb.append("],");
+        sb.append("\"gameId\": \"").append(gameId).append("\"");
         sb.append("}");
-
-
         return sb.toString();
     }
 }

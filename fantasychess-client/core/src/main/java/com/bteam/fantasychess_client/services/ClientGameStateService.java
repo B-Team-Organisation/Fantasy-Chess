@@ -23,6 +23,7 @@ public class ClientGameStateService {
     private final List<CharacterEntity> enemyCharacters;
     private GridService gridService;
     private List<CharacterEntity> characters;
+    private String gameId;
 
     /**
      * Default constructor of {@link ClientGameStateService}
@@ -31,6 +32,7 @@ public class ClientGameStateService {
         characters = new ArrayList<>();
         friendlyCharacters = new ArrayList<>();
         enemyCharacters = new ArrayList<>();
+        gridService = new GridService(new GridModel(9, 9));
     }
 
     public void initNewGame() {
@@ -131,5 +133,13 @@ public class ClientGameStateService {
      */
     public List<CharacterEntity> getEnemyCharacters() {
         return enemyCharacters;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 }

@@ -40,7 +40,7 @@ public class WebSocketService {
                             @Autowired GameStateService gameStateService) {
         addPacketHandler(new LobbyPacketHandler(lobbyService));
         addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this, gameStateService));
-        addPacketHandler(new GamePacketHandler());
+        addPacketHandler(new GamePacketHandler(gameStateService, this, playerService, lobbyService));
         this.lobbyService = lobbyService;
     }
 
@@ -103,8 +103,8 @@ public class WebSocketService {
 
     public Client getCurrentClientForPlayer(Player player) {
         return clients.values().stream().filter(
-                        client -> client.getPlayer().getPlayerId().equals(player.getPlayerId()))
-                .findFirst().orElse(null);
+                client -> client.getPlayer().getPlayerId().equals(player.getPlayerId()))
+            .findFirst().orElse(null);
     }
 
     public void onClientDisconnect(Client client) {

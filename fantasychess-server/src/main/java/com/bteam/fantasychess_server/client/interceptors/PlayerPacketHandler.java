@@ -54,24 +54,24 @@ public class PlayerPacketHandler implements PacketHandler {
                 var isReady = Objects.equals(dto.getStatus(), PlayerReadyDTO.PLAYER_READY);
                 var lobby = lobbyService.lobbyWithPlayer(playerId);
                 playerService.setPlayerStatus(playerId, isReady ?
-                        Player.Status.READY : Player.Status.NOT_READY);
+                    Player.Status.READY : Player.Status.NOT_READY);
                 var playersToNotify = lobby.getPlayers();
                 for (var player : playersToNotify) {
                     var readyPlayerId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
-                            PlayerReadyDTO.ready(readyPlayerId) :
-                            PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
+                        PlayerReadyDTO.ready(readyPlayerId) :
+                        PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
                     webSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
                 if (lobby.getPlayers().size() == 2) {
                     var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
                     var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
                     var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
-                    var dataToSend = new GameInitDTO(dtos);
+                    var dataToSend = new GameInitDTO(dtos, model.getId());
                     var packetToSend = new Packet(dataToSend, "GAME_INIT");
                     lobby.getPlayers().forEach(player -> webSocketService
-                            .getCurrentClientForPlayer(player)
-                            .sendPacket(packetToSend));
+                        .getCurrentClientForPlayer(player)
+                        .sendPacket(packetToSend));
                 }
                 break;
             default:

@@ -5,13 +5,20 @@ import java.util.List;
 
 public class CommandListDTO implements JsonDTO {
     List<CommandDTO> commands;
+    String gameId;
 
-    public CommandListDTO(List<CommandDTO> commands) {
+    public CommandListDTO(List<CommandDTO> commands, String gameId) {
         this.commands = commands;
+        this.gameId = gameId;
     }
 
     public CommandListDTO() {
         commands = new ArrayList<>();
+        gameId = "";
+    }
+
+    public String getGameId() {
+        return gameId;
     }
 
     public List<CommandDTO> getCommands() {
@@ -22,9 +29,11 @@ public class CommandListDTO implements JsonDTO {
     public String toJson() {
         StringBuilder sb = new StringBuilder();
         sb.append("{\"commands\": [");
-        for (CommandDTO commandDTO : commands) sb.append(commandDTO.toJson()).append(",");
-        if (!commands.isEmpty()) sb.deleteCharAt(sb.length() - 1);
-        sb.append("]}");
+        for (CommandDTO commandDTO : getCommands()) sb.append(commandDTO.toJson()).append(",");
+        if (!getCommands().isEmpty()) sb.deleteCharAt(sb.length() - 1);
+        sb.append("],");
+        sb.append("\"gameId\": \"").append(getGameId()).append("\"");
+        sb.append("}");
         return sb.toString();
     }
 }

@@ -30,9 +30,9 @@ public class GameStateService {
         this.playerService = playerService;
     }
 
-    public void setPlayerMoves(UUID playerId, UUID gameId, List<MovementDataModel> moves, List<AttackDataModel> attacks) {
+    public void setPlayerCommands(UUID playerId, UUID gameId, List<MovementDataModel> moves, List<AttackDataModel> attacks) {
         var pair = new Pair<>(attacks, moves);
-        var game = games.get(playerId);
+        var game = games.get(gameId);
         game.getCommands().put(playerId.toString(), pair);
     }
 
@@ -49,8 +49,8 @@ public class GameStateService {
         var entities = generateInitialCharacters(playerIds);
         var id = UUID.randomUUID();
         var model = new GameModel(
-                new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
-                settings.getMaxTurnSeconds(), GameStatus.Running, entities, lobbyId);
+            new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
+            settings.getMaxTurnSeconds(), GameStatus.Running, entities, lobbyId);
         games.put(id, model);
         return model;
     }
@@ -62,9 +62,9 @@ public class GameStateService {
         for (var p : playerIds) {
             x.set(0);
             var entities = CharacterStore.characters.values().stream().map(
-                    model -> new CharacterEntity(
-                            model, UUID.randomUUID().toString(), model.getHealth(),
-                            new Vector2D(x.incrementAndGet(), p.equals(host) ? 0 : 8), p.toString())).toList();
+                model -> new CharacterEntity(
+                    model, UUID.randomUUID().toString(), model.getHealth(),
+                    new Vector2D(x.incrementAndGet(), p.equals(host) ? 0 : 8), p.toString())).toList();
             characters.addAll(entities);
         }
         return characters;
@@ -75,7 +75,7 @@ public class GameStateService {
     }
 
     public Pair<TurnResult, GridModel>
-    processMoves(UUID gameId, HashMap<UUID, Pair<List<AttackDataModel>, List<MovementDataModel>>> commands) {
+    processMoves(UUID gameId, Map<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> commands) {
         var game = games.get(gameId);
         GridService service = new GridService(game.getGrid());
         var movements = new ArrayList<MovementDataModel>();
@@ -83,10 +83,11 @@ public class GameStateService {
 
         for (var k : commands.keySet()) {
             var lobbies = lobbyService.getAllLobbies().stream()
-                    .filter(l -> l.getPlayers().stream().anyMatch(
-                            p -> p.getPlayerId().equals(k.toString())));
+                .filter(l -> l.getPlayers().stream().anyMatch(
+                    p -> p.getPlayerId().equals(k)));
             var optionalLobby = lobbies.findFirst();
-            if (optionalLobby.isPresent() && optionalLobby.get().isHost(playerService.getPlayer(k))) {
+            if (optionalLobby.isPresent() && optionalLobby.get()
+                .isHost(playerService.getPlayer(UUID.fromString(k)))) {
                 var invertedAttacks = invertAttacks(commands.get(k).getFirst());
                 var invertedMovement = invertMovements(commands.get(k).getSecond());
                 commands.put(k, new Pair<>(invertedAttacks, invertedMovement));
@@ -95,6 +96,7 @@ public class GameStateService {
 
         var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service);
         game.getCommands().clear();
+        game.setTurn(game.getTurn() + 1);
         return new Pair<>(result, service.getGridModel());
     }
 

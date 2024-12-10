@@ -1,14 +1,37 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
-import com.bteam.common.dto.CommandListDTO;
+import com.bteam.common.dto.*;
+import com.bteam.common.utils.PairNoOrder;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
 import com.bteam.fantasychess_server.data.mapper.CommandMapper;
+import com.bteam.fantasychess_server.service.GameStateService;
+import com.bteam.fantasychess_server.service.LobbyService;
+import com.bteam.fantasychess_server.service.PlayerService;
+import com.bteam.fantasychess_server.service.WebSocketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
+import java.util.UUID;
+
 public class GamePacketHandler implements PacketHandler {
     private final String packetPattern = "GAME_";
+    private final GameStateService gameStateService;
+    private final WebSocketService webSocketService;
+    private final PlayerService playerService;
+    private final LobbyService lobbyService;
+
+
+    public GamePacketHandler(GameStateService gameStateService,
+                             WebSocketService webSocketService,
+                             PlayerService playerService,
+                             LobbyService lobbyService) {
+        this.gameStateService = gameStateService;
+        this.webSocketService = webSocketService;
+        this.playerService = playerService;
+        this.lobbyService = lobbyService;
+    }
 
     @Override
     public void handle(Client client, String id, String packet) throws JsonProcessingException {
@@ -21,8 +44,34 @@ public class GamePacketHandler implements PacketHandler {
                 var commands = mapper.convertValue(data, CommandListDTO.class);
                 var attacks = CommandMapper.attacksFromDTO(commands);
                 var movements = CommandMapper.movementsFromDTO(commands);
-                System.out.println(attacks.size());
-                System.out.println(movements.size());
+                var uuid = UUID.fromString(client.getPlayer().getPlayerId());
+                var gameId = UUID.fromString(commands.getGameId());
+
+                gameStateService.setPlayerCommands(uuid, gameId, movements, attacks);
+
+                var game = gameStateService.getGame(gameId);
+                if (game.getCommands().keySet().size() < 2) break;
+
+                var result = gameStateService.processMoves(gameId, game.getCommands());
+                var turnResult = result.getFirst();
+                var updatedCharactersDTO = turnResult.getUpdatedCharacters().stream().map(CharacterEntityDTO::new).toList();
+
+                var validCommands = new ArrayList<CommandDTO>();
+                validCommands.addAll(turnResult.getValidAttacks().stream().map(CommandDTO::new).toList());
+                validCommands.addAll(turnResult.getValidMoves().stream().map(CommandDTO::new).toList());
+                var validCommandsDto = new CommandListDTO(validCommands, gameId.toString());
+
+                var rejectedCommands = new ArrayList<PairNoOrder<CommandDTO, CommandDTO>>();
+                rejectedCommands.addAll(turnResult.getMovementConflicts().stream()
+                    .map(p -> new PairNoOrder<>(new CommandDTO(p.getFirst()), new CommandDTO(p.getSecond()))).toList());
+                var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands, validCommandsDto);
+                var packetToSend = new Packet(dto, "GAME_TURN_RESULT");
+
+                var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
+                var players = lobbyService.lobbyWithPlayer(playerUUID).getPlayers();
+
+                for (var p : players) webSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+
                 break;
             default:
                 System.out.println("Unknown packet: " + packet);
