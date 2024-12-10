@@ -68,15 +68,7 @@ public class CharacterSprite extends Sprite {
      * @param destination the destination in world coordinates
      */
     public void moveToWorldPos(Vector2 destination) {
-        /*
-        this.destination = new Vector2(destination.x, destination.y);
-
-        Vector2 distanceVector = this.destination.cpy().sub(new Vector2(getX(), getY()));
-        distance = (float)Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
-
-        direction = distanceVector.nor();
-        */
-
+        destinations.add(new Vector2(destination.x, destination.y));
 
         //steps = (int)distance;
         //step = distanceVector.scl(1/distance);
@@ -110,22 +102,25 @@ public class CharacterSprite extends Sprite {
             }
             if (distance <= 0){
                 setPosition(destination.x, destination.y);
-
-                if (destinations.isEmpty()){
-                    destination = null;
-                } else {
-                    destination = destinations.pop();
-                }
-
+                destination = null;
                 distance = 0;
                 direction = null;
             }
+        } else if (!destinations.isEmpty()) {
+            destination = destinations.pop();
+
+            Vector2 distanceVector = this.destination.cpy().sub(new Vector2(getX(), getY()));
+            distance = (float)Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
+
+            direction = distanceVector.nor();
         }
+
+
         return this;
     }
 
     public boolean isInAnimation(){
-        return destination != null;
+        return destination != null && destinations.size() > 0;
     }
 
     /**
