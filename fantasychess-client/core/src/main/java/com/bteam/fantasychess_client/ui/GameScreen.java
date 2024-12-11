@@ -1,6 +1,7 @@
 package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,10 +14,8 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -31,6 +30,7 @@ import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.*;
@@ -85,6 +85,10 @@ public class GameScreen extends ScreenAdapter {
     }
 
     private MapInputAdapter mapInputProcessor;
+
+    private Table player1SideBar;
+    private Table player2SideBar;
+
 
     /**
      * Constructor of GameScreen
@@ -158,6 +162,18 @@ public class GameScreen extends ScreenAdapter {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
+
+        player1SideBar = new Table(skin);
+        player2SideBar = new Table(skin);
+
+        player1SideBar.setPosition(50, stage.getHeight() - 100);
+        player1SideBar.top().left();
+
+        player2SideBar.setPosition(stage.getWidth() - 300, stage.getHeight() - 100);
+        player2SideBar.top().right();
+
+        stage.addActor(player1SideBar);
+        stage.addActor(player2SideBar);
 
         initializeGame();
     }
@@ -357,6 +373,7 @@ public class GameScreen extends ScreenAdapter {
         }
     }
 
+
     /**
      * Creates a fresh layer that highlights the current focussed tile
      * <p>
@@ -491,6 +508,71 @@ public class GameScreen extends ScreenAdapter {
         this.selectedCharacter = selectedCharacter;
         createFreshSelectedCharacterLayer();
     }
+
+    private void updateSidebars() {
+        player1SideBar.clear();
+        player2SideBar.clear();
+
+        // Player 1 Left
+        player1SideBar.add(new Label("Your Characters", skin, "default")).row();
+        for (CharacterEntity character : Main.getGameStateService().getFriendlyCharacters()) {
+            player1SideBar.add(createCharacterStat(character)).row();
+        }
+
+        // Player 2 Right
+        player2SideBar.add(new Label("Opponents Characters 2", skin, "default")).row();
+        for (CharacterEntity character : Main.getGameStateService().getEnemyCharacters()) {
+            player2SideBar.add(createCharacterStat(character)).row();
+        }
+    }
+    private Table createCharacterStat(CharacterEntity character) {
+        Table row = new Table();
+
+        Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
+        row.add(nameLabel).left().padRight(10);
+
+        float healthPercentage = character.getHealth() / (float) character.getCharacterBaseModel().getHealth();
+        String healthText = String.format("%d/%d", character.getHealth(), character.getCharacterBaseModel().getHealth());
+
+        Label healthLabel = new Label(healthText, skin);
+        healthLabel.setColor(getHealthColor(healthPercentage));
+        row.add(healthLabel).right();
+
+        return row;
+    }
+
+    private Color getHealthColor(float healthPercentage) {
+        if (healthPercentage > 0.7f) return Color.GREEN;
+        if (healthPercentage > 0.4f) return Color.YELLOW;
+        if (healthPercentage > 0.2f) return Color.ORANGE;
+        //maybe with gradient ?
+        return Color.RED;
+    }
+
+    public void showAttackEffect(CharacterEntity character, int damage) {
+
+        CharacterSprite characterSprite = spriteMapper.get(character.getId());
+        if (characterSprite != null) {
+            characterSprite.setColor(Color.RED);//i want luminsoty red actually
+
+           //timer to add
+        }
+
+        Label damageLabel = new Label("-" + damage, skin);
+        damageLabel.setColor(Color.RED);
+        damageLabel.setFontScale(1.5f);
+        //Vector2D worldPos = mathService.gridToWorld(character.getPosition().getX(), character.getPosition().getY());
+        //damageLabel.setPosition(worldPos.getX(), worldPos.getY() + 50);
+
+        stage.addActor(damageLabel);
+        damageLabel.addAction(Actions.sequence(
+            Actions.moveBy(0, 50, 1f),
+            Actions.fadeOut(0.5f),
+            Actions.run(damageLabel::remove)
+        ));
+    }
+
+
 
     /**
      * Getter for the selected {@link CharacterEntity}
