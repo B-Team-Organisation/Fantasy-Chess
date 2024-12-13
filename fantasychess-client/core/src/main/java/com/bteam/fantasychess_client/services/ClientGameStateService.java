@@ -24,6 +24,8 @@ public class ClientGameStateService {
     private List<CharacterEntity> friendlyCharacters;
     private List<CharacterEntity> enemyCharacters;
 
+
+
     /**
      * Default constructor of {@link ClientGameStateService}
      *
@@ -33,6 +35,8 @@ public class ClientGameStateService {
         friendlyCharacters = new ArrayList<>();
         enemyCharacters = new ArrayList<>();
     }
+
+
 
     /**
      * Registers a new game in the object
@@ -81,6 +85,7 @@ public class ClientGameStateService {
         friendlyCharacters.clear();
         enemyCharacters.clear();
 
+
         String playerId = Main.getWebSocketService().getUserid();
 
         for (CharacterEntity character : characters) {
@@ -90,6 +95,7 @@ public class ClientGameStateService {
                 enemyCharacters.add(character);
             }
         }
+
     }
 
     /**

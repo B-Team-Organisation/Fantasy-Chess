@@ -108,6 +108,7 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
+
     }
 
     @Override
@@ -267,6 +268,8 @@ public class GameScreen extends ScreenAdapter {
 
         showStartRows(startRows);
         createSpritesForCharacters();
+
+        updateSidebars();
     }
 
     /**
@@ -528,17 +531,33 @@ public class GameScreen extends ScreenAdapter {
     private Table createCharacterStat(CharacterEntity character) {
         Table row = new Table();
 
+
         Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
-        row.add(nameLabel).left().padRight(10);
+        row.add(nameLabel).padRight(10);
 
         float healthPercentage = character.getHealth() / (float) character.getCharacterBaseModel().getHealth();
-        String healthText = String.format("%d/%d", character.getHealth(), character.getCharacterBaseModel().getHealth());
+        ProgressBar healthBar = createHealthBar(healthPercentage);
+        row.add(healthBar).width(100).height(20).padRight(10);
 
+
+        String healthText = character.getHealth() + "/" + character.getCharacterBaseModel().getHealth() + " HP";
         Label healthLabel = new Label(healthText, skin);
-        healthLabel.setColor(getHealthColor(healthPercentage));
-        row.add(healthLabel).right();
+        row.add(healthLabel);
 
         return row;
+    }
+
+
+    private ProgressBar createHealthBar(float healthPercentage) {
+        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+        style.background = skin.newDrawable("white", Color.DARK_GRAY);
+        style.knobBefore = skin.newDrawable("white", getHealthColor(healthPercentage));
+        style.knob = null;
+
+        ProgressBar healthBar = new ProgressBar(0, 1, 0.01f, false, style);
+        healthBar.setValue(healthPercentage);
+
+        return healthBar;
     }
 
     private Color getHealthColor(float healthPercentage) {
