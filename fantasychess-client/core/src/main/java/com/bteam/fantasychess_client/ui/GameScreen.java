@@ -13,10 +13,8 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -31,6 +29,7 @@ import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.*;
@@ -553,6 +552,39 @@ public class GameScreen extends ScreenAdapter {
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
+    /**
+     * opens a dialog to display the Winner of the Game
+     * @param winnerName represents the winner of the Game, if null or empty the game finished in a draw
+     */
+    public void showEndGameDialog(String winnerName) {
+
+        String endMessage;
+
+        if ( winnerName.isEmpty() || winnerName == null) {
+            endMessage = "Result: DRAW";
+        } else {
+            endMessage = "Result:" + winnerName;
+        }
+
+
+
+        Dialog endGameDialog = new Dialog("Game Over", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    Main.getScreenManager().navigateTo(Screens.MainMenu);
+                }
+            }
+        };
+
+        endGameDialog.text(endMessage, skin.get("default", Label.LabelStyle.class));
+        endGameDialog.button("Back to Main Menu", true).align(Align.center);
+
+        endGameDialog.setSize(400, 200);
+        endGameDialog.setPosition((stage.getWidth() - endGameDialog.getWidth()) / 2, (stage.getHeight() - endGameDialog.getHeight()) / 2);
+
+        endGameDialog.show(stage);
+    }
     /**
      * Transforms grid coordinates into tiled map coordinates
      *
