@@ -196,9 +196,6 @@ public class GameScreen extends ScreenAdapter {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
             }
 
-            Main.getCommandManagementService().sendCommandsToServer();
-            Main.getCommandManagementService().clearAll();
-
             readyButton.setDisabled(true);
             readyButton.setText("Waiting for next\nturn to start!");
         });
