@@ -116,10 +116,10 @@ public class GameMockStore {
         ));
 
         characters.add(new CharacterEntity(mockBaseModels.get("badger"), "0", mockBaseModels.get("badger").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
-        characters.add(new CharacterEntity(mockBaseModels.get("wolf"), "1", mockBaseModels.get("wolf").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
-        characters.add(new CharacterEntity(mockBaseModels.get("boar"), "2", mockBaseModels.get("boar").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
-        characters.add(new CharacterEntity(mockBaseModels.get("stag"), "3", mockBaseModels.get("stag").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
-        characters.add(new CharacterEntity(mockBaseModels.get("blossom"), "4", mockBaseModels.get("blossom").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("wolf"), "1", mockBaseModels.get("wolf").getHealth()-5, new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("boar"), "2", mockBaseModels.get("boar").getHealth()-10, new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("stag"), "3", mockBaseModels.get("stag").getHealth()-25, new Vector2D(-1,-1), getWebSocketService().getUserid()));
+        characters.add(new CharacterEntity(mockBaseModels.get("blossom"), "4", mockBaseModels.get("blossom").getHealth()-34, new Vector2D(-1,-1), getWebSocketService().getUserid()));
     }
 
     /**

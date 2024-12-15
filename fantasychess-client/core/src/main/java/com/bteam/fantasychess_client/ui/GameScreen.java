@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -28,6 +29,7 @@ import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.GameMockStore;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
+import com.badlogic.gdx.utils.Timer;
 
 import java.util.*;
 import java.util.List;
@@ -164,19 +166,27 @@ public class GameScreen extends ScreenAdapter {
             getWebSocketService().send(packet);
         });
 
-        player1SideBar = new Table(skin);
-        player2SideBar = new Table(skin);
+        player1SideBar = new Table();
+        ScrollPane player1ScrollPane = new ScrollPane(player1SideBar, skin);
+        player1ScrollPane.setScrollingDisabled(true, false);
+        player1ScrollPane.setSize(400, 400);
+        player1ScrollPane.setPosition(50, stage.getHeight() - 450);
 
-        player1SideBar.setPosition(50, stage.getHeight() - 100);
-        player1SideBar.top().left();
+        player2SideBar = new Table();
+        ScrollPane player2ScrollPane = new ScrollPane(player2SideBar, skin);
+        player2ScrollPane.setScrollingDisabled(true, false);
+        player2ScrollPane.setSize(400, 400);
+        player2ScrollPane.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
 
-        player2SideBar.setPosition(stage.getWidth() - 300, stage.getHeight() - 100);
-        player2SideBar.top().right();
-
-        stage.addActor(player1SideBar);
-        stage.addActor(player2SideBar);
+        stage.addActor(player1ScrollPane);
+        stage.addActor(player2ScrollPane);
 
         initializeGame();
+        updateSidebars();
+
+
+
+
     }
 
     private TextButton createReadyButton() {
@@ -512,76 +522,153 @@ public class GameScreen extends ScreenAdapter {
         createFreshSelectedCharacterLayer();
     }
 
+
+    /**
+     * Updates the content of the player and opponent sidebars.
+     * <p>
+     * This method shows in real time the actual Characters of Player 1 and Player2.
+     * Player1 is shown on the left-side as "Your character" and Player2 as "Opponent's Characters".
+     * Each character's statistics, including name and health,
+     * are displayed using the {@link #createCharacterStat(CharacterEntity)} method.
+     */
     private void updateSidebars() {
-        player1SideBar.clear();
-        player2SideBar.clear();
+        player1SideBar.clearChildren();
+        player2SideBar.clearChildren();
 
-        // Player 1 Left
-        player1SideBar.add(new Label("Your Characters", skin, "default")).row();
+        player1SideBar.top();
+        Label header1 = new Label("Your Characters", skin, "default");
+        header1.setColor(Color.WHITE);
+        header1.setFontScale(1.5f);
+        player1SideBar.add(header1).padTop(10).row();
+
+        player2SideBar.top();
+        Label header2 = new Label("Opponent Characters", skin, "default");
+        header2.setColor(Color.WHITE);
+        header2.setFontScale(1.5f);
+        player2SideBar.add(header2).padTop(10).row();
+
+        Table player1CharactersTable = new Table();
         for (CharacterEntity character : Main.getGameStateService().getFriendlyCharacters()) {
-            player1SideBar.add(createCharacterStat(character)).row();
+            player1CharactersTable.add(createCharacterStat(character)).padBottom(10).row();
         }
+        player1SideBar.add(player1CharactersTable).expandX().fillX();
 
-        // Player 2 Right
-        player2SideBar.add(new Label("Opponents Characters 2", skin, "default")).row();
+        Table player2CharactersTable = new Table();
         for (CharacterEntity character : Main.getGameStateService().getEnemyCharacters()) {
-            player2SideBar.add(createCharacterStat(character)).row();
+            player2CharactersTable.add(createCharacterStat(character)).padBottom(10).row();
         }
+        player2SideBar.add(player2CharactersTable).expandX().fillX();
     }
+
+
+
+    /**
+     * Creates a table row displaying the statistics of a given character.
+     * <p>
+     * This method constructs a table containing the character's name and health status.
+     * The row also supports a callback to update the currently selected character when clicked.
+     *
+     * @param character The {@link CharacterEntity} whose statistics will be displayed.
+     * @return A {@link Table} representing a row with the character's name and health information.
+     */
     private Table createCharacterStat(CharacterEntity character) {
         Table row = new Table();
+        row.setBackground(skin.newDrawable("white", Color.LIGHT_GRAY));
 
-
+        Table nameContainer = new Table();
+        nameContainer.setBackground(skin.newDrawable("white", Color.DARK_GRAY));
         Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
-        row.add(nameLabel).padRight(10);
+        nameLabel.setColor(Color.WHITE);
+        nameContainer.add(nameLabel).pad(5).expandX().fillX();
 
         float healthPercentage = character.getHealth() / (float) character.getCharacterBaseModel().getHealth();
+        Table healthBarContainer = new Table();
         ProgressBar healthBar = createHealthBar(healthPercentage);
-        row.add(healthBar).width(100).height(20).padRight(10);
 
-
-        String healthText = character.getHealth() + "/" + character.getCharacterBaseModel().getHealth() + " HP";
+        var healthText = character.getHealth() + " / " + character.getCharacterBaseModel().getHealth() + " HP";
         Label healthLabel = new Label(healthText, skin);
-        row.add(healthLabel);
+        healthLabel.setColor(Color.WHITE);
+
+        healthBarContainer.add(healthLabel).expandX().center().padBottom(2).row();
+        healthBarContainer.add(healthBar).width(200).height(25).row();
+        row.add(nameContainer).width(150).height(50).pad(5);
+        row.add(healthBarContainer).width(200).height(50).pad(5);
+
+        onChange(row,()->{
+            updateSelectedCharacter(character);
+        });
 
         return row;
     }
 
 
+    /**
+     * Creates a progress bar representing the character's health status.
+     * <p>
+     *
+     * @param healthPercentage A float value between 0.0 and 1.0 representing the percentage of health.
+     * @return A {@link ProgressBar} configured to visually represent the health percentage.
+     */
     private ProgressBar createHealthBar(float healthPercentage) {
         ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
+
         style.background = skin.newDrawable("white", Color.DARK_GRAY);
         style.knobBefore = skin.newDrawable("white", getHealthColor(healthPercentage));
+        style.background.setMinWidth(300);
+        style.background.setMinHeight(30);
+
+        style.knobBefore = skin.newDrawable("white", getHealthColor(healthPercentage));
+        style.knobBefore.setMinWidth(300);
+        style.knobBefore.setMinHeight(30);
+
         style.knob = null;
 
         ProgressBar healthBar = new ProgressBar(0, 1, 0.01f, false, style);
         healthBar.setValue(healthPercentage);
+        healthBar.setSize(300, 50);
+        healthBar.invalidate();
 
         return healthBar;
     }
+
+
+    /**
+     * Displays a rudimentary gradient for the Colours shown in the Health-sidebar
+     *
+     * @param healthPercentage percentage of health left to a specific Character
+     * @return the color to display in the health-sidebar
+     */
 
     private Color getHealthColor(float healthPercentage) {
         if (healthPercentage > 0.7f) return Color.GREEN;
         if (healthPercentage > 0.4f) return Color.YELLOW;
         if (healthPercentage > 0.2f) return Color.ORANGE;
-        //maybe with gradient ?
         return Color.RED;
     }
-
     public void showAttackEffect(CharacterEntity character, int damage) {
 
         CharacterSprite characterSprite = spriteMapper.get(character.getId());
         if (characterSprite != null) {
-            characterSprite.setColor(Color.RED);//i want luminsoty red actually
+            characterSprite.setColor(new Color(1f, 0.2f, 0.2f, 1f)); // Luminanz-Rot
 
-           //timer to add
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    characterSprite.setColor(Color.WHITE);
+                }
+            }, 0.5f);
         }
 
         Label damageLabel = new Label("-" + damage, skin);
         damageLabel.setColor(Color.RED);
         damageLabel.setFontScale(1.5f);
-        //Vector2D worldPos = mathService.gridToWorld(character.getPosition().getX(), character.getPosition().getY());
-        //damageLabel.setPosition(worldPos.getX(), worldPos.getY() + 50);
+
+        Vector2 worldPosition = mathService.gridToWorld(character.getPosition().getX(), character.getPosition().getY());
+        float labelX = worldPosition.x;
+        float labelY = worldPosition.y + 20;
+
+        damageLabel.setPosition(labelX, labelY);
+
 
         stage.addActor(damageLabel);
         damageLabel.addAction(Actions.sequence(
@@ -595,7 +682,7 @@ public class GameScreen extends ScreenAdapter {
 
     /**
      * Getter for the selected {@link CharacterEntity}
-     * @return
+     * @return the selected character
      */
     public CharacterEntity getSelectedCharacter(){
         return selectedCharacter;
