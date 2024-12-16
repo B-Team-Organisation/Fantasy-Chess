@@ -34,6 +34,7 @@ public class WebSocketService {
     WebSocketClient client;
     String userid;
     String baseAddress;
+
     public WebSocketService(String address, WebSocketClient listener) {
         this.baseAddress = address;
         client = listener;
@@ -83,10 +84,8 @@ public class WebSocketService {
      */
     public void handlePacket(String packet) {
         Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
-
-        JsonValue fromJson = new JsonReader().parse(packet);
-
         try {
+            JsonValue fromJson = new JsonReader().parse(packet);
             String id = fromJson.get("id").asString();
             Main.getLogger().log(Level.SEVERE, "Deserialized with id: " + id);
             if (!listeners.containsKey(id))

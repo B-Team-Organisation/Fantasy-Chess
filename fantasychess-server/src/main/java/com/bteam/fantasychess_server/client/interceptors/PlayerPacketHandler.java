@@ -4,8 +4,10 @@ import com.bteam.common.dto.CharacterEntityDTO;
 import com.bteam.common.dto.GameInitDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GameSettingsModel;
 import com.bteam.common.models.Player;
+import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
 import com.bteam.fantasychess_server.service.GameStateService;
@@ -67,16 +69,37 @@ public class PlayerPacketHandler implements PacketHandler {
                     var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
                     var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
                     var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
-                    var dataToSend = new GameInitDTO(dtos, model.getId());
-                    var packetToSend = new Packet(dataToSend, "GAME_INIT");
-                    lobby.getPlayers().forEach(player -> webSocketService
-                        .getCurrentClientForPlayer(player)
-                        .sendPacket(packetToSend));
+
+                    for (var p : lobby.getPlayers()) {
+                        var playerUUID = UUID.fromString(p.getPlayerId());
+                        var charactersToSend = lobbyService.lobbyWithPlayer(playerUUID).isHost(p) ?
+                            dtos.stream().map(this::invertEntityPosition).toList() : dtos;
+
+                        var dataToSend = new GameInitDTO(charactersToSend, model.getId());
+                        var packetToSend = new Packet(dataToSend, "GAME_INIT");
+                        webSocketService
+                            .getCurrentClientForPlayer(p)
+                            .sendPacket(packetToSend);
+                    }
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    private CharacterEntityDTO invertEntityPosition(CharacterEntityDTO entityDto) {
+        var character = entityDto.getCharacter();
+        var invertedPosition = new Vector2D(
+            8 - character.getPosition().getX(),
+            8 - character.getPosition().getY());
+        var invertedEntity = new CharacterEntity(
+            character.getCharacterBaseModel(),
+            character.getId(),
+            character.getHealth(),
+            invertedPosition,
+            character.getPlayerId());
+        return new CharacterEntityDTO(invertedEntity);
     }
 
     @Override

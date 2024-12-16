@@ -35,4 +35,10 @@ public final class CharacterEntityMapper {
         json.get("data").get("characters").forEach(j -> entities.add(fromJson(j)));
         return entities;
     }
+
+    public static List<CharacterEntity> fromListJson(JsonValue json) {
+        List<CharacterEntity> entities = new ArrayList<>();
+        json.forEach(j -> entities.add(fromJson(j)));
+        return entities;
+    }
 }

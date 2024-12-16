@@ -19,17 +19,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
+import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
@@ -82,6 +81,7 @@ public class GameScreen extends ScreenAdapter {
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
     private MapInputAdapter mapInputProcessor;
+    private TurnResultAnimationHandler animationHandler;
 
     /**
      * Constructor of GameScreen
@@ -155,20 +155,24 @@ public class GameScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(multiplexer);
 
         getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
-            JsonReader reader = new JsonReader();
-            JsonValue data = reader.parse(p).get("data");
-            String clientId = data.getString("clientId");
-            boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
-            Main.getLobbyService().setPlayerReady(clientId);
+            /*Gdx.app.postRunnable(() -> {
+                JsonReader reader = new JsonReader();
+                JsonValue data = reader.parse(p).get("data");
+                String clientId = data.getString("clientId");
+                boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
+                Main.getLobbyService().setPlayerReady(clientId);
+            });*/
         });
 
         getWebSocketService().addPacketHandler("GAME_INIT", str -> {
-            getGameStateService().registerNewGame(9, 9);
-            var characters = CharacterEntityMapper.fromListDTO(str);
-            String gameId = new JsonReader().parse(str).get("data").getString("gameId");
-            getGameStateService().setGameId(gameId);
-            getGameStateService().updateCharacters(characters);
-            initializeGame();
+            Gdx.app.postRunnable(() -> {
+                getGameStateService().registerNewGame(9, 9);
+                var characters = CharacterEntityMapper.fromListDTO(str);
+                String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+                getGameStateService().setGameId(gameId);
+                getGameStateService().updateCharacters(characters);
+                initializeGame();
+            });
         });
 
         Gdx.app.postRunnable(() -> {
@@ -176,10 +180,12 @@ public class GameScreen extends ScreenAdapter {
             getWebSocketService().send(packet);
         });
 
-        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> {
-            TurnResult turnResult = TurnResultMapper.getTurnResult();
+        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
+            Main.getLogger().log(Level.SEVERE, "Received Turn Result");
+            TurnResult turnResult = TurnResultMapper.fromDTO(str);
+            Main.getLogger().log(Level.SEVERE, turnResult.toString());
             Main.getGameStateService().applyTurnResult(turnResult);
-        });
+        }));
 
         initializeGame();
     }
@@ -242,7 +248,6 @@ public class GameScreen extends ScreenAdapter {
             selectedCharacterLayer.setCell(tilePosition.getX(), tilePosition.getY(), selectedCharacterCell);
         }
     }
-
 
     /**
      * Initialises the game
@@ -418,19 +423,18 @@ public class GameScreen extends ScreenAdapter {
         tiledMap.getLayers().add(commandOptionLayer);
     }
 
-    private TurnResultAnimationHandler animationHandler;
-
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME){
-            if (Main.getGameStateService().getTurnResult() != null){
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
+            if (Main.getGameStateService().getTurnResult() != null) {
+                Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
                 mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
             }
         }
 
-        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME){
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
             if (animationHandler == null) {
                 TurnResult turnResult = Main.getGameStateService().getTurnResult();
                 animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
@@ -439,7 +443,7 @@ public class GameScreen extends ScreenAdapter {
 
             animationHandler.progressAnimation();
 
-            if (animationHandler.isDoneWithAnimation()){
+            if (animationHandler.isDoneWithAnimation()) {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
                 animationHandler = null;
             }

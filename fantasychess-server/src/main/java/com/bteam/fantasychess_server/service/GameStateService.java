@@ -2,6 +2,8 @@ package com.bteam.fantasychess_server.service;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.enums.GameStatus;
+import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
+import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.models.*;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
@@ -48,8 +50,18 @@ public class GameStateService {
     public GameModel startNewGame(GameSettingsModel settings, String lobbyId, List<UUID> playerIds) {
         var entities = generateInitialCharacters(playerIds);
         var id = UUID.randomUUID();
-        var model = new GameModel(
-            new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE), id.toString(), 0,
+        var grid = new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE);
+        var service = new GridService(grid);
+        for (CharacterEntity entity : entities) {
+            try {
+                service.setCharacterTo(entity.getPosition(), entity);
+            } catch (DestinationInvalidException e) {
+                System.out.println(e);
+            } catch (DestinationAlreadyOccupiedException e) {
+                System.out.println(e);
+            }
+        }
+        var model = new GameModel(grid, id.toString(), 0,
             settings.getMaxTurnSeconds(), GameStatus.Running, entities, lobbyId);
         games.put(id, model);
         return model;
@@ -90,7 +102,11 @@ public class GameStateService {
                 .isHost(playerService.getPlayer(UUID.fromString(k)))) {
                 var invertedAttacks = invertAttacks(commands.get(k).getFirst());
                 var invertedMovement = invertMovements(commands.get(k).getSecond());
-                commands.put(k, new Pair<>(invertedAttacks, invertedMovement));
+                attacks.addAll(invertedAttacks);
+                movements.addAll(invertedMovement);
+            } else {
+                movements.addAll(commands.get(k).getSecond());
+                attacks.addAll(commands.get(k).getFirst());
             }
         }
 

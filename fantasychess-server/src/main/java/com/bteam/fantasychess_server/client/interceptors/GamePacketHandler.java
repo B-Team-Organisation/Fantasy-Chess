@@ -62,8 +62,14 @@ public class GamePacketHandler implements PacketHandler {
                 var validCommandsDto = new CommandListDTO(validCommands, gameId.toString());
 
                 var rejectedCommands = new ArrayList<PairNoOrder<CommandDTO, CommandDTO>>();
-                rejectedCommands.addAll(turnResult.getMovementConflicts().stream()
-                    .map(p -> new PairNoOrder<>(new CommandDTO(p.getFirst()), new CommandDTO(p.getSecond()))).toList());
+                if (turnResult.getMovementConflicts() != null) {
+                    var mappedCommands = turnResult
+                        .getMovementConflicts()
+                        .stream()
+                        .map(p -> new PairNoOrder<>(new CommandDTO(p.getFirst()), new CommandDTO(p.getSecond())))
+                        .toList();
+                    rejectedCommands.addAll(mappedCommands);
+                }
                 var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands, validCommandsDto);
                 var packetToSend = new Packet(dto, "GAME_TURN_RESULT");
 

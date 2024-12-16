@@ -37,20 +37,20 @@ public class TurnResultDTO implements JsonDTO {
             sb.append(character.toJson());
             sb.append(",");
         }
-        if (sb.length() > 1) {
+        if (!getUpdatedCharacters().isEmpty()) {
             sb.deleteCharAt(sb.length() - 1);
         }
-        sb.append("],\"conflictCommands\":");
+        sb.append("],\"conflictCommands\":[");
         for (PairNoOrder<CommandDTO, CommandDTO> conflictCommand : getConflictCommands()) {
             sb.append("{\"first\":").append(conflictCommand.getFirst().toJson());
             sb.append(",\"second\":").append(conflictCommand.getSecond().toJson());
             sb.append("},");
         }
-        if (sb.length() > 1) {
+        if (!conflictCommands.isEmpty()) {
             sb.deleteCharAt(sb.length() - 1);
         }
         sb.append("],\"validCommands\":").append(getValidCommands().toJson());
         sb.append("}");
-        return "";
+        return sb.toString();
     }
 }
