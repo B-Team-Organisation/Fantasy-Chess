@@ -265,7 +265,7 @@ public class GameScreen extends ScreenAdapter {
         Main.getCommandManagementService().clearAll();
 
         createFreshStartRowsLayer();
-        mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+        mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
     }
 
     /**

@@ -71,7 +71,9 @@ public class TurnResultAnimationHandler {
 
         if (animationQueue.getFirst().isAnimationOver()){
             animationQueue.pop();
-            animationQueue.getFirst().startAnimation();
+            if (!animationQueue.isEmpty()){
+                animationQueue.getFirst().startAnimation();
+            }
         }
     }
 

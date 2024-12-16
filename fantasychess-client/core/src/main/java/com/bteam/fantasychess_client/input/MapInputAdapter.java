@@ -57,13 +57,6 @@ public class MapInputAdapter extends InputAdapter {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if (button == Input.Buttons.MIDDLE){
-            gameScreenMode = GameScreenMode.COMMAND_MODE;
-            gameScreen.leaveInitPhase();
-            Main.getLogger().log(Level.SEVERE,Main.getCommandManagementService().getMovementsCommands().toString());
-            return true;
-        }
-
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
