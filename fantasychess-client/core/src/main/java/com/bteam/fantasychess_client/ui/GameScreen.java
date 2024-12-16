@@ -1,16 +1,16 @@
 package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -70,6 +70,9 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
 
+    private final BitmapFont damageFont;
+    private final Map<Vector2D,String> damagePreview = new HashMap<>();
+
     private TileMathService mathService;
 
     private final Map<String,CharacterSprite> spriteMapper = new HashMap<>();
@@ -103,6 +106,10 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
+
+        damageFont = new BitmapFont();
+        damageFont.getData().setScale(0.5f);
+        damageFont.setColor(Color.RED);
     }
 
     @Override
@@ -346,9 +353,12 @@ public class GameScreen extends ScreenAdapter {
 
                     previewCell.setTile(new StaticTiledMapTile(region));
 
+                    damagePreview.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = gridToTiled(position);
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(),previewCell);
+
+                        damagePreview.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower()+"");
                     }
                     break;
                 }
@@ -440,6 +450,16 @@ public class GameScreen extends ScreenAdapter {
             batch.setColor(255,255,255,1f);
         }
 
+        for (Vector2D pos : damagePreview.keySet()){
+            String damageText = damagePreview.get(pos);
+            Vector2 worldPos = mathService.gridToWorld(pos.getX(),pos.getY());
+
+            GlyphLayout layout = new GlyphLayout(damageFont, damageText);
+            float textWidth = layout.width;
+            float textHeight = layout.height;
+            damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+        }
+
         batch.end();
         batch.disableBlending();
 
@@ -456,12 +476,12 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D attackOption : validCommandDestinations) {
-            Vector2D moveOptionTilePos = gridToTiled(attackOption);
+            Vector2D attackOptionTilePos = gridToTiled(attackOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/red-border");
             cell.setTile(new StaticTiledMapTile(region));
-            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(),cell);
+            commandOptionLayer.setCell(attackOptionTilePos.getX(), attackOptionTilePos.getY(),cell);
         }
     }
 
@@ -517,6 +537,7 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = new Vector2D[0];
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
+        damagePreview.clear();
     }
 
     /**
