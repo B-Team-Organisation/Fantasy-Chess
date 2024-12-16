@@ -120,7 +120,7 @@ public class CharacterSprite extends Sprite {
     }
 
     public boolean isInAnimation(){
-        return destination != null && destinations.size() > 0;
+        return destination != null || !destinations.isEmpty();
     }
 
     /**
