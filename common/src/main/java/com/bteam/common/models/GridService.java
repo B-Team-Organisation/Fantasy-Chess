@@ -118,14 +118,14 @@ public class GridService {
      * @throws DestinationAlreadyOccupiedException if the destination-tile is already occupied
      * @throws NotAStartPositionException          if the destination-tile isn't a valid starting position
      */
-    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException {
+    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException { //, NotAStartPositionException {
         TileModel tile = getTileAt(to);
         if (tile.getCharacter() != null) {
             throw new DestinationAlreadyOccupiedException(to);
         }
-        if (!tile.isStartTile()){
+        /*if (!tile.isStartTile()){
             throw new NotAStartPositionException(to);
-        }
+        }*/
         tile.setCharacter(character);
         character.setPosition(to);
     }

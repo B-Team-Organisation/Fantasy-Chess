@@ -5,10 +5,12 @@ import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
+import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.networking.WebSocketService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
@@ -95,6 +97,12 @@ public class ClientGameStateService {
         String playerId = getWebSocketService().getUserid();
 
         for (CharacterEntity character : characters) {
+            try {
+                gridService.setCharacterTo(character.getPosition(), character);
+            } catch (Exception e) {
+                Main.getLogger().log(Level.SEVERE, e.getMessage());
+            }
+
             if (character.getPlayerId().equals(playerId)) {
                 friendlyCharacters.add(character);
             } else {
@@ -145,9 +153,9 @@ public class ClientGameStateService {
 
     public void applyTurnResult(TurnResult turnResult) {
         this.turnResult = turnResult;
-
-        TurnLogicService.applyMovement(turnResult.getValidMoves(),characters,gridService);
-        TurnLogicService.applyAttacks(turnResult.getValidAttacks(),characters,gridService);
+        Main.getLogger().log(Level.SEVERE, "Set turn result");
+        TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
+        TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
     }
 
     public String getGameId() {

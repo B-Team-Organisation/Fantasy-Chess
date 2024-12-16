@@ -194,6 +194,10 @@ public class GameScreen extends ScreenAdapter {
         TextButton readyButton = new TextButton("", skin) {
             @Override
             public void act(float delta) {
+                if (mapInputProcessor.getGameScreenMode() == GameScreenMode.COMMAND_MODE) {
+                    setDisabled(false);
+                }
+
                 int commandCount = 0;
                 commandCount += Main.getCommandManagementService().getMovementsCommands().size();
                 commandCount += Main.getCommandManagementService().getAttacksCommands().size();
@@ -205,7 +209,7 @@ public class GameScreen extends ScreenAdapter {
                     setDisabled(false);
                 } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
                     setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
-                    setDisabled(true);
+                    setDisabled(false);
                 }
             }
         };
@@ -219,6 +223,7 @@ public class GameScreen extends ScreenAdapter {
 
             Main.getCommandManagementService().sendCommandsToServer();
             Main.getCommandManagementService().clearAll();
+
 
             readyButton.setDisabled(true);
             readyButton.setText("Waiting for next\nturn to start!");
@@ -269,7 +274,7 @@ public class GameScreen extends ScreenAdapter {
             throw new RuntimeException(e);
         }
 
-        for (CharacterEntity character : characters) {
+        for (CharacterEntity character : getGameStateService().getFriendlyCharacters()) {
             getCommandManagementService().setCommand(new MovementDataModel(character.getId(), character.getPosition()));
         }
 
@@ -281,11 +286,9 @@ public class GameScreen extends ScreenAdapter {
      * Transitions the game to the main phase
      */
     public void leaveInitPhase() {
-        Main.getCommandManagementService().sendCommandsToServer();
-        Main.getCommandManagementService().clearAll();
-
         createFreshStartRowsLayer();
         mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+        //mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
     }
 
     /**

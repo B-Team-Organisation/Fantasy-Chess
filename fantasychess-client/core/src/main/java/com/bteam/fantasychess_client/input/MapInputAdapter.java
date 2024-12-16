@@ -57,12 +57,7 @@ public class MapInputAdapter extends InputAdapter {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        if (button == Input.Buttons.MIDDLE){
-            gameScreenMode = GameScreenMode.COMMAND_MODE;
-            gameScreen.leaveInitPhase();
-            Main.getLogger().log(Level.SEVERE, Main.getCommandManagementService().getMovementsCommands().toString());
-            return true;
-        }
+        Main.getLogger().log(Level.SEVERE, "Input on: " + button + " in Commandmode:\"" + commandMode + "\" in GameScreenMode:\"" + gameScreenMode + "\"");
 
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX, screenY, 0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
@@ -107,6 +102,10 @@ public class MapInputAdapter extends InputAdapter {
             case NO_SELECTION:
                 try {
                     CharacterEntity character = gridService.getCharacterAt(gridPos);
+                    if (!character.getPlayerId().equals(getWebSocketService().getUserid())) {
+                        Main.getLogger().log(Level.SEVERE, "Clicked character doesnt belong to player id!");
+                        return;
+                    }
                     gameScreen.updateSelectedCharacter(character);
                     if (character != null) {
                         commandMode = CommandMode.SWAP_MODE;
