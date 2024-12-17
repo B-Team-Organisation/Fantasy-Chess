@@ -19,6 +19,7 @@ import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.getLogger;
@@ -56,13 +57,6 @@ public class MapInputAdapter extends InputAdapter {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-
-        if (button == Input.Buttons.MIDDLE){
-            gameScreenMode = GameScreenMode.COMMAND_MODE;
-            gameScreen.leaveInitPhase();
-            Main.getLogger().log(Level.SEVERE,Main.getCommandManagementService().getMovementsCommands().toString());
-            return true;
-        }
 
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
@@ -184,7 +178,19 @@ public class MapInputAdapter extends InputAdapter {
             case ATTACK_MODE: {
                 getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
                 if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
-                Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, gameScreen.getSelectedCharacter().getId()));
+
+                CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
+
+                AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
+
+                Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(),gridPos);
+                HashMap<Vector2D, Integer> damageValues = new HashMap<>();
+                for (Vector2D position : areaOfEffect){
+                    damageValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower());
+                }
+
+                Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
+
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
                 break;

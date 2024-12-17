@@ -1,16 +1,16 @@
 package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -70,6 +70,9 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
 
+    private final BitmapFont damageFont;
+    private final Map<Vector2D,String> damagePreviewValues = new HashMap<>();
+
     private TileMathService mathService;
 
     private final Map<String,CharacterSprite> spriteMapper = new HashMap<>();
@@ -103,6 +106,10 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
+
+        damageFont = new BitmapFont();
+        damageFont.getData().setScale(0.4f);
+        damageFont.setColor(Color.WHITE);
     }
 
     @Override
@@ -149,9 +156,6 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
@@ -159,6 +163,87 @@ public class GameScreen extends ScreenAdapter {
         });
 
         initializeGame();
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        gameViewport.apply();
+
+        gameCamera.zoom = 1f; // Debug tool
+        Vector2D center = mathService.getMapCenter(tiledMap);
+        gameCamera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
+        gameCamera.update();
+        mapRenderer.setView(gameCamera);
+
+        mapRenderer.render();
+
+        batch.setProjectionMatrix(gameCamera.combined);
+        batch.enableBlending();
+        batch.begin();
+
+        Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
+
+        if (!grid.equals(focussedTile)){
+            focussedTile = grid;
+            createFreshHighlightLayer();
+            createFreshCommandPreviewLayer();
+        }
+
+        SpriteSorter.sortByY(characterSprites);
+        for (CharacterSprite sprite : characterSprites) {
+            sprite.update(delta).draw(batch);
+        }
+
+        if (!getCommandManagementService().getMovementsCommands().isEmpty()
+            && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
+            batch.setColor(255,255,255,0.3f);
+            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
+                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
+                spriteMapper.get(moveId).drawAt(batch,mathService.gridToWorld(moveCommand.getMovementVector().getX(),moveCommand.getMovementVector().getY()));
+            }
+            batch.setColor(255,255,255,1f);
+        }
+
+        if (damagePreviewValues.isEmpty()){
+            Map<Vector2D, Integer> finalDamageValues = new HashMap<>();
+            for (Map<Vector2D, Integer> damageValues : Main.getCommandManagementService().getCommandDamageMappings().values()) {
+                for (Vector2D pos : damageValues.keySet()){
+                    int dmg = damageValues.get(pos);
+                    if (finalDamageValues.containsKey(pos)){
+                        dmg += finalDamageValues.get(pos);
+                    }
+                    finalDamageValues.put(pos, dmg);
+                }
+            }
+            for (Vector2D pos : finalDamageValues.keySet()){
+                int dmg = finalDamageValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(),pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, dmg + "");
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        } else {
+            for (Vector2D pos : damagePreviewValues.keySet()){
+                String damageText = damagePreviewValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(),pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, damageText);
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        }
+
+        batch.end();
+        batch.disableBlending();
+
+        uiViewport.apply();
+
+        stage.act();
+        stage.draw();
     }
 
     private TextButton createReadyButton() {
@@ -256,9 +341,6 @@ public class GameScreen extends ScreenAdapter {
      * Transitions the game to the main phase
      */
     public void leaveInitPhase(){
-        Main.getCommandManagementService().sendCommandsToServer();
-        Main.getCommandManagementService().clearAll();
-
         createFreshStartRowsLayer();
         mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
     }
@@ -346,9 +428,12 @@ public class GameScreen extends ScreenAdapter {
 
                     previewCell.setTile(new StaticTiledMapTile(region));
 
+                    damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = gridToTiled(position);
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(),previewCell);
+
+                        damagePreviewValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower()+"");
                     }
                     break;
                 }
@@ -398,57 +483,6 @@ public class GameScreen extends ScreenAdapter {
         tiledMap.getLayers().add(commandOptionLayer);
     }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        gameViewport.apply();
-
-        gameCamera.zoom = 1f; // Debug tool
-        Vector2D center = mathService.getMapCenter(tiledMap);
-        gameCamera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
-        gameCamera.update();
-        mapRenderer.setView(gameCamera);
-
-        mapRenderer.render();
-
-        batch.setProjectionMatrix(gameCamera.combined);
-        batch.enableBlending();
-        batch.begin();
-
-        Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
-
-        if (!grid.equals(focussedTile)){
-            focussedTile = grid;
-            createFreshHighlightLayer();
-            createFreshCommandPreviewLayer();
-        }
-
-        SpriteSorter.sortByY(characterSprites);
-        for (CharacterSprite sprite : characterSprites) {
-            sprite.update(delta).draw(batch);
-        }
-
-        if (!getCommandManagementService().getMovementsCommands().isEmpty()
-             && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
-            batch.setColor(255,255,255,0.3f);
-            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
-                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
-                spriteMapper.get(moveId).drawAt(batch,mathService.gridToWorld(moveCommand.getMovementVector().getX(),moveCommand.getMovementVector().getY()));
-            }
-            batch.setColor(255,255,255,1f);
-        }
-
-        batch.end();
-        batch.disableBlending();
-
-        uiViewport.apply();
-
-        stage.act();
-        stage.draw();
-    }
-
     /**
      * Populates the {@code commandOptionLayer} with the attack options of the piece
      */
@@ -456,12 +490,12 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D attackOption : validCommandDestinations) {
-            Vector2D moveOptionTilePos = gridToTiled(attackOption);
+            Vector2D attackOptionTilePos = gridToTiled(attackOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/red-border");
             cell.setTile(new StaticTiledMapTile(region));
-            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(),cell);
+            commandOptionLayer.setCell(attackOptionTilePos.getX(), attackOptionTilePos.getY(),cell);
         }
     }
 
@@ -517,6 +551,7 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = new Vector2D[0];
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
+        damagePreviewValues.clear();
     }
 
     /**
