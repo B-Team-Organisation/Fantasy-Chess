@@ -36,12 +36,13 @@ public class Pair<T, U> {
 
     @Override
     public String toString() {
-        return "[First: " + first.toString() + "; Second: " + second.toString() + "]";
+        return new JsonWriter().writeKeyValue("first", first)
+            .and().writeKeyValue("second", second).toString();
     }
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof Pair && ((Pair<?, ?>)o).first.equals(first) && ((Pair<?, ?>)o).second.equals(second);
+        return o instanceof Pair && ((Pair<?, ?>) o).first.equals(first) && ((Pair<?, ?>) o).second.equals(second);
     }
 
     @Override

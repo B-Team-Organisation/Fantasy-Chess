@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 import java.util.List;
 
 public class GameInitDTO implements JsonDTO {
@@ -16,21 +18,17 @@ public class GameInitDTO implements JsonDTO {
         this.gameId = gameId;
     }
 
+    public List<CharacterEntityDTO> getCharacters() {
+        return characters;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
     @Override
     public String toJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"characters\": [");
-        for (CharacterEntityDTO character : characters) {
-            sb.append(character.toJson());
-            sb.append(",");
-        }
-        if (sb.length() > 1) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("],");
-        sb.append("\"gameId\": \"").append(gameId).append("\"");
-        sb.append("}");
-        return sb.toString();
+        return new JsonWriter().writeList("characters", characters)
+            .and().writeKeyValue("gameId", gameId).toString();
     }
 }

@@ -72,6 +72,7 @@ public class GamePacketHandler implements PacketHandler {
                 }
                 var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands, validCommandsDto);
                 var packetToSend = new Packet(dto, "GAME_TURN_RESULT");
+                System.out.println(dto.toJson());
 
                 var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
                 var players = lobbyService.lobbyWithPlayer(playerUUID).getPlayers();

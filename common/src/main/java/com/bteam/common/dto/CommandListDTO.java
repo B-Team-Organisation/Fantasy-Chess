@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +29,17 @@ public class CommandListDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        StringBuilder sb = new StringBuilder();
+        return new JsonWriter().writeList("commands", getCommands())
+            .and().writeKeyValue("gameId", getGameId()).toString();
+
+
+        /*StringBuilder sb = new StringBuilder();
         sb.append("{\"commands\": [");
         for (CommandDTO commandDTO : getCommands()) sb.append(commandDTO.toJson()).append(",");
         if (!getCommands().isEmpty()) sb.deleteCharAt(sb.length() - 1);
         sb.append("],");
         sb.append("\"gameId\": \"").append(getGameId()).append("\"");
         sb.append("}");
-        return sb.toString();
+        return sb.toString();*/
     }
 }

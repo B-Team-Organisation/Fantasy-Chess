@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 /**
  * Data Transfer Object sent to let the client know all details about
  * the result of joining a lobby, weather it failed or succeded
@@ -42,9 +44,6 @@ public class JoinLobbyResultDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        String sb = "{" +
-            "\"result\":\"" + result + "\"" +
-            "}";
-        return sb;
+        return new JsonWriter().writeKeyValue("result", result).toString();
     }
 }

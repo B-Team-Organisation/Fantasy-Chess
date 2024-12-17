@@ -9,6 +9,7 @@ import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.common.stores.CharacterStore;
 import com.bteam.common.utils.Pair;
+import com.bteam.common.utils.PairNoOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,27 +94,62 @@ public class GameStateService {
         var movements = new ArrayList<MovementDataModel>();
         var attacks = new ArrayList<AttackDataModel>();
 
-        for (var k : commands.keySet()) {
-            var lobbies = lobbyService.getAllLobbies().stream()
-                .filter(l -> l.getPlayers().stream().anyMatch(
-                    p -> p.getPlayerId().equals(k)));
-            var optionalLobby = lobbies.findFirst();
-            if (optionalLobby.isPresent() && optionalLobby.get()
-                .isHost(playerService.getPlayer(UUID.fromString(k)))) {
-                var invertedAttacks = invertAttacks(commands.get(k).getFirst());
-                var invertedMovement = invertMovements(commands.get(k).getSecond());
+        var playerIds = commands.keySet().toArray();
+        var lobbies = lobbyService.getAllLobbies().stream()
+            .filter(l -> l.getPlayers().stream().anyMatch(
+                p -> p.getPlayerId().equals(playerIds[0])));
+        var lobbyOptional = lobbies.findFirst();
+        if (lobbyOptional.isEmpty())
+            throw new RuntimeException("Lobby not found");
+        var host = lobbyOptional.get().getHost();
+
+        for (var k : commands.entrySet()) {
+            if (host.getPlayerId().equals(k.getKey())) {
+                var invertedAttacks = invertAttacks(k.getValue().getFirst());
+                var invertedMovement = invertMovements(k.getValue().getSecond());
                 attacks.addAll(invertedAttacks);
                 movements.addAll(invertedMovement);
             } else {
-                movements.addAll(commands.get(k).getSecond());
-                attacks.addAll(commands.get(k).getFirst());
+                movements.addAll(k.getValue().getSecond());
+                attacks.addAll(k.getValue().getFirst());
             }
         }
 
         var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service);
+        var inverted = invertTurnResultIfHost(result, game, host);
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);
-        return new Pair<>(result, service.getGridModel());
+        return new Pair<>(inverted, service.getGridModel());
+    }
+
+    public TurnResult invertTurnResultIfHost(TurnResult result, GameModel game, Player host) {
+        var validMovement = result.getValidMoves().stream().map(m ->
+                checkForOwnership(game, m.getCharacterId(), host) ? movementInverter(m) : m)
+            .toList();
+        var validAttacks = result.getValidAttacks().stream().map(a ->
+                checkForOwnership(game, a.getAttacker(), host) ? attackInverter(a) : a)
+            .toList();
+        var movementConflicts = result.getMovementConflicts() != null ? result.getMovementConflicts().stream().map(
+            pair -> {
+                var first = checkForOwnership(game, pair.getFirst().getCharacterId(), host) ?
+                    movementInverter(pair.getFirst()) : pair.getFirst();
+                var second = checkForOwnership(game, pair.getSecond().getCharacterId(), host) ?
+                    movementInverter(pair.getSecond()) : pair.getSecond();
+                return new PairNoOrder<>(first, second);
+            }).toList() : null;
+        return new TurnResult(result.getUpdatedCharacters(), movementConflicts, validMovement, validAttacks);
+    }
+
+    public boolean checkForOwnership(GameModel model, String characterId, Player owner) {
+        var characterEntityOptional = model.getEntities().stream().filter(c -> c.getId().equals(characterId)).findFirst();
+        if (characterEntityOptional.isEmpty())
+            throw new RuntimeException("Character not found");
+        var characterEntity = characterEntityOptional.get();
+        return checkForOwnership(characterEntity, owner);
+    }
+
+    public boolean checkForOwnership(CharacterEntity character, Player owner) {
+        return character.getPlayerId().equals(owner.getPlayerId());
     }
 
     public List<AttackDataModel> invertAttacks(List<AttackDataModel> attacks) {

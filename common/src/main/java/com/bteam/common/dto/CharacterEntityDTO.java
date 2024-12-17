@@ -1,6 +1,7 @@
 package com.bteam.common.dto;
 
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.utils.JsonWriter;
 
 public class CharacterEntityDTO implements JsonDTO {
     CharacterEntity character;
@@ -15,11 +16,13 @@ public class CharacterEntityDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return "{\"modelId\":\"" + character.getCharacterBaseModel().getName() + "\"," +
-                "\"health\":\"" + character.getHealth() + "\"," +
-                "\"playerId\":\"" + character.getPlayerId() + "\"," +
-                "\"id\":" + character.getId() + "," +
-                "\"x\":" + character.getPosition().getX() + "," +
-                "\"y\":" + character.getPosition().getY() + "}";
+        return new JsonWriter()
+            .writeKeyValue("modelId", character.getCharacterBaseModel().getName())
+            .and().writeKeyValue("health", character.getHealth())
+            .and().writeKeyValue("playerId", character.getPlayerId())
+            .and().writeKeyValue("id", character.getId())
+            .and().writeKeyValue("x", character.getPosition().getX())
+            .and().writeKeyValue("y", character.getPosition().getY())
+            .toString();
     }
 }

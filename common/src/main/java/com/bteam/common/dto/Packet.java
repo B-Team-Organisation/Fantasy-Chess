@@ -1,14 +1,17 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 /**
  * Packet data structure for moving data between Client and Server
+ *
  * @author Marc
  */
 public class Packet {
     JsonDTO data;
     String id;
 
-    public Packet(){
+    public Packet() {
         data = null;
         id = "";
     }
@@ -28,7 +31,7 @@ public class Packet {
 
     @Override
     public String toString() {
-        var dataString = data == null ? "null" : data.toJson();
-        return "{\"id\":\"" + id + "\",\"data\":" + dataString + "}";
+        return new JsonWriter().writeKeyValue("id", id)
+            .and().writeKeyValue("data", data).toString();
     }
 }

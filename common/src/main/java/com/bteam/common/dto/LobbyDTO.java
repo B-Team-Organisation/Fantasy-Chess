@@ -2,22 +2,24 @@ package com.bteam.common.dto;
 
 import com.bteam.common.models.LobbyModel;
 import com.bteam.common.models.Player;
+import com.bteam.common.utils.JsonWriter;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 /**
  * Data Transfer Object for all infos about a Lobby
  *
  * @author Marc
  */
-public class LobbyDTO implements JsonDTO{
-    private String lobbyId;
-    private int maxPlayers;
-    private List<String> playerIds;
-    private String hostId;
-    private LobbyModel.GameState gameState;
-    private String lobbyName;
+public class LobbyDTO implements JsonDTO {
+    private final String lobbyId;
+    private final int maxPlayers;
+    private final List<String> playerIds;
+    private final String hostId;
+    private final LobbyModel.GameState gameState;
+    private final String lobbyName;
 
     public LobbyDTO() {
         lobbyId = "";
@@ -63,27 +65,35 @@ public class LobbyDTO implements JsonDTO{
 
     @Override
     public String toJson() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        sb.append("\"lobbyId\":\"");
-        sb.append(lobbyId);
-        sb.append("\",");
-        sb.append("\"name\":\"");
-        sb.append(lobbyName);
-        sb.append("\",");
-        sb.append("\"maxPlayers\":");
-        sb.append(maxPlayers);
-        sb.append(",");
-        sb.append("\"playerIds\":[");
-        sb.append(playerIds.stream().collect(Collectors.joining(",")));
-        sb.append("],");
-        sb.append("\"hostId\":\"");
-        sb.append(hostId);
-        sb.append("\",");
-        sb.append("\"gameState\":\"");
-        sb.append(gameState.name());
-        sb.append("\"");
-        sb.append("}");
-        return sb.toString();
+
+        return new JsonWriter().writeKeyValue("lobbyId", lobbyId)
+            .and().writeKeyValue("name", lobbyName)
+            .and().writeKeyValue("maxPlayers", maxPlayers)
+            .and().writeList("playerIds", playerIds)
+            .and().writeKeyValue("hostId", hostId)
+            .and().writeKeyValue("gameState", gameState.name())
+            .toString();
+
+        /*String sb = "{" +
+            "\"lobbyId\":\"" +
+            lobbyId +
+            "\"," +
+            "\"name\":\"" +
+            lobbyName +
+            "\"," +
+            "\"maxPlayers\":" +
+            maxPlayers +
+            "," +
+            "\"playerIds\":[" +
+            playerIds.stream().collect(Collectors.joining(",")) +
+            "]," +
+            "\"hostId\":\"" +
+            hostId +
+            "\"," +
+            "\"gameState\":\"" +
+            gameState.name() +
+            "\"" +
+            "}";
+        return sb;*/
     }
 }

@@ -6,7 +6,6 @@ import com.bteam.common.models.GridService;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
-import com.bteam.fantasychess_client.networking.WebSocketService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +41,7 @@ public class ClientGameStateService {
     }
 
     public void initNewGame() {
-        WebSocketService net = getWebSocketService();
-
-        //net.send(new Packet(data, "GAME_INIT"));
+        // TODO: Sent init Packet once players are ready
     }
 
     /**
