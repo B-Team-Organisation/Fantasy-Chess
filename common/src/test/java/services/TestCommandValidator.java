@@ -118,25 +118,25 @@ class TestCommandValidator {
                 "baseModel1", "Test",
                 4, 8,
                 new PatternService[]{longRangeAttackService},
-                new PatternService[]{shortMovementService}
+                new PatternService[]{shortMovementService},"",""
         );
         baseModel2 = new CharacterDataModel(
             "baseModel2", "Test Test",
                     8, 4,
                     new PatternService[]{shortRangeAttackService},
-                    new PatternService[]{longMovementService}
+                    new PatternService[]{longMovementService},"",""
         );
         baseModel3 = new CharacterDataModel(
                 "baseModel3", "Test Test Test",
                 4, 8,
                 new PatternService[]{longRangeAttackService, shortMovementService},
-                new PatternService[]{shortMovementService, longMovementService}
+                new PatternService[]{shortMovementService, longMovementService},"",""
         );
         baseModel4 = new CharacterDataModel(
                 "baseModel4", "Test Test Test Test",
                 4, 8,
                 new PatternService[]{simpleAttackService},
-                new PatternService[]{simpleMovementService}
+                new PatternService[]{simpleMovementService},"",""
         );
         basicEntity1 = new CharacterEntity(baseModel1, "baseEntity1", 4, new Vector2D(2, 2), "player1");
         basicEntity2 = new CharacterEntity(baseModel2, "baseEntity2", 2, new Vector2D(7, 7), "player2");

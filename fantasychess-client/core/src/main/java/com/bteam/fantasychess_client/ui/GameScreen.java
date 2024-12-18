@@ -4,6 +4,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +15,9 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -30,6 +34,7 @@ import com.bteam.fantasychess_client.utils.GameMockStore;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 import com.badlogic.gdx.utils.Timer;
+
 
 import java.util.*;
 import java.util.List;
@@ -90,6 +95,14 @@ public class GameScreen extends ScreenAdapter {
 
     private Table player1SideBar;
     private Table player2SideBar;
+    private boolean isMouseHoverStatsUI = false;
+    private BitmapFont font;
+    private static final int DOUBLE_CLICK_INTERVAL = 300; // Milliseconds for detecting double-click
+    private static int rounds= 0;
+    private boolean firstRound = true;
+
+
+
 
 
     /**
@@ -110,6 +123,10 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
+
+        font = new BitmapFont();
+        font.getData().setScale(1.5f); // Set font size
+        font.setColor(Color.WHITE);
 
     }
 
@@ -157,9 +174,6 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
@@ -201,10 +215,14 @@ public class GameScreen extends ScreenAdapter {
 
                 if (commandCount == requiredCommandCount) {
                     setText("Send commands!");
+
                     setDisabled(false);
                 } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)){
                     setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
+                    rounds++;
+                    if (rounds==1) endFirstRound();
                     setDisabled(true);
+
                 }
             }
         };
@@ -437,7 +455,7 @@ public class GameScreen extends ScreenAdapter {
 
         gameCamera.zoom = 1f; // Debug tool
         Vector2D center = mathService.getMapCenter(tiledMap);
-        gameCamera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
+        gameCamera.position.set(center.getX(), center.getY() + TILE_PIXEL_HEIGHT, 0);
         gameCamera.update();
         mapRenderer.setView(gameCamera);
 
@@ -448,9 +466,46 @@ public class GameScreen extends ScreenAdapter {
         batch.begin();
 
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
+        Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (!grid.equals(focussedTile)){
+
+
+
+/* Check for interaction with characters
+        CharacterSprite clickedCharacter = null;
+
+        for (CharacterSprite sprite : characterSprites) {
+            float spriteLeft = sprite.getX() - sprite.getWidth() / 2;
+            float spriteRight = sprite.getX() + sprite.getWidth() / 2;
+            float spriteBottom = sprite.getY() - sprite.getHeight() / 2;
+            float spriteTop = sprite.getY() + sprite.getHeight() / 2;
+
+            if (mouse.x >= spriteLeft && mouse.x <= spriteRight &&
+                mouse.y >= spriteBottom && mouse.y <= spriteTop) {
+                clickedCharacter = sprite;
+                break; // Exit loop once the clicked sprite is found
+            }
+        }
+
+        if (clickedCharacter != null && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            if (firstRound) {
+                // During first round: Show stats dialog
+                showCharacterStatsDialog(clickedCharacter.getCharacter());
+            } else {
+                // After first round: Open command type dialog
+                openCommandTypeDialog();
+            }
+        }*/
+
+
+
+
+
+
+
+
+
+        if (grid == null || !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
@@ -519,8 +574,11 @@ public class GameScreen extends ScreenAdapter {
      */
     public void updateSelectedCharacter(CharacterEntity selectedCharacter){
         this.selectedCharacter = selectedCharacter;
+
+
         createFreshSelectedCharacterLayer();
     }
+
 
 
     /**
@@ -594,8 +652,19 @@ public class GameScreen extends ScreenAdapter {
         row.add(nameContainer).width(150).height(50).pad(5);
         row.add(healthBarContainer).width(200).height(50).pad(5);
 
-        onChange(row,()->{
-            updateSelectedCharacter(character);
+        row.addListener(new InputListener() {
+            @Override
+            public boolean mouseMoved(InputEvent event, float x, float y) {
+                isMouseHoverStatsUI = true;
+                updateSelectedCharacter(character);
+                return true;
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                isMouseHoverStatsUI = false;
+                resetSelection();
+            }
         });
 
         return row;
@@ -644,6 +713,31 @@ public class GameScreen extends ScreenAdapter {
         if (healthPercentage > 0.4f) return Color.YELLOW;
         if (healthPercentage > 0.2f) return Color.ORANGE;
         return Color.RED;
+    }
+    /*private void updateMouseHoverUI() {
+        float mouseX = Gdx.input.getX();
+        float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        isMouseHoverStatsUI = stage.hit(mouseX, mouseY, true) != null;
+    }
+*/
+    public void showCharacterStatsDialog(CharacterEntity character) {
+        Dialog statsDialog = new Dialog("Character Stats", skin);
+        statsDialog.text("Name: " + character.getCharacterBaseModel().getName() + "\n" +
+            "Health: " + character.getHealth() + " / " + character.getCharacterBaseModel().getHealth() + "\n" +
+            "AttackPower: " + character.getCharacterBaseModel().getAttackPower() + "\n" +
+            "MovementPattern:" + character.getCharacterBaseModel().getMovementDescription() + "\n" +
+            "AttackPatern:" +  character.getCharacterBaseModel().getAttackDescription());
+
+        statsDialog.button("Close");
+        statsDialog.show(stage);
+    }
+
+    public boolean isFirstRound(){
+        return firstRound;
+    }
+    public void endFirstRound(){
+        firstRound = false;
     }
     public void showAttackEffect(CharacterEntity character, int damage) {
 
@@ -762,5 +856,6 @@ public class GameScreen extends ScreenAdapter {
         skin.dispose();
         atlas.dispose();
         batch.dispose();
+        font.dispose();
     }
 }

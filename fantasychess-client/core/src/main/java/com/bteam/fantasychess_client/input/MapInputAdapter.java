@@ -76,7 +76,11 @@ public class MapInputAdapter extends InputAdapter {
                     processClickInGameInitMode(gridPos);
                     break;
                 case COMMAND_MODE:
-                    processClickInCommandMode(gridPos);
+                    if (gameScreen.isFirstRound()) {
+                        processFirstRoundClick(gridPos);
+                    } else {
+                        processClickInCommandMode(gridPos);
+                    }
                     break;
             }
             return true;
@@ -90,6 +94,19 @@ public class MapInputAdapter extends InputAdapter {
         }
 
         return false;
+    }
+
+    private void processFirstRoundClick(Vector2D gridPos) {
+        try {
+            CharacterEntity character =  Main.getGameStateService().getGridService().getCharacterAt(gridPos);
+            gameScreen.updateSelectedCharacter(character);
+            if (character != null){
+              gameScreen.showCharacterStatsDialog(character);
+            }
+
+        } catch (DestinationInvalidException e) {
+            Main.getLogger().log(Level.SEVERE,e.getMessage());
+        }
     }
 
     /**
@@ -187,6 +204,9 @@ public class MapInputAdapter extends InputAdapter {
                 Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, gameScreen.getSelectedCharacter().getId()));
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
+               /* assert character != null;
+               targetr=
+                gameScreen.showAttackEffect(target,character.getCharacterBaseModel().getAttackPower());*/
                 break;
             }
         }
@@ -225,4 +245,6 @@ public class MapInputAdapter extends InputAdapter {
         this.commandMode = commandMode;
     }
 
+
 }
+

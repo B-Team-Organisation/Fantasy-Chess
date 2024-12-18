@@ -96,23 +96,28 @@ public class GameMockStore {
         Map<String, CharacterDataModel> mockBaseModels = new HashMap<>();
 
         mockBaseModels.put("badger", new CharacterDataModel("badger","Tenacious scrapper, burrowing beast",
-            15, 20, new PatternService[]{frontAndBackService}, new PatternService[]{dodgeService}
+            15, 20, new PatternService[]{frontAndBackService}, new PatternService[]{dodgeService},
+            "long range shots", "1 move in each direction"
         ));
 
         mockBaseModels.put("wolf", new CharacterDataModel("wolf", "Agile predator with sharp instincts",
-            20, 15, new PatternService[]{biteService}, new PatternService[]{jumpService}
+            20, 15, new PatternService[]{biteService}, new PatternService[]{jumpService},
+            "long range shots", "1 move in each direction"
         ));
 
         mockBaseModels.put("boar", new CharacterDataModel("boar", "Ferocious charger, armored tank",
-            25, 10, new PatternService[]{tackleService}, new PatternService[]{chargeService}
+            25, 10, new PatternService[]{tackleService}, new PatternService[]{chargeService},
+            "long range shots", "1 move in each direction"
         ));
 
         mockBaseModels.put("stag", new CharacterDataModel("stag","Noble guardian, antlered sentinel",
-            35, 15, new PatternService[]{frontAndBackService},new PatternService[]{jumpService}
+            35, 15, new PatternService[]{frontAndBackService},new PatternService[]{jumpService},
+            "long range shots", "1 move in each direction"
         ));
 
         mockBaseModels.put("blossom", new CharacterDataModel("blossom","Blossom",
-            35, 5, new PatternService[]{frontAndBackService},new PatternService[]{jumpService}
+            35, 5, new PatternService[]{frontAndBackService},new PatternService[]{jumpService},
+            "long range shots", "1 move in each direction"
         ));
 
         characters.add(new CharacterEntity(mockBaseModels.get("badger"), "0", mockBaseModels.get("badger").getHealth(), new Vector2D(-1,-1), getWebSocketService().getUserid()));
