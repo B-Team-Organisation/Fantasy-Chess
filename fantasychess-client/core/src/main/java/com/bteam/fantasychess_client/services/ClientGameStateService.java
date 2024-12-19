@@ -1,37 +1,48 @@
 package com.bteam.fantasychess_client.services;
 
-import com.badlogic.gdx.Gdx;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
+import com.bteam.common.services.TurnLogicService;
+import com.bteam.common.services.TurnResult;
+import com.bteam.common.utils.Event;
 import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
  * Service class that gives access to important gamestate objects
  * <p>
  * A globally available service class that gives access to the current {@link GridService} and a lists of {@link CharacterEntity}.
  *
- * @version 1.0
  * @author lukas
+ * @version 1.0
  */
 public class ClientGameStateService {
+    private final List<CharacterEntity> friendlyCharacters;
+    private final List<CharacterEntity> enemyCharacters;
+    public Event<TurnResult> onApplyTurnResult = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
-
-    private List<CharacterEntity> friendlyCharacters;
-    private List<CharacterEntity> enemyCharacters;
+    private String gameId;
+    private TurnResult turnResult;
 
     /**
      * Default constructor of {@link ClientGameStateService}
-     *
      */
-    public ClientGameStateService(){
+    public ClientGameStateService() {
         characters = new ArrayList<>();
         friendlyCharacters = new ArrayList<>();
         enemyCharacters = new ArrayList<>();
+        gridService = new GridService(new GridModel(9, 9));
+    }
+
+    public void initNewGame() {
+        // TODO: Sent init Packet once players are ready
     }
 
     /**
@@ -42,7 +53,7 @@ public class ClientGameStateService {
      * @param rows row count of the new board
      * @param cols col count of the new board
      */
-    public void registerNewGame(int rows, int cols){
+    public void registerNewGame(int rows, int cols) {
         gridService = new GridService(new GridModel(rows, cols));
 
         characters.clear();
@@ -81,9 +92,15 @@ public class ClientGameStateService {
         friendlyCharacters.clear();
         enemyCharacters.clear();
 
-        String playerId = Main.getWebSocketService().getUserid();
+        String playerId = getWebSocketService().getUserid();
 
         for (CharacterEntity character : characters) {
+            try {
+                gridService.setCharacterTo(character.getPosition(), character);
+            } catch (Exception e) {
+                Main.getLogger().log(Level.SEVERE, e.getMessage());
+            }
+
             if (character.getPlayerId().equals(playerId)) {
                 friendlyCharacters.add(character);
             } else {
@@ -97,7 +114,7 @@ public class ClientGameStateService {
      *
      * @return amount of friendly {@link CharacterEntity}
      */
-    public int getFriendlyCharacterCount(){
+    public int getFriendlyCharacterCount() {
         return friendlyCharacters.size();
     }
 
@@ -106,7 +123,7 @@ public class ClientGameStateService {
      *
      * @return list of all friendly characters on the board
      */
-    public List<CharacterEntity> getFriendlyCharacters(){
+    public List<CharacterEntity> getFriendlyCharacters() {
         return friendlyCharacters;
     }
 
@@ -115,7 +132,7 @@ public class ClientGameStateService {
      *
      * @return amount of enemy {@link CharacterEntity}
      */
-    public int getEnemyCharacterCount(){
+    public int getEnemyCharacterCount() {
         return enemyCharacters.size();
     }
 
@@ -124,7 +141,27 @@ public class ClientGameStateService {
      *
      * @return list of all enemy characters on the board
      */
-    public List<CharacterEntity> getEnemyCharacters(){
+    public List<CharacterEntity> getEnemyCharacters() {
         return enemyCharacters;
+    }
+
+    public TurnResult getTurnResult() {
+        return turnResult;
+    }
+
+    public void applyTurnResult(TurnResult turnResult) {
+        this.turnResult = turnResult;
+        Main.getLogger().log(Level.SEVERE, "Set turn result");
+        TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
+        TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
+        onApplyTurnResult.invoke(turnResult);
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 }

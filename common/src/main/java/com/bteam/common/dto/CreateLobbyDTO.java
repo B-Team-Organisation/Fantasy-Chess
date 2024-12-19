@@ -1,14 +1,17 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 /**
  * Data Transfer Object to let the server know all details about
  * the lobby that is to be created.
+ *
  * @author Marc
  */
-public class CreateLobbyDTO implements JsonDTO{
-    private String lobbyName;
+public class CreateLobbyDTO implements JsonDTO {
+    private final String lobbyName;
 
-    public CreateLobbyDTO(){
+    public CreateLobbyDTO() {
         this.lobbyName = "";
     }
 
@@ -21,9 +24,8 @@ public class CreateLobbyDTO implements JsonDTO{
     }
 
 
-
     @Override
     public String toJson() {
-        return "{\"lobbyName\":\""+lobbyName+"\"}";
+        return new JsonWriter().writeKeyValue("lobbyName", getLobbyName()).toString();
     }
 }

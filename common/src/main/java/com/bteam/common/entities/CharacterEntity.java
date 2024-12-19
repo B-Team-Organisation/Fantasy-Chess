@@ -1,8 +1,8 @@
 package com.bteam.common.entities;
 
 
-import com.bteam.common.models.Vector2D;
 import com.bteam.common.models.CharacterDataModel;
+import com.bteam.common.models.Vector2D;
 
 import java.util.Objects;
 
@@ -18,7 +18,7 @@ import java.util.Objects;
  */
 public class CharacterEntity {
     private CharacterDataModel characterBaseModel;
-    private  String Id;
+    private String Id;
     private int health;
     private Vector2D position;
     private String playerId;
@@ -28,10 +28,10 @@ public class CharacterEntity {
      * Creates a new Character
      *
      * @param characterBaseModel Reference to the character in question
-     * @param health Current health of the character
-     * @param position Current position of the character
+     * @param health             Current health of the character
+     * @param position           Current position of the character
      */
-    public CharacterEntity(CharacterDataModel characterBaseModel,String Id, int health, Vector2D position, String playerId) {
+    public CharacterEntity(CharacterDataModel characterBaseModel, String Id, int health, Vector2D position, String playerId) {
         this.characterBaseModel = characterBaseModel;
         this.Id = Id;
         this.health = health;
@@ -43,30 +43,36 @@ public class CharacterEntity {
         return this.characterBaseModel;
     }
 
-    public String getId() {return  this.Id;}
+    public void setCharacterBaseModel(CharacterDataModel characterBaseModel) {
+        this.characterBaseModel = characterBaseModel;
+    }
+
+    public String getId() {
+        return this.Id;
+    }
+
+    public void setId(String Id) {
+        this.Id = Id;
+    }
 
     public int getHealth() {
         return this.health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
     }
 
     public Vector2D getPosition() {
         return this.position;
     }
 
-    public String getPlayerId() {return this.playerId;}
-
-    public void setCharacterBaseModel(CharacterDataModel characterBaseModel) {
-        this.characterBaseModel = characterBaseModel;
-    }
-
-    public void setId(String Id) {this.Id = Id;}
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
     public void setPosition(Vector2D position) {
         this.position = position;
+    }
+
+    public String getPlayerId() {
+        return this.playerId;
     }
 
     public void setPlayerId(String playerId) {

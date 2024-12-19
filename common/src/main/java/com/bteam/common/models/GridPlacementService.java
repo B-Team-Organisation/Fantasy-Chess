@@ -1,19 +1,18 @@
 package com.bteam.common.models;
 
+import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
 import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.exceptions.FullStartTilesException;
 import com.bteam.common.exceptions.NotAStartPositionException;
-import com.bteam.common.entities.CharacterEntity;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 /**
  * Service class for the initial placement
- *<p>
+ * <p>
  * The class is responsible for the placement of the given Characters
  * into the {@link GridService }.
  *
@@ -28,22 +27,21 @@ public class GridPlacementService {
     /**
      * Places characters in the allowed starting rows at the bottom of the grid.
      *
-     * @param gridService GridService that manages the grid
-     * @param characters list of CharacterEntity objects to place in the grid
+     * @param gridService    GridService that manages the grid
+     * @param characters     list of CharacterEntity objects to place in the grid
      * @param startTilesRows array with the exact row numbers allowed for placement
-     *
-     * @throws DestinationInvalidException if a specified position is out of bounds
+     * @throws DestinationInvalidException         if a specified position is out of bounds
      * @throws DestinationAlreadyOccupiedException if a specified position is already occupied
-     * @throws NotAStartPositionException if the destination Tile is not a valid starting position
-     * @throws FullStartTilesException if there are more characters than available start tiles
+     * @throws NotAStartPositionException          if the destination Tile is not a valid starting position
+     * @throws FullStartTilesException             if there are more characters than available start tiles
      */
     public static void placeCharacters(GridService gridService, List<CharacterEntity> characters, int[] startTilesRows)
-            throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException, FullStartTilesException {
+        throws DestinationInvalidException, DestinationAlreadyOccupiedException, NotAStartPositionException, FullStartTilesException {
 
         List<Integer> sortedRows = Arrays.stream(startTilesRows)
-                .boxed()
-                .sorted((a, b) -> Integer.compare(b, a))
-                .collect(Collectors.toList());
+            .boxed()
+            .sorted((a, b) -> Integer.compare(b, a))
+            .collect(Collectors.toList());
 
         int gridCols = gridService.getGridModel().getCols();
 
@@ -69,7 +67,7 @@ public class GridPlacementService {
                     characterIndex++;
                 }
 
-                if (characterIndex >= characters.size()){
+                if (characterIndex >= characters.size()) {
                     return;
                 }
             }

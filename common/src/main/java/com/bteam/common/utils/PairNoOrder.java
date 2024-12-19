@@ -36,7 +36,8 @@ public class PairNoOrder<T, U> {
 
     @Override
     public String toString() {
-        return "[First: " + first.toString() + "; Second: " + second.toString() + "]";
+        return new JsonWriter().writeKeyValue("first", first)
+            .and().writeKeyValue("second", second).toString();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class PairNoOrder<T, U> {
         if (!(o instanceof PairNoOrder)) return false;
         PairNoOrder<?, ?> other = (PairNoOrder<?, ?>) o;
         return (other.getFirst().equals(first) && other.getSecond().equals(second))
-                || (other.getFirst().equals(second) && other.getSecond().equals(first));
+            || (other.getFirst().equals(second) && other.getSecond().equals(first));
     }
 
     @Override
