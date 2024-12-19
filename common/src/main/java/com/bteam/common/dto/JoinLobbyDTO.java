@@ -25,6 +25,6 @@ public class JoinLobbyDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return new JsonWriter().writeKeyValue("lobbyId", id).toString();
+        return new JsonWriter().writeKeyValue("id", id).toString();
     }
 }

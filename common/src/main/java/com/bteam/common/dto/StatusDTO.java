@@ -22,7 +22,7 @@ public class StatusDTO implements JsonDTO {
 
     @Override
     public String toString() {
-        return "{\"status\":\"" + status + "\"}";
+        return new JsonWriter().writeKeyValue(status, status).toString();
     }
 
     @Override

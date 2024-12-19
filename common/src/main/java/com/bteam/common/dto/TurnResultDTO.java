@@ -1,6 +1,5 @@
 package com.bteam.common.dto;
 
-import com.bteam.common.utils.JsonWriter;
 import com.bteam.common.utils.PairNoOrder;
 
 import java.util.List;
@@ -16,7 +15,6 @@ public class TurnResultDTO implements JsonDTO {
         this.validCommands = validCommands;
     }
 
-
     public List<CharacterEntityDTO> getUpdatedCharacters() {
         return updatedCharacters;
     }
@@ -31,8 +29,31 @@ public class TurnResultDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return new JsonWriter().writeList("updatedCharacters", getUpdatedCharacters())
-            .and().writeList("conflictComamnds", getConflictCommands())
-            .and().writeKeyValue("validCommands", getValidCommands()).toString();
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"updatedCharacters\":[");
+        for (CharacterEntityDTO character : getUpdatedCharacters()) {
+            sb.append(character.toJson());
+            sb.append(",");
+        }
+        if (!getUpdatedCharacters().isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append("],\"conflictCommands\":[");
+        for (PairNoOrder<CommandDTO, CommandDTO> conflictCommand : getConflictCommands()) {
+            sb.append("{\"first\":").append(conflictCommand.getFirst().toJson());
+            sb.append(",\"second\":").append(conflictCommand.getSecond().toJson());
+            sb.append("},");
+        }
+        if (!conflictCommands.isEmpty()) {
+            sb.deleteCharAt(sb.length() - 1);
+        }
+        sb.append("],\"validCommands\":").append(getValidCommands().toJson());
+        sb.append("}");
+        return sb.toString();
+
+        /*return new JsonWriter().writeList("updatedCharacters", getUpdatedCharacters())
+                .and().writeList("conflictCommands", getConflictCommands())
+                .and().writeKeyValue("validCommands", getValidCommands()).toString();*/
     }
 }

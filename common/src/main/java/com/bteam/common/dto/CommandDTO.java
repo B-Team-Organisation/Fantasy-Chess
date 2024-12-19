@@ -62,10 +62,10 @@ public class CommandDTO implements JsonDTO {
     @Override
     public String toJson() {
         return new JsonWriter().writeKeyValue("characterId", characterId)
-            .and().writeKeyValue("x", getX())
-            .and().writeKeyValue("y", getY())
-            .and().writeKeyValue("commandType", getCommandType())
-            .toString();
+                .and().writeKeyValue("x", getX())
+                .and().writeKeyValue("y", getY())
+                .and().writeKeyValue("commandType", getCommandType().name())
+                .toString();
     }
 
     public enum CommandType {
