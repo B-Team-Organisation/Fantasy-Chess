@@ -3,10 +3,7 @@ package com.bteam.fantasychess_client.manger;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.bteam.fantasychess_client.Main;
-import com.bteam.fantasychess_client.ui.GameScreen;
-import com.bteam.fantasychess_client.ui.MainMenu;
-import com.bteam.fantasychess_client.ui.Screens;
-import com.bteam.fantasychess_client.ui.SplashScreen;
+import com.bteam.fantasychess_client.ui.*;
 
 import java.util.logging.Level;
 

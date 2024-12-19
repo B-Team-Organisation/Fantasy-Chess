@@ -19,6 +19,7 @@ import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.getLogger;
@@ -186,7 +187,19 @@ public class MapInputAdapter extends InputAdapter {
             case ATTACK_MODE: {
                 getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
                 if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
-                Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, gameScreen.getSelectedCharacter().getId()));
+
+                CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
+
+                AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
+
+                Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(),gridPos);
+                HashMap<Vector2D, Integer> damageValues = new HashMap<>();
+                for (Vector2D position : areaOfEffect){
+                    damageValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower());
+                }
+
+                Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
+
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
                 break;

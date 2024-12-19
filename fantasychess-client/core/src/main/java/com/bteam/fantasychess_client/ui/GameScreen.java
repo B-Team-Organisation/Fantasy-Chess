@@ -3,22 +3,22 @@ package com.bteam.fantasychess_client.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -37,6 +37,7 @@ import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.*;
@@ -75,6 +76,10 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
+
+    private final BitmapFont damageFont;
+    private final Map<Vector2D,String> damagePreviewValues = new HashMap<>();
+
     private TileMathService mathService;
     private Vector2D focussedTile;
 
@@ -101,6 +106,10 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
+
+        damageFont = new BitmapFont();
+        damageFont.getData().setScale(0.4f);
+        damageFont.setColor(Color.WHITE);
     }
 
     public Vector2D[] getValidCommandDestinations() {
@@ -151,9 +160,6 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
-        multiplexer.addProcessor(stage);
-        Gdx.input.setInputProcessor(multiplexer);
-
         getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
             /*Gdx.app.postRunnable(() -> {
                 JsonReader reader = new JsonReader();
@@ -188,6 +194,87 @@ public class GameScreen extends ScreenAdapter {
         }));
 
         initializeGame();
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        gameViewport.apply();
+
+        gameCamera.zoom = 1f; // Debug tool
+        Vector2D center = mathService.getMapCenter(tiledMap);
+        gameCamera.position.set(center.getX(),center.getY()+TILE_PIXEL_HEIGHT,0);
+        gameCamera.update();
+        mapRenderer.setView(gameCamera);
+
+        mapRenderer.render();
+
+        batch.setProjectionMatrix(gameCamera.combined);
+        batch.enableBlending();
+        batch.begin();
+
+        Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        Vector2D grid = mathService.worldToGrid(mouse.x,mouse.y);
+
+        if (!grid.equals(focussedTile)){
+            focussedTile = grid;
+            createFreshHighlightLayer();
+            createFreshCommandPreviewLayer();
+        }
+
+        SpriteSorter.sortByY(characterSprites);
+        for (CharacterSprite sprite : characterSprites) {
+            sprite.update(delta).draw(batch);
+        }
+
+        if (!getCommandManagementService().getMovementsCommands().isEmpty()
+            && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
+            batch.setColor(255,255,255,0.3f);
+            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
+                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
+                spriteMapper.get(moveId).drawAt(batch,mathService.gridToWorld(moveCommand.getMovementVector().getX(),moveCommand.getMovementVector().getY()));
+            }
+            batch.setColor(255,255,255,1f);
+        }
+
+        if (damagePreviewValues.isEmpty()){
+            Map<Vector2D, Integer> finalDamageValues = new HashMap<>();
+            for (Map<Vector2D, Integer> damageValues : Main.getCommandManagementService().getCommandDamageMappings().values()) {
+                for (Vector2D pos : damageValues.keySet()){
+                    int dmg = damageValues.get(pos);
+                    if (finalDamageValues.containsKey(pos)){
+                        dmg += finalDamageValues.get(pos);
+                    }
+                    finalDamageValues.put(pos, dmg);
+                }
+            }
+            for (Vector2D pos : finalDamageValues.keySet()){
+                int dmg = finalDamageValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(),pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, dmg + "");
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        } else {
+            for (Vector2D pos : damagePreviewValues.keySet()){
+                String damageText = damagePreviewValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(),pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, damageText);
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        }
+
+        batch.end();
+        batch.disableBlending();
+
+        uiViewport.apply();
+
+        stage.act();
+        stage.draw();
     }
 
     private TextButton createReadyButton() {
@@ -374,9 +461,12 @@ public class GameScreen extends ScreenAdapter {
 
                     previewCell.setTile(new StaticTiledMapTile(region));
 
+                    damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = gridToTiled(position);
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
+
+                        damagePreviewValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower()+"");
                     }
                     break;
                 }
@@ -506,12 +596,12 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D attackOption : validCommandDestinations) {
-            Vector2D moveOptionTilePos = gridToTiled(attackOption);
+            Vector2D attackOptionTilePos = gridToTiled(attackOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/red-border");
             cell.setTile(new StaticTiledMapTile(region));
-            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(), cell);
+            commandOptionLayer.setCell(attackOptionTilePos.getX(), attackOptionTilePos.getY(), cell);
         }
     }
 
@@ -568,6 +658,7 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = new Vector2D[0];
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
+        damagePreviewValues.clear();
     }
 
     /**
@@ -603,6 +694,39 @@ public class GameScreen extends ScreenAdapter {
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
     }
 
+    /**
+     * opens a dialog to display the Winner of the Game
+     * @param winnerName represents the winner of the Game, if null or empty the game finished in a draw
+     */
+    public void showEndGameDialog(String winnerName) {
+
+        String endMessage;
+
+        if ( winnerName.isEmpty() || winnerName == null) {
+            endMessage = "Result: DRAW";
+        } else {
+            endMessage = "Result:" + winnerName;
+        }
+
+
+
+        Dialog endGameDialog = new Dialog("Game Over", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    Main.getScreenManager().navigateTo(Screens.MainMenu);
+                }
+            }
+        };
+
+        endGameDialog.text(endMessage, skin.get("default", Label.LabelStyle.class));
+        endGameDialog.button("Back to Main Menu", true).align(Align.center);
+
+        endGameDialog.setSize(400, 200);
+        endGameDialog.setPosition((stage.getWidth() - endGameDialog.getWidth()) / 2, (stage.getHeight() - endGameDialog.getHeight()) / 2);
+
+        endGameDialog.show(stage);
+    }
     /**
      * Transforms grid coordinates into tiled map coordinates
      *
