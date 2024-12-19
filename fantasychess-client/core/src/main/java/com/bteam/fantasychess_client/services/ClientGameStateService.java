@@ -5,6 +5,7 @@ import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
+import com.bteam.common.utils.Event;
 import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
@@ -24,10 +25,10 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
 public class ClientGameStateService {
     private final List<CharacterEntity> friendlyCharacters;
     private final List<CharacterEntity> enemyCharacters;
+    public Event<TurnResult> onApplyTurnResult = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
-
     private TurnResult turnResult;
 
     /**
@@ -153,6 +154,7 @@ public class ClientGameStateService {
         Main.getLogger().log(Level.SEVERE, "Set turn result");
         TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
         TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
+        onApplyTurnResult.invoke(turnResult);
     }
 
     public String getGameId() {

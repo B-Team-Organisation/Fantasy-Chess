@@ -185,6 +185,13 @@ public class GameScreen extends ScreenAdapter {
             getWebSocketService().send(packet);
         });
 
+        getGameStateService().onApplyTurnResult.addListener(turnResult -> {
+            if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
+                Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
+                mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
+            }
+        });
+
         getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
             TurnResult turnResult = TurnResultMapper.fromDTO(str);
@@ -199,13 +206,6 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
-            if (Main.getGameStateService().getTurnResult() != null) {
-                Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
-                mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
-            }
-        }
-
         if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
             if (animationHandler == null) {
                 TurnResult turnResult = Main.getGameStateService().getTurnResult();
@@ -218,6 +218,7 @@ public class GameScreen extends ScreenAdapter {
             if (animationHandler.isDoneWithAnimation()) {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
                 animationHandler = null;
+
             }
         }
 
@@ -396,7 +397,6 @@ public class GameScreen extends ScreenAdapter {
     public void leaveInitPhase() {
         createFreshStartRowsLayer();
         mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
-        //mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
     }
 
     /**
