@@ -159,8 +159,9 @@ public class TileMathService {
         }
 
         Vector2 pointVector = point.cpy().sub(startPoint);
+        float percentage = pointVector.dot(lineVector) / lineLengthSquared;
 
-        return pointVector.dot(lineVector) / lineLengthSquared;
+        return percentage;
     }
 
     /**

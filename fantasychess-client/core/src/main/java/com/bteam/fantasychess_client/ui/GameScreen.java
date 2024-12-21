@@ -1,10 +1,8 @@
 package com.bteam.fantasychess_client.ui;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,13 +11,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
@@ -28,13 +21,12 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.StatsOverview;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.GameMockStore;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
-import com.badlogic.gdx.utils.Timer;
-
 
 import java.util.*;
 import java.util.List;
@@ -93,18 +85,6 @@ public class GameScreen extends ScreenAdapter {
 
     private MapInputAdapter mapInputProcessor;
 
-    private Table player1SideBar;
-    private Table player2SideBar;
-    private boolean isMouseHoverStatsUI = false;
-    private BitmapFont font;
-    private static final int DOUBLE_CLICK_INTERVAL = 300; // Milliseconds for detecting double-click
-    private static int rounds= 0;
-    private boolean firstRound = true;
-
-
-
-
-
     /**
      * Constructor of GameScreen
      *
@@ -123,10 +103,6 @@ public class GameScreen extends ScreenAdapter {
         uiViewport = new ExtendViewport(1920, 1080, uiCamera);
 
         this.skin = skin;
-
-        font = new BitmapFont();
-        font.getData().setScale(1.5f); // Set font size
-        font.setColor(Color.WHITE);
 
     }
 
@@ -180,27 +156,9 @@ public class GameScreen extends ScreenAdapter {
             getWebSocketService().send(packet);
         });
 
-        player1SideBar = new Table();
-        ScrollPane player1ScrollPane = new ScrollPane(player1SideBar, skin);
-        player1ScrollPane.setScrollingDisabled(true, false);
-        player1ScrollPane.setSize(400, 400);
-        player1ScrollPane.setPosition(50, stage.getHeight() - 450);
-
-        player2SideBar = new Table();
-        ScrollPane player2ScrollPane = new ScrollPane(player2SideBar, skin);
-        player2ScrollPane.setScrollingDisabled(true, false);
-        player2ScrollPane.setSize(400, 400);
-        player2ScrollPane.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
-
-        stage.addActor(player1ScrollPane);
-        stage.addActor(player2ScrollPane);
-
         initializeGame();
-        updateSidebars();
-
-
-
-
+        StatsOverview statsOverview = new StatsOverview(skin, stage);
+        statsOverview.updateSidebars();
     }
 
     private TextButton createReadyButton() {
@@ -219,8 +177,6 @@ public class GameScreen extends ScreenAdapter {
                     setDisabled(false);
                 } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)){
                     setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
-                    rounds++;
-                    if (rounds==1) endFirstRound();
                     setDisabled(true);
 
                 }
@@ -297,7 +253,7 @@ public class GameScreen extends ScreenAdapter {
         showStartRows(startRows);
         createSpritesForCharacters();
 
-        updateSidebars();
+
     }
 
     /**
@@ -468,43 +424,6 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-
-
-
-/* Check for interaction with characters
-        CharacterSprite clickedCharacter = null;
-
-        for (CharacterSprite sprite : characterSprites) {
-            float spriteLeft = sprite.getX() - sprite.getWidth() / 2;
-            float spriteRight = sprite.getX() + sprite.getWidth() / 2;
-            float spriteBottom = sprite.getY() - sprite.getHeight() / 2;
-            float spriteTop = sprite.getY() + sprite.getHeight() / 2;
-
-            if (mouse.x >= spriteLeft && mouse.x <= spriteRight &&
-                mouse.y >= spriteBottom && mouse.y <= spriteTop) {
-                clickedCharacter = sprite;
-                break; // Exit loop once the clicked sprite is found
-            }
-        }
-
-        if (clickedCharacter != null && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            if (firstRound) {
-                // During first round: Show stats dialog
-                showCharacterStatsDialog(clickedCharacter.getCharacter());
-            } else {
-                // After first round: Open command type dialog
-                openCommandTypeDialog();
-            }
-        }*/
-
-
-
-
-
-
-
-
-
         if (grid == null || !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
@@ -574,205 +493,8 @@ public class GameScreen extends ScreenAdapter {
      */
     public void updateSelectedCharacter(CharacterEntity selectedCharacter){
         this.selectedCharacter = selectedCharacter;
-
-
         createFreshSelectedCharacterLayer();
     }
-
-
-
-    /**
-     * Updates the content of the player and opponent sidebars.
-     * <p>
-     * This method shows in real time the actual Characters of Player 1 and Player2.
-     * Player1 is shown on the left-side as "Your character" and Player2 as "Opponent's Characters".
-     * Each character's statistics, including name and health,
-     * are displayed using the {@link #createCharacterStat(CharacterEntity)} method.
-     */
-    private void updateSidebars() {
-        player1SideBar.clearChildren();
-        player2SideBar.clearChildren();
-
-        player1SideBar.top();
-        Label header1 = new Label("Your Characters", skin, "default");
-        header1.setColor(Color.WHITE);
-        header1.setFontScale(1.5f);
-        player1SideBar.add(header1).padTop(10).row();
-
-        player2SideBar.top();
-        Label header2 = new Label("Opponent Characters", skin, "default");
-        header2.setColor(Color.WHITE);
-        header2.setFontScale(1.5f);
-        player2SideBar.add(header2).padTop(10).row();
-
-        Table player1CharactersTable = new Table();
-        for (CharacterEntity character : Main.getGameStateService().getFriendlyCharacters()) {
-            player1CharactersTable.add(createCharacterStat(character)).padBottom(10).row();
-        }
-        player1SideBar.add(player1CharactersTable).expandX().fillX();
-
-        Table player2CharactersTable = new Table();
-        for (CharacterEntity character : Main.getGameStateService().getEnemyCharacters()) {
-            player2CharactersTable.add(createCharacterStat(character)).padBottom(10).row();
-        }
-        player2SideBar.add(player2CharactersTable).expandX().fillX();
-    }
-
-
-
-    /**
-     * Creates a table row displaying the statistics of a given character.
-     * <p>
-     * This method constructs a table containing the character's name and health status.
-     * The row also supports a callback to update the currently selected character when clicked.
-     *
-     * @param character The {@link CharacterEntity} whose statistics will be displayed.
-     * @return A {@link Table} representing a row with the character's name and health information.
-     */
-    private Table createCharacterStat(CharacterEntity character) {
-        Table row = new Table();
-        row.setBackground(skin.newDrawable("white", Color.LIGHT_GRAY));
-
-        Table nameContainer = new Table();
-        nameContainer.setBackground(skin.newDrawable("white", Color.DARK_GRAY));
-        Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
-        nameLabel.setColor(Color.WHITE);
-        nameContainer.add(nameLabel).pad(5).expandX().fillX();
-
-        float healthPercentage = character.getHealth() / (float) character.getCharacterBaseModel().getHealth();
-        Table healthBarContainer = new Table();
-        ProgressBar healthBar = createHealthBar(healthPercentage);
-
-        var healthText = character.getHealth() + " / " + character.getCharacterBaseModel().getHealth() + " HP";
-        Label healthLabel = new Label(healthText, skin);
-        healthLabel.setColor(Color.WHITE);
-
-        healthBarContainer.add(healthLabel).expandX().center().padBottom(2).row();
-        healthBarContainer.add(healthBar).width(200).height(25).row();
-        row.add(nameContainer).width(150).height(50).pad(5);
-        row.add(healthBarContainer).width(200).height(50).pad(5);
-
-        row.addListener(new InputListener() {
-            @Override
-            public boolean mouseMoved(InputEvent event, float x, float y) {
-                isMouseHoverStatsUI = true;
-                updateSelectedCharacter(character);
-                return true;
-            }
-
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                isMouseHoverStatsUI = false;
-                resetSelection();
-            }
-        });
-
-        return row;
-    }
-
-
-    /**
-     * Creates a progress bar representing the character's health status.
-     * <p>
-     *
-     * @param healthPercentage A float value between 0.0 and 1.0 representing the percentage of health.
-     * @return A {@link ProgressBar} configured to visually represent the health percentage.
-     */
-    private ProgressBar createHealthBar(float healthPercentage) {
-        ProgressBar.ProgressBarStyle style = new ProgressBar.ProgressBarStyle();
-
-        style.background = skin.newDrawable("white", Color.DARK_GRAY);
-        style.knobBefore = skin.newDrawable("white", getHealthColor(healthPercentage));
-        style.background.setMinWidth(300);
-        style.background.setMinHeight(30);
-
-        style.knobBefore = skin.newDrawable("white", getHealthColor(healthPercentage));
-        style.knobBefore.setMinWidth(300);
-        style.knobBefore.setMinHeight(30);
-
-        style.knob = null;
-
-        ProgressBar healthBar = new ProgressBar(0, 1, 0.01f, false, style);
-        healthBar.setValue(healthPercentage);
-        healthBar.setSize(300, 50);
-        healthBar.invalidate();
-
-        return healthBar;
-    }
-
-
-    /**
-     * Displays a rudimentary gradient for the Colours shown in the Health-sidebar
-     *
-     * @param healthPercentage percentage of health left to a specific Character
-     * @return the color to display in the health-sidebar
-     */
-
-    private Color getHealthColor(float healthPercentage) {
-        if (healthPercentage > 0.7f) return Color.GREEN;
-        if (healthPercentage > 0.4f) return Color.YELLOW;
-        if (healthPercentage > 0.2f) return Color.ORANGE;
-        return Color.RED;
-    }
-    /*private void updateMouseHoverUI() {
-        float mouseX = Gdx.input.getX();
-        float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
-
-        isMouseHoverStatsUI = stage.hit(mouseX, mouseY, true) != null;
-    }
-*/
-    public void showCharacterStatsDialog(CharacterEntity character) {
-        Dialog statsDialog = new Dialog("Character Stats", skin);
-        statsDialog.text("Name: " + character.getCharacterBaseModel().getName() + "\n" +
-            "Health: " + character.getHealth() + " / " + character.getCharacterBaseModel().getHealth() + "\n" +
-            "AttackPower: " + character.getCharacterBaseModel().getAttackPower() + "\n" +
-            "MovementPattern:" + character.getCharacterBaseModel().getMovementDescription() + "\n" +
-            "AttackPatern:" +  character.getCharacterBaseModel().getAttackDescription());
-
-        statsDialog.button("Close");
-        statsDialog.show(stage);
-    }
-
-    public boolean isFirstRound(){
-        return firstRound;
-    }
-    public void endFirstRound(){
-        firstRound = false;
-    }
-    public void showAttackEffect(CharacterEntity character, int damage) {
-
-        CharacterSprite characterSprite = spriteMapper.get(character.getId());
-        if (characterSprite != null) {
-            characterSprite.setColor(new Color(1f, 0.2f, 0.2f, 1f)); // Luminanz-Rot
-
-            Timer.schedule(new Timer.Task() {
-                @Override
-                public void run() {
-                    characterSprite.setColor(Color.WHITE);
-                }
-            }, 0.5f);
-        }
-
-        Label damageLabel = new Label("-" + damage, skin);
-        damageLabel.setColor(Color.RED);
-        damageLabel.setFontScale(1.5f);
-
-        Vector2 worldPosition = mathService.gridToWorld(character.getPosition().getX(), character.getPosition().getY());
-        float labelX = worldPosition.x;
-        float labelY = worldPosition.y + 20;
-
-        damageLabel.setPosition(labelX, labelY);
-
-
-        stage.addActor(damageLabel);
-        damageLabel.addAction(Actions.sequence(
-            Actions.moveBy(0, 50, 1f),
-            Actions.fadeOut(0.5f),
-            Actions.run(damageLabel::remove)
-        ));
-    }
-
-
 
     /**
      * Getter for the selected {@link CharacterEntity}
@@ -856,6 +578,5 @@ public class GameScreen extends ScreenAdapter {
         skin.dispose();
         atlas.dispose();
         batch.dispose();
-        font.dispose();
     }
 }

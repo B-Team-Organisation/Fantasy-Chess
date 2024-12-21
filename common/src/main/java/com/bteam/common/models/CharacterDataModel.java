@@ -105,9 +105,9 @@ public class CharacterDataModel {
         this.movementPatterns = movementPatterns;
     }
 
-    public void setAttackDescription(String attackDescription) {attackDescription = attackDescription;}
+    public void setAttackDescription(String attackDescription) {this.attackDescription = attackDescription;}
 
-    public void setMovementDescription(String movementDescription) {}
+    public void setMovementDescription(String movementDescription) {this.movementDescription = movementDescription;}
 
     @Override
     public String toString() {
