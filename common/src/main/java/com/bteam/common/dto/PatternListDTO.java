@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,34 +11,23 @@ import java.util.List;
  * @author lukas
  */
 public class PatternListDTO implements JsonDTO {
-	private List<PatternDTO> patterns;
+    private final List<PatternDTO> patterns;
 
-	public PatternListDTO() {
-		patterns = new ArrayList<PatternDTO>();
-	}
+    public PatternListDTO() {
+        patterns = new ArrayList<PatternDTO>();
+    }
 
-	public PatternListDTO(List<PatternDTO> patterns) {
-		this.patterns = patterns;
-	}
+    public PatternListDTO(List<PatternDTO> patterns) {
+        this.patterns = patterns;
+    }
 
-	public List<PatternDTO> getPatterns() {
-		return patterns;
-	}
+    public List<PatternDTO> getPatterns() {
+        return patterns;
+    }
 
 
-	@Override
-	public String toJson() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("{");
-		sb.append("\"patterns\":[");
-		for (PatternDTO pattern : patterns) {
-			sb.append(pattern.toJson());
-			sb.append(",");
-		}
-		if (!patterns.isEmpty()) {
-			sb.deleteCharAt(sb.length()-1);
-		}
-		sb.append("]}");
-		return sb.toString();
-	}
+    @Override
+    public String toJson() {
+        return new JsonWriter().writeList("patterns", patterns).toString();
+    }
 }

@@ -35,10 +35,12 @@ public class WebSocketService {
     private final List<PacketHandler> packetHandlers = new ArrayList<>();
     private final LobbyService lobbyService;
 
-    public WebSocketService(@Autowired LobbyService lobbyService, @Autowired PlayerService playerService) {
+    public WebSocketService(@Autowired LobbyService lobbyService,
+                            @Autowired PlayerService playerService,
+                            @Autowired GameStateService gameStateService) {
         addPacketHandler(new LobbyPacketHandler(lobbyService));
-        addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this));
-        addPacketHandler(new GamePacketHandler());
+        addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this, gameStateService));
+        addPacketHandler(new GamePacketHandler(gameStateService, this, playerService, lobbyService));
         this.lobbyService = lobbyService;
     }
 

@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 public class LobbyClosedDTO implements JsonDTO {
     private final String lobbyId;
     private final String reason;
@@ -19,9 +21,7 @@ public class LobbyClosedDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return "{" +
-            "\"lobbyId\":\"" + lobbyId + "\"," +
-            "\"reason\":\"" + reason + "\"" +
-            "}";
+        return new JsonWriter().writeKeyValue("lobbyId", lobbyId)
+            .and().writeKeyValue("reason", reason).toString();
     }
 }

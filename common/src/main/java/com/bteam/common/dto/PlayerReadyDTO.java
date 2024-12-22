@@ -1,5 +1,7 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 public class PlayerReadyDTO implements JsonDTO {
     public static final String PLAYER_READY = "playerReady";
     public static final String PLAYER_NOT_READY = "playerNotReady";
@@ -34,9 +36,7 @@ public class PlayerReadyDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return "{" +
-            "\"status\":\"" + status + "\"," +
-            "\"clientId\":\"" + clientId + "\"" +
-            "}";
+        return new JsonWriter().writeKeyValue("status", status)
+            .and().writeKeyValue("clientId", clientId).toString();
     }
 }

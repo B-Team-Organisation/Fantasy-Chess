@@ -19,6 +19,7 @@ import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.getLogger;
@@ -29,8 +30,8 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
  * <p>
  * Allows the player to click on the characters to execute context dependent actions.
  *
- * @version 1.0
  * @author lukas jacinto
+ * @version 1.0
  */
 public class MapInputAdapter extends InputAdapter {
     GameScreen gameScreen;
@@ -62,7 +63,7 @@ public class MapInputAdapter extends InputAdapter {
 
         if (button == Input.Buttons.LEFT) {
 
-            switch (gameScreenMode){
+            switch (gameScreenMode) {
                 case TURN_OUTCOME:
                     break;
                 case GAME_INIT:
@@ -96,36 +97,45 @@ public class MapInputAdapter extends InputAdapter {
 
         GridService gridService = Main.getGameStateService().getGridService();
 
-        switch (commandMode){
+        switch (commandMode) {
             case NO_SELECTION:
                 try {
                     CharacterEntity character = gridService.getCharacterAt(gridPos);
+                    if (!character.getPlayerId().equals(getWebSocketService().getUserid())) {
+                        Main.getLogger().log(Level.SEVERE, "Clicked character doesnt belong to player id!");
+                        return;
+                    }
                     gameScreen.updateSelectedCharacter(character);
-                    if (character != null){
+                    if (character != null) {
                         commandMode = CommandMode.SWAP_MODE;
                     }
 
                 } catch (DestinationInvalidException e) {
-                    Main.getLogger().log(Level.SEVERE,e.getMessage());
+                    Main.getLogger().log(Level.SEVERE, e.getMessage());
                 }
                 break;
             case SWAP_MODE:
                 try {
-                    if (!gridService.getTileAt(gridPos).isStartTile()){
+                    if (!gridService.getTileAt(gridPos).isStartTile()) {
                         return;
                     }
 
                     CharacterEntity otherCharacter = gridService.getCharacterAt(gridPos);
-                    Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(),gridPos));
+                    Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(), gridPos));
 
-                    if (otherCharacter == null){
-                        gridService.moveCharacter(gameScreen.getSelectedCharacter().getPosition(),gridPos);
+                    if (otherCharacter == null) {
+                        gridService.moveCharacter(gameScreen.getSelectedCharacter().getPosition(), gridPos);
 
                         gameScreen.getMappedSprite(gameScreen.getSelectedCharacter().getId()).moveToGridPos(gridPos);
                     } else {
-                        gridService.swapCharacters(gameScreen.getSelectedCharacter().getPosition(),otherCharacter.getPosition());
+                        if (!otherCharacter.getPlayerId().equals(getWebSocketService().getUserid())) {
+                            Main.getLogger().log(Level.SEVERE, "Clicked character doesnt belong to player id!");
+                            return;
+                        }
 
-                        Main.getCommandManagementService().setCommand(new MovementDataModel(otherCharacter.getId(),otherCharacter.getPosition()));
+                        gridService.swapCharacters(gameScreen.getSelectedCharacter().getPosition(), otherCharacter.getPosition());
+
+                        Main.getCommandManagementService().setCommand(new MovementDataModel(otherCharacter.getId(), otherCharacter.getPosition()));
 
                         gameScreen.getMappedSprite(gameScreen.getSelectedCharacter().getId()).moveToGridPos(gridPos);
                         gameScreen.getMappedSprite(otherCharacter.getId()).moveToGridPos(otherCharacter.getPosition());
@@ -133,8 +143,8 @@ public class MapInputAdapter extends InputAdapter {
 
                     gameScreen.resetSelection();
                     commandMode = CommandMode.NO_SELECTION;
-                } catch (Exception e){
-                    Main.getLogger().log(Level.SEVERE,e.getMessage());
+                } catch (Exception e) {
+                    Main.getLogger().log(Level.SEVERE, e.getMessage());
                 }
                 break;
         }
@@ -152,15 +162,15 @@ public class MapInputAdapter extends InputAdapter {
         CharacterEntity character = null;
         try {
             character = Main.getGameStateService().getGridService().getCharacterAt(gridPos);
-        } catch (DestinationInvalidException e){
-            Main.getLogger().log(Level.SEVERE,e.getMessage());
+        } catch (DestinationInvalidException e) {
+            Main.getLogger().log(Level.SEVERE, e.getMessage());
         }
 
-        switch (commandMode){
+        switch (commandMode) {
             case NO_SELECTION: {
                 gameScreen.updateSelectedCharacter(character);
                 if (character != null && character.getPlayerId().equals(getWebSocketService().getUserid())) {
-                    getLogger().log(Level.SEVERE,"Selected character at: " + character.getPosition());
+                    getLogger().log(Level.SEVERE, "Selected character at: " + character.getPosition());
                     Gdx.app.postRunnable(() -> gameScreen.openCommandTypeDialog());
                 }
                 break;
@@ -168,7 +178,7 @@ public class MapInputAdapter extends InputAdapter {
             case MOVE_MODE: {
                 getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
                 if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
-                Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(),gridPos));
+                Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(), gridPos));
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
                 break;
@@ -177,7 +187,19 @@ public class MapInputAdapter extends InputAdapter {
             case ATTACK_MODE: {
                 getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
                 if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
-                Main.getCommandManagementService().setCommand(new AttackDataModel(gridPos, gameScreen.getSelectedCharacter().getId()));
+
+                CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
+
+                AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
+
+                Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(),gridPos);
+                HashMap<Vector2D, Integer> damageValues = new HashMap<>();
+                for (Vector2D position : areaOfEffect){
+                    damageValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower());
+                }
+
+                Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
+
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
                 break;
@@ -191,17 +213,8 @@ public class MapInputAdapter extends InputAdapter {
      *
      * @return current {@code gameScreenMode}
      */
-    public GameScreenMode getGameScreenMode(){
+    public GameScreenMode getGameScreenMode() {
         return gameScreenMode;
-    }
-
-    /**
-     * Getter for the {@link CommandMode}
-     *
-     * @return current {@code commandMode}
-     */
-    public CommandMode getCommandMode(){
-        return commandMode;
     }
 
     /**
@@ -209,6 +222,15 @@ public class MapInputAdapter extends InputAdapter {
      */
     public void setGameScreenMode(GameScreenMode gameScreenMode) {
         this.gameScreenMode = gameScreenMode;
+    }
+
+    /**
+     * Getter for the {@link CommandMode}
+     *
+     * @return current {@code commandMode}
+     */
+    public CommandMode getCommandMode() {
+        return commandMode;
     }
 
     /**

@@ -1,12 +1,15 @@
 package com.bteam.common.dto;
+
+import com.bteam.common.utils.JsonWriter;
+
 /**
  * Data Transfer Object for tokens
  *
  * @author Marc
  */
-public class TokenDTO implements JsonDTO{
-    private String token;
-    private long expires;
+public class TokenDTO implements JsonDTO {
+    private final String token;
+    private final long expires;
 
     public TokenDTO() {
         token = null;
@@ -17,6 +20,7 @@ public class TokenDTO implements JsonDTO{
         this.token = token;
         this.expires = expires;
     }
+
     public String getToken() {
         return token;
     }
@@ -24,8 +28,10 @@ public class TokenDTO implements JsonDTO{
     public long getExpires() {
         return expires;
     }
+
     @Override
     public String toJson() {
-        return "{\"token\":\""+token+"\",\"expires\":"+expires+"}";
+        return new JsonWriter().writeKeyValue("token", token)
+            .and().writeKeyValue("expires", expires).toString();
     }
 }

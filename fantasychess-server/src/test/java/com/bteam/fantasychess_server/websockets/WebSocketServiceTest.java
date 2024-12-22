@@ -51,7 +51,7 @@ class WebSocketServiceTest {
 
     @Test
     void testInitialization() {
-        webSocketService = new WebSocketService(null, null);
+        webSocketService = new WebSocketService(null, null, null);
 
         assertNotNull(webSocketService.getClients());
         assertNotNull(webSocketService.getMapper());
@@ -101,8 +101,8 @@ class WebSocketServiceTest {
         webSocketService.registerSession(mockSession, player);
 
         Objects.requireNonNull(webSocketService.getClients().get(TEST_ID))
-            .getOnMessageReceivedEvent()
-            .addListener(payload -> assertEquals(testPayloadString, payload));
+                .getOnMessageReceivedEvent()
+                .addListener(payload -> assertEquals(testPayloadString, payload));
 
         webSocketService.handleTextMessage(mockSession, mockTextMessage);
     }

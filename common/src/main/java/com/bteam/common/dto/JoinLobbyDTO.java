@@ -1,13 +1,14 @@
 package com.bteam.common.dto;
 
-import java.util.UUID;
+import com.bteam.common.utils.JsonWriter;
 
 /**
  * Data Transfer Object to let the server know all details about
  * the lobby the client wants to join.
+ *
  * @author Marc
  */
-public class JoinLobbyDTO implements JsonDTO{
+public class JoinLobbyDTO implements JsonDTO {
     String id;
 
     public JoinLobbyDTO() {
@@ -24,11 +25,6 @@ public class JoinLobbyDTO implements JsonDTO{
 
     @Override
     public String toJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"id\": \"").append(id).append("\"");
-        sb.append("}");
-
-        return sb.toString();
+        return new JsonWriter().writeKeyValue("id", id).toString();
     }
 }
