@@ -43,6 +43,7 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
@@ -67,7 +68,7 @@ public class GameScreen extends ScreenAdapter {
     private final ExtendViewport uiViewport;
     private final Skin skin;
 
-    private final List<CharacterSprite> characterSprites = new ArrayList<>();
+    private List<CharacterSprite> characterSprites = new ArrayList<>();
     private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
     private final BitmapFont damageFont;
     private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
@@ -222,6 +223,7 @@ public class GameScreen extends ScreenAdapter {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
                 animationHandler = null;
 
+                characterSprites = characterSprites.stream().filter(s -> s.getCharacter().getHealth() != 0).collect(Collectors.toList());
             }
         }
 

@@ -1,6 +1,8 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -123,6 +125,9 @@ public class CharacterSprite extends Sprite {
         return destination != null || !destinations.isEmpty();
     }
 
+    private static final Color deathColor = new Color(1,0,0,1);
+    private BitmapFont font = new BitmapFont();
+
     /**
      * Draws the sprite using the batch
      * <p>
@@ -132,10 +137,20 @@ public class CharacterSprite extends Sprite {
      */
     @Override
     public void draw (Batch batch) {
+        if (character.getHealth() == 0){
+            batch.setColor(deathColor);
+        }
         batch.draw(this, getX() - xOffset, getY() - yOffset);
+        batch.setColor(Color.WHITE);
+
+        font.draw(batch,character.getHealth()+"",getX(),getY());
     }
 
     public void drawAt(Batch batch, Vector2 position){
         batch.draw(this, position.x - xOffset, position.y - yOffset);
+    }
+
+    public CharacterEntity getCharacter() {
+        return character;
     }
 }
