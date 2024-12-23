@@ -30,7 +30,7 @@ import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
  */
 @Service
 public class WebSocketService {
-    private final Map<String, Client> clients = new HashMap<>();
+    private static final Map<String, Client> clients = new HashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final List<PacketHandler> packetHandlers = new ArrayList<>();
     private final LobbyService lobbyService;
@@ -101,30 +101,30 @@ public class WebSocketService {
         return null;
     }
 
-    public Client getCurrentClientForPlayer(Player player) {
+    public static Client getCurrentClientForPlayer(Player player) {
         return clients.values().stream().filter(
-                client -> client.getPlayer().getPlayerId().equals(player.getPlayerId()))
-            .findFirst().orElse(null);
+                        client -> client.getPlayer().getPlayerId().equals(player.getPlayerId()))
+                .findFirst().orElse(null);
     }
 
     public void onClientDisconnect(Client client) {
         var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
         var hostedLobbies = lobbyService.getHostedLobbies(playerUUID);
-        for (var lobby : hostedLobbies) {
-            var players = lobby.getPlayers();
-            var packet = new Packet(new LobbyClosedDTO(lobby.getLobbyId(), "Host has Disconnected!"), "LOBBY_CLOSED");
-            for (var player : players) {
-                var playerClient = getCurrentClientForPlayer(player);
-                if (playerClient != null) {
-                    playerClient.sendPacket(packet);
-                }
-            }
-            lobbyService.removeLobby(UUID.fromString(lobby.getLobbyId()));
+
+        for (var hostedLobby : hostedLobbies) {
+            lobbyService.closeLobby(UUID.fromString(hostedLobby.getLobbyId()), "Host has disconnected");
+        }
+
+        var joinedLobby = lobbyService.lobbyWithPlayer(playerUUID);
+        if (joinedLobby != null) {
+            lobbyService.leaveLobby(UUID.fromString(joinedLobby.getLobbyId()), playerUUID);
         }
     }
+
 
     public void onSessionClose(WebSocketSession session, CloseStatus status) {
         clients.get(session.getId()).getOnClientDisconnected().invoke(status);
     }
 
 }
+

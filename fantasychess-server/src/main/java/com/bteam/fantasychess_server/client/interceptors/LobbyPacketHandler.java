@@ -61,6 +61,26 @@ public class LobbyPacketHandler implements PacketHandler {
                     e.printStackTrace();
                 }
                 break;
+            case "LOBBY_CLOSED":
+                try {
+
+                    var dto = mapper.convertValue(data, LobbyClosedDTO.class);
+                    var lobbyId = UUID.fromString(dto.getLobbyId());
+                    lobbyService.removeLobby(lobbyId);
+                    var confirmationPacket = new Packet(new StatusDTO("Lobby closed successfully"), "LOBBY_CLOSED_CONFIRMATION");
+                    client.sendPacket(confirmationPacket);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "LOBBY_UPDATE":
+                try{
+                    //
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                break;
+
 
             default:
                 System.out.println("Unhandled packet: " + id);
