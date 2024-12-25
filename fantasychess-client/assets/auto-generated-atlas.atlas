@@ -1,55 +1,118 @@
 
 auto-generated-atlas.png
-size: 64, 32
+size: 512, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-characters/badger/badger-back
-  rotate: false
-  xy: 27, 3
-  size: 21, 14
-  orig: 21, 14
-  offset: 0, 0
-  index: -1
-characters/badger/badger-front
+special_tiles/big-yellow-circle
   rotate: false
   xy: 2, 2
-  size: 23, 15
-  orig: 23, 15
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-big-yellow-circle
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-small-yellow-circle
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-dark-green
+  rotate: false
+  xy: 70, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-green
+  rotate: false
+  xy: 104, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-light-blue
+  rotate: false
+  xy: 138, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-red
+  rotate: false
+  xy: 172, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-red-border
+  rotate: false
+  xy: 206, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/filled-yellow
+  rotate: false
+  xy: 240, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/highlight
+  rotate: false
+  xy: 274, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/red-border
+  rotate: false
+  xy: 308, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/red-filling
+  rotate: false
+  xy: 342, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+special_tiles/small-yellow-circle
+  rotate: false
+  xy: 376, 2
+  size: 32, 32
+  orig: 32, 32
   offset: 0, 0
   index: -1
 
 auto-generated-atlas2.png
-size: 64, 64
+size: 32, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-characters/blossom/blossom-back
+characters/fitzhold/fitzhold-back
   rotate: false
   xy: 2, 2
-  size: 20, 21
-  orig: 20, 21
+  size: 9, 16
+  orig: 9, 16
   offset: 0, 0
   index: -1
-characters/blossom/blossom-front
+characters/fitzhold/fitzhold-front
   rotate: false
-  xy: 2, 2
-  size: 20, 21
-  orig: 20, 21
-  offset: 0, 0
-  index: -1
-characters/blossom/blossom-back-big
-  rotate: false
-  xy: 2, 25
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-characters/blossom/blossom-front-big
-  rotate: false
-  xy: 2, 25
-  size: 32, 32
-  orig: 32, 32
+  xy: 13, 2
+  size: 9, 16
+  orig: 9, 16
   offset: 0, 0
   index: -1
 
@@ -74,6 +137,26 @@ characters/boar/boar-front
   index: -1
 
 auto-generated-atlas4.png
+size: 64, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/blossom/blossom-back
+  rotate: false
+  xy: 2, 2
+  size: 20, 21
+  orig: 20, 21
+  offset: 0, 0
+  index: -1
+characters/blossom/blossom-front
+  rotate: false
+  xy: 24, 2
+  size: 20, 21
+  orig: 20, 21
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas5.png
 size: 32, 128
 format: RGBA8888
 filter: Nearest, Nearest
@@ -93,7 +176,7 @@ characters/stag/stag-front
   offset: 0, 0
   index: -1
 
-auto-generated-atlas5.png
+auto-generated-atlas6.png
 size: 64, 32
 format: RGBA8888
 filter: Nearest, Nearest
@@ -113,7 +196,127 @@ characters/wolf/wolf-front
   offset: 0, 0
   index: -1
 
-auto-generated-atlas6.png
+auto-generated-atlas7.png
+size: 64, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/flash/flashcat-back
+  rotate: false
+  xy: 2, 2
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+characters/flash/flashcat-front
+  rotate: false
+  xy: 28, 2
+  size: 24, 20
+  orig: 24, 20
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas8.png
+size: 128, 64
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/blossom-big/blossom-back-big
+  rotate: false
+  xy: 2, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+characters/blossom-big/blossom-front-big
+  rotate: false
+  xy: 36, 2
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas9.png
+size: 64, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/stablin/stablin-back
+  rotate: false
+  xy: 2, 2
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+characters/stablin/stablin-front
+  rotate: false
+  xy: 29, 2
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas10.png
+size: 32, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/prometheus/prometheus-back
+  rotate: false
+  xy: 2, 2
+  size: 12, 16
+  orig: 12, 16
+  offset: 0, 0
+  index: -1
+characters/prometheus/prometheus-front
+  rotate: false
+  xy: 16, 2
+  size: 12, 16
+  orig: 12, 16
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas11.png
+size: 32, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/bombo/bombo-back
+  rotate: false
+  xy: 2, 2
+  size: 13, 17
+  orig: 13, 17
+  offset: 0, 0
+  index: -1
+characters/bombo/bombo-front
+  rotate: false
+  xy: 17, 2
+  size: 13, 17
+  orig: 13, 17
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas12.png
+size: 64, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/badger/badger-back
+  rotate: false
+  xy: 27, 3
+  size: 21, 14
+  orig: 21, 14
+  offset: 0, 0
+  index: -1
+characters/badger/badger-front
+  rotate: false
+  xy: 2, 2
+  size: 23, 15
+  orig: 23, 15
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas13.png
 size: 1024, 256
 format: RGBA8888
 filter: Nearest, Nearest
@@ -923,100 +1126,3 @@ iso_tileset/tile
   orig: 32, 32
   offset: 0, 0
   index: 114
-
-auto-generated-atlas7.png
-size: 512, 64
-format: RGBA8888
-filter: Nearest, Nearest
-repeat: none
-special_tiles/big-yellow-circle
-  rotate: false
-  xy: 2, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-big-yellow-circle
-  rotate: false
-  xy: 36, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-small-yellow-circle
-  rotate: false
-  xy: 36, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-dark-green
-  rotate: false
-  xy: 70, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-green
-  rotate: false
-  xy: 104, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-light-blue
-  rotate: false
-  xy: 138, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-red
-  rotate: false
-  xy: 172, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-red-border
-  rotate: false
-  xy: 206, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/filled-yellow
-  rotate: false
-  xy: 240, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/highlight
-  rotate: false
-  xy: 274, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/red-border
-  rotate: false
-  xy: 308, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/red-filling
-  rotate: false
-  xy: 342, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
-special_tiles/small-yellow-circle
-  rotate: false
-  xy: 376, 2
-  size: 32, 32
-  orig: 32, 32
-  offset: 0, 0
-  index: -1
