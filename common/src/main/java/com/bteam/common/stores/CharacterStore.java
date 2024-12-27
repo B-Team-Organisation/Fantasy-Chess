@@ -11,7 +11,6 @@ import java.util.Map;
 public class CharacterStore {
     public static final Map<String, CharacterDataModel> characters = new HashMap<>();
     public static final Map<String, PatternService> patterns = new HashMap<>();
-
     static {
         PatternStore mockPatternStore = new PatternStore() {
             private final Map<String, PatternModel> patterns = new HashMap<>() {{
@@ -34,6 +33,30 @@ public class CharacterStore {
                 put(
                         "charge", new PatternModel("xxxxx\n xxx \n     \n     \n     ", new HashMap<>(), "charge")
                 );
+                put(
+                        "plus" , new PatternModel(" x \nxxx\n x ", new HashMap<>(), "plus")
+                );
+                put(
+                        "bomboAttack", new PatternModel(" +++ \n++ ++\n+   +\n++ ++\n +++ ", new HashMap<>(){{put('+',"plus");}}, "bomboAttack" )
+                );
+                put(
+                        "fitzhoothAttack", new PatternModel("+++++\n +++ \n\n\n+    +", new HashMap<>(), "fitzhoothAttack" )
+                );
+                put(
+                        "prometheusSub", new PatternModel(" xxx\nxx xx\n xxx ", new HashMap<>(), "prometheusSub")
+                );
+                put(
+                        "prometheusAttack", new PatternModel("+", new HashMap<>(){{put('+',"prometheusSub");}}, "prometheusSub")
+                );
+                put(
+                        "flashSub", new PatternModel("  +\n + \n+ +\n + \n+  ", new HashMap<>(), "flashSub")
+                );
+                put (
+                        "stablinSub", new PatternModel("x x x\n\n  x  \n\n xxx ", new HashMap<>(), "stablinSub")
+                );
+                put(
+                        "stablinAttack", new PatternModel("\n\n+++", new HashMap<>(){{put('+',"stablinSub");}}, "stablinSub")
+                );
             }};
 
             @Override
@@ -47,6 +70,11 @@ public class CharacterStore {
         PatternService dodgeService = null;
         PatternService jumpService = null;
         PatternService chargeService = null;
+        PatternService bomboAttackService = null;
+        PatternService fitzoothAttackService = null;
+        PatternService prometheusAttackService = null;
+        PatternService flashSubService = null;
+        PatternService stablinSubService = null;
 
         try {
             biteService = new PatternService(
@@ -78,11 +106,32 @@ public class CharacterStore {
                     mockPatternStore.getPatternByName("charge"),
                     mockPatternStore
             );
+            bomboAttackService = new PatternService(
+                    mockPatternStore.getPatternByName( "bomboAttack"),
+                    mockPatternStore
+            );
+            fitzoothAttackService = new PatternService(
+                    mockPatternStore.getPatternByName("fitzhoothAttack"),
+                    mockPatternStore
+            );
+            prometheusAttackService = new PatternService(
+                    mockPatternStore.getPatternByName("prometheusAttack"),
+                    mockPatternStore
+            );
+            flashSubService = new PatternService(
+                    mockPatternStore.getPatternByName("flashSub"),
+                    mockPatternStore
+            );
+            stablinSubService = new PatternService(
+                    mockPatternStore.getPatternByName("stablin"),
+                    mockPatternStore
+            );
+
         } catch (Exception e) {
             System.out.println(e);
         }
 
-        characters.put("badger", new CharacterDataModel("badger", "Tenacious scrapper, burrowing beast",
+        /*characters.put("badger", new CharacterDataModel("badger", "Tenacious scrapper, burrowing beast",
                 15, 20, new PatternService[]{frontAndBackService}, new PatternService[]{dodgeService}
         ));
 
@@ -97,9 +146,24 @@ public class CharacterStore {
         characters.put("stag", new CharacterDataModel("stag", "Noble guardian, antlered sentinel",
                 35, 15, new PatternService[]{frontAndBackService}, new PatternService[]{jumpService}
         ));
-
-        characters.put("blossom", new CharacterDataModel("blossom", "Blossom",
+*/
+        characters.put("blossom", new CharacterDataModel("blossom", "fights with the power of love",
                 35, 5, new PatternService[]{frontAndBackService}, new PatternService[]{jumpService}
+        ));
+        characters.put("bombo", new CharacterDataModel("bombo", "Likes to experiment with explosives",
+                28, 8, new PatternService[]{bomboAttackService}, new PatternService[]{dodgeService}
+        ));
+        characters.put("fitzooth", new CharacterDataModel("fitzhooth", " Robin Hood Fitzhooth simbolizes precision and agility",
+                20, 17, new PatternService[]{fitzoothAttackService}, new PatternService[]{chargeService}
+        ));
+        characters.put("prometheus", new CharacterDataModel("prometheus", " He risked divine wrath to gift humanity fire",
+                20, 20, new PatternService[]{prometheusAttackService}, new PatternService[]{dodgeService}
+        ));
+        characters.put("flash", new CharacterDataModel("flash", " Can hit you from everywhere",
+                17, 6, new PatternService[]{flashSubService}, new PatternService[]{chargeService}
+        ));
+        characters.put("stablin", new CharacterDataModel("stablin", " Likes to stab others in their back",
+                21, 25, new PatternService[]{stablinSubService}, new PatternService[]{flashSubService}
         ));
     }
 
