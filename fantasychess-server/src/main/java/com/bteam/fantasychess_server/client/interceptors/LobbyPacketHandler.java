@@ -54,29 +54,17 @@ public class LobbyPacketHandler implements PacketHandler {
                     var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                     var result = lobbyService.joinLobby(lobbyID, playerId);
                     var resultPacket = new Packet(
-                        result ? JoinLobbyResultDTO.success() : JoinLobbyResultDTO.error(),
-                        "LOBBY_JOINED");
+                            result ? JoinLobbyResultDTO.success() : JoinLobbyResultDTO.error(),
+                            "LOBBY_JOINED");
                     client.sendPacket(resultPacket);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
-            case "LOBBY_CLOSED":
-                try {
-
-                    var dto = mapper.convertValue(data, LobbyClosedDTO.class);
-                    var lobbyId = UUID.fromString(dto.getLobbyId());
-                    lobbyService.removeLobby(lobbyId);
-                    var confirmationPacket = new Packet(new StatusDTO("Lobby closed successfully"), "LOBBY_CLOSED_CONFIRMATION");
-                    client.sendPacket(confirmationPacket);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
             case "LOBBY_UPDATE":
-                try{
+                try {
                     //
-                }catch(Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;
