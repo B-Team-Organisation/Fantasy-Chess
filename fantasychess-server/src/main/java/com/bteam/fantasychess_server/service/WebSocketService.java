@@ -107,7 +107,6 @@ public class WebSocketService {
      * @return the removed Client object, or null if no client was found
      */
     public Client removeSession(String sessionID, CloseStatus status) {
-        clients.get(sessionID).getSession().isOpen();
         clients.get(sessionID).getOnClientDisconnected().invoke(status);
         return clients.remove(sessionID);
     }
@@ -176,11 +175,6 @@ public class WebSocketService {
 
         for (var hostedLobby : hostedLobbies) {
             lobbyService.closeLobby(UUID.fromString(hostedLobby.getLobbyId()), "Host has disconnected");
-        }
-
-        var joinedLobby = lobbyService.lobbyWithPlayer(playerUUID);
-        if (joinedLobby != null) {
-            lobbyService.leaveLobby(UUID.fromString(joinedLobby.getLobbyId()), playerUUID);
         }
     }
 
