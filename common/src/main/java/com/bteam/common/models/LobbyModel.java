@@ -15,27 +15,21 @@ import java.util.Objects;
  * @link 1.0
  */
 public class LobbyModel {
-    private String lobbyId;
+    private final String lobbyId;
+    private final List<Player> players;
+    private final Player host;
+    private final String lobbyName;
     private int maxPlayers = 2;
-    private List<Player> players;
-    private Player host;
     private GameState gameState;
-    private String lobbyName;
 
-    public enum GameState {
-        CLOSED,
-        OPEN,
-        FULL,
-        RUNNING
-    }
     /**
      * Basic constructor for a LobbyModel.
      * <p>
      * Use this one if you only have the minimum information about the lobby
      *
-     * @param lobbyId unique identifier for the lobby.
-     * @param lobbyName name of the lobby
-     * @param gameState {@link GameState} of the lobby
+     * @param lobbyId    unique identifier for the lobby.
+     * @param lobbyName  name of the lobby
+     * @param gameState  {@link GameState} of the lobby
      * @param maxPlayers max players in the lobby
      */
     public LobbyModel(String lobbyId, String lobbyName, GameState gameState, int maxPlayers) {
@@ -50,9 +44,9 @@ public class LobbyModel {
     /**
      * Constructor for a LobbyModel.
      *
-     * @param lobbyId unique identifier for the lobby.
-     * @param players List of the players that can enter the lobby
-     * @param host player who is the host of the lobby and is added at index 0 in the players list
+     * @param lobbyId   unique identifier for the lobby.
+     * @param players   List of the players that can enter the lobby
+     * @param host      player who is the host of the lobby and is added at index 0 in the players list
      * @param lobbyName name of the lobby
      */
     public LobbyModel(String lobbyId, List<Player> players, Player host, String lobbyName, int maxPlayers) {
@@ -80,6 +74,10 @@ public class LobbyModel {
         return gameState;
     }
 
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
     public Player getHost() {
         return host;
     }
@@ -88,18 +86,14 @@ public class LobbyModel {
         return lobbyName;
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
     /**
      * Checks if the specified player is the host of the lobby.
      *
      * @param player the player to check
      * @return true if the player is the host, false otherwise
      */
-    public boolean isHost(Player player){
-        return host.equals(player);
+    public boolean isHost(Player player) {
+        return host.getPlayerId().equals(player.getPlayerId());
     }
 
     /**
@@ -107,10 +101,10 @@ public class LobbyModel {
      *
      * @param player - the player to add
      */
-    public void addPlayer(Player player){
-        if (this.players.size() < maxPlayers){
+    public void addPlayer(Player player) {
+        if (this.players.size() < maxPlayers) {
             this.players.add(player);
-            if (this.maxPlayers == players.size()){
+            if (this.maxPlayers == players.size()) {
                 gameState = GameState.FULL;
             } else {
                 gameState = GameState.OPEN;
@@ -125,10 +119,10 @@ public class LobbyModel {
      *
      * @param player the player to remove
      */
-    public void removePlayer(Player player){
+    public void removePlayer(Player player) {
         this.players.remove(player);
 
-        if (this.players.size() < maxPlayers){
+        if (this.players.size() < maxPlayers) {
             gameState = GameState.OPEN;
         }
     }
@@ -145,5 +139,12 @@ public class LobbyModel {
     @Override
     public int hashCode() {
         return Objects.hash(lobbyId, players, host, lobbyName);
+    }
+
+    public enum GameState {
+        CLOSED,
+        OPEN,
+        FULL,
+        RUNNING
     }
 }
