@@ -409,7 +409,6 @@ public class GameScreen extends ScreenAdapter {
             TextureRegion textureRegion = atlas.findRegion("characters/" + characterName + "/" + characterName + "-" + direction);
             CharacterSprite sprite = new CharacterSprite(textureRegion, character.getPosition(), character, mathService);
             characterSprites.add(sprite);
-
             spriteMapper.put(character.getId(), sprite);
         }
     }
