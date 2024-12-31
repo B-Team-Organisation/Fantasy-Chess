@@ -43,10 +43,10 @@ public class CharacterStore {
                         "bomboMove", new PatternModel(" xxx\n x x\n xxx\n", new HashMap<>(), "bomboMove")
                 );
                 put(
-                        "fitzhoothAttack", new PatternModel("+++++\n +++ \n     \n     \n+    +", new HashMap<>(), "fitzhoothAttack" )
+                        "fitzoothAttack", new PatternModel("+++++\n +++ \n     \n     \n+    +", new HashMap<>(), "fitzoothAttack" )
                 );
                 put(
-                        "fitztoothMove", new PatternModel("     \n x   \nx   x\n   x \n     ", new HashMap<>(), "fitztoothMove")
+                        "fitzoothMove", new PatternModel("     \n x   \nx   x\n   x \n     ", new HashMap<>(), "fitzoothMove")
                 );
                 put(
                         "prometheusSub", new PatternModel("     \n xxx \nxxxxx\n xxx \n     ", new HashMap<>(), "prometheusSub")
@@ -94,7 +94,7 @@ public class CharacterStore {
         PatternService bomboAttackService = null;
         PatternService bomboMoveService = null;
         PatternService fitzoothAttackService = null;
-        PatternService fitztoothMoveService = null;
+        PatternService fitzoothMoveService = null;
         PatternService prometheusMoveService = null;
         PatternService prometheusAttackService = null;
         PatternService flashAttackService = null;
@@ -143,10 +143,10 @@ public class CharacterStore {
                     mockPatternStore
             );
             fitzoothAttackService = new PatternService(
-                    mockPatternStore.getPatternByName("fitzhoothAttack"),
+                    mockPatternStore.getPatternByName("fitzoothAttack"),
                     mockPatternStore
             );
-            fitztoothMoveService = new PatternService(
+            fitzoothMoveService = new PatternService(
                     mockPatternStore.getPatternByName("fitzoothMove"),
                     mockPatternStore
             );
@@ -203,28 +203,27 @@ public class CharacterStore {
                 35, 15, new PatternService[]{frontAndBackService}, new PatternService[]{jumpService}
         ));
 */
-        characters.put("blossom", new CharacterDataModel("blossom", "fights with the power of love",
+        characters.put("blossom", new CharacterDataModel("blossom", "Fights with the power of love",
                 35, 5, new PatternService[]{blossomAttackService}, new PatternService[]{blossomMoveService}
         ));
         characters.put("bombo", new CharacterDataModel("bombo", "Likes to experiment with explosives",
                 28, 8, new PatternService[]{bomboAttackService}, new PatternService[]{bomboMoveService}
         ));
-        characters.put("fitzooth", new CharacterDataModel("fitzhooth", " Robin Hood Fitzhooth simbolizes precision and agility",
-                20, 17, new PatternService[]{fitzoothAttackService}, new PatternService[]{fitztoothMoveService}
+        characters.put("fitzooth", new CharacterDataModel("fitzooth", "Robin Hood Fitzooth simbolizes precision and agility",
+                20, 17, new PatternService[]{fitzoothAttackService}, new PatternService[]{fitzoothMoveService}
         ));
-        characters.put("prometheus", new CharacterDataModel("prometheus", " He risked divine wrath to gift humanity fire",
+        characters.put("prometheus", new CharacterDataModel("prometheus", "He risked divine wrath to gift humanity fire",
                 20, 20, new PatternService[]{prometheusAttackService}, new PatternService[]{prometheusMoveService}
         ));
-        characters.put("flash", new CharacterDataModel("flash", " Can hit you from everywhere",
+        characters.put("flash", new CharacterDataModel("flash", "Can hit you from everywhere",
                 17, 6, new PatternService[]{flashAttackService}, new PatternService[]{flashMoveService}
         ));
-        characters.put("stablin", new CharacterDataModel("stablin", " Likes to stab others in their back",
-                21, 25, new PatternService[]{stablinAttackService}, new PatternService[]{flashMoveService}
+        characters.put("stablin", new CharacterDataModel("stablin", "Likes to stab others in their back",
+                21, 25, new PatternService[]{stablinAttackService}, new PatternService[]{stablinMoveService}
         ));
     }
 
     public static CharacterDataModel getCharacter(String characterName) {
         return characters.get(characterName);
     }
-
 }
