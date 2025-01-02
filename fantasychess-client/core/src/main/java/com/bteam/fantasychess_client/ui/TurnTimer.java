@@ -1,11 +1,13 @@
 package com.bteam.fantasychess_client.ui;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.bteam.fantasychess_client.Main;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -14,18 +16,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 public class TurnTimer extends Label {
 
     private final TextButton readyButton;
-    private float startTime;
     private float timeLeft;
     private Runnable EndOfTimer;
 
 
 
-    TurnTimer(Skin skin, float startTime,TextButton readyButton) {
+    public TurnTimer(Skin skin, float timeLeft,TextButton readyButton) {
         super("", skin);
-        this.startTime = startTime;
-        this.timeLeft = startTime;
+        this.timeLeft = timeLeft;
         this.readyButton = readyButton;
-        this.EndOfTimer = ()-> this.sendMoves();
+        this.EndOfTimer = ()-> this.reset(12);
         updateLabel();
     }
 
@@ -65,6 +65,9 @@ public class TurnTimer extends Label {
                 setPosition((getStage().getWidth() - getWidth()) / 2, getStage().getHeight()-100);
                 getStyle().fontColor = Color.WHITE;
                 stopTime();
+
+
+
                 if (EndOfTimer != null) {
                     EndOfTimer.run();
                 }
@@ -104,22 +107,16 @@ public class TurnTimer extends Label {
     }
 
     //fürs erste
-    public void reset() {
-        timeLeft = startTime;
+    public void reset(float defaultTime) {
+        timeLeft = defaultTime;
         updateLabel();
     }
     public void stopTime(){
-        getStage().getActors().removeValue(this, true);
-    }
-
-    public void sendMoves(){
-        Main.getCommandManagementService().sendCommandsToServer();
-
-        if( readyButton != null && !readyButton.isChecked()){
-            readyButton.setDisabled(true);
-            readyButton.setText("READY");
+        for (Actor actor : getStage().getActors()){
+            if (actor.getName().equals("turnTimer")){
+                actor.setVisible(false);
+                break;
+            }
         }
     }
-
-
 }
