@@ -59,8 +59,8 @@ import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 public class GameScreen extends ScreenAdapter {
 
     private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
-    private static final int TILE_PIXEL_WIDTH = 32;
-    private static final int TILE_PIXEL_HEIGHT = 16;
+    public static final int TILE_PIXEL_WIDTH = 32;
+    public static final int TILE_PIXEL_HEIGHT = 16;
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
 
@@ -213,7 +213,8 @@ public class GameScreen extends ScreenAdapter {
         if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
             if (animationHandler == null) {
                 TurnResult turnResult = Main.getGameStateService().getTurnResult();
-                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
+
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
                 animationHandler.startAnimation();
             }
 
@@ -363,7 +364,7 @@ public class GameScreen extends ScreenAdapter {
             TextureRegion region = atlas.findRegion("special_tiles/filled-dark-green");
             selectedCharacterCell.setTile(new StaticTiledMapTile(region));
 
-            Vector2D tilePosition = gridToTiled(selectedCharacter.getPosition());
+            Vector2D tilePosition = mathService.gridToTiled(selectedCharacter.getPosition());
             selectedCharacterLayer.setCell(tilePosition.getX(), tilePosition.getY(), selectedCharacterCell);
         }
     }
@@ -474,7 +475,7 @@ public class GameScreen extends ScreenAdapter {
                     TextureRegion region = atlas.findRegion("special_tiles/filled-big-yellow-circle");
                     previewCell.setTile(new StaticTiledMapTile(region));
 
-                    Vector2D tilePosition = gridToTiled(focussedTile);
+                    Vector2D tilePosition = mathService.gridToTiled(focussedTile);
                     commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
                     break;
                 }
@@ -489,7 +490,7 @@ public class GameScreen extends ScreenAdapter {
 
                     damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
-                        Vector2D tilePosition = gridToTiled(position);
+                        Vector2D tilePosition = mathService.gridToTiled(position);
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
 
                         damagePreviewValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower() + "");
@@ -521,7 +522,7 @@ public class GameScreen extends ScreenAdapter {
             TextureRegion region = atlas.findRegion("special_tiles/highlight");
             highlightCell.setTile(new StaticTiledMapTile(region));
 
-            Vector2D tilePosition = gridToTiled(focussedTile);
+            Vector2D tilePosition = mathService.gridToTiled(focussedTile);
             highlightLayer.setCell(tilePosition.getX(), tilePosition.getY(), highlightCell);
         }
     }
@@ -549,7 +550,7 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D attackOption : validCommandDestinations) {
-            Vector2D attackOptionTilePos = gridToTiled(attackOption);
+            Vector2D attackOptionTilePos = mathService.gridToTiled(attackOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/red-border");
@@ -565,7 +566,7 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getMovementPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D moveOption : validCommandDestinations) {
-            Vector2D moveOptionTilePos = gridToTiled(moveOption);
+            Vector2D moveOptionTilePos = mathService.gridToTiled(moveOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/small-yellow-circle");
@@ -679,16 +680,6 @@ public class GameScreen extends ScreenAdapter {
         endGameDialog.setPosition((stage.getWidth() - endGameDialog.getWidth()) / 2, (stage.getHeight() - endGameDialog.getHeight()) / 2);
 
         endGameDialog.show(stage);
-    }
-
-    /**
-     * Transforms grid coordinates into tiled map coordinates
-     *
-     * @param grid the grid coordinates
-     * @return the tiled map coordinates
-     */
-    private Vector2D gridToTiled(Vector2D grid) {
-        return new Vector2D(grid.getX(), mathService.getMapHeight() - 1 - grid.getY());
     }
 
     @Override

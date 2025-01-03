@@ -1,10 +1,15 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.services.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.fantasychess_client.ui.GameScreen;
+import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.ArrayDeque;
 import java.util.Map;
@@ -20,6 +25,12 @@ import java.util.Map;
  */
 public class TurnResultAnimationHandler {
 
+    private TiledMap tiledMap;
+    private TileMathService mathService;
+    private TiledMapTileLayer outcomeLayer;
+
+    private boolean animationOver = false;
+
     private ArrayDeque<AbstractAnimation> animationQueue;
     private boolean animationStarted;
 
@@ -29,8 +40,12 @@ public class TurnResultAnimationHandler {
      * @param turnResult {@link TurnResult} to animate
      * @param spriteMapper Object for getting the sprite corresponding to a {@link CharacterEntity}
      */
-    public TurnResultAnimationHandler(TurnResult turnResult, Map<String,CharacterSprite> spriteMapper){
+    public TurnResultAnimationHandler(TurnResult turnResult, Map<String,CharacterSprite> spriteMapper, TiledMap tiledMap, TileMathService mathService, TextureAtlas atlas){
         animationQueue = new ArrayDeque<>();
+
+        this.tiledMap = tiledMap;
+        this.mathService = mathService;
+        refreshOutcomeLayer();
 
         for (PairNoOrder<MovementDataModel,MovementDataModel> conflict : turnResult.getMovementConflicts()){
             animationQueue.add(new CollisionAnimation(
@@ -44,10 +59,18 @@ public class TurnResultAnimationHandler {
         }
 
         for (AttackDataModel attackDataModel : turnResult.getValidAttacks()) {
-            animationQueue.add(new AttackAnimation(attackDataModel, spriteMapper.get(attackDataModel.getAttacker())));
+            animationQueue.add(new AttackAnimation(attackDataModel, spriteMapper.get(attackDataModel.getAttacker()),mathService,atlas));
         }
 
         animationStarted = false;
+    }
+
+    private void refreshOutcomeLayer() {
+        if (outcomeLayer != null) {
+            tiledMap.getLayers().remove(outcomeLayer);
+        }
+        this.outcomeLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), GameScreen.TILE_PIXEL_WIDTH,GameScreen.TILE_PIXEL_HEIGHT);
+        tiledMap.getLayers().add(outcomeLayer);
     }
 
     /**
@@ -56,7 +79,7 @@ public class TurnResultAnimationHandler {
      * @return {@code true} if animation is over, else {@code false}
      */
     public boolean isDoneWithAnimation() {
-        return animationQueue.isEmpty();
+        return animationOver;
     }
 
     /**
@@ -72,7 +95,11 @@ public class TurnResultAnimationHandler {
         if (animationQueue.getFirst().isAnimationOver()){
             animationQueue.pop();
             if (!animationQueue.isEmpty()){
-                animationQueue.getFirst().startAnimation();
+                refreshOutcomeLayer();
+                animationQueue.getFirst().startAnimation(outcomeLayer);
+            } else {
+                tiledMap.getLayers().remove(outcomeLayer);
+                animationOver = true;
             }
         }
     }
@@ -81,7 +108,9 @@ public class TurnResultAnimationHandler {
      * Starts the animation
      */
     public void startAnimation(){
+        this.outcomeLayer = outcomeLayer;
         animationStarted = true;
-        animationQueue.getFirst().startAnimation();
+        refreshOutcomeLayer();
+        animationQueue.getFirst().startAnimation(outcomeLayer);
     }
 }

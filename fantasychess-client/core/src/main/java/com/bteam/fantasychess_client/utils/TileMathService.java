@@ -82,6 +82,16 @@ public class TileMathService {
     }
 
     /**
+     * Transforms grid coordinates into tiled map coordinates
+     *
+     * @param grid the grid coordinates
+     * @return the tiled map coordinates
+     */
+    public Vector2D gridToTiled(Vector2D grid) {
+        return new Vector2D(grid.getX(), getMapHeight() - 1 - grid.getY());
+    }
+
+    /**
      * Get the center of the nearest tile from 2 world coordinates.
      * <p>
      * Projects the coordinates given onto the edges of the grid.
