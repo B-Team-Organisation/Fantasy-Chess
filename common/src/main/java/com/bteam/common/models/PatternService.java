@@ -46,7 +46,7 @@ public class PatternService {
      * Reverses the pattern to handle second player coordinate transformation
      *
      */
-    public void reversePattern(){
+    public PatternService reversePattern() throws PatternShapeInvalidException, InvalidSubpatternMappingException {
         Map<Vector2D,Vector2D[]> newattackAreasPerRelativePosition = new HashMap<>();
 
         for (Vector2D target : attackAreasPerRelativePosition.keySet()) {
@@ -61,7 +61,10 @@ public class PatternService {
             newattackAreasPerRelativePosition.put(reversePosition(target),newSubtargets);
         }
 
-        attackAreasPerRelativePosition = newattackAreasPerRelativePosition;
+        PatternService serviceCopy = new PatternService(patternModel, patternStore);
+        serviceCopy.attackAreasPerRelativePosition = newattackAreasPerRelativePosition;
+
+        return serviceCopy;
     }
 
     /**
