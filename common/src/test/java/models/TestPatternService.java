@@ -6,6 +6,7 @@ import com.bteam.common.models.PatternModel;
 import com.bteam.common.models.PatternStore;
 import com.bteam.common.models.PatternService;
 import com.bteam.common.models.Vector2D;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -205,17 +206,25 @@ public class TestPatternService {
     @Test
     void testReversePattern(){
         Vector2D[] oldAoE = deepService.getAreaOfEffect(playerPosition, targetPositionRight);
-        deepService.reversePattern();
-        Vector2D[] newAoE = deepService.getAreaOfEffect(playerPosition, targetPositionLeft);
 
-        assert oldAoE.length == newAoE.length;
+        try {
+            PatternService reversedService = deepService.reversePattern();
 
-        for (int i = 0; i < oldAoE.length; i++) {
-            Vector2D oldRel = oldAoE[i].subtract(playerPosition);
-            Vector2D newRel = newAoE[i].subtract(playerPosition);
+            Vector2D[] newAoE = reversedService.getAreaOfEffect(playerPosition, targetPositionLeft);
 
-            assert oldRel.getX() == -newRel.getX();
-            assert oldRel.getY() == -newRel.getY();
+            assert oldAoE.length == newAoE.length;
+
+            for (int i = 0; i < oldAoE.length; i++) {
+                Vector2D oldRel = oldAoE[i].subtract(playerPosition);
+                Vector2D newRel = newAoE[i].subtract(playerPosition);
+
+                assert oldRel.getX() == -newRel.getX();
+                assert oldRel.getY() == -newRel.getY();
+            }
+
+        } catch (Exception e) {
+            Assertions.fail("An exception was thrown unexpectedly: " + e.getMessage());
         }
+
     }
 }
