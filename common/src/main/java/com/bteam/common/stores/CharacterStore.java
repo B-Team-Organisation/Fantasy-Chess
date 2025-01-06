@@ -40,10 +40,10 @@ public class CharacterStore {
                         "bomboAttack", new PatternModel(" +++ \n++ ++\n+   +\n++ ++\n +++ ", new HashMap<>(){{put('+',"plus");}}, "bomboAttack" )
                 );
                 put(
-                        "bomboMove", new PatternModel(" xxx\n x x\n xxx\n", new HashMap<>(), "bomboMove")
+                        "bomboMove", new PatternModel("xxx\nx x\nxxx", new HashMap<>(), "bomboMove")
                 );
                 put(
-                        "fitzoothAttack", new PatternModel("+++++\n +++ \n     \n     \n+    +", new HashMap<>(), "fitzoothAttack" )
+                        "fitzoothAttack", new PatternModel("+++++\n +++ \n     \n     \n+   +", new HashMap<>(), "fitzoothAttack" )
                 );
                 put(
                         "fitzoothMove", new PatternModel("     \n x   \nx   x\n   x \n     ", new HashMap<>(), "fitzoothMove")
@@ -55,13 +55,16 @@ public class CharacterStore {
                         "prometheusAttack", new PatternModel("+", new HashMap<>(){{put('+',"prometheusSub");}}, "prometheusAttack")
                 );
                 put(
-                        "prometheusMove", new PatternModel("      \n x   x \n  x x  \n       \n   x   \n   x   \n", new HashMap<>(), "prometheusMove")
+                        "prometheusMove", new PatternModel("x   x\n x x \n     \n  x  \n  x  \n", new HashMap<>(), "prometheusMove")
+                );
+                put(
+                        "flashAttack", new PatternModel("+", new HashMap<>(){{put('+',"flashSub");}}, "flashSub")
                 );
                 put(
                         "flashSub", new PatternModel("   + \n  +  \n + + \n  +  \n +   ", new HashMap<>(), "flashSub")
                 );
                 put(
-                        "flashMove", new PatternModel("   x   \n   x   \n   x   \nxxx xxx\n   x   \n   x   \n   x   \n", new HashMap<>(), "flashMove")
+                        "flashMove", new PatternModel("   x   \n   x   \n   x   \nxxx xxx\n   x   \n   x   \n   x   ", new HashMap<>(), "flashMove")
                 );
                 put (
                         "stablinMove", new PatternModel(" x x x \n       \n   x   \n       \n  xxx  \n       \n       ", new HashMap<>(), "stablinMove")
@@ -70,13 +73,13 @@ public class CharacterStore {
                         "stablinAttack", new PatternModel("   \n   \n+++", new HashMap<>(), "stablinAttack")
                 );
                 put(
-                        "blossomSub", new PatternModel("xx xx\nx x x\n x  x \n  x  \n", new HashMap<>(), "blossomSub")
+                        "blossomSub", new PatternModel("xx xx\nx x x\n x x \n  x  \n     ", new HashMap<>(), "blossomSub")
                 );
                 put(
                         "blossomAttack", new PatternModel("+", new HashMap<>(){{put('+',"blossomSub");}}, "blossomAttack")
                 );
                 put(
-                        "blossomMove", new PatternModel(" x x\n x x\n  x \n", new HashMap<>(), "blossomMove")
+                        "blossomMove", new PatternModel("     \n x x \n x x \n  x  \n     ", new HashMap<>(), "blossomMove")
                 );
             }};
 
