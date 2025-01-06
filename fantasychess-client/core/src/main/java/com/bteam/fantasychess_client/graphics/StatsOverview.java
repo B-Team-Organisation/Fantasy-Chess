@@ -1,87 +1,69 @@
 package com.bteam.fantasychess_client.graphics;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bteam.common.entities.CharacterEntity;
+import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
+import com.bteam.fantasychess_client.ui.GameScreen;
+
+import java.util.List;
+import java.util.logging.Level;
 
 /**
- * A class that manages the graphical user interface for displaying
- * player and opponent character statistics in the form of sidebars.
- * The Stats Overview for Character is displayed in form of a dialog.
+ * A custom table for displaying character stats in a sidebar or dialog.
  */
-public class StatsOverview {
+public class StatsOverview extends Table {
 
-    private final Skin skin;
-    private final Stage stage;
-    private final Table player1Content;
-    private final Table player2Content;
+    private Skin skin;
+    private List<CharacterEntity> characters;
+    private String title;
+    private GameScreen gameScreen;
+    private ScrollPane scrollPane;
+    private Table contentTable;
 
     /**
      * Constructor for creating a StatsOverview.
      *
+     * @param title The title of the stats table ("Your Characters" or "Opponent Characters").
      * @param skin  The {@link Skin} used for styling the UI components.
-     * @param stage The {@link Stage} to which the sidebars and dialogs are added.
      */
-    public StatsOverview(Skin skin, Stage stage) {
+    public StatsOverview(String title, Skin skin,GameScreen gameScreen) {
         this.skin = skin;
-        this.stage = stage;
+        this.title = title;
+        this.gameScreen = gameScreen;
 
-        Table player1Shell = createSidebar("Your Characters");
-        player1Content = new Table();
-        ScrollPane player1ScrollPane = createScrollPane(player1Content);
-        player1Shell.add(player1ScrollPane).expand().fill().pad(10).row();
-        player1Shell.setSize(400, 420);
-        player1Shell.setPosition(50, stage.getHeight() - 450);
+        setBackground(skin.getDrawable("round-gray"));
 
-        Table player2Shell = createSidebar("Opponent Characters");
-        player2Content = new Table();
-        ScrollPane player2ScrollPane = createScrollPane(player2Content);
-        player2Shell.add(player2ScrollPane).expand().fill().pad(10).row();
-        player2Shell.setSize(400, 400);
-        player2Shell.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
-
-        stage.addActor(player1Shell);
-        stage.addActor(player2Shell);
-    }
-
-    /**
-     * Updates the content of the sidebars with the latest character statistics.
-     * <p>
-     * Clears the current content and populates the sidebars with the characters
-     * for Player 1 (friendly characters) and Player 2 (enemy characters).
-     */
-    public void updateSidebars() {
-        player1Content.clearChildren();
-        player2Content.clearChildren();
-
-        for (CharacterEntity character : Main.getGameStateService().getFriendlyCharacters()) {
-            player1Content.add(createCharacterStat(character)).padBottom(10).row();
-        }
-
-        for (CharacterEntity character : Main.getGameStateService().getEnemyCharacters()) {
-            player2Content.add(createCharacterStat(character)).padBottom(10).row();
-        }
-    }
-
-    /**
-     * Creates a sidebar container with a rounded background and a title header.
-     *
-     * @param title The title text for the sidebar.
-     * @return A {@link Table} representing the sidebar.
-     */
-    private Table createSidebar(String title) {
-        Table sidebar = new Table();
-        sidebar.setBackground(skin.getDrawable("round-gray"));
-
+        contentTable = new Table();
+        scrollPane = createScrollPane(contentTable);
         Label header = new Label(title, skin, "default");
         header.setColor(Color.WHITE);
         header.setFontScale(1.5f);
-        sidebar.add(header).padTop(10).padBottom(10).center().row();
+        header.setAlignment(Align.center);
 
-        return sidebar;
+        add(header).padTop(10).padBottom(10).center().row();
+        add(scrollPane).expand().fill().pad(10);
+    }
+
+    public StatsOverview(Skin skin) {
+        this.skin = skin;
+    }
+
+    /**
+     * Updates the content of the table with the provided characters.
+     *
+     * @param characters The list of {@link CharacterEntity} to display in the table.
+     */
+    public void updateContent(List<CharacterEntity> characters, String title) {
+        this.characters = characters;
+        this.title = title;
+        refreshTable();
     }
 
     /**
@@ -95,19 +77,62 @@ public class StatsOverview {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setForceScroll(false, true);
         scrollPane.setSmoothScrolling(true);
-        scrollPane.setStyle(new ScrollPane.ScrollPaneStyle() {{
-            background = null;
-            hScrollKnob = null;
-            vScrollKnob = null;
-        }});
+        scrollPane.setFadeScrollBars(false);
+
+        scrollPane.setTouchable(Touchable.enabled);
+        scrollPane.setCancelTouchFocus(false);
+
+        scrollPane.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getLogger().log(Level.SEVERE, "ScrollPane clicked.");
+            }
+        });
+
         return scrollPane;
+    }
+
+
+
+    /**
+     * Refreshes the table layout based on the current data.
+     */
+    private void refreshTable() {
+        contentTable.clearChildren();
+
+        if (characters.isEmpty()) {
+            Label noCharactersLabel = new Label("No characters available", skin);
+            noCharactersLabel.setColor(Color.LIGHT_GRAY);
+            noCharactersLabel.setAlignment(Align.center);
+            contentTable.add(noCharactersLabel).padTop(10).padBottom(10).center().row();
+        } else {
+            for (CharacterEntity character : characters) {
+                contentTable.add(createCharacterStat(character)).padBottom(10).row();
+            }
+        }
+    }
+
+    /**
+     * Override the act method to automatically refresh the table.
+     */
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        if (characters != null && !characters.isEmpty()) {
+            refreshTable();
+        }
+            if (title.equals("Your Characters")) {
+            updateContent(Main.getGameStateService().getFriendlyCharacters(), title);
+        } else if (title.equals("Opponent's Characters")) {
+            updateContent(Main.getGameStateService().getEnemyCharacters(), title);
+        }
     }
 
     /**
      * Creates a table row displaying the statistics of a character.
      *
      * @param character The {@link CharacterEntity} to display.
-     * @return A {@link Table} row with the characters name and health bar.
+     * @return A {@link Table} row with the character's name and health bar.
      */
     private Table createCharacterStat(CharacterEntity character) {
         Table row = new Table();
@@ -119,10 +144,25 @@ public class StatsOverview {
         nameLabel.setColor(Color.WHITE);
         nameLabel.setAlignment(Align.center);
         nameContainer.add(nameLabel).pad(5).expandX().fillX();
+        nameContainer.setTouchable(Touchable.enabled);
 
-        nameLabel.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        nameContainer.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
             @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                Vector2D tilePosition = character.getPosition();
+                gameScreen.updateSelectedCharacter(character);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                gameScreen.resetSelection();
+            }
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Main.getLogger().log(Level.SEVERE,
+                    "Character Selected: " + character.getCharacterBaseModel().getName());
+                event.stop();
                 showCharacterStatsDialog(character);
             }
         });
@@ -136,7 +176,7 @@ public class StatsOverview {
         healthLabel.setColor(Color.WHITE);
 
         healthBarContainer.add(healthLabel).expandX().center().padBottom(2).row();
-        healthBarContainer.add(healthBar).width(200).height(15).padBottom(5).row();
+        healthBarContainer.add(healthBar).width(200).height(15).padLeft(50).padRight(50).padBottom(5).row();
 
         row.add(nameContainer).width(150).height(50).pad(5);
         row.add(healthBarContainer).width(200).height(50).pad(5);
@@ -186,7 +226,7 @@ public class StatsOverview {
      *
      * @param character The {@link CharacterEntity} whose statistics are displayed.
      */
-    public void showCharacterStatsDialog(CharacterEntity character) {
+    private void showCharacterStatsDialog(CharacterEntity character) {
         Dialog statsDialog = new Dialog("Character Stats", skin);
 
         String statsText = "Name: " + character.getCharacterBaseModel().getName() + "\n" +
@@ -200,6 +240,6 @@ public class StatsOverview {
         statsLabel.setFontScale(1.0f);
         statsDialog.getContentTable().add(statsLabel).pad(10).row();
         statsDialog.button("Close");
-        statsDialog.show(stage);
+        statsDialog.show(gameScreen.getStage());
     }
 }

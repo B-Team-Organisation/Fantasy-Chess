@@ -85,6 +85,7 @@ public class GameScreen extends ScreenAdapter {
 
     private MapInputAdapter mapInputProcessor;
 
+
     /**
      * Constructor of GameScreen
      *
@@ -149,7 +150,7 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
-
+        Gdx.input.setInputProcessor(stage);
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
@@ -157,9 +158,9 @@ public class GameScreen extends ScreenAdapter {
         });
 
         initializeGame();
-        StatsOverview statsOverview = new StatsOverview(skin, stage);
-        statsOverview.updateSidebars();
+        initializeStats();
     }
+
 
     private TextButton createReadyButton() {
         TextButton readyButton = new TextButton("",skin){
@@ -255,6 +256,28 @@ public class GameScreen extends ScreenAdapter {
 
 
     }
+
+    public void initializeStats() {
+        List<CharacterEntity> friendlyCharacters = Main.getGameStateService().getFriendlyCharacters();
+        List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
+
+        if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
+            StatsOverview player1StatsTable = new StatsOverview("Your Characters", skin, this);
+            player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
+            player1StatsTable.setSize(450, 420);
+            player1StatsTable.setPosition(50, stage.getHeight() - 450);
+            stage.addActor(player1StatsTable);
+        }
+
+        if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
+            StatsOverview player2StatsTable = new StatsOverview("Opponent's Characters", skin, this);
+            player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
+            player2StatsTable.setSize(450, 420);
+            player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
+            stage.addActor(player2StatsTable);
+        }
+    }
+
 
     /**
      * Transitions the game to the main phase
@@ -579,4 +602,9 @@ public class GameScreen extends ScreenAdapter {
         atlas.dispose();
         batch.dispose();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
 }
