@@ -115,7 +115,7 @@ public class GameStateService {
             }
         }
 
-        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service);
+        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service, host.getPlayerId());
         //var inverted = invertTurnResultIfHost(result, game, host);
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);

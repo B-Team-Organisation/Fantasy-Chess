@@ -103,7 +103,7 @@ public class RelationUtils {
                 .max()
                 .orElse(0);
 
-        List<Vector2D> vectorList = Arrays.stream(adjustedForMiddle).toList();
+        List<Vector2D> vectorList = Arrays.stream(adjustedForMiddle).collect(Collectors.toList());
 
         for (int y = size; y>=-size; y--) {
             result.append("\n");

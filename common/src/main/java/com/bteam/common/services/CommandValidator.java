@@ -11,6 +11,7 @@ import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 import static com.bteam.common.utils.RelationUtils.reversePatternServiceArray;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A service class providing methods for move validation
@@ -232,7 +233,7 @@ public class CommandValidator {
                 .filter(movementPlayer2 -> movementPlayer1.getMovementVector().equals(movementPlayer2.getMovementVector()))
                         .map(movementPlayer2 -> new PairNoOrder<>(movementPlayer1, movementPlayer2))
                 )
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**
@@ -304,11 +305,11 @@ public class CommandValidator {
 
             List<Vector2D> positions = moves.stream()
                     .map(MovementDataModel::getMovementVector)
-                    .toList();
+                    .collect(Collectors.toList());
 
             List<Vector2D> duplicatePositions = positions.stream()
                     .filter(v -> Collections.frequency(positions, v) > 1)
-                    .toList();
+                    .collect(Collectors.toList());
 
             for (MovementDataModel intendedMovement : moves) {
                 if (!duplicatePositions.contains(intendedMovement.getMovementVector())) {
@@ -337,7 +338,7 @@ public class CommandValidator {
 
         List<Vector2D> positions = characters.stream()
                 .map(CharacterEntity::getPosition)
-                .toList();
+                .collect(Collectors.toList());
 
         for (MovementDataModel intendedMovement : intendedMovements) {
             if(!positions.contains(intendedMovement.getMovementVector())) {
