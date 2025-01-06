@@ -57,8 +57,8 @@ public class SplashScreen extends ScreenAdapter {
         table.defaults().pad(20);
 
         // Title label
-        Label titleLabel = new Label("Fantasy-Chess", skin);
-        titleLabel.setFontScale(10f);
+        Label titleLabel = new Label("Fantasy-Chess", skin,"title");
+        titleLabel.setFontScale(1f);
 
         // Main widgets
         TextField usernameInput = new TextField("Username", skin);

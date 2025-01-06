@@ -161,8 +161,8 @@ public class MainMenu extends ScreenAdapter {
      * @return the {@link Label}
      */
     private Label createTitleLabel() {
-        Label titleLabel = new Label("FantasyChess", skin);
-        titleLabel.setFontScale(6f);
+        Label titleLabel = new Label("FantasyChess", skin, "title");
+        titleLabel.setFontScale(0.6f);
         return titleLabel;
     }
 
