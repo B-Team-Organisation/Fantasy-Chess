@@ -41,7 +41,9 @@ public class StatsOverview extends Table {
         setBackground(skin.getDrawable("round-gray"));
 
         contentTable = new Table();
+
         scrollPane = createScrollPane(contentTable);
+
         Label header = new Label(title, skin, "default");
         header.setColor(Color.WHITE);
         header.setFontScale(1.5f);
@@ -78,16 +80,6 @@ public class StatsOverview extends Table {
         scrollPane.setForceScroll(false, true);
         scrollPane.setSmoothScrolling(true);
         scrollPane.setFadeScrollBars(false);
-
-        scrollPane.setTouchable(Touchable.enabled);
-        scrollPane.setCancelTouchFocus(false);
-
-        scrollPane.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Main.getLogger().log(Level.SEVERE, "ScrollPane clicked.");
-            }
-        });
 
         return scrollPane;
     }
@@ -135,21 +127,12 @@ public class StatsOverview extends Table {
      * @return A {@link Table} row with the character's name and health bar.
      */
     private Table createCharacterStat(CharacterEntity character) {
-        Table row = new Table();
-        row.setBackground(skin.newDrawable("white", Color.LIGHT_GRAY));
+        Table characterEntry = new Table();
+        characterEntry.setBackground(skin.newDrawable("white", Color.LIGHT_GRAY));
 
-        Table nameContainer = new Table();
-        nameContainer.setBackground(skin.newDrawable("white", Color.WHITE));
-        Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
-        nameLabel.setColor(Color.WHITE);
-        nameLabel.setAlignment(Align.center);
-        nameContainer.add(nameLabel).pad(5).expandX().fillX();
-        nameContainer.setTouchable(Touchable.enabled);
-
-        nameContainer.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
+        characterEntry.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                Vector2D tilePosition = character.getPosition();
                 gameScreen.updateSelectedCharacter(character);
             }
 
@@ -159,13 +142,17 @@ public class StatsOverview extends Table {
             }
 
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Main.getLogger().log(Level.SEVERE,
-                    "Character Selected: " + character.getCharacterBaseModel().getName());
-                event.stop();
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 showCharacterStatsDialog(character);
             }
         });
+
+        Table nameContainer = new Table();
+        nameContainer.setBackground(skin.newDrawable("white", Color.WHITE));
+        Label nameLabel = new Label(character.getCharacterBaseModel().getName(), skin);
+        nameLabel.setColor(Color.WHITE);
+        nameLabel.setAlignment(Align.center);
+        nameContainer.add(nameLabel).pad(5).expandX().fillX();
 
         float healthPercentage = character.getHealth() / (float) character.getCharacterBaseModel().getHealth();
         Table healthBarContainer = new Table();
@@ -178,10 +165,10 @@ public class StatsOverview extends Table {
         healthBarContainer.add(healthLabel).expandX().center().padBottom(2).row();
         healthBarContainer.add(healthBar).width(200).height(15).padLeft(50).padRight(50).padBottom(5).row();
 
-        row.add(nameContainer).width(150).height(50).pad(5);
-        row.add(healthBarContainer).width(200).height(50).pad(5);
+        characterEntry.add(nameContainer).width(150).height(50).pad(5);
+        characterEntry.add(healthBarContainer).width(200).height(50).pad(5);
 
-        return row;
+        return characterEntry;
     }
 
     /**
