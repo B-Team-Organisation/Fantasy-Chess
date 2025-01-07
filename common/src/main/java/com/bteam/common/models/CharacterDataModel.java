@@ -27,11 +27,11 @@ public class CharacterDataModel {
     /**
      * Creates a new CharacterDataModel.
      *
-     * @param name name of the character
-     * @param description a description for the character
-     * @param health the health of the character
-     * @param attackPower the power of the characters attack
-     * @param attackPatterns all attack patterns that the character can perform
+     * @param name             name of the character
+     * @param description      a description for the character
+     * @param health           the health of the character
+     * @param attackPower      the power of the characters attack
+     * @param attackPatterns   all attack patterns that the character can perform
      * @param movementPatterns the movement pattern that the character can perform
      * @param attackDescription description of the attackPattern
      * @param movementDescription description of the movementPattern
@@ -87,15 +87,19 @@ public class CharacterDataModel {
         this.name = name;
     }
 
+
     public void setDescription(String description) {
         this.description = description;
     }
+
 
     public void setHealth(int health) {
         this.health = health;
     }
 
-    public void setAttackPower(int attackPower) {this.attackPower=attackPower;}
+    public void setAttackPower(int attackPower) {
+        this.attackPower = attackPower;
+    }
 
     public void setAttackPatterns(PatternService[] attackPatterns) {
         this.attackPatterns = attackPatterns;

@@ -3,6 +3,7 @@ package com.bteam.common.dto;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
+import com.bteam.common.utils.JsonWriter;
 
 public class CommandDTO implements JsonDTO {
     int x;
@@ -60,12 +61,11 @@ public class CommandDTO implements JsonDTO {
 
     @Override
     public String toJson() {
-        return "{" +
-            "\"characterId\":\"" + characterId + "\"," +
-            "\"x\":" + getX() + "," +
-            "\"y\":" + getY() + "," +
-            "\"commandType\":\"" + commandType.name() + "\"" +
-            "}";
+        return new JsonWriter().writeKeyValue("characterId", characterId)
+                .and().writeKeyValue("x", getX())
+                .and().writeKeyValue("y", getY())
+                .and().writeKeyValue("commandType", getCommandType().name())
+                .toString();
     }
 
     public enum CommandType {

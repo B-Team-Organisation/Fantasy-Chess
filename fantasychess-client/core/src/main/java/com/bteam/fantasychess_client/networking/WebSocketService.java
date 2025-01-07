@@ -6,9 +6,6 @@ import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.Packet;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.errors.UnhandledPacketException;
@@ -26,6 +23,7 @@ import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
  * Websocket Service to establish communication with the Server,
  * features assignable packet handlers which will automatically
  * be called upon package arrival
+ *
  * @author Marc
  */
 public class WebSocketService {
@@ -34,11 +32,6 @@ public class WebSocketService {
 
     WebSocket webSocket;
     WebSocketClient client;
-
-    public String getUserid() {
-        return userid;
-    }
-
     String userid;
     String baseAddress;
 
@@ -55,6 +48,10 @@ public class WebSocketService {
         });
     }
 
+    public String getUserid() {
+        return userid;
+    }
+
     public WebSocketState getState() {
         return webSocket.getState();
     }
@@ -65,33 +62,32 @@ public class WebSocketService {
         webSocket = WebSockets.newSocket(address);
         webSocket.setSendGracefully(true);
         webSocket.addListener(client);
-        try{
+        try {
             webSocket.connect();
-        } catch (Exception e){
+        } catch (Exception e) {
             Main.getLogger().log(Level.SEVERE, e.getMessage());
         }
     }
 
-    public void addPacketHandler(String id, PacketHandler packetHandler){
+    public void addPacketHandler(String id, PacketHandler packetHandler) {
         listeners.put(id, packetHandler);
     }
 
-    public void removePacketHandler(String id){
+    public void removePacketHandler(String id) {
         listeners.remove(id);
     }
 
     /**
      * Takes the arrived packet in, reads it's ID and calls it's corresponding handler function
+     *
      * @param packet - Packet to handle
      */
-    public void handlePacket(String packet){
+    public void handlePacket(String packet) {
         Main.getLogger().log(Level.SEVERE, "Received packet: " + packet);
-
-        JsonValue fromJson = new JsonReader().parse(packet);
-
-        try{
+        try {
+            JsonValue fromJson = new JsonReader().parse(packet);
             String id = fromJson.get("id").asString();
-            Main.getLogger().log(Level.SEVERE, "Deserialized with id: " +id);
+            Main.getLogger().log(Level.SEVERE, "Deserialized with id: " + id);
             if (!listeners.containsKey(id))
                 throw new UnhandledPacketException("Packet with id: " + id +
                     " has no registered packet Handlers!\nIs your client version out of sync?");
@@ -103,10 +99,11 @@ public class WebSocketService {
 
     /**
      * Sends the given packet to the server
+     *
      * @param packet - Packet to handle
      */
-    public void send(Packet packet){
-        try{
+    public void send(Packet packet) {
+        try {
             Main.getLogger().log(Level.SEVERE, "Sending packet: " + packet);
             webSocket.send(packet.toString());
         } catch (Exception e) {
@@ -118,11 +115,11 @@ public class WebSocketService {
         return client;
     }
 
-    public void registerAndConnect(String username){
+    public void registerAndConnect(String username) {
         registerClient(username);
     }
 
-    private void registerClient(String username){
+    private void registerClient(String username) {
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
         Net.HttpRequest httpRequest = requestBuilder
             .newRequest()
@@ -134,12 +131,13 @@ public class WebSocketService {
         Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onRegisterResult));
     }
 
-    private void onRegisterResult(Net.HttpResponse response){
+    private void onRegisterResult(Net.HttpResponse response) {
         userid = response.getResultAsString();
+        Gdx.app.getPreferences("userinfo").putString("userid", userid);
         getToken(userid);
     }
 
-    private void getToken(String userid){
+    private void getToken(String userid) {
         HttpRequestBuilder requestBuilder = new HttpRequestBuilder();
         Net.HttpRequest httpRequest = requestBuilder
             .newRequest()
@@ -147,10 +145,10 @@ public class WebSocketService {
             .url("http://127.0.0.1:5050/api/v1/token")
             .header("X-USER-ID", userid)
             .build();
-        Gdx.net.sendHttpRequest(httpRequest,new HttpResponseCallbackListener(this::onTokenResult));
+        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onTokenResult));
     }
 
-    private void onTokenResult(Net.HttpResponse response){
+    private void onTokenResult(Net.HttpResponse response) {
         JsonReader reader = new JsonReader();
         String token = reader.parse(response.getResultAsString()).getString("token");
         connect(token);

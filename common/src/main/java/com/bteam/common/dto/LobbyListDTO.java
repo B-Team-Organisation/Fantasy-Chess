@@ -1,17 +1,20 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Data Transfer Object for a list of Lobbies
  *
  * @author Marc
  */
-public class LobbyListDTO implements JsonDTO{
+public class LobbyListDTO implements JsonDTO {
     List<LobbyDTO> lobbies;
 
     public LobbyListDTO() {
-        lobbies = new ArrayList<LobbyDTO>();
+        lobbies = new ArrayList<>();
     }
 
     public LobbyListDTO(List<LobbyDTO> lobbies) {
@@ -24,17 +27,6 @@ public class LobbyListDTO implements JsonDTO{
 
     @Override
     public String toJson() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("{");
-        sb.append("\"lobbies\": [");
-        for (LobbyDTO lobby : lobbies) {
-            sb.append(lobby.toJson());
-            sb.append(",");
-        }
-        if (!lobbies.isEmpty()) {
-            sb.deleteCharAt(sb.length()-1);
-        }
-        sb.append("]}");
-        return sb.toString();
+        return new JsonWriter().writeList("lobbies", lobbies).toString();
     }
 }

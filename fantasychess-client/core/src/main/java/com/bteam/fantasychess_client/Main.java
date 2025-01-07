@@ -74,7 +74,7 @@ public class Main extends Game {
     @Override
     public void create() {
         logger.log(Level.SEVERE, "Creating Screen");
-        skin = new Skin(Gdx.files.internal("placeholderSkin/skin.json"));
+        skin = new Skin(Gdx.files.internal("skin/skin.json"));
         screenManager.setSkin(skin);
         setScreen(new SplashScreen(skin));
         logger.log(Level.SEVERE, "Set Screen");

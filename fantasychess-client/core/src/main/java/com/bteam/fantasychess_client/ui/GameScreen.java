@@ -1,30 +1,42 @@
 package com.bteam.fantasychess_client.ui;
 
-import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.models.*;
+import com.bteam.common.models.MovementDataModel;
+import com.bteam.common.models.Vector2D;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
+import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
+import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
 import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
-import com.bteam.fantasychess_client.utils.GameMockStore;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
@@ -56,10 +68,11 @@ public class GameScreen extends ScreenAdapter {
     private final Skin skin;
 
     private final List<CharacterSprite> characterSprites = new ArrayList<>();
-
+    private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
+    private final BitmapFont damageFont;
+    private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
     private Stage stage;
     private TextButton readyButton;
-
     private TextureAtlas atlas;
     private SpriteBatch batch;
     private IsometricTiledMapRenderer mapRenderer;
@@ -69,22 +82,13 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
-
     private TileMathService mathService;
-
-    private final Map<String,CharacterSprite> spriteMapper = new HashMap<>();
-
     private Vector2D focussedTile;
 
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
-
-    public Vector2D[] getValidCommandDestinations(){
-        return validCommandDestinations;
-    }
-
     private MapInputAdapter mapInputProcessor;
-
+    private TurnResultAnimationHandler animationHandler;
 
     /**
      * Constructor of GameScreen
@@ -105,6 +109,13 @@ public class GameScreen extends ScreenAdapter {
 
         this.skin = skin;
 
+        damageFont = new BitmapFont();
+        damageFont.getData().setScale(0.4f);
+        damageFont.setColor(Color.WHITE);
+    }
+
+    public Vector2D[] getValidCommandDestinations() {
+        return validCommandDestinations;
     }
 
     @Override
@@ -114,7 +125,7 @@ public class GameScreen extends ScreenAdapter {
         stage = new Stage(uiViewport);
 
         readyButton = createReadyButton();
-        readyButton.setPosition(stage.getWidth()-250,50);
+        readyButton.setPosition(stage.getWidth() - 250, 50);
         stage.addActor(readyButton);
 
 
@@ -142,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer.setView(gameCamera);
 
         mapInputProcessor = new MapInputAdapter(
-            this,GameScreenMode.GAME_INIT,CommandMode.NO_SELECTION,mathService,gameCamera
+            this, GameScreenMode.LOBBY, CommandMode.NO_SELECTION, mathService, gameCamera
         );
 
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -150,6 +161,28 @@ public class GameScreen extends ScreenAdapter {
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
+
+        getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
+            /*Gdx.app.postRunnable(() -> {
+                JsonReader reader = new JsonReader();
+                JsonValue data = reader.parse(p).get("data");
+                String clientId = data.getString("clientId");
+                boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
+                Main.getLobbyService().setPlayerReady(clientId);
+            });*/
+        });
+
+        getWebSocketService().addPacketHandler("GAME_INIT", str -> {
+            Gdx.app.postRunnable(() -> {
+                getGameStateService().registerNewGame(9, 9);
+                var characters = CharacterEntityMapper.fromListDTO(str);
+                String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+                getGameStateService().setGameId(gameId);
+                getGameStateService().updateCharacters(characters);
+                initializeGame();
+            });
+        });
+
         Gdx.input.setInputProcessor(stage);
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
         Gdx.app.postRunnable(() -> {
@@ -157,15 +190,128 @@ public class GameScreen extends ScreenAdapter {
             getWebSocketService().send(packet);
         });
 
-        initializeGame();
+        getGameStateService().onApplyTurnResult.addListener(turnResult -> {
+            if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
+                Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
+                mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
+            }
+        });
+
+        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
+            Main.getLogger().log(Level.SEVERE, "Received Turn Result");
+            TurnResult turnResult = TurnResultMapper.fromDTO(str);
+            Main.getLogger().log(Level.SEVERE, turnResult.toString());
+            Main.getGameStateService().applyTurnResult(turnResult);
+        }));
+
         initializeStats();
     }
 
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
+            if (animationHandler == null) {
+                TurnResult turnResult = Main.getGameStateService().getTurnResult();
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
+                animationHandler.startAnimation();
+            }
+
+            animationHandler.progressAnimation();
+
+            if (animationHandler.isDoneWithAnimation()) {
+                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                animationHandler = null;
+
+            }
+        }
+
+        gameViewport.apply();
+
+        gameCamera.zoom = 1f; // Debug tool
+        Vector2D center = mathService.getMapCenter(tiledMap);
+        gameCamera.position.set(center.getX(), center.getY() + TILE_PIXEL_HEIGHT, 0);
+        gameCamera.update();
+        mapRenderer.setView(gameCamera);
+
+        mapRenderer.render();
+
+        batch.setProjectionMatrix(gameCamera.combined);
+        batch.enableBlending();
+        batch.begin();
+
+        Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
+
+        if (!grid.equals(focussedTile)) {
+            focussedTile = grid;
+            createFreshHighlightLayer();
+            createFreshCommandPreviewLayer();
+        }
+
+        SpriteSorter.sortByY(characterSprites);
+        for (CharacterSprite sprite : characterSprites) {
+            sprite.update(delta).draw(batch);
+        }
+
+        if (!getCommandManagementService().getMovementsCommands().isEmpty()
+            && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)) {
+            batch.setColor(255, 255, 255, 0.3f);
+            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
+                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
+                spriteMapper.get(moveId).drawAt(batch, mathService.gridToWorld(moveCommand.getMovementVector().getX(), moveCommand.getMovementVector().getY()));
+            }
+            batch.setColor(255, 255, 255, 1f);
+        }
+
+        if (damagePreviewValues.isEmpty()) {
+            Map<Vector2D, Integer> finalDamageValues = new HashMap<>();
+            for (Map<Vector2D, Integer> damageValues : Main.getCommandManagementService().getCommandDamageMappings().values()) {
+                for (Vector2D pos : damageValues.keySet()) {
+                    int dmg = damageValues.get(pos);
+                    if (finalDamageValues.containsKey(pos)) {
+                        dmg += finalDamageValues.get(pos);
+                    }
+                    finalDamageValues.put(pos, dmg);
+                }
+            }
+            for (Vector2D pos : finalDamageValues.keySet()) {
+                int dmg = finalDamageValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(), pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, dmg + "");
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        } else {
+            for (Vector2D pos : damagePreviewValues.keySet()) {
+                String damageText = damagePreviewValues.get(pos);
+                Vector2 worldPos = mathService.gridToWorld(pos.getX(), pos.getY());
+                GlyphLayout layout = new GlyphLayout(damageFont, damageText);
+                float textWidth = layout.width;
+                float textHeight = layout.height;
+                damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
+            }
+        }
+
+        batch.end();
+        batch.disableBlending();
+
+        uiViewport.apply();
+
+        stage.act();
+        stage.draw();
+    }
 
     private TextButton createReadyButton() {
-        TextButton readyButton = new TextButton("",skin){
+        TextButton readyButton = new TextButton("", skin) {
             @Override
             public void act(float delta) {
+                if (mapInputProcessor.getGameScreenMode() == GameScreenMode.COMMAND_MODE) {
+                    setDisabled(false);
+                }
+
                 int commandCount = 0;
                 commandCount += Main.getCommandManagementService().getMovementsCommands().size();
                 commandCount += Main.getCommandManagementService().getAttacksCommands().size();
@@ -174,18 +320,16 @@ public class GameScreen extends ScreenAdapter {
 
                 if (commandCount == requiredCommandCount) {
                     setText("Send commands!");
-
                     setDisabled(false);
-                } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)){
+                } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
                     setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
-                    setDisabled(true);
-
+                    setDisabled(false);
                 }
             }
         };
 
-        onChange(readyButton,()->{
-            if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
+        onChange(readyButton, () -> {
+            if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)) {
                 leaveInitPhase();
             } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
@@ -194,11 +338,12 @@ public class GameScreen extends ScreenAdapter {
             Main.getCommandManagementService().sendCommandsToServer();
             Main.getCommandManagementService().clearAll();
 
+
             readyButton.setDisabled(true);
             readyButton.setText("Waiting for next\nturn to start!");
         });
 
-        readyButton.setSize(200,100);
+        readyButton.setSize(200, 100);
 
         return readyButton;
     }
@@ -208,7 +353,7 @@ public class GameScreen extends ScreenAdapter {
             tiledMap.getLayers().remove(selectedCharacterLayer);
         }
 
-        selectedCharacterLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        selectedCharacterLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
         selectedCharacterLayer.setOffsetY(-1f);
         selectedCharacterLayer.setOffsetX(1f);
         tiledMap.getLayers().add(selectedCharacterLayer);
@@ -219,10 +364,9 @@ public class GameScreen extends ScreenAdapter {
             selectedCharacterCell.setTile(new StaticTiledMapTile(region));
 
             Vector2D tilePosition = gridToTiled(selectedCharacter.getPosition());
-            selectedCharacterLayer.setCell(tilePosition.getX(), tilePosition.getY(),selectedCharacterCell);
+            selectedCharacterLayer.setCell(tilePosition.getX(), tilePosition.getY(), selectedCharacterCell);
         }
     }
-
 
     /**
      * Initialises the game
@@ -231,30 +375,25 @@ public class GameScreen extends ScreenAdapter {
      * Puts the player in the game initialization phase, in which he can move his characters on his prefered
      * starting positions.
      */
-    public void initializeGame(){
+    public void initializeGame() {
         mapInputProcessor.setGameScreenMode(GameScreenMode.GAME_INIT);
 
-        List<CharacterEntity> characters = GameMockStore.getCharacterMocks();
+        List<CharacterEntity> characters = getGameStateService().getCharacters();
 
-        Main.getGameStateService().registerNewGame(9,9);
-        Main.getGameStateService().updateCharacters(characters);
-
-        int[] startRows = new int[]{6,7,8};
+        int[] startRows = new int[]{6, 7, 8};
         try {
             Main.getGameStateService().getGridService().setStartTiles(startRows);
-            GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
+            //GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        for (CharacterEntity character : characters){
-            getCommandManagementService().setCommand(new MovementDataModel(character.getId(),character.getPosition()));
+        for (CharacterEntity character : getGameStateService().getFriendlyCharacters()) {
+            getCommandManagementService().setCommand(new MovementDataModel(character.getId(), character.getPosition()));
         }
 
         showStartRows(startRows);
         createSpritesForCharacters();
-
-
     }
 
     public void initializeStats() {
@@ -282,26 +421,22 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Transitions the game to the main phase
      */
-    public void leaveInitPhase(){
-        Main.getCommandManagementService().sendCommandsToServer();
-        Main.getCommandManagementService().clearAll();
-
+    public void leaveInitPhase() {
         createFreshStartRowsLayer();
-        mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+        mapInputProcessor.setGameScreenMode(GameScreenMode.WAITING_FOR_TURN_OUTCOME);
     }
 
     /**
      * Creates a {@link CharacterSprite} for every {@link CharacterEntity}
      */
     private void createSpritesForCharacters() {
-        for (CharacterEntity character : Main.getGameStateService().getCharacters()){
+        for (CharacterEntity character : Main.getGameStateService().getCharacters()) {
             String characterName = character.getCharacterBaseModel().getName();
             String direction = getWebSocketService().getUserid().equals(character.getPlayerId()) ? "back" : "front";
-            TextureRegion textureRegion = atlas.findRegion("characters/"+characterName+"/"+characterName+"-"+direction);
-            CharacterSprite sprite = new CharacterSprite(textureRegion,character.getPosition(),character,mathService);
+            TextureRegion textureRegion = atlas.findRegion("characters/" + characterName + "/" + characterName + "-" + direction);
+            CharacterSprite sprite = new CharacterSprite(textureRegion, character.getPosition(), character, mathService);
             characterSprites.add(sprite);
-
-            spriteMapper.put(character.getId(),sprite);
+            spriteMapper.put(character.getId(), sprite);
         }
     }
 
@@ -313,7 +448,7 @@ public class GameScreen extends ScreenAdapter {
             tiledMap.getLayers().remove(startRowsLayer);
         }
 
-        startRowsLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(),TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        startRowsLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
         startRowsLayer.setOffsetY(-1f);
         startRowsLayer.setOffsetX(1f);
         tiledMap.getLayers().add(startRowsLayer);
@@ -322,16 +457,16 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Displays all start rows on the map
      */
-    private void showStartRows(int[] startrows){
+    private void showStartRows(int[] startrows) {
 
         TiledMapTileLayer.Cell startCell = new TiledMapTileLayer.Cell();
         TextureRegion region = atlas.findRegion("special_tiles/filled-green");
         startCell.setTile(new StaticTiledMapTile(region));
 
-        for (int row : startrows){
-            row = mathService.getMapHeight()-1-row;
-            for (int col = 0; col < mathService.getMapWidth(); col++){
-                startRowsLayer.setCell(col,row,startCell);
+        for (int row : startrows) {
+            row = mathService.getMapHeight() - 1 - row;
+            for (int col = 0; col < mathService.getMapWidth(); col++) {
+                startRowsLayer.setCell(col, row, startCell);
             }
         }
     }
@@ -348,24 +483,24 @@ public class GameScreen extends ScreenAdapter {
             tiledMap.getLayers().remove(commandPreviewLayer);
         }
 
-        commandPreviewLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        commandPreviewLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
         commandPreviewLayer.setOffsetY(-1f);
         commandPreviewLayer.setOffsetX(1f);
         tiledMap.getLayers().add(commandPreviewLayer);
 
         if (focussedTile != null && Arrays.asList(validCommandDestinations).contains(focussedTile)) {
-            switch (mapInputProcessor.getCommandMode()){
+            switch (mapInputProcessor.getCommandMode()) {
                 case MOVE_MODE: {
                     TiledMapTileLayer.Cell previewCell = new TiledMapTileLayer.Cell();
                     TextureRegion region = atlas.findRegion("special_tiles/filled-big-yellow-circle");
                     previewCell.setTile(new StaticTiledMapTile(region));
 
                     Vector2D tilePosition = gridToTiled(focussedTile);
-                    commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(),previewCell);
+                    commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
                     break;
                 }
                 case ATTACK_MODE: {
-                    Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(),focussedTile);
+                    Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(), focussedTile);
 
                     TiledMapTileLayer.Cell previewCell = new TiledMapTileLayer.Cell();
 
@@ -373,16 +508,18 @@ public class GameScreen extends ScreenAdapter {
 
                     previewCell.setTile(new StaticTiledMapTile(region));
 
+                    damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = gridToTiled(position);
-                        commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(),previewCell);
+                        commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
+
+                        damagePreviewValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower() + "");
                     }
                     break;
                 }
             }
         }
     }
-
 
     /**
      * Creates a fresh layer that highlights the current focussed tile
@@ -395,7 +532,7 @@ public class GameScreen extends ScreenAdapter {
             tiledMap.getLayers().remove(highlightLayer);
         }
 
-        highlightLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        highlightLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
         highlightLayer.setOffsetY(-1f);
         highlightLayer.setOffsetX(1f);
         tiledMap.getLayers().add(highlightLayer);
@@ -406,7 +543,7 @@ public class GameScreen extends ScreenAdapter {
             highlightCell.setTile(new StaticTiledMapTile(region));
 
             Vector2D tilePosition = gridToTiled(focussedTile);
-            highlightLayer.setCell(tilePosition.getX(), tilePosition.getY(),highlightCell);
+            highlightLayer.setCell(tilePosition.getX(), tilePosition.getY(), highlightCell);
         }
     }
 
@@ -420,61 +557,10 @@ public class GameScreen extends ScreenAdapter {
             tiledMap.getLayers().remove(commandOptionLayer);
         }
 
-        commandOptionLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH,TILE_PIXEL_HEIGHT);
+        commandOptionLayer = new TiledMapTileLayer(mathService.getMapWidth(), mathService.getMapHeight(), TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT);
         commandOptionLayer.setOffsetY(-1f);
         commandOptionLayer.setOffsetX(1f);
         tiledMap.getLayers().add(commandOptionLayer);
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-        gameViewport.apply();
-
-        gameCamera.zoom = 1f; // Debug tool
-        Vector2D center = mathService.getMapCenter(tiledMap);
-        gameCamera.position.set(center.getX(), center.getY() + TILE_PIXEL_HEIGHT, 0);
-        gameCamera.update();
-        mapRenderer.setView(gameCamera);
-
-        mapRenderer.render();
-
-        batch.setProjectionMatrix(gameCamera.combined);
-        batch.enableBlending();
-        batch.begin();
-
-        Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-        Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
-
-        if (grid == null || !grid.equals(focussedTile)) {
-            focussedTile = grid;
-            createFreshHighlightLayer();
-            createFreshCommandPreviewLayer();
-        }
-
-        SpriteSorter.sortByY(characterSprites);
-        for (CharacterSprite sprite : characterSprites) {
-            sprite.update(delta).draw(batch);
-        }
-
-        if (!getCommandManagementService().getMovementsCommands().isEmpty()
-             && !mapInputProcessor.getGameScreenMode().equals(GameScreenMode.GAME_INIT)){
-            batch.setColor(255,255,255,0.3f);
-            for (String moveId : getCommandManagementService().getMovementsCommands().keySet()) {
-                MovementDataModel moveCommand = getCommandManagementService().getMovementsCommands().get(moveId);
-                spriteMapper.get(moveId).drawAt(batch,mathService.gridToWorld(moveCommand.getMovementVector().getX(),moveCommand.getMovementVector().getY()));
-            }
-            batch.setColor(255,255,255,1f);
-        }
-
-        batch.end();
-        batch.disableBlending();
-
-        uiViewport.apply();
-
-        stage.act();
-        stage.draw();
     }
 
     /**
@@ -484,12 +570,12 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(selectedCharacter.getPosition());
 
         for (Vector2D attackOption : validCommandDestinations) {
-            Vector2D moveOptionTilePos = gridToTiled(attackOption);
+            Vector2D attackOptionTilePos = gridToTiled(attackOption);
 
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/red-border");
             cell.setTile(new StaticTiledMapTile(region));
-            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(),cell);
+            commandOptionLayer.setCell(attackOptionTilePos.getX(), attackOptionTilePos.getY(), cell);
         }
     }
 
@@ -505,7 +591,7 @@ public class GameScreen extends ScreenAdapter {
             TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
             TextureRegion region = atlas.findRegion("special_tiles/small-yellow-circle");
             cell.setTile(new StaticTiledMapTile(region));
-            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(),cell);
+            commandOptionLayer.setCell(moveOptionTilePos.getX(), moveOptionTilePos.getY(), cell);
         }
     }
 
@@ -514,16 +600,17 @@ public class GameScreen extends ScreenAdapter {
      * <p>
      * Acts as a setter while also marking the character on the board.
      */
-    public void updateSelectedCharacter(CharacterEntity selectedCharacter){
+    public void updateSelectedCharacter(CharacterEntity selectedCharacter) {
         this.selectedCharacter = selectedCharacter;
         createFreshSelectedCharacterLayer();
     }
 
     /**
      * Getter for the selected {@link CharacterEntity}
+     *
      * @return the selected character
      */
-    public CharacterEntity getSelectedCharacter(){
+    public CharacterEntity getSelectedCharacter() {
         return selectedCharacter;
     }
 
@@ -533,7 +620,7 @@ public class GameScreen extends ScreenAdapter {
      * @param id the id of the {@link CharacterEntity}
      * @return the corresponding {@link CharacterSprite}
      */
-    public CharacterSprite getMappedSprite(String id){
+    public CharacterSprite getMappedSprite(String id) {
         return spriteMapper.get(id);
     }
 
@@ -545,13 +632,14 @@ public class GameScreen extends ScreenAdapter {
         validCommandDestinations = new Vector2D[0];
         createFreshCommandOptionLayer();
         createFreshCommandPreviewLayer();
+        damagePreviewValues.clear();
     }
 
     /**
      * Opens a dialog for command type selection
      */
     public void openCommandTypeDialog() {
-        Dialog dialog = new Dialog("Command Type",skin){
+        Dialog dialog = new Dialog("Command Type", skin) {
             @Override
             protected void result(Object object) {
                 if ("attack".equals(object)) {
@@ -564,20 +652,54 @@ public class GameScreen extends ScreenAdapter {
                     mapInputProcessor.setCommandMode(CommandMode.NO_SELECTION);
                     selectedCharacter = null;
                 }
-                Main.getLogger().log(Level.SEVERE,mapInputProcessor.getCommandMode().name());
+                Main.getLogger().log(Level.SEVERE, mapInputProcessor.getCommandMode().name());
             }
         };
 
         dialog.setResizable(false);
         dialog.setMovable(false);
 
-        dialog.button("Attack!","attack");
-        dialog.button("Move!","move");
-        dialog.button("Cancel",null);
+        dialog.button("Attack!", "attack");
+        dialog.button("Move!", "move");
+        dialog.button("Cancel", null);
 
         dialog.pack();
         dialog.show(stage);
         dialog.setPosition((stage.getWidth() - dialog.getWidth()) / 2, (stage.getHeight() - dialog.getHeight()) / 2);
+    }
+
+    /**
+     * opens a dialog to display the Winner of the Game
+     *
+     * @param winnerName represents the winner of the Game, if null or empty the game finished in a draw
+     */
+    public void showEndGameDialog(String winnerName) {
+
+        String endMessage;
+
+        if (winnerName.isEmpty() || winnerName == null) {
+            endMessage = "Result: DRAW";
+        } else {
+            endMessage = "Result:" + winnerName;
+        }
+
+
+        Dialog endGameDialog = new Dialog("Game Over", skin) {
+            @Override
+            protected void result(Object object) {
+                if ((boolean) object) {
+                    Main.getScreenManager().navigateTo(Screens.MainMenu);
+                }
+            }
+        };
+
+        endGameDialog.text(endMessage, skin.get("default", Label.LabelStyle.class));
+        endGameDialog.button("Back to Main Menu", true).align(Align.center);
+
+        endGameDialog.setSize(400, 200);
+        endGameDialog.setPosition((stage.getWidth() - endGameDialog.getWidth()) / 2, (stage.getHeight() - endGameDialog.getHeight()) / 2);
+
+        endGameDialog.show(stage);
     }
 
     /**
@@ -586,8 +708,8 @@ public class GameScreen extends ScreenAdapter {
      * @param grid the grid coordinates
      * @return the tiled map coordinates
      */
-    private Vector2D gridToTiled(Vector2D grid){
-        return new Vector2D(grid.getX(),mathService.getMapHeight()-1-grid.getY());
+    private Vector2D gridToTiled(Vector2D grid) {
+        return new Vector2D(grid.getX(), mathService.getMapHeight() - 1 - grid.getY());
     }
 
     @Override

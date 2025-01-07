@@ -1,5 +1,7 @@
 package com.bteam.fantasychess_server.service;
 
+import com.bteam.common.dto.LobbyClosedDTO;
+import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.common.models.Player;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +45,39 @@ public class LobbyService {
 
     public boolean leaveLobby(UUID uuid, UUID playerId) {
         var lobby = getLobby(uuid);
-        lobby.removePlayer(playerService.getPlayer(playerId));
-        return true;
+        if (lobby != null) {
+            lobby.removePlayer(playerService.getPlayer(playerId));
+            if (lobby.getPlayers().isEmpty() || lobby.getHost().getPlayerId().equals(playerId.toString())) {
+                closeLobby(uuid, "Host oder alle Spieler haben die Lobby verlassen");
+            } else {
+
+                //updateLobbyStatus(lobby);
+            }
+            return true;
+        }
+        return false;
     }
+
+
+    public void closeLobby(UUID uuid, String reason) {
+        var lobby = getLobby(uuid);
+        if (lobby != null) {
+            for (Player player : lobby.getPlayers()) {
+                var client = WebSocketService.getCurrentClientForPlayer(player);
+                if (client != null) {
+                    var packet = new Packet(new LobbyClosedDTO(lobby.getLobbyId(), reason), "LOBBY_CLOSED");
+                    client.sendPacket(packet);
+                }
+            }
+            removeLobby(uuid);
+        }
+    }
+
 
     public void removeLobby(UUID uuid) {
         lobbyModels.remove(uuid);
     }
+
 
     public LobbyModel lobbyWithPlayer(UUID uuid) {
         return lobbyModels.values().stream().filter(
