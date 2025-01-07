@@ -15,6 +15,7 @@ import java.util.*;
 
 import static com.bteam.common.services.CommandValidator.*;
 import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
+import static com.bteam.common.utils.RelationUtils.vectorArrayToPatternString;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestCommandValidator {
@@ -24,12 +25,16 @@ class TestCommandValidator {
     private CharacterDataModel baseModel2;
     private CharacterDataModel baseModel3;
     private CharacterDataModel baseModel4;
+    private CharacterDataModel asymmetricModel;
     private CharacterEntity basicEntity1;
     private CharacterEntity basicEntity2;
     private CharacterEntity basicEntity3;
     private CharacterEntity basicEntity4;
     private CharacterEntity basicEntity5;
     private CharacterEntity basicEntity6;
+    private CharacterEntity asymmetricEntity;
+    private final String hostID = "player1";
+    private final String opponentID = "player2";
 
     @BeforeEach
     void setup() throws PatternShapeInvalidException, InvalidSubpatternMappingException {
@@ -80,6 +85,14 @@ class TestCommandValidator {
                                 "simpleMovement"
                         )
                 );
+                put(
+                        "asymmetricPattern",
+                        new PatternModel(
+                                " x \n   \n   ",
+                                new HashMap<>(),
+                                "asymmetricPattern"
+                        )
+                );
             }};
 
             @Override
@@ -112,6 +125,10 @@ class TestCommandValidator {
                 mockPatternStore.getPatternByName("simpleMovement"),
                 mockPatternStore
         );
+        PatternService asymetricPatternService = new PatternService(
+                mockPatternStore.getPatternByName("asymmetricPattern"),
+                mockPatternStore
+        );
 
         basicGrid = new GridService(new GridModel(8, 8));
         baseModel1 = new CharacterDataModel(
@@ -138,12 +155,21 @@ class TestCommandValidator {
                 new PatternService[]{simpleAttackService},
                 new PatternService[]{simpleMovementService}
         );
-        basicEntity1 = new CharacterEntity(baseModel1, "baseEntity1", 4, new Vector2D(2, 2), "player1");
-        basicEntity2 = new CharacterEntity(baseModel2, "baseEntity2", 2, new Vector2D(7, 7), "player2");
-        basicEntity3 = new CharacterEntity(baseModel3, "baseEntity3", 4, new Vector2D(3, 2), "player1");
-        basicEntity4 = new CharacterEntity(baseModel4, "baseEntity4", 4, new Vector2D(6, 6), "player2");
-        basicEntity5 = new CharacterEntity(baseModel4, "baseEntity5", 4, new Vector2D(0, 0), "player2");
-        basicEntity6 = new CharacterEntity(baseModel4, "baseEntity6", 4, new Vector2D(1, 2), "player2");
+        asymmetricModel = new CharacterDataModel(
+                "asymetricModel", "Test Test Test Test Test",
+                4, 8,
+                new PatternService[]{asymetricPatternService},
+                new PatternService[]{asymetricPatternService}
+        );
+        basicEntity1 = new CharacterEntity(baseModel1, "baseEntity1", 4, new Vector2D(2, 2), hostID);
+        basicEntity2 = new CharacterEntity(baseModel2, "baseEntity2", 2, new Vector2D(7, 7), opponentID);
+        basicEntity3 = new CharacterEntity(baseModel3, "baseEntity3", 4, new Vector2D(3, 2), hostID);
+        basicEntity4 = new CharacterEntity(baseModel4, "baseEntity4", 4, new Vector2D(6, 6), opponentID);
+        basicEntity5 = new CharacterEntity(baseModel4, "baseEntity5", 4, new Vector2D(0, 0), opponentID);
+        basicEntity6 = new CharacterEntity(baseModel4, "baseEntity6", 4, new Vector2D(1, 2), opponentID);
+        asymmetricEntity = new CharacterEntity(
+                asymmetricModel, "asymetricEntity", 4, new Vector2D(2, 2), opponentID
+        );
     }
 
     /**
@@ -169,6 +195,7 @@ class TestCommandValidator {
         MovementDataModel bounceWith1 = new MovementDataModel(basicEntity6.getId(), new Vector2D(2, 1));
         MovementDataModel doubleMoveOn1 = new MovementDataModel(basicEntity1.getId(), new Vector2D(2, 3));
         MovementDataModel duplicateMove1 = new MovementDataModel(basicEntity1.getId(), new Vector2D(2, 3));
+        MovementDataModel asymmetricMove = new MovementDataModel(asymmetricEntity.getId(), new Vector2D(2, 1));
 
         AttackDataModel validAttack1 = new AttackDataModel(new Vector2D(4, 2), basicEntity1.getId());
         AttackDataModel validAttack2 = new AttackDataModel(new Vector2D(7, 6), basicEntity2.getId());
@@ -176,6 +203,7 @@ class TestCommandValidator {
         AttackDataModel validAttack4 = new AttackDataModel(new Vector2D(5, 5), basicEntity4.getId());
         AttackDataModel outOfBounds = new AttackDataModel(new Vector2D(-1, -1), basicEntity5.getId());
         AttackDataModel attack3Forbidden = new AttackDataModel(new Vector2D(6, 6), basicEntity3.getId());
+        AttackDataModel asymmetricAttack = new AttackDataModel(new Vector2D(2, 1), asymmetricEntity.getId());
 
         // Assert no unintentional moves outside movements patterns for tests further down
         List<MovementDataModel> insidePatternsMove = List.of(
@@ -201,12 +229,12 @@ class TestCommandValidator {
         //empty
         assertEquals(
             new ValidationResult(List.of(), List.of(), List.of()),
-            validateCommands(characters, List.of(), List.of(), basicGrid)
+            validateCommands(characters, List.of(), List.of(), basicGrid, hostID)
         );
         //all Valid
         assertEquals(
             new ValidationResult(List.of(), List.of(validMove1, validMove2), List.of(validAttack3)),
-            validateCommands(characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid)
+            validateCommands(characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid, hostID)
         );
         // Bounce, forbidden attack
         assertEquals(
@@ -214,14 +242,15 @@ class TestCommandValidator {
                 new PairNoOrder<>(validMove1, bounceWith1)), List.of(), List.of(validAttack2)
             ),
             validateCommands(
-                characters, List.of(validMove1, bounceWith1), List.of(validAttack2, attack3Forbidden), basicGrid
+                characters, List.of(validMove1, bounceWith1), List.of(validAttack2, attack3Forbidden), basicGrid, hostID
             )
         );
         //non-single command, outOfBoundsAttack
         assertEquals(
             new ValidationResult(List.of(), List.of(), List.of(validAttack2)),
             validateCommands(
-                characters, List.of(validMove1, doubleMoveOn1), List.of(validAttack2, attack3Forbidden), basicGrid
+                characters, List.of(validMove1, doubleMoveOn1), List.of(validAttack2, attack3Forbidden),
+                basicGrid, hostID
             )
         );
         //checks from validateMoves + validAttack4
@@ -229,22 +258,37 @@ class TestCommandValidator {
             new ValidationResult(List.of(), List.of(validMove2), List.of(validAttack4)),
             validateCommands(
                 characters, List.of(validMove1, validMove2, moving3Like1),
-                List.of(validAttack4), basicGrid
+                List.of(validAttack4), basicGrid, hostID
             )
         );
         assertEquals(
             new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
-            validateCommands(characters, List.of(validMove1, moving3To1), List.of(validAttack4), basicGrid)
-        );
-        assertEquals(
-            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
-            validateCommands(characters, List.of(validMove1, moving2OutOfBounds), List.of(validAttack4), basicGrid)
+            validateCommands(characters, List.of(validMove1, moving3To1), List.of(validAttack4), basicGrid, hostID)
         );
         assertEquals(
             new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
             validateCommands(
-                characters, List.of(validMove1, moving2ForbiddenMovement), List.of(validAttack4), basicGrid
+                    characters, List.of(validMove1, moving2OutOfBounds), List.of(validAttack4), basicGrid, hostID
             )
+        );
+        assertEquals(
+            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+            validateCommands(
+                characters, List.of(validMove1, moving2ForbiddenMovement), List.of(validAttack4), basicGrid, hostID
+            )
+        );
+        //test that reverted moves aren't filtered out
+        assertEquals(
+                new ValidationResult(List.of(), List.of(asymmetricMove), List.of()),
+                validateCommands(
+                        List.of(asymmetricEntity), List.of(asymmetricMove), List.of(), basicGrid, hostID
+                )
+        );
+        assertEquals(
+                new ValidationResult(List.of(), List.of(), List.of(asymmetricAttack)),
+                validateCommands(
+                        List.of(asymmetricEntity), List.of(), List.of(asymmetricAttack), basicGrid, hostID
+                )
         );
     }
 
@@ -284,23 +328,30 @@ class TestCommandValidator {
 
         assertEquals(
                 new ListNoOrder<>(allValid),
-                new ListNoOrder<>(validateMovements(List.copyOf(allValid), characters, basicGrid))
+                new ListNoOrder<>(validateMovements(List.copyOf(allValid), characters, basicGrid, hostID))
         );
         assertEquals(
                 new ListNoOrder<>(List.of(valid2)),
-                new ListNoOrder<>(validateMovements(List.copyOf(firstValidButMovingToSamePosition), characters, basicGrid))
+                new ListNoOrder<>(validateMovements(List.copyOf(
+                        firstValidButMovingToSamePosition), characters, basicGrid, hostID))
         );
         assertEquals(
                 new ListNoOrder<>(List.of(valid1)),
-                new ListNoOrder<>(validateMovements(List.copyOf(firstValidButMovingToOccupied), characters, basicGrid))
+                new ListNoOrder<>(validateMovements(
+                        List.copyOf(firstValidButMovingToOccupied), characters, basicGrid, hostID)
+                )
         );
         assertEquals(
                 new ListNoOrder<>(List.of(valid1)),
-                new ListNoOrder<>(validateMovements(List.copyOf(firstValidButMovingOutOfBounds), characters, basicGrid))
+                new ListNoOrder<>(validateMovements(
+                        List.copyOf(firstValidButMovingOutOfBounds), characters, basicGrid, hostID)
+                )
         );
         assertEquals(
                 new ListNoOrder<>(List.of(valid1)),
-                new ListNoOrder<>(validateMovements(List.copyOf(firstValidButForbiddenMovement), characters, basicGrid))
+                new ListNoOrder<>(validateMovements(
+                        List.copyOf(firstValidButForbiddenMovement), characters, basicGrid, hostID)
+                )
         );
     }
 
@@ -398,18 +449,32 @@ class TestCommandValidator {
         List<MovementDataModel> failing1 = movesFromList(character1Outside, basicEntity1.getId());
         List<MovementDataModel> failing3 = movesFromList(character3Outside, basicEntity3.getId());
 
+        // note: coordinate system is starting at top right
+        AttackDataModel asymmetricMovement = new AttackDataModel(new Vector2D(2, 1), opponentID);
+
+        Vector2D[] availableForAsymmetric = asymmetricEntity.getCharacterBaseModel().getAttackPatterns()[0]
+                .getPossibleTargetPositions(asymmetricEntity.getPosition());
+
         working1.forEach(movement -> assertTrue(movingInsideMovementPattern(
-                movement, availableCharactersMap.get(movement.getCharacterId())
+                movement, availableCharactersMap.get(movement.getCharacterId()), hostID
         )));
         working3.forEach(movement -> assertTrue(movingInsideMovementPattern(
-                movement, availableCharactersMap.get(movement.getCharacterId())
+                movement, availableCharactersMap.get(movement.getCharacterId()), hostID
         )));
         failing1.forEach(movement -> assertFalse(movingInsideMovementPattern(
-                movement, availableCharactersMap.get(movement.getCharacterId())
+                movement, availableCharactersMap.get(movement.getCharacterId()), hostID
         )));
         failing3.forEach(movement -> assertFalse(movingInsideMovementPattern(
-                movement, availableCharactersMap.get(movement.getCharacterId())
+                movement, availableCharactersMap.get(movement.getCharacterId()), hostID
         )));
+
+        //Test if reverse works
+        assertTrue(attackingInsideAttackPattern(asymmetricMovement, asymmetricEntity, hostID),
+                "Was " + asymmetricMovement.getAttackPosition() + " but could only have been " +
+                        Arrays.toString(availableForAsymmetric) + " which is \n\"" +
+                        vectorArrayToPatternString(availableForAsymmetric, asymmetricEntity.getPosition()) + "\""
+        );
+
 
     }
 
@@ -521,10 +586,16 @@ class TestCommandValidator {
         List<AttackDataModel> outsideBoundsInsidePattern = List.of(outOfBoundsAttack, insidePatternAttack);
         List<AttackDataModel> insideBoth = List.of(insidePatternAttack, insideBoundsAttack);
 
-        assertEquals(List.of(), validateAttacks(outOfBoundsAndPattern, availableCharacters, basicGrid));//out of bounds attacks
-        assertEquals(List.of(insideBoundsAttack), validateAttacks(insideBoundsOutsidePattern, availableCharacters, basicGrid));//outside pattern
-        assertEquals(List.of(insidePatternAttack), validateAttacks(outsideBoundsInsidePattern, availableCharacters, basicGrid));//only the inside attacks
-        assertEquals(List.of(insidePatternAttack,insideBoundsAttack), validateAttacks(insideBoth, availableCharacters, basicGrid));
+        assertEquals(List.of(), validateAttacks(outOfBoundsAndPattern, availableCharacters, basicGrid, hostID));//out of bounds attacks
+        assertEquals(List.of(insideBoundsAttack), validateAttacks(
+                insideBoundsOutsidePattern, availableCharacters, basicGrid, hostID
+        ));//outside pattern
+        assertEquals(List.of(insidePatternAttack), validateAttacks(
+                outsideBoundsInsidePattern, availableCharacters, basicGrid, hostID
+        ));//only the inside attacks
+        assertEquals(List.of(insidePatternAttack,insideBoundsAttack), validateAttacks(
+                insideBoth, availableCharacters, basicGrid, hostID
+        ));
     }
 
     @Test
@@ -587,19 +658,30 @@ class TestCommandValidator {
         List<AttackDataModel> working3 = attacksFromList(character3Attacks, basicEntity3.getId());
         List<AttackDataModel> failing1 = attacksFromList(character1Outside, basicEntity1.getId());
         List<AttackDataModel> failing3 = attacksFromList(character3Outside, basicEntity3.getId());
+        // note: coordinate system is starting at top right
+        AttackDataModel asymmetricAttack = new AttackDataModel(new Vector2D(2, 1), opponentID);
+
+        Vector2D[] availableForAsymmetric = asymmetricEntity.getCharacterBaseModel().getAttackPatterns()[0]
+                        .getPossibleTargetPositions(asymmetricEntity.getPosition());
 
         working1.forEach(attack -> assertTrue(attackingInsideAttackPattern(
-                attack, availableCharactersMap.get(attack.getAttacker())
+                attack, availableCharactersMap.get(attack.getAttacker()), hostID
         )));
         working3.forEach(attack -> assertTrue(attackingInsideAttackPattern(
-                attack, availableCharactersMap.get(attack.getAttacker())
+                attack, availableCharactersMap.get(attack.getAttacker()), hostID
         )));
         failing1.forEach(attack -> assertFalse(attackingInsideAttackPattern(
-                attack, availableCharactersMap.get(attack.getAttacker())
+                attack, availableCharactersMap.get(attack.getAttacker()), hostID
         )));
         failing3.forEach(attack -> assertFalse(attackingInsideAttackPattern(
-                attack, availableCharactersMap.get(attack.getAttacker())
+                attack, availableCharactersMap.get(attack.getAttacker()), hostID
         )));
+
+        assertTrue(attackingInsideAttackPattern(asymmetricAttack, asymmetricEntity, hostID),
+                "Was " + asymmetricAttack.getAttackPosition() + " but could only have been " +
+                        Arrays.toString(availableForAsymmetric) + " which is \n\"" +
+                        vectorArrayToPatternString(availableForAsymmetric, asymmetricEntity.getPosition()) + "\""
+        );
 
     }
 

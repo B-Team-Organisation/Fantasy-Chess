@@ -9,6 +9,7 @@ import com.bteam.common.models.Vector2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.bteam.common.services.CommandValidator.validateCommands;
 import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
 
 /**
@@ -32,6 +33,7 @@ public class TurnLogicService {
      * @param characters  List of all characters in the game.
      * @param attacks     List of attack commands received.
      * @param gridService Grid service for the game board.
+     * @param hostID      PlayerID of the hosting player.
      * @return A {@link TurnResult} object containing the updated character states,
      * valid movements, valid attacks, and any movement conflicts.
      */
@@ -39,27 +41,27 @@ public class TurnLogicService {
             List<MovementDataModel> moves,
             List<CharacterEntity> characters,
             List<AttackDataModel> attacks,
-            GridService gridService) {
+            GridService gridService,
+            String hostID) {
 
-        //ValidationResult validation = validateCommands(characters, moves, attacks, gridService);
+        ValidationResult validation = validateCommands(characters, moves, attacks, gridService, hostID);
 
-        //List<MovementDataModel> validMovements = validation.getValidMoves();
-        //List<AttackDataModel> validAttacks = validation.getValidAttacks();
+        List<MovementDataModel> validMovements = validation.getValidMoves();
+        List<AttackDataModel> validAttacks = validation.getValidAttacks();
 
-        applyMovement(moves, characters, gridService);
-        applyAttacks(attacks, characters, gridService);
+        applyMovement(validMovements, characters, gridService);
+        applyAttacks(validAttacks, characters, gridService);
 
         checkForDeaths(characters, gridService);
 
+        /*
         return new TurnResult(
                 characters, null,
                 moves, attacks
         );
+         */
 
-        //return new TurnResult(
-        //        characters, validation.getMovementConflicts(),
-        //        validation.getValidMoves(), validation.getValidAttacks()
-        //);
+        return new TurnResult(characters, validation.getMovementConflicts(), validMovements, validAttacks);
     }
 
     public static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {
