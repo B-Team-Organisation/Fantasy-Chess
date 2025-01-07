@@ -21,7 +21,6 @@ public class TestTurnLogic {
 	List<CharacterEntity> characters;
 	List<MovementDataModel> movements;
 	List<AttackDataModel> attacks;
-	String hostID = "player1";
 
 	static CharacterDataModel exploCharData;
 	static CharacterDataModel twoEachCharData;
@@ -74,12 +73,12 @@ public class TestTurnLogic {
 	}
 
 	private void applyTurnLogic() {
-		TurnLogicService.applyCommands(movements,characters,attacks, gridService, hostID);
+		TurnLogicService.applyCommands(movements,characters,attacks, gridService);
 	}
 
 	@Test
 	public void testValidMoves(){
-		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",10,null,hostID);
+		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",10,null,"0");
 		Vector2D topLeftOrigin = new Vector2D(0,0);
 		Vector2D topLeftTarget = new Vector2D(2,0);
 		characters.add(topLeft);
@@ -87,7 +86,7 @@ public class TestTurnLogic {
 		MovementDataModel topLeftCommand = new MovementDataModel(topLeft.getId(), topLeftTarget);
 		movements.add(topLeftCommand);
 
-		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,hostID);
+		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,"0");
 		Vector2D bottomLeftOrigin = new Vector2D(0,2);
 		Vector2D bottomLeftTarget = new Vector2D(2,2);
 		characters.add(bottomLeft);
@@ -110,7 +109,7 @@ public class TestTurnLogic {
 
 	@Test
 	public void testValidSingleTargetAttack(){
-		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",15,null,hostID);
+		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",15,null,"0");
 		Vector2D topLeftOrigin = new Vector2D(0,0);
 		Vector2D topLeftTarget = new Vector2D(0,2);
 		characters.add(topLeft);
@@ -118,7 +117,7 @@ public class TestTurnLogic {
 		AttackDataModel topLeftCommand = new AttackDataModel(topLeftTarget, topLeft.getId());
 		attacks.add(topLeftCommand);
 
-		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,hostID);
+		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,"0");
 		Vector2D bottomLeftOrigin = new Vector2D(0,2);
 		Vector2D bottomLeftTarget = new Vector2D(0,0);
 		characters.add(bottomLeft);
@@ -126,7 +125,7 @@ public class TestTurnLogic {
 		AttackDataModel bottomLeftCommand = new AttackDataModel(bottomLeftTarget,bottomLeft.getId());
 		attacks.add(bottomLeftCommand);
 
-		CharacterEntity dummy = new CharacterEntity(twoEachCharData,"2",10,null,hostID);
+		CharacterEntity dummy = new CharacterEntity(twoEachCharData,"2",10,null,"0");
 		Vector2D dummyOrigin = new Vector2D(2,2);
 		characters.add(dummy);
 
@@ -147,15 +146,15 @@ public class TestTurnLogic {
 
 	@Test
 	public void testValidAoeDamage(){
-		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",10,null,hostID);
+		CharacterEntity topLeft = new CharacterEntity(twoEachCharData,"0",10,null,"0");
 		Vector2D topLeftOrigin = new Vector2D(0,0);
 		characters.add(topLeft);
 
-		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,hostID);
+		CharacterEntity bottomLeft = new CharacterEntity(twoEachCharData,"1",10,null,"0");
 		Vector2D bottomLeftOrigin = new Vector2D(0,2);
 		characters.add(bottomLeft);
 
-		CharacterEntity exploder = new CharacterEntity(exploCharData,"2",10,null,hostID);
+		CharacterEntity exploder = new CharacterEntity(exploCharData,"2",10,null,"0");
 		Vector2D exploderOrigin = new Vector2D(1,1);
 		characters.add(exploder);
 

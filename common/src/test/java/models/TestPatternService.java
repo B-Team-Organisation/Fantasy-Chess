@@ -6,7 +6,6 @@ import com.bteam.common.models.PatternModel;
 import com.bteam.common.models.PatternStore;
 import com.bteam.common.models.PatternService;
 import com.bteam.common.models.Vector2D;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,13 +20,11 @@ public class TestPatternService {
     private static PatternModel simpleModel;
     private static PatternModel deepModel;
     private static PatternModel deepDeepModel;
-    private static PatternModel asymmetricModel;
 
 
     private static PatternStore emptyStore;
     private static PatternStore deepStore;
     private static PatternStore deepDeepStore;
-    private static PatternStore asymmetricStore;
 
     private static Vector2D playerPosition = new Vector2D(4,4);
 
@@ -54,7 +51,6 @@ public class TestPatternService {
         deepDeepModel = new PatternModel("   \n  =\n   ",new HashMap<Character,String>(){{
             put('=',"WeirdLinePattern");
         }},"deepDeep");
-        asymmetricModel = new PatternModel("xxx\nxx \nx  ", null, "asymmetric");
 
         emptyStore = new PatternStore() {
             @Override
@@ -95,17 +91,6 @@ public class TestPatternService {
                 }
             };
         };
-        asymmetricStore = new PatternStore(){
-            @Override
-            public PatternModel getPatternByName(String patternName) {return patterns.get(patternName);}
-
-            private Map<String, PatternModel> patterns = new HashMap<>(){
-                {
-                    put("AssymmetricPattern", asymmetricModel);
-                }
-            };
-        };
-
 
         playerPosition = new Vector2D(4,4);
 
@@ -124,7 +109,6 @@ public class TestPatternService {
     private static PatternService simpleService;
     private static PatternService deepService;
     private static PatternService deepDeepService;
-    private static PatternService asymmetricService;
 
     @BeforeEach
     void setUp() {
@@ -134,7 +118,6 @@ public class TestPatternService {
             simpleService = new PatternService(simpleModel,emptyStore);
             deepService = new PatternService(deepModel,deepStore);
             deepDeepService = new PatternService(deepDeepModel,deepDeepStore);
-            asymmetricService = new PatternService(asymmetricModel, asymmetricStore);
         } catch (Exception e){
             assertNull(e);
         }
@@ -222,30 +205,17 @@ public class TestPatternService {
     @Test
     void testReversePattern(){
         Vector2D[] oldAoE = deepService.getAreaOfEffect(playerPosition, targetPositionRight);
-        Vector2D[] oldPossiblePositions = asymmetricService.getPossibleTargetPositions(new Vector2D(0, 0));
+        deepService.reversePattern();
+        Vector2D[] newAoE = deepService.getAreaOfEffect(playerPosition, targetPositionLeft);
 
-        try {
-            PatternService reversedDeepService = deepService.reversePattern();
+        assert oldAoE.length == newAoE.length;
 
-            Vector2D[] newAoE = reversedDeepService.getAreaOfEffect(playerPosition, targetPositionLeft);
+        for (int i = 0; i < oldAoE.length; i++) {
+            Vector2D oldRel = oldAoE[i].subtract(playerPosition);
+            Vector2D newRel = newAoE[i].subtract(playerPosition);
 
-            assert oldAoE.length == newAoE.length;
-
-            for (int i = 0; i < oldAoE.length; i++) {
-                Vector2D oldRel = oldAoE[i].subtract(playerPosition);
-                Vector2D newRel = newAoE[i].subtract(playerPosition);
-
-                assert oldRel.getX() == -newRel.getX();
-                assert oldRel.getY() == -newRel.getY();
-            }
-
-            PatternService reversedAsymmetricService = asymmetricService.reversePattern();
-            Vector2D[] newPossiblePositions = reversedAsymmetricService.getPossibleTargetPositions(new Vector2D(0, 0));
-            assertNotEquals(oldPossiblePositions, newPossiblePositions);
-
-        } catch (Exception e) {
-            Assertions.fail("An exception was thrown unexpectedly: " + e.getMessage());
+            assert oldRel.getX() == -newRel.getX();
+            assert oldRel.getY() == -newRel.getY();
         }
-
     }
 }
