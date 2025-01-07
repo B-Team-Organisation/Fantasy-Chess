@@ -116,28 +116,9 @@ public class GameStateService {
         }
 
         var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service);
-        //var inverted = invertTurnResultIfHost(result, game, host);
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);
         return new Pair<>(result, service.getGridModel());
-    }
-
-    public TurnResult invertTurnResultIfHost(TurnResult result, GameModel game, Player host) {
-        var validMovement = result.getValidMoves().stream().map(m ->
-                        checkForOwnership(game, m.getCharacterId(), host) ? movementInverter(m) : m)
-                .toList();
-        var validAttacks = result.getValidAttacks().stream().map(a ->
-                        checkForOwnership(game, a.getAttacker(), host) ? attackInverter(a) : a)
-                .toList();
-        var movementConflicts = result.getMovementConflicts() != null ? result.getMovementConflicts().stream().map(
-                pair -> {
-                    var first = checkForOwnership(game, pair.getFirst().getCharacterId(), host) ?
-                            movementInverter(pair.getFirst()) : pair.getFirst();
-                    var second = checkForOwnership(game, pair.getSecond().getCharacterId(), host) ?
-                            movementInverter(pair.getSecond()) : pair.getSecond();
-                    return new PairNoOrder<>(first, second);
-                }).toList() : null;
-        return new TurnResult(result.getUpdatedCharacters(), movementConflicts, validMovement, validAttacks);
     }
 
     public TurnResult invertResult(TurnResult result) {
