@@ -97,26 +97,6 @@ special_tiles/small-yellow-circle
   index: -1
 
 auto-generated-atlas2.png
-size: 32, 32
-format: RGBA8888
-filter: Nearest, Nearest
-repeat: none
-characters/fitzhold/fitzhold-back
-  rotate: false
-  xy: 2, 2
-  size: 9, 16
-  orig: 9, 16
-  offset: 0, 0
-  index: -1
-characters/fitzhold/fitzhold-front
-  rotate: false
-  xy: 13, 2
-  size: 9, 16
-  orig: 9, 16
-  offset: 0, 0
-  index: -1
-
-auto-generated-atlas3.png
 size: 128, 32
 format: RGBA8888
 filter: Nearest, Nearest
@@ -133,6 +113,26 @@ characters/boar/boar-front
   xy: 34, 5
   size: 29, 23
   orig: 29, 23
+  offset: 0, 0
+  index: -1
+
+auto-generated-atlas3.png
+size: 32, 32
+format: RGBA8888
+filter: Nearest, Nearest
+repeat: none
+characters/fitzooth/fitzooth-back
+  rotate: false
+  xy: 2, 2
+  size: 9, 16
+  orig: 9, 16
+  offset: 0, 0
+  index: -1
+characters/fitzooth/fitzooth-front
+  rotate: false
+  xy: 13, 2
+  size: 9, 16
+  orig: 9, 16
   offset: 0, 0
   index: -1
 
@@ -201,14 +201,14 @@ size: 64, 32
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-characters/flash/flashcat-back
+characters/flash/flash-back
   rotate: false
   xy: 2, 2
   size: 24, 20
   orig: 24, 20
   offset: 0, 0
   index: -1
-characters/flash/flashcat-front
+characters/flash/flash-front
   rotate: false
   xy: 28, 2
   size: 24, 20
@@ -244,15 +244,15 @@ repeat: none
 characters/stablin/stablin-back
   rotate: false
   xy: 2, 2
-  size: 25, 25
-  orig: 25, 25
+  size: 21, 18
+  orig: 21, 18
   offset: 0, 0
   index: -1
 characters/stablin/stablin-front
   rotate: false
-  xy: 29, 2
-  size: 25, 25
-  orig: 25, 25
+  xy: 25, 2
+  size: 21, 18
+  orig: 21, 18
   offset: 0, 0
   index: -1
 
