@@ -175,7 +175,7 @@ public class GameScreen extends ScreenAdapter {
                 var characters = CharacterEntityMapper.fromListDTO(str);
                 String gameId = new JsonReader().parse(str).get("data").getString("gameId");
                 getGameStateService().setGameId(gameId);
-                getGameStateService().updateCharacters(characters);
+                getGameStateService().setCharacters(characters);
                 initializeGame();
             });
         });
@@ -191,6 +191,8 @@ public class GameScreen extends ScreenAdapter {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
             }
         });
+
+        getGameStateService().onCharacterDeath.addListener(this::killCharacter);
 
         getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
@@ -218,7 +220,7 @@ public class GameScreen extends ScreenAdapter {
             if (animationHandler.isDoneWithAnimation()) {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
                 animationHandler = null;
-
+                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
             }
         }
 
@@ -410,6 +412,25 @@ public class GameScreen extends ScreenAdapter {
             CharacterSprite sprite = new CharacterSprite(textureRegion, character.getPosition(), character, mathService);
             characterSprites.add(sprite);
             spriteMapper.put(character.getId(), sprite);
+        }
+    }
+
+    /**
+     * Kill a character
+     * @param character
+     */
+
+    private void killCharacter(CharacterEntity character) {
+        deleteSpriteForCharacter(character.getId());
+    }
+
+    /**
+     * Removes a Sprite for a given Character
+     */
+    private void deleteSpriteForCharacter(String id){
+        var sprite = spriteMapper.remove(id);
+        if (sprite != null) {
+            characterSprites.remove(sprite);
         }
     }
 
