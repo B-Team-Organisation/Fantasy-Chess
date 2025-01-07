@@ -90,7 +90,7 @@ public class GameStateService {
     public Pair<TurnResult, GridModel>
     processMoves(UUID gameId, Map<String, Pair<List<AttackDataModel>, List<MovementDataModel>>> commands) {
         var game = games.get(gameId);
-        GridService service = new GridService(game.getGrid());
+        GridService gridService = new GridService(game.getGrid());
         var movements = new ArrayList<MovementDataModel>();
         var attacks = new ArrayList<AttackDataModel>();
 
@@ -115,29 +115,17 @@ public class GameStateService {
             }
         }
 
-        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, service, host.getPlayerId());
-        //var inverted = invertTurnResultIfHost(result, game, host);
+        if (game.getTurn() == 0) {
+            TurnLogicService.applyMovement(movements, game.getEntities(), gridService);
+            var result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
+            game.setTurn(game.getTurn() + 1);
+            return new Pair<>(result, gridService.getGridModel());
+        }
+
+        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, gridService, host.getPlayerId());
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);
-        return new Pair<>(result, service.getGridModel());
-    }
-
-    public TurnResult invertTurnResultIfHost(TurnResult result, GameModel game, Player host) {
-        var validMovement = result.getValidMoves().stream().map(m ->
-                        checkForOwnership(game, m.getCharacterId(), host) ? movementInverter(m) : m)
-                .toList();
-        var validAttacks = result.getValidAttacks().stream().map(a ->
-                        checkForOwnership(game, a.getAttacker(), host) ? attackInverter(a) : a)
-                .toList();
-        var movementConflicts = result.getMovementConflicts() != null ? result.getMovementConflicts().stream().map(
-                pair -> {
-                    var first = checkForOwnership(game, pair.getFirst().getCharacterId(), host) ?
-                            movementInverter(pair.getFirst()) : pair.getFirst();
-                    var second = checkForOwnership(game, pair.getSecond().getCharacterId(), host) ?
-                            movementInverter(pair.getSecond()) : pair.getSecond();
-                    return new PairNoOrder<>(first, second);
-                }).toList() : null;
-        return new TurnResult(result.getUpdatedCharacters(), movementConflicts, validMovement, validAttacks);
+        return new Pair<>(result, gridService.getGridModel());
     }
 
     public TurnResult invertResult(TurnResult result) {
