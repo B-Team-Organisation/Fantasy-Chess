@@ -183,8 +183,8 @@ public class GameScreen extends ScreenAdapter {
             });
         });
 
-        Gdx.input.setInputProcessor(stage);
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
+
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
@@ -203,8 +203,6 @@ public class GameScreen extends ScreenAdapter {
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
-
-        initializeStats();
     }
 
     @Override
@@ -244,7 +242,7 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (!grid.equals(focussedTile)) {
+        if (grid != null && !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
@@ -394,6 +392,8 @@ public class GameScreen extends ScreenAdapter {
 
         showStartRows(startRows);
         createSpritesForCharacters();
+
+        initializeStats();
     }
 
     public void initializeStats() {

@@ -162,6 +162,7 @@ public class TileMathService {
         float percentage = pointVector.dot(lineVector) / lineLengthSquared;
 
         return percentage;
+        //return Math.max(0f, Math.min(1f, percentage));
     }
 
     /**
