@@ -21,7 +21,7 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
-import com.bteam.fantasychess_client.graphics.StatsOverview;
+import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.GameMockStore;
@@ -262,7 +262,7 @@ public class GameScreen extends ScreenAdapter {
         List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
 
         if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
-            StatsOverview player1StatsTable = new StatsOverview("Your Characters", skin, this);
+            CharacterStatsTable player1StatsTable = new CharacterStatsTable("Your Characters", skin, this);
             player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
             player1StatsTable.setSize(450, 420);
             player1StatsTable.setPosition(50, stage.getHeight() - 450);
@@ -270,7 +270,7 @@ public class GameScreen extends ScreenAdapter {
         }
 
         if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
-            StatsOverview player2StatsTable = new StatsOverview("Opponent's Characters", skin, this);
+            CharacterStatsTable player2StatsTable = new CharacterStatsTable("Opponent's Characters", skin, this);
             player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
             player2StatsTable.setSize(450, 420);
             player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);

@@ -3,22 +3,19 @@ package com.bteam.fantasychess_client.graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.GameScreen;
 
 import java.util.List;
-import java.util.logging.Level;
 
 /**
  * A custom table for displaying character stats in a sidebar or dialog.
  */
-public class StatsOverview extends Table {
+public class CharacterStatsTable extends Table {
 
     private Skin skin;
     private List<CharacterEntity> characters;
@@ -33,7 +30,7 @@ public class StatsOverview extends Table {
      * @param title The title of the stats table ("Your Characters" or "Opponent Characters").
      * @param skin  The {@link Skin} used for styling the UI components.
      */
-    public StatsOverview(String title, Skin skin,GameScreen gameScreen) {
+    public CharacterStatsTable(String title, Skin skin, GameScreen gameScreen) {
         this.skin = skin;
         this.title = title;
         this.gameScreen = gameScreen;
@@ -51,10 +48,6 @@ public class StatsOverview extends Table {
 
         add(header).padTop(10).padBottom(10).center().row();
         add(scrollPane).expand().fill().pad(10);
-    }
-
-    public StatsOverview(Skin skin) {
-        this.skin = skin;
     }
 
     /**
@@ -143,7 +136,8 @@ public class StatsOverview extends Table {
 
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                showCharacterStatsDialog(character);
+                 CharacterStatsDialog statsDialog = new CharacterStatsDialog(skin,character);
+                 statsDialog.show(gameScreen.getStage());
             }
         });
 
@@ -208,25 +202,4 @@ public class StatsOverview extends Table {
         return Color.RED;
     }
 
-    /**
-     * Displays a dialog showing detailed statistics of a character.
-     *
-     * @param character The {@link CharacterEntity} whose statistics are displayed.
-     */
-    private void showCharacterStatsDialog(CharacterEntity character) {
-        Dialog statsDialog = new Dialog("Character Stats", skin);
-
-        String statsText = "Name: " + character.getCharacterBaseModel().getName() + "\n" +
-            "Health: " + character.getHealth() + " / " + character.getCharacterBaseModel().getHealth() + "\n" +
-            "Attack Power: " + character.getCharacterBaseModel().getAttackPower() + "\n" +
-            "Movement Pattern: " + character.getCharacterBaseModel().getMovementDescription() + "\n" +
-            "Attack Pattern: " + character.getCharacterBaseModel().getAttackDescription();
-
-        Label statsLabel = new Label(statsText, skin);
-        statsLabel.setAlignment(Align.left);
-        statsLabel.setFontScale(1.0f);
-        statsDialog.getContentTable().add(statsLabel).pad(10).row();
-        statsDialog.button("Close");
-        statsDialog.show(gameScreen.getStage());
-    }
 }
