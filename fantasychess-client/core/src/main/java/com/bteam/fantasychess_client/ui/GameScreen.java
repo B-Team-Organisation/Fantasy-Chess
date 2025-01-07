@@ -150,7 +150,7 @@ public class GameScreen extends ScreenAdapter {
         mapRenderer.setView(gameCamera);
 
         mapInputProcessor = new MapInputAdapter(
-            this, GameScreenMode.GAME_INIT, CommandMode.NO_SELECTION, mathService, gameCamera
+            this, GameScreenMode.LOBBY, CommandMode.NO_SELECTION, mathService, gameCamera
         );
 
         InputMultiplexer multiplexer = new InputMultiplexer();
@@ -198,8 +198,6 @@ public class GameScreen extends ScreenAdapter {
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
-
-        initializeGame();
     }
 
     @Override
