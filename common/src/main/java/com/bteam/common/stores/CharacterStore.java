@@ -58,6 +58,9 @@ public class CharacterStore {
                         "prometheusMove", new PatternModel("      \n x   x \n  x x  \n       \n   x   \n   x   \n", new HashMap<>(), "prometheusMove")
                 );
                 put(
+                        "flashAttack", new PatternModel("+", new HashMap<>(){{put('+',"flashSub");}}, "flashSub")
+                );
+                put(
                         "flashSub", new PatternModel("   + \n  +  \n + + \n  +  \n +   ", new HashMap<>(), "flashSub")
                 );
                 put(
