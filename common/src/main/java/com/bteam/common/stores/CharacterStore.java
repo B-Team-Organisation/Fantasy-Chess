@@ -43,7 +43,7 @@ public class CharacterStore {
                         "bomboMove", new PatternModel("xxx\nx x\nxxx", new HashMap<>(), "bomboMove")
                 );
                 put(
-                        "fitzoothAttack", new PatternModel("+++++\n +++ \n     \n     \n+   +", new HashMap<>(), "fitzoothAttack" )
+                        "fitzoothAttack", new PatternModel(" +++++ \n  +++  \n       \n+     +\n       \n       \n       ", new HashMap<>(), "fitzoothAttack" )
                 );
                 put(
                         "fitzoothMove", new PatternModel("     \n x   \nx   x\n   x \n     ", new HashMap<>(), "fitzoothMove")
@@ -55,7 +55,7 @@ public class CharacterStore {
                         "prometheusAttack", new PatternModel("+", new HashMap<>(){{put('+',"prometheusSub");}}, "prometheusAttack")
                 );
                 put(
-                        "prometheusMove", new PatternModel("x   x\n x x \n     \n  x  \n  x  \n", new HashMap<>(), "prometheusMove")
+                        "prometheusMove", new PatternModel("x   x\n x x \n     \n  x  \n  x  ", new HashMap<>(), "prometheusMove")
                 );
                 put(
                         "flashAttack", new PatternModel("+", new HashMap<>(){{put('+',"flashSub");}}, "flashSub")
@@ -73,13 +73,13 @@ public class CharacterStore {
                         "stablinAttack", new PatternModel("   \n   \n+++", new HashMap<>(), "stablinAttack")
                 );
                 put(
-                        "blossomSub", new PatternModel("xx xx\nx x x\n x x \n  x  \n     ", new HashMap<>(), "blossomSub")
+                        "blossomSub", new PatternModel("xx xx\nx x x\n x  x \n  x  \n     ", new HashMap<>(), "blossomSub")
                 );
                 put(
                         "blossomAttack", new PatternModel("+", new HashMap<>(){{put('+',"blossomSub");}}, "blossomAttack")
                 );
                 put(
-                        "blossomMove", new PatternModel("     \n x x \n x x \n  x  \n     ", new HashMap<>(), "blossomMove")
+                        "blossomMove", new PatternModel("x x\nx x\n x ", new HashMap<>(), "blossomMove")
                 );
             }};
 
