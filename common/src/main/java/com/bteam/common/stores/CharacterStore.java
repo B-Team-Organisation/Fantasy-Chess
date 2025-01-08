@@ -73,7 +73,7 @@ public class CharacterStore {
                         "stablinAttack", new PatternModel("   \n   \n+++", new HashMap<>(), "stablinAttack")
                 );
                 put(
-                        "blossomSub", new PatternModel("xx xx\nx x x\n x  x \n  x  \n     ", new HashMap<>(), "blossomSub")
+                        "blossomSub", new PatternModel("xx xx\nx x x\n x x \n  x  \n     ", new HashMap<>(), "blossomSub")
                 );
                 put(
                         "blossomAttack", new PatternModel("+", new HashMap<>(){{put('+',"blossomSub");}}, "blossomAttack")
