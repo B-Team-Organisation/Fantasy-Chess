@@ -11,8 +11,8 @@ import java.util.*;
  * Validates the pattern upon creation.
  * Makes it possible to get possible targets and tiles affected by actions of said targets.
  *
- * @author Lukas
- * @version 2.0
+ * @author Lukas, Jacinto
+ * @version 2.1
  */
 public class PatternService {
 
@@ -43,11 +43,35 @@ public class PatternService {
     }
 
     /**
+     * Private constructor for setting variables directly.
+     * <p />
+     * Use only if {@code relativeTargetMappings}
+     * and {@code attackAreasPerRelativePosition} have been checked for validity already.
+     *
+     * @param patternModel the services {@link PatternModel}
+     * @param patternStore the {@link PatternStore} containing all patterns
+     * @param relativeTargetMappings Relative positions mapped to characters from the pattern
+     * @param attackAreasPerRelativePosition Positions from the pattern mapped to attack areas from the subpatterns
+     */
+    private PatternService(
+            PatternModel patternModel, PatternStore patternStore,
+            Map<Vector2D, Character> relativeTargetMappings,
+            Map<Vector2D, Vector2D[]> attackAreasPerRelativePosition
+        ) {
+        this.patternStore = patternStore;
+        this.patternModel = patternModel;
+        this.relativeTargetMappings = relativeTargetMappings;
+        this.attackAreasPerRelativePosition = attackAreasPerRelativePosition;
+    }
+
+    /**
      * Reverses the pattern to handle second player coordinate transformation
      *
      */
-    public void reversePattern(){
-        Map<Vector2D,Vector2D[]> newattackAreasPerRelativePosition = new HashMap<>();
+    public PatternService reversePattern() {
+        Map<Vector2D,Vector2D[]> newAttackAreasPerRelativePosition = new HashMap<>();
+        Map<Vector2D, Character> newRelativeTargetMappings = new HashMap<>();
+
 
         for (Vector2D target : attackAreasPerRelativePosition.keySet()) {
 
@@ -58,10 +82,16 @@ public class PatternService {
                 newSubtargets[i] = reversePosition(oldSubtargets[i]);
             }
 
-            newattackAreasPerRelativePosition.put(reversePosition(target),newSubtargets);
+            newAttackAreasPerRelativePosition.put(reversePosition(target),newSubtargets);
         }
 
-        attackAreasPerRelativePosition = newattackAreasPerRelativePosition;
+        for (Vector2D target : relativeTargetMappings.keySet()) {
+            newRelativeTargetMappings.put(reversePosition(target), relativeTargetMappings.get(target));
+        }
+
+        return new PatternService(
+                patternModel, patternStore, newRelativeTargetMappings, newAttackAreasPerRelativePosition
+        );
     }
 
     /**
