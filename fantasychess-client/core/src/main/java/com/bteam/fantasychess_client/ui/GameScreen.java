@@ -681,6 +681,15 @@ public class GameScreen extends ScreenAdapter {
     }
 
     /**
+     * Creates and opens a menu
+     * <p>
+     * Gives the player the possibility to exit a match and go back to the main menu
+     */
+    public void openEscapeMenu() {
+        new EscapeMenu(skin).show(stage);
+    }
+
+    /**
      * Transforms grid coordinates into tiled map coordinates
      *
      * @param grid the grid coordinates
