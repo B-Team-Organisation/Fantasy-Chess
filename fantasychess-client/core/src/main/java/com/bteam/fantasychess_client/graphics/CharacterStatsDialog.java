@@ -9,6 +9,8 @@ import com.bteam.common.entities.CharacterEntity;
 
 /**
  * Stats Dialog for the Character Information
+ *
+ * @author albano
  */
 public class CharacterStatsDialog extends Dialog {
 
