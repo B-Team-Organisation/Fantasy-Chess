@@ -118,11 +118,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
-        getGameStateService().resetGame();
-        animationHandler = null;
-        if (!characterSprites.isEmpty()) characterSprites.clear();
-        if (!spriteMapper.isEmpty()) spriteMapper.clear();
-        getCommandManagementService().clearAll();
+        reset();
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -717,6 +713,14 @@ public class GameScreen extends ScreenAdapter {
      */
     private Vector2D gridToTiled(Vector2D grid) {
         return new Vector2D(grid.getX(), mathService.getMapHeight() - 1 - grid.getY());
+    }
+
+    public void reset(){
+        getGameStateService().resetGame();
+        animationHandler = null;
+        if (!characterSprites.isEmpty()) characterSprites.clear();
+        if (!spriteMapper.isEmpty()) spriteMapper.clear();
+        getCommandManagementService().clearAll();
     }
 
     @Override
