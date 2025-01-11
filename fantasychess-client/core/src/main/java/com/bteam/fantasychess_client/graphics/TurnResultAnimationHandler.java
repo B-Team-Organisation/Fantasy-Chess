@@ -1,13 +1,16 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.services.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
-import com.bteam.common.entities.CharacterEntity;
 
 import java.util.ArrayDeque;
 import java.util.Map;
+import java.util.logging.Level;
+
+import static com.bteam.fantasychess_client.Main.getLogger;
 
 /**
  * Class that handles the animation of a turn outcome
@@ -15,27 +18,27 @@ import java.util.Map;
  * Animated the turn outcome on basis of a turn result object.
  * Provides methods to start, progress and tell the status of the entire animation.
  *
- * @version 1.o
  * @author lukas jacinto
+ * @version 1.o
  */
 public class TurnResultAnimationHandler {
 
-    private ArrayDeque<AbstractAnimation> animationQueue;
+    private final ArrayDeque<AbstractAnimation> animationQueue;
     private boolean animationStarted;
 
     /**
      * Constructor
      *
-     * @param turnResult {@link TurnResult} to animate
+     * @param turnResult   {@link TurnResult} to animate
      * @param spriteMapper Object for getting the sprite corresponding to a {@link CharacterEntity}
      */
-    public TurnResultAnimationHandler(TurnResult turnResult, Map<String,CharacterSprite> spriteMapper){
+    public TurnResultAnimationHandler(TurnResult turnResult, Map<String, CharacterSprite> spriteMapper) {
         animationQueue = new ArrayDeque<>();
 
-        for (PairNoOrder<MovementDataModel,MovementDataModel> conflict : turnResult.getMovementConflicts()){
+        for (PairNoOrder<MovementDataModel, MovementDataModel> conflict : turnResult.getMovementConflicts()) {
             animationQueue.add(new CollisionAnimation(
-                conflict.getFirst(),spriteMapper.get(conflict.getFirst().getCharacterId()),
-                conflict.getSecond(),spriteMapper.get(conflict.getSecond().getCharacterId()))
+                conflict.getFirst(), spriteMapper.get(conflict.getFirst().getCharacterId()),
+                conflict.getSecond(), spriteMapper.get(conflict.getSecond().getCharacterId()))
             );
         }
 
@@ -64,24 +67,32 @@ public class TurnResultAnimationHandler {
      * <p>
      * Does nothing if the animation hasn't started yet
      */
-    public void progressAnimation(){
-        if (!animationStarted){
+    public void progressAnimation() {
+        if (!animationStarted) {
             return;
         }
 
-        if (animationQueue.getFirst().isAnimationOver()){
-            animationQueue.pop();
-            if (!animationQueue.isEmpty()){
-                animationQueue.getFirst().startAnimation();
-            }
+        if (animationQueue.isEmpty()) {
+            getLogger().log(Level.SEVERE, "Tried to progress Animation queue, which is empty.");
+            return;
         }
+
+        if (!animationQueue.getFirst().isAnimationOver()) return;
+        animationQueue.pop();
+
+        if (animationQueue.isEmpty()) return;
+        animationQueue.getFirst().startAnimation();
     }
 
     /**
      * Starts the animation
      */
-    public void startAnimation(){
+    public void startAnimation() {
         animationStarted = true;
+        if (animationQueue.isEmpty()) {
+            getLogger().log(Level.SEVERE, "Animation queue is empty, abandoning animation start!");
+            return;
+        }
         animationQueue.getFirst().startAnimation();
     }
 }

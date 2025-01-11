@@ -194,6 +194,7 @@ public class GameScreen extends ScreenAdapter {
             if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
                 Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
                 mapInputProcessor.setGameScreenMode(GameScreenMode.TURN_OUTCOME);
+                Main.getLogger().log(Level.SEVERE, "Log 1");
             }
         });
 
@@ -212,6 +213,12 @@ public class GameScreen extends ScreenAdapter {
         if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
             if (animationHandler == null) {
                 TurnResult turnResult = Main.getGameStateService().getTurnResult();
+                if (turnResult.getValidMoves().isEmpty() &&
+                    turnResult.getMovementConflicts().isEmpty() &&
+                    turnResult.getValidAttacks().isEmpty()) {
+                    mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                    return;
+                }
                 animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
                 animationHandler.startAnimation();
             }
