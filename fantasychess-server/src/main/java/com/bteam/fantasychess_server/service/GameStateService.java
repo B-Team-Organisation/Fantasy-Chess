@@ -172,4 +172,11 @@ public class GameStateService {
         var y = DEFAULT_GRID_SIZE - model.getMovementVector().getY() - 1;
         return new MovementDataModel(model.getCharacterId(), new Vector2D(x, y));
     }
+
+    public GameModel getGameModelForLobby(String lobbyId) {
+        for (var game : games.values()) {
+            if (game.getLobbyId().equals(lobbyId)) return game;
+        }
+        return null;
+    }
 }

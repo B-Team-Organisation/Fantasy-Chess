@@ -21,9 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
@@ -117,6 +118,10 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        getGameStateService().resetGame();
+        animationHandler = null;
+        if (!characterSprites.isEmpty()) characterSprites.clear();
+        if (!spriteMapper.isEmpty()) spriteMapper.clear();
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -169,19 +174,22 @@ public class GameScreen extends ScreenAdapter {
             });*/
         });
 
-        getWebSocketService().addPacketHandler("GAME_INIT", str -> {
-            Gdx.app.postRunnable(() -> {
-                getGameStateService().registerNewGame(9, 9);
-                var characters = CharacterEntityMapper.fromListDTO(str);
-                String gameId = new JsonReader().parse(str).get("data").getString("gameId");
-                getGameStateService().setGameId(gameId);
-                getGameStateService().updateCharacters(characters);
-                initializeGame();
-            });
-        });
+        getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
+            getLobbyService().setCurrentLobby(null);
+            getScreenManager().navigateTo(Screens.MainMenu);
+        }));
+
+        getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
+            getGameStateService().registerNewGame(9, 9);
+            var characters = CharacterEntityMapper.fromListDTO(str);
+            String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+            getGameStateService().setGameId(gameId);
+            getGameStateService().updateCharacters(characters);
+            initializeGame();
+        }));
 
         Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
+            Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
 

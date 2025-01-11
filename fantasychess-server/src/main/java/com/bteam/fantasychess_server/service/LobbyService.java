@@ -79,7 +79,7 @@ public class LobbyService {
     }
 
 
-    public LobbyModel lobbyWithPlayer(UUID uuid) {
+    public LobbyModel getLobbyWithPlayer(UUID uuid) {
         return lobbyModels.values().stream().filter(
                 lobby -> lobby.getPlayers().stream().anyMatch(
                     p -> Objects.equals(p.getPlayerId(), uuid.toString())))

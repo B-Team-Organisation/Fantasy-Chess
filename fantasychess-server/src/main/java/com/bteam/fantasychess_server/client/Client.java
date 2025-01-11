@@ -60,6 +60,7 @@ public class Client {
      */
     public Result<Boolean> sendPacket(Packet packet) {
         try {
+            System.out.println("Sending: " + packet.toString());
             session.sendMessage(new TextMessage(packet.toString()));
             return Result.asSuccess(true);
         } catch (Exception e) {

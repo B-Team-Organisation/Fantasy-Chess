@@ -41,10 +41,6 @@ public class ClientGameStateService {
         gridService = new GridService(new GridModel(9, 9));
     }
 
-    public void initNewGame() {
-        // TODO: Sent init Packet once players are ready
-    }
-
     /**
      * Registers a new game in the object
      * <p>
@@ -163,5 +159,15 @@ public class ClientGameStateService {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public void resetGame() {
+        friendlyCharacters.clear();
+        enemyCharacters.clear();
+        characters.clear();
+        gridService = new GridService(new GridModel(9, 9));
+        gameId = null;
+        turnResult = null;
+        onApplyTurnResult = new Event<>();
     }
 }

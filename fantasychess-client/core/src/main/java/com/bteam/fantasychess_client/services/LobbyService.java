@@ -48,9 +48,4 @@ public class LobbyService {
         if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return;
         getScreenManager().navigateTo(Screens.MainMenu);
     }
-
-    public void setPlayerReady(String id) {
-        currentLobby.addPlayer(new Player("", id, new ArrayList<>()));
-        if (currentLobby.getPlayers().size() == 2) Main.getGameStateService().initNewGame();
-    }
 }
