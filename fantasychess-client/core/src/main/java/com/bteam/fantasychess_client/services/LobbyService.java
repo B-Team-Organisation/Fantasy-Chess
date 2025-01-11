@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 
-import static com.bteam.fantasychess_client.Main.getLogger;
-import static com.bteam.fantasychess_client.Main.getScreenManager;
+import static com.bteam.fantasychess_client.Main.*;
 
 /**
  * Service callable to manage the current lobby
@@ -46,6 +45,10 @@ public class LobbyService {
         getLogger().log(Level.SEVERE, reason);
 
         if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return;
+
+        getGameStateService().resetGame();
+        getLobbyService().setCurrentLobby(null);
+
         getScreenManager().navigateTo(Screens.MainMenu);
     }
 }

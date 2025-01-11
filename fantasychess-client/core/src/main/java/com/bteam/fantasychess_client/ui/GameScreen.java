@@ -122,6 +122,7 @@ public class GameScreen extends ScreenAdapter {
         animationHandler = null;
         if (!characterSprites.isEmpty()) characterSprites.clear();
         if (!spriteMapper.isEmpty()) spriteMapper.clear();
+        getCommandManagementService().clearAll();
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -146,6 +147,8 @@ public class GameScreen extends ScreenAdapter {
             mapWidth, mapHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
         );
 
+
+        getLogger().log(Level.SEVERE, "Creating Layers");
         createFreshStartRowsLayer();
         createFreshSelectedCharacterLayer();
         createFreshHighlightLayer();
@@ -158,12 +161,14 @@ public class GameScreen extends ScreenAdapter {
             this, GameScreenMode.LOBBY, CommandMode.NO_SELECTION, mathService, gameCamera
         );
 
+        getLogger().log(Level.SEVERE, "Setting Input Processor");
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
+        getLogger().log(Level.SEVERE, "Registering PLAYER_READY packet handler");
         getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
             /*Gdx.app.postRunnable(() -> {
                 JsonReader reader = new JsonReader();
@@ -174,11 +179,14 @@ public class GameScreen extends ScreenAdapter {
             });*/
         });
 
+        getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
         getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
             getLobbyService().setCurrentLobby(null);
             getScreenManager().navigateTo(Screens.MainMenu);
         }));
 
+
+        getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
         getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
             getGameStateService().registerNewGame(9, 9);
             var characters = CharacterEntityMapper.fromListDTO(str);
@@ -188,11 +196,14 @@ public class GameScreen extends ScreenAdapter {
             initializeGame();
         }));
 
+
+        getLogger().log(Level.SEVERE, "Sending PLAYER_READY packet");
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
 
+        getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {
             if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
                 Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
@@ -201,6 +212,7 @@ public class GameScreen extends ScreenAdapter {
             }
         });
 
+        getLogger().log(Level.SEVERE, "Adding GAME_TURN_RESULT packet handler");
         getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
             TurnResult turnResult = TurnResultMapper.fromDTO(str);

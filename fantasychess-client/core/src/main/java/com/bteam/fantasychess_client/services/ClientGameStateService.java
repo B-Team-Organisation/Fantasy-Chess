@@ -25,7 +25,7 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
 public class ClientGameStateService {
     private final List<CharacterEntity> friendlyCharacters;
     private final List<CharacterEntity> enemyCharacters;
-    public Event<TurnResult> onApplyTurnResult = new Event<>();
+    public final Event<TurnResult> onApplyTurnResult = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
@@ -168,6 +168,6 @@ public class ClientGameStateService {
         gridService = new GridService(new GridModel(9, 9));
         gameId = null;
         turnResult = null;
-        onApplyTurnResult = new Event<>();
+        onApplyTurnResult.clear();
     }
 }
