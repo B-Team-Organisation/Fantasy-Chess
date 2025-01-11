@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * A custom table for displaying character stats in a sidebar or dialog.
  *
- * @author albano
+ * @author albano lukas
  */
 public class CharacterStatsTable extends Table {
 
