@@ -70,6 +70,12 @@ public class MapInputAdapter extends InputAdapter {
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
+        if (gridPos == null){
+            return false;
+        }
+
+        Main.getLogger().log(Level.SEVERE,"Clicked");
+
         if (button == Input.Buttons.LEFT) {
 
             switch (gameScreenMode) {
@@ -85,7 +91,6 @@ public class MapInputAdapter extends InputAdapter {
             return true;
 
         } else if (button == Input.Buttons.RIGHT) {
-
             gameScreen.resetSelection();
             commandMode = CommandMode.NO_SELECTION;
             return true;
@@ -94,6 +99,7 @@ public class MapInputAdapter extends InputAdapter {
 
         return false;
     }
+
 
     /**
      * Process the click in the context of the init mode
@@ -249,4 +255,6 @@ public class MapInputAdapter extends InputAdapter {
         this.commandMode = commandMode;
     }
 
+
 }
+
