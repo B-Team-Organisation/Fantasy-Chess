@@ -115,14 +115,14 @@ public class GameStateService {
             }
         }
 
+        TurnResult result;
         if (game.getTurn() == 0) {
             TurnLogicService.applyMovement(movements, game.getEntities(), gridService);
-            var result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
-            game.setTurn(game.getTurn() + 1);
-            return new Pair<>(result, gridService.getGridModel());
+            result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
+        } else {
+            result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks,
+                    gridService, host.getPlayerId());
         }
-
-        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, gridService, host.getPlayerId());
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);
         return new Pair<>(result, gridService.getGridModel());
