@@ -21,7 +21,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
@@ -177,8 +176,9 @@ public class GameScreen extends ScreenAdapter {
 
         getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
         getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
-            getLobbyService().setCurrentLobby(null);
-            getScreenManager().navigateTo(Screens.MainMenu);
+            var content = getLobbyService().onLobbyClosed(p);
+            GenericModal.Build("Lobby closed", content, skin,
+                () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
         }));
 
 
@@ -715,7 +715,7 @@ public class GameScreen extends ScreenAdapter {
         return new Vector2D(grid.getX(), mathService.getMapHeight() - 1 - grid.getY());
     }
 
-    public void reset(){
+    public void reset() {
         getGameStateService().resetGame();
         animationHandler = null;
         if (!characterSprites.isEmpty()) characterSprites.clear();

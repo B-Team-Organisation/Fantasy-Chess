@@ -2,11 +2,7 @@ package com.bteam.fantasychess_client.services;
 
 import com.badlogic.gdx.utils.JsonReader;
 import com.bteam.common.models.LobbyModel;
-import com.bteam.common.models.Player;
-import com.bteam.fantasychess_client.Main;
-import com.bteam.fantasychess_client.ui.Screens;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Level;
 
@@ -35,8 +31,8 @@ public class LobbyService {
         this.currentLobby = currentLobby;
     }
 
-    public void onLobbyClosed(String packet) {
-        if (currentLobby == null) return;
+    public String onLobbyClosed(String packet) {
+        if (currentLobby == null) return "";
         var receivedLobby = new JsonReader().parse(packet).get("data");
         var lobbyId = receivedLobby.get("lobbyId").asString();
         var reason = receivedLobby.get("reason").asString();
@@ -44,11 +40,10 @@ public class LobbyService {
         // TODO: Change to use notification system
         getLogger().log(Level.SEVERE, reason);
 
-        if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return;
+        if (!Objects.equals(currentLobby.getLobbyId(), lobbyId)) return reason;
 
         getGameStateService().resetGame();
         getLobbyService().setCurrentLobby(null);
-
-        getScreenManager().navigateTo(Screens.MainMenu);
+        return reason;
     }
 }
