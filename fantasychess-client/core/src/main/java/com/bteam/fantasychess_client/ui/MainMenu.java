@@ -71,9 +71,8 @@ public class MainMenu extends ScreenAdapter {
         Table table = new Table();
         table.setFillParent(true);
 
-        Label usernameLabel = createUserNameLabel();
-
         Label titleLabel = createTitleLabel();
+        Label usernameLabel = createUserNameLabel();
 
         Table topContent = new Table();
         topContent.setBackground(skin.getDrawable("round-dark-gray"));
@@ -132,14 +131,16 @@ public class MainMenu extends ScreenAdapter {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-        table.add(usernameLabel).expandX().left().padTop(0);
-        table.row();
+
         table.add(titleLabel).padBottom(20);
         table.row();
         table.add(topContent).width(1000).padBottom(20);
         table.row();
         table.add(scrollPane).width(1000).height(520).top();
         table.row();
+        table.add(usernameLabel).padTop(10);
+        table.row();
+
         table.add(noMatchingLobbyLabel).padTop(10);
 
         Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
@@ -160,8 +161,8 @@ public class MainMenu extends ScreenAdapter {
      * @return the {@link Label}
      */
     private Label createTitleLabel() {
-        Label titleLabel = new Label("FantasyChess", skin);
-        titleLabel.setFontScale(6f);
+        Label titleLabel = new Label("FantasyChess", skin, "title");
+        titleLabel.setFontScale(0.6f);
         return titleLabel;
     }
 
@@ -172,9 +173,9 @@ public class MainMenu extends ScreenAdapter {
      */
     private Label createUserNameLabel() {
         username = Gdx.app.getPreferences("userinfo").getString("username");
-        Label usernameLabel = new Label(username, skin);
-        usernameLabel.setFontScale(4f);
-        usernameLabel.setAlignment(Align.left);
+        Label usernameLabel = new Label("Username: "+username, skin);
+        usernameLabel.setFontScale(1f);
+        usernameLabel.setAlignment(Align.center);
         return usernameLabel;
     }
 

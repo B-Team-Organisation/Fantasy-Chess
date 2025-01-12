@@ -173,8 +173,8 @@ public class ClientGameStateService {
         this.turnResult = turnResult;
         Main.getLogger().log(Level.SEVERE, "Set turn result");
         TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
-        TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
-
+        //TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
+        
         List<CharacterEntity> deadCharacters = new ArrayList<>();
         for (CharacterEntity character : characters) {
             if (character.getHealth() == 0){

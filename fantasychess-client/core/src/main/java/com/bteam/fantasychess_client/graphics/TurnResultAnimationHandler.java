@@ -3,6 +3,7 @@ package com.bteam.fantasychess_client.graphics;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.services.TurnResult;
@@ -13,6 +14,9 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.ArrayDeque;
 import java.util.Map;
+import java.util.logging.Level;
+
+import static com.bteam.fantasychess_client.Main.getLogger;
 
 /**
  * Class that handles the animation of a turn outcome
@@ -20,11 +24,12 @@ import java.util.Map;
  * Animated the turn outcome on basis of a turn result object.
  * Provides methods to start, progress and tell the status of the entire animation.
  *
- * @version 1.o
  * @author lukas jacinto
+ * @version 1.1
  */
 public class TurnResultAnimationHandler {
 
+    private final ArrayDeque<AbstractAnimation> animationQueue;
     private TiledMap tiledMap;
     private TileMathService mathService;
     private TiledMapTileLayer outcomeLayer;
@@ -37,7 +42,7 @@ public class TurnResultAnimationHandler {
     /**
      * Constructor
      *
-     * @param turnResult {@link TurnResult} to animate
+     * @param turnResult   {@link TurnResult} to animate
      * @param spriteMapper Object for getting the sprite corresponding to a {@link CharacterEntity}
      */
     public TurnResultAnimationHandler(TurnResult turnResult, Map<String,CharacterSprite> spriteMapper, TiledMap tiledMap, TileMathService mathService, TextureAtlas atlas){
@@ -47,10 +52,10 @@ public class TurnResultAnimationHandler {
         this.mathService = mathService;
         refreshOutcomeLayer();
 
-        for (PairNoOrder<MovementDataModel,MovementDataModel> conflict : turnResult.getMovementConflicts()){
+        for (PairNoOrder<MovementDataModel, MovementDataModel> conflict : turnResult.getMovementConflicts()) {
             animationQueue.add(new CollisionAnimation(
-                conflict.getFirst(),spriteMapper.get(conflict.getFirst().getCharacterId()),
-                conflict.getSecond(),spriteMapper.get(conflict.getSecond().getCharacterId()))
+                conflict.getFirst(), spriteMapper.get(conflict.getFirst().getCharacterId()),
+                conflict.getSecond(), spriteMapper.get(conflict.getSecond().getCharacterId()))
             );
         }
 
@@ -87,30 +92,39 @@ public class TurnResultAnimationHandler {
      * <p>
      * Does nothing if the animation hasn't started yet
      */
-    public void progressAnimation(){
-        if (!animationStarted){
+    public void progressAnimation() {
+        if (!animationStarted) {
             return;
         }
 
-        if (animationQueue.getFirst().isAnimationOver()){
-            animationQueue.pop();
-            if (!animationQueue.isEmpty()){
-                refreshOutcomeLayer();
-                animationQueue.getFirst().startAnimation(outcomeLayer);
-            } else {
-                tiledMap.getLayers().remove(outcomeLayer);
-                animationOver = true;
-            }
+        if (animationQueue.isEmpty()) {
+            getLogger().log(Level.SEVERE, "Tried to progress Animation queue, which is empty.");
+            return;
         }
+
+        if (!animationQueue.getFirst().isAnimationOver()) return;
+        animationQueue.pop();
+
+        if (animationQueue.isEmpty()) {
+            tiledMap.getLayers().remove(outcomeLayer);
+            animationOver = true;
+            return;
+        }
+
+        refreshOutcomeLayer();
+        animationQueue.getFirst().startAnimation(outcomeLayer);
     }
 
     /**
      * Starts the animation
      */
-    public void startAnimation(){
-        this.outcomeLayer = outcomeLayer;
+    public void startAnimation() {
         animationStarted = true;
         refreshOutcomeLayer();
+        if (animationQueue.isEmpty()) {
+            getLogger().log(Level.SEVERE, "Animation queue is empty, abandoning animation start!");
+            return;
+        }
         animationQueue.getFirst().startAnimation(outcomeLayer);
     }
 }
