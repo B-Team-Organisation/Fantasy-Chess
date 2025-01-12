@@ -177,7 +177,7 @@ public class GameScreen extends ScreenAdapter {
         getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
         getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
             var content = getLobbyService().onLobbyClosed(p);
-            GenericModal.Build("Lobby closed", content, skin,
+            GenericModal.Build("Lobby Closed!", content + "\nReturning to Main Menu.", skin,
                 () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
         }));
 

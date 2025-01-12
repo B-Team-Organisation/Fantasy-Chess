@@ -31,6 +31,7 @@ public class GenericModal extends Dialog {
         setMovable(false);
         setResizable(false);
         text(content);
+
         this.callback = callback;
         button("Ok", "ok");
     }
