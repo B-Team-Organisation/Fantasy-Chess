@@ -24,7 +24,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
@@ -120,6 +120,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        reset();
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -144,6 +145,8 @@ public class GameScreen extends ScreenAdapter {
             mapWidth, mapHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
         );
 
+
+        getLogger().log(Level.SEVERE, "Creating Layers");
         createFreshStartRowsLayer();
         createFreshSelectedCharacterLayer();
         createFreshHighlightLayer();
@@ -156,40 +159,41 @@ public class GameScreen extends ScreenAdapter {
             this, GameScreenMode.LOBBY, CommandMode.NO_SELECTION, mathService, gameCamera
         );
 
+        getLogger().log(Level.SEVERE, "Setting Input Processor");
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
-        getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
-            /*Gdx.app.postRunnable(() -> {
-                JsonReader reader = new JsonReader();
-                JsonValue data = reader.parse(p).get("data");
-                String clientId = data.getString("clientId");
-                boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
-                Main.getLobbyService().setPlayerReady(clientId);
-            });*/
-        });
+        getLogger().log(Level.SEVERE, "Registering PLAYER_READY packet handler");
 
-        getWebSocketService().addPacketHandler("GAME_INIT", str -> {
-            Gdx.app.postRunnable(() -> {
-                getGameStateService().registerNewGame(9, 9);
-                var characters = CharacterEntityMapper.fromListDTO(str);
-                String gameId = new JsonReader().parse(str).get("data").getString("gameId");
-                getGameStateService().setGameId(gameId);
-                getGameStateService().setCharacters(characters);
-                initializeGame();
-            });
-        });
+        getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
+        getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
+            var content = getLobbyService().onLobbyClosed(p);
+            GenericModal.Build("Lobby Closed!", content + "\nReturning to Main Menu.", skin,
+                () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
+        }));
+
+
+        getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
+        getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
+            getGameStateService().registerNewGame(9, 9);
+            var characters = CharacterEntityMapper.fromListDTO(str);
+            String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+            getGameStateService().setGameId(gameId);
+            getGameStateService().setCharacters(characters);
+            initializeGame();
+        }));
 
         getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
 
         Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
+            Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
 
+        getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {
             if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
                 Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
@@ -731,6 +735,15 @@ public class GameScreen extends ScreenAdapter {
     }
 
     /**
+     * Creates and opens a menu
+     * <p>
+     * Gives the player the possibility to exit a match and go back to the main menu
+     */
+    public void openEscapeMenu() {
+        new EscapeMenu(skin).show(stage);
+    }
+
+    /**
      * Transforms grid coordinates into tiled map coordinates
      *
      * @param grid the grid coordinates
@@ -738,6 +751,14 @@ public class GameScreen extends ScreenAdapter {
      */
     private Vector2D gridToTiled(Vector2D grid) {
         return new Vector2D(grid.getX(), mathService.getMapHeight() - 1 - grid.getY());
+    }
+
+    public void reset() {
+        getGameStateService().resetGame();
+        animationHandler = null;
+        if (!characterSprites.isEmpty()) characterSprites.clear();
+        if (!spriteMapper.isEmpty()) spriteMapper.clear();
+        getCommandManagementService().clearAll();
     }
 
     @Override

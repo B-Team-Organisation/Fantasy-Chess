@@ -3,7 +3,7 @@ package com.bteam.fantasychess_server.client.interceptors;
 import com.bteam.common.dto.CharacterEntityDTO;
 import com.bteam.common.dto.GameInitDTO;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GameSettingsModel;
 import com.bteam.common.models.Player;
@@ -51,18 +51,18 @@ public class PlayerPacketHandler implements PacketHandler {
 
         switch (id) {
             case "PLAYER_READY":
-                var dto = mapper.convertValue(data, PlayerReadyDTO.class);
+                var dto = mapper.convertValue(data, PlayerStatusDTO.class);
                 var playerId = UUID.fromString(client.getPlayer().getPlayerId());
-                var isReady = Objects.equals(dto.getStatus(), PlayerReadyDTO.PLAYER_READY);
-                var lobby = lobbyService.lobbyWithPlayer(playerId);
+                var isReady = Objects.equals(dto.getStatus(), PlayerStatusDTO.PLAYER_READY);
+                var lobby = lobbyService.getLobbyWithPlayer(playerId);
                 playerService.setPlayerStatus(playerId, isReady ?
                     Player.Status.READY : Player.Status.NOT_READY);
                 var playersToNotify = lobby.getPlayers();
                 for (var player : playersToNotify) {
                     var readyPlayerId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
-                        PlayerReadyDTO.ready(readyPlayerId) :
-                        PlayerReadyDTO.notReady(readyPlayerId), "PLAYER_READY");
+                        PlayerStatusDTO.ready(readyPlayerId) :
+                        PlayerStatusDTO.notReady(readyPlayerId), "PLAYER_READY");
                     webSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
                 if (lobby.getPlayers().size() == 2) {
@@ -72,16 +72,28 @@ public class PlayerPacketHandler implements PacketHandler {
 
                     for (var p : lobby.getPlayers()) {
                         var playerUUID = UUID.fromString(p.getPlayerId());
-                        var charactersToSend = lobbyService.lobbyWithPlayer(playerUUID).isHost(p) ?
+                        var charactersToSend = lobbyService.getLobbyWithPlayer(playerUUID).isHost(p) ?
                             dtos.stream().map(this::invertEntityPosition).toList() : dtos;
 
                         var dataToSend = new GameInitDTO(charactersToSend, model.getId());
                         var packetToSend = new Packet(dataToSend, "GAME_INIT");
-                        webSocketService
-                            .getCurrentClientForPlayer(p)
-                            .sendPacket(packetToSend);
+                        webSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                     }
                 }
+                break;
+            case "PLAYER_ABANDONED":
+                var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
+                var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
+
+                var game = gameStateService.getGameModelForLobby(abandonedLobby.getLobbyId());
+                gameStateService.cancelGame(UUID.fromString(game.getId()));
+
+                for (var player : abandonedLobby.getPlayers()) {
+                    player.setStatus(Player.Status.NOT_READY);
+                }
+
+                abandonedLobby.removePlayer(client.getPlayer());
+                lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()),"Opponent has abandoned the game");
                 break;
             default:
                 break;

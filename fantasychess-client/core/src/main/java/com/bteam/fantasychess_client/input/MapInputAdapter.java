@@ -14,6 +14,7 @@ import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.CommandMode;
+import com.bteam.fantasychess_client.ui.EscapeMenu;
 import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
@@ -53,6 +54,14 @@ public class MapInputAdapter extends InputAdapter {
         this.commandMode = commandMode;
         this.mathService = mathService;
         this.gameCamera = gameCamera;
+    }
+
+    @Override
+    public boolean keyUp(int keycode){
+        if (keycode == Input.Keys.ESCAPE){
+            gameScreen.openEscapeMenu();
+        }
+        return false;
     }
 
     @Override

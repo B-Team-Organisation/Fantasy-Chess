@@ -28,14 +28,12 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
 public class ClientGameStateService {
     private final List<CharacterEntity> friendlyCharacters;
     private final List<CharacterEntity> enemyCharacters;
-    public Event<TurnResult> onApplyTurnResult = new Event<>();
-    public Event<CharacterEntity> onCharacterDeath = new Event<>();
+    public final Event<TurnResult> onApplyTurnResult = new Event<>();
+    public final Event<CharacterEntity> onCharacterDeath = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
     private TurnResult turnResult;
-
-
 
     /**
      * Default constructor of {@link ClientGameStateService}
@@ -50,8 +48,6 @@ public class ClientGameStateService {
     public void initNewGame() {
         // TODO: Sent init Packet once players are ready
     }
-
-
 
     /**
      * Registers a new game in the object
@@ -211,5 +207,15 @@ public class ClientGameStateService {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public void resetGame() {
+        friendlyCharacters.clear();
+        enemyCharacters.clear();
+        characters.clear();
+        gridService = new GridService(new GridModel(9, 9));
+        gameId = null;
+        turnResult = null;
+        onApplyTurnResult.clear();
     }
 }

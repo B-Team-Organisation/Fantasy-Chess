@@ -54,7 +54,7 @@ public class GamePacketHandler implements PacketHandler {
                 if (game.getCommands().size() < 2) break;
 
                 var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
-                var players = lobbyService.lobbyWithPlayer(playerUUID).getPlayers();
+                var players = lobbyService.getLobbyWithPlayer(playerUUID).getPlayers();
                 var result = gameStateService.processMoves(gameId, game.getCommands());
                 for (var p : players) {
                     Packet packetToSend;
