@@ -53,8 +53,8 @@ public class TestTurnLogic {
 			throw new RuntimeException(e);
 		}
 
-		exploCharData = new CharacterDataModel("explo","",10,5,new PatternService[]{exploPatternService},new PatternService[0]);
-		twoEachCharData = new CharacterDataModel("twoEach","",10,5,new PatternService[]{twoEachPatternService},new PatternService[]{twoEachPatternService});
+		exploCharData = new CharacterDataModel("explo","",10,5,new PatternService[]{exploPatternService},new PatternService[0],"","");
+		twoEachCharData = new CharacterDataModel("twoEach","",10,5,new PatternService[]{twoEachPatternService},new PatternService[]{twoEachPatternService},"","");
 	}
 
 	@BeforeEach

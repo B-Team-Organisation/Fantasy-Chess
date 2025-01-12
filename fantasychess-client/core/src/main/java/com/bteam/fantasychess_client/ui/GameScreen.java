@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerReadyDTO;
@@ -32,6 +33,7 @@ import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
 import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
@@ -39,6 +41,7 @@ import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.fantasychess_client.Main.*;
@@ -180,6 +183,8 @@ public class GameScreen extends ScreenAdapter {
             });
         });
 
+        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
+
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
@@ -244,7 +249,7 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (!grid.equals(focussedTile)) {
+        if (grid != null && !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
@@ -394,7 +399,31 @@ public class GameScreen extends ScreenAdapter {
 
         showStartRows(startRows);
         createSpritesForCharacters();
+
+        initializeStats();
     }
+
+    public void initializeStats() {
+        List<CharacterEntity> friendlyCharacters = Main.getGameStateService().getFriendlyCharacters();
+        List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
+
+        if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
+            CharacterStatsTable player1StatsTable = new CharacterStatsTable("Your Characters", skin, this);
+            player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
+            player1StatsTable.setSize(450, 420);
+            player1StatsTable.setPosition(50, stage.getHeight() - 450);
+            stage.addActor(player1StatsTable);
+        }
+
+        if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
+            CharacterStatsTable player2StatsTable = new CharacterStatsTable("Opponent's Characters", skin, this);
+            player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
+            player2StatsTable.setSize(450, 420);
+            player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
+            stage.addActor(player2StatsTable);
+        }
+    }
+
 
     /**
      * Transitions the game to the main phase
@@ -586,7 +615,7 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Getter for the selected {@link CharacterEntity}
      *
-     * @return
+     * @return the selected character
      */
     public CharacterEntity getSelectedCharacter() {
         return selectedCharacter;
@@ -702,4 +731,9 @@ public class GameScreen extends ScreenAdapter {
         atlas.dispose();
         batch.dispose();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
 }

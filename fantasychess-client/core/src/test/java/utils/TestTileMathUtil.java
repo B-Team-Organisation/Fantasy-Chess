@@ -81,10 +81,14 @@ class TestTileMathUtil {
     void testWorldToGrid(){
         TileMathService tileMathService = new TileMathService(9,9, basicTiledMap,32,16);
 
-        Vector2 mouse = new Vector2(144,18);
+        Vector2 mouse = new Vector2(144,0);
         Vector2D result = tileMathService.worldToGrid(mouse.x, mouse.y);
-        Assertions.assertEquals(7, result.getX(),0.1);
+        Assertions.assertEquals(8, result.getX(),0.1);
         Assertions.assertEquals(0, result.getY(),0.1);
+
+        mouse = new Vector2(-1233,10);
+        result = tileMathService.worldToGrid(mouse.x,mouse.y);
+        Assertions.assertNull(result);
     }
 
     @Test

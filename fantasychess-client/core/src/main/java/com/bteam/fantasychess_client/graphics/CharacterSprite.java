@@ -33,6 +33,10 @@ public class CharacterSprite extends Sprite {
     private final float xOffset;
     private final float yOffset;
 
+    public CharacterEntity getCharacter() {
+        return character;
+    }
+
     /**
      * Constructor for CharacterSprites
      *

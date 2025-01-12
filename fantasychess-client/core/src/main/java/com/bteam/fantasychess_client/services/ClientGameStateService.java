@@ -31,6 +31,8 @@ public class ClientGameStateService {
     private String gameId;
     private TurnResult turnResult;
 
+
+
     /**
      * Default constructor of {@link ClientGameStateService}
      */
@@ -44,6 +46,8 @@ public class ClientGameStateService {
     public void initNewGame() {
         // TODO: Sent init Packet once players are ready
     }
+
+
 
     /**
      * Registers a new game in the object

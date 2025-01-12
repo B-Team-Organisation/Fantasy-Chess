@@ -207,22 +207,22 @@ public class CharacterStore {
         ));
 */
         characters.put("blossom", new CharacterDataModel("blossom", "Fights with the power of love",
-                35, 5, new PatternService[]{blossomAttackService}, new PatternService[]{blossomMoveService}
+                35, 5, new PatternService[]{blossomAttackService}, new PatternService[]{blossomMoveService},"Attacks in a heart-shape.","Moves in a small heart-shape."
         ));
         characters.put("bombo", new CharacterDataModel("bombo", "Likes to experiment with explosives",
-                28, 8, new PatternService[]{bomboAttackService}, new PatternService[]{bomboMoveService}
+                28, 8, new PatternService[]{bomboAttackService}, new PatternService[]{bomboMoveService},"Throws bombs that explode.","Moves slowly because of all the bombs he has to carry."
         ));
         characters.put("fitzooth", new CharacterDataModel("fitzooth", "Robin Hood Fitzooth simbolizes precision and agility",
-                20, 17, new PatternService[]{fitzoothAttackService}, new PatternService[]{fitzoothMoveService}
+                20, 17, new PatternService[]{fitzoothAttackService}, new PatternService[]{fitzoothMoveService},"Shoots powerful arrows.","Moves unpredictably."
         ));
         characters.put("prometheus", new CharacterDataModel("prometheus", "He risked divine wrath to gift humanity fire",
-                20, 20, new PatternService[]{prometheusAttackService}, new PatternService[]{prometheusMoveService}
+                20, 20, new PatternService[]{prometheusAttackService}, new PatternService[]{prometheusMoveService},"Explodes in self-sacrifice.","Dashes into the enemy."
         ));
         characters.put("flash", new CharacterDataModel("flash", "Can hit you from everywhere",
-                17, 6, new PatternService[]{flashAttackService}, new PatternService[]{flashMoveService}
+                17, 6, new PatternService[]{flashAttackService}, new PatternService[]{flashMoveService},"Attacks in a lightning shape.","Moves in all four directions."
         ));
         characters.put("stablin", new CharacterDataModel("stablin", "Likes to stab others in their back",
-                21, 25, new PatternService[]{stablinAttackService}, new PatternService[]{stablinMoveService}
+                21, 25, new PatternService[]{stablinAttackService}, new PatternService[]{stablinMoveService},"Stabs characters in the back.","Jumps behind the enemy."
         ));
     }
 
