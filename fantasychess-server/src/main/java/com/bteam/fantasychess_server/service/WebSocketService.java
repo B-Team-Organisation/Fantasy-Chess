@@ -171,11 +171,9 @@ public class WebSocketService {
      */
     public void onClientDisconnect(Client client) {
         var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
-        var hostedLobbies = lobbyService.getHostedLobbies(playerUUID);
-
-        for (var hostedLobby : hostedLobbies) {
-            lobbyService.closeLobby(UUID.fromString(hostedLobby.getLobbyId()), "Host has disconnected");
-        }
+        var lobby = lobbyService.getLobbyWithPlayer(playerUUID);
+        lobbyService.closeLobby(UUID.fromString(lobby.getLobbyId()),
+                "Your opponent has disconnected, abandoning match.");
     }
 
     /**

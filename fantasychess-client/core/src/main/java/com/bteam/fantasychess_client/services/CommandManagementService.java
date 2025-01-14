@@ -110,4 +110,9 @@ public class CommandManagementService {
         Packet packet = new Packet(commandListDTO, GAME_COMMANDS);
         getWebSocketService().send(packet);
     }
+
+    public void removeCommandForEntity(String entityId) {
+        attacks.remove(entityId);
+        movements.remove(entityId);
+    }
 }

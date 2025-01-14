@@ -14,7 +14,6 @@ import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.CommandMode;
-import com.bteam.fantasychess_client.ui.EscapeMenu;
 import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
@@ -57,8 +56,8 @@ public class MapInputAdapter extends InputAdapter {
     }
 
     @Override
-    public boolean keyUp(int keycode){
-        if (keycode == Input.Keys.ESCAPE){
+    public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.ESCAPE) {
             gameScreen.openEscapeMenu();
         }
         return false;
@@ -67,14 +66,14 @@ public class MapInputAdapter extends InputAdapter {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
-        Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
+        Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX, screenY, 0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
-        if (gridPos == null){
+        if (gridPos == null) {
             return false;
         }
 
-        Main.getLogger().log(Level.SEVERE,"Clicked");
+        Main.getLogger().log(Level.SEVERE, "Clicked");
 
         if (button == Input.Buttons.LEFT) {
 
@@ -88,11 +87,6 @@ public class MapInputAdapter extends InputAdapter {
                     processClickInCommandMode(gridPos);
                     break;
             }
-            return true;
-
-        } else if (button == Input.Buttons.RIGHT) {
-            gameScreen.resetSelection();
-            commandMode = CommandMode.NO_SELECTION;
             return true;
 
         }
@@ -192,8 +186,11 @@ public class MapInputAdapter extends InputAdapter {
             }
             case MOVE_MODE: {
                 getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
-                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
-                Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(), gridPos));
+                if (Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) {
+                    Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(), gridPos));
+                } else {
+                    Main.getCommandManagementService().removeCommandForEntity(gameScreen.getSelectedCharacter().getId());
+                }
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
                 break;
@@ -201,19 +198,22 @@ public class MapInputAdapter extends InputAdapter {
 
             case ATTACK_MODE: {
                 getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
-                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
 
-                CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
+                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) {
+                    CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
 
-                AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
+                    AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
 
-                Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(),gridPos);
-                HashMap<Vector2D, Integer> damageValues = new HashMap<>();
-                for (Vector2D position : areaOfEffect){
-                    damageValues.put(position,selectedCharacter.getCharacterBaseModel().getAttackPower());
+                    Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(), gridPos);
+                    HashMap<Vector2D, Integer> damageValues = new HashMap<>();
+                    for (Vector2D position : areaOfEffect) {
+                        damageValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower());
+                    }
+
+                    Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
+                } else {
+                    Main.getCommandManagementService().removeCommandForEntity(gameScreen.getSelectedCharacter().getId());
                 }
-
-                Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
 
                 commandMode = CommandMode.NO_SELECTION;
                 gameScreen.resetSelection();
