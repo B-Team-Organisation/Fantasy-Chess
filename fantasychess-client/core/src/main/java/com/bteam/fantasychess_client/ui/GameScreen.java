@@ -341,6 +341,12 @@ public class GameScreen extends ScreenAdapter {
 
                 int requiredCommandCount = Main.getGameStateService().getFriendlyCharacterCount();
 
+                if (requiredCommandCount == 0){
+                    setVisible(false);
+                    return;
+                }
+
+                setVisible(true);
                 if (commandCount == requiredCommandCount) {
                     setText("Send commands!");
                 } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
