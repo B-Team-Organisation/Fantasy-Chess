@@ -50,10 +50,10 @@ public class LobbyScreen extends Dialog {
         getContentTable().right();
         text(statusPlayer2.toString());
 
-        button("LEAVE", "leave");
-        button("START", "start");
+        button("◀ LEAVE", "leave");
+        button("READY", "ready");
+        button("START ▶", "start");
 
     }
-
 
 }
