@@ -48,18 +48,4 @@ public class EndGameDialog extends Dialog {
             Main.getScreenManager().navigateTo(Screens.MainMenu);
         }
     }
-
-    /**
-     * Shows the end game dialog centered on the stage.
-     *
-     * @param stage The stage to display the dialog on.
-     * @return null
-     */
-    public Dialog show(Stage stage) {
-        getLogger().log(Level.SEVERE, "Starting end game dialog...");
-        setPosition((stage.getWidth() - getWidth()) / 2, (stage.getHeight() - getHeight()) / 2);
-        getLogger().log(Level.SEVERE, "Showing stage...");
-        show(stage);
-        return this;
-    }
 }
