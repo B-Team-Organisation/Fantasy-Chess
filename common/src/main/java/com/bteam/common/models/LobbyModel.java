@@ -123,7 +123,7 @@ public class LobbyModel {
     public void removePlayer(Player player) {
         this.players.remove(player);
 
-        if (this.players.size() < maxPlayers) {
+        if (gameState != GameState.CLOSED && this.players.size() < maxPlayers) {
             gameState = GameState.OPEN;
         }
     }
