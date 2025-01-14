@@ -14,8 +14,8 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 
-import java.util.logging.Level;
-
+import static com.bteam.fantasychess_client.Main.getScreenManager;
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -57,7 +57,7 @@ public class SplashScreen extends ScreenAdapter {
         table.defaults().pad(20);
 
         // Title label
-        Label titleLabel = new Label("Fantasy-Chess", skin,"title");
+        Label titleLabel = new Label("Fantasy-Chess", skin, "title");
         titleLabel.setFontScale(1f);
 
         // Main widgets
@@ -84,14 +84,15 @@ public class SplashScreen extends ScreenAdapter {
                 }
             }
         });
+
         usernameInput.setTextFieldFilter((textField, c) -> Character.isLetterOrDigit(c));
 
         // Playbutton logic
         onChange(playButton, () -> {
             Gdx.app.getPreferences("userinfo").putString("username", usernameInput.getText());
             Gdx.app.getPreferences("userinfo").flush();
-            Gdx.app.postRunnable(() -> Main.getWebSocketService().registerAndConnect(usernameInput.getText()));
-            Main.getWebSocketService().getClient().onOpenEvent.addListener(s -> {
+            Gdx.app.postRunnable(() -> getWebSocketService().registerAndConnect(usernameInput.getText()));
+            getWebSocketService().getClient().onOpenEvent.addListener(s -> {
                 Main.getScreenManager().navigateTo(Screens.MainMenu);
             });
         });
@@ -127,6 +128,9 @@ public class SplashScreen extends ScreenAdapter {
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         Gdx.input.setInputProcessor(multiplexer);
+
+        getWebSocketService().getClient().onCloseEvent.clear();
+        getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
     }
 
     @Override
@@ -146,5 +150,11 @@ public class SplashScreen extends ScreenAdapter {
     public void dispose() {
         stage.dispose();
         skin.dispose();
+    }
+
+    public void onDisconnect(String reason) {
+        GenericModal.Build("Disconnected",
+            "Connection to the server has been lost: " + reason,
+            skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 }
