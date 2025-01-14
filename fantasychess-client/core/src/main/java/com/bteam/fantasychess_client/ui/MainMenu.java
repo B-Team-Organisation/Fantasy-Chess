@@ -168,6 +168,16 @@ public class MainMenu extends ScreenAdapter {
     }
 
     /**
+     * Creates and opens a menu
+     * <p>
+     * Gives the player the possibility to exit a match and go back to the main menu
+     */
+    public void openEscapeMenu() {
+        new EscapeMenu(skin).show(stage);
+    }
+
+
+    /**
      * Creates the label that shows the user his name
      *
      * @return the {@link Label}

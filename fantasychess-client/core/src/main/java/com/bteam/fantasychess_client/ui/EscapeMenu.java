@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
-import com.bteam.common.models.Player;
 import com.bteam.fantasychess_client.Main;
 
 /**
