@@ -15,22 +15,15 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnResult;
-import com.bteam.common.models.*;
-import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
@@ -41,10 +34,9 @@ import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import static com.bteam.common.services.TurnLogicService.checkForWinner;
 import static com.bteam.fantasychess_client.Main.*;
@@ -60,20 +52,19 @@ import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
  */
 public class GameScreen extends ScreenAdapter {
 
-    private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
     public static final int TILE_PIXEL_WIDTH = 32;
     public static final int TILE_PIXEL_HEIGHT = 16;
+    private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
 
     private final OrthographicCamera uiCamera;
     private final ExtendViewport uiViewport;
     private final Skin skin;
-
-    private List<CharacterSprite> characterSprites = new ArrayList<>();
     private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
     private final BitmapFont damageFont;
     private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
+    private final List<CharacterSprite> characterSprites = new ArrayList<>();
     private Stage stage;
     private TextButton readyButton;
     private TextureAtlas atlas;
@@ -132,9 +123,9 @@ public class GameScreen extends ScreenAdapter {
         table.setFillParent(true);
 
         readyButton = createReadyButton();
-        table.pad(0,30,30,30);
-        readyButton.setSize(200,100);
-        table.bottom().right().add(readyButton).size(200,100);
+        table.pad(0, 30, 30, 30);
+        readyButton.setSize(200, 100);
+        table.bottom().right().add(readyButton).size(200, 100);
 
         stage.addActor(table);
 
@@ -219,6 +210,9 @@ public class GameScreen extends ScreenAdapter {
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
 
+        getWebSocketService().getClient().onCloseEvent.clear();
+        getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
+
         getGameStateService().onWin.addListener(playerID -> {
             getLogger().log(Level.SEVERE, "Received Win Result: " + playerID);
             //getLogger().log(Level.SEVERE, Main.getLobbyService().getCurrentLobby().getPlayers().toString());
@@ -246,7 +240,7 @@ public class GameScreen extends ScreenAdapter {
                     return;
                 }
 
-                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper,tiledMap,mathService,atlas);
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
                 animationHandler.startAnimation();
             }
 
@@ -340,11 +334,7 @@ public class GameScreen extends ScreenAdapter {
         TextButton readyButton = new TextButton("", skin) {
             @Override
             public void act(float delta) {
-                if (mapInputProcessor.getGameScreenMode() == GameScreenMode.COMMAND_MODE || mapInputProcessor.getGameScreenMode() == GameScreenMode.GAME_INIT) {
-                    setDisabled(false);
-                } else {
-                    setDisabled(true);
-                }
+                setDisabled(mapInputProcessor.getGameScreenMode() != GameScreenMode.COMMAND_MODE && mapInputProcessor.getGameScreenMode() != GameScreenMode.GAME_INIT);
 
                 int commandCount = 0;
                 commandCount += Main.getCommandManagementService().getMovementsCommands().size();
@@ -479,6 +469,7 @@ public class GameScreen extends ScreenAdapter {
 
     /**
      * Kill a character
+     *
      * @param character
      */
 
@@ -489,7 +480,7 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Removes a Sprite for a given Character
      */
-    private void deleteSpriteForCharacter(String id){
+    private void deleteSpriteForCharacter(String id) {
         var sprite = spriteMapper.remove(id);
         if (sprite != null) {
             characterSprites.remove(sprite);
@@ -778,7 +769,7 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
-        uiViewport.update(width,height,true);
+        uiViewport.update(width, height, true);
         stage.getViewport().update(width, height, true);
     }
 
@@ -792,6 +783,11 @@ public class GameScreen extends ScreenAdapter {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void onDisconnect(String reason) {
+        GenericModal.Build("Disconnected", "Connection to the server has been lost: " + reason,
+            skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 
 }
