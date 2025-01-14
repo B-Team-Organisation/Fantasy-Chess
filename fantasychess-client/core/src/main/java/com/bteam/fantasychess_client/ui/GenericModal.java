@@ -59,7 +59,7 @@ public class GenericModal extends Dialog {
     @Override
     public void result(Object obj) {
         if (obj.equals("ok")) {
-            callback.run();
+            if (callback != null) callback.run();
             this.hide();
         }
     }
