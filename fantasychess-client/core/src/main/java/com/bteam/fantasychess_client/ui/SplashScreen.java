@@ -133,7 +133,10 @@ public class SplashScreen extends ScreenAdapter {
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
         getWebSocketService().onRequestCanceled.clear();
-        getWebSocketService().onRequestCanceled.addListener(this::onConnectionFailed);
+        getWebSocketService().onRequestCanceled.addListener(this::onConnectionCancelled);
+
+        getWebSocketService().onRequestError.clear();
+        getWebSocketService().onRequestError.addListener(this::onConnectionError);
     }
 
     @Override
@@ -161,9 +164,15 @@ public class SplashScreen extends ScreenAdapter {
             skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 
-    private void onConnectionFailed(Void v) {
-        GenericModal.Build("Request failed",
+    private void onConnectionCancelled(Void v) {
+        GenericModal.Build("Request cancelled",
             "Unable to connect to server, it seems to be offline.",
+            skin, null, stage);
+    }
+
+    private void onConnectionError(Throwable t) {
+        GenericModal.Build("Request failed",
+            "Unable to connect to server: " + t.getMessage(),
             skin, null, stage);
     }
 }
