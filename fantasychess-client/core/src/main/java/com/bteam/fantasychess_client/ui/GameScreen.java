@@ -21,9 +21,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.PlayerReadyDTO;
+import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
@@ -35,6 +36,7 @@ import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
 import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
 import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
@@ -42,6 +44,7 @@ import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -121,6 +124,7 @@ public class GameScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        reset();
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -145,6 +149,8 @@ public class GameScreen extends ScreenAdapter {
             mapWidth, mapHeight, tiledMap, TILE_PIXEL_WIDTH, TILE_PIXEL_HEIGHT
         );
 
+
+        getLogger().log(Level.SEVERE, "Creating Layers");
         createFreshStartRowsLayer();
         createFreshSelectedCharacterLayer();
         createFreshHighlightLayer();
@@ -157,38 +163,41 @@ public class GameScreen extends ScreenAdapter {
             this, GameScreenMode.LOBBY, CommandMode.NO_SELECTION, mathService, gameCamera
         );
 
+        getLogger().log(Level.SEVERE, "Setting Input Processor");
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(new FullscreenInputListener());
         multiplexer.addProcessor(stage);
         multiplexer.addProcessor(mapInputProcessor);
         Gdx.input.setInputProcessor(multiplexer);
 
-        getWebSocketService().addPacketHandler("PLAYER_READY", p -> {
-            /*Gdx.app.postRunnable(() -> {
-                JsonReader reader = new JsonReader();
-                JsonValue data = reader.parse(p).get("data");
-                String clientId = data.getString("clientId");
-                boolean ready = data.getString("status").equals(PlayerReadyDTO.PLAYER_READY);
-                Main.getLobbyService().setPlayerReady(clientId);
-            });*/
-        });
+        getLogger().log(Level.SEVERE, "Registering PLAYER_READY packet handler");
 
-        getWebSocketService().addPacketHandler("GAME_INIT", str -> {
-            Gdx.app.postRunnable(() -> {
-                getGameStateService().registerNewGame(9, 9);
-                var characters = CharacterEntityMapper.fromListDTO(str);
-                String gameId = new JsonReader().parse(str).get("data").getString("gameId");
-                getGameStateService().setGameId(gameId);
-                getGameStateService().updateCharacters(characters);
-                initializeGame();
-            });
-        });
+        getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
+        getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
+            var content = getLobbyService().onLobbyClosed(p);
+            GenericModal.Build("Lobby Closed!", content + "\nReturning to Main Menu.", skin,
+                () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
+        }));
+
+
+        getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
+        getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
+            getGameStateService().registerNewGame(9, 9);
+            var characters = CharacterEntityMapper.fromListDTO(str);
+            String gameId = new JsonReader().parse(str).get("data").getString("gameId");
+            getGameStateService().setGameId(gameId);
+            getGameStateService().setCharacters(characters);
+            initializeGame();
+        }));
+
+        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
 
         Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerReadyDTO.ready(""), "PLAYER_READY");
+            Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
             getWebSocketService().send(packet);
         });
 
+        getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {
             if (mapInputProcessor.getGameScreenMode() == GameScreenMode.WAITING_FOR_TURN_OUTCOME) {
                 Main.getLogger().log(Level.SEVERE, "Starting turn outcome animation!");
@@ -196,6 +205,8 @@ public class GameScreen extends ScreenAdapter {
                 Main.getLogger().log(Level.SEVERE, "Log 1");
             }
         });
+
+        getGameStateService().onCharacterDeath.addListener(this::killCharacter);
 
         getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
@@ -228,8 +239,7 @@ public class GameScreen extends ScreenAdapter {
             if (animationHandler.isDoneWithAnimation()) {
                 mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
                 animationHandler = null;
-
-                characterSprites = characterSprites.stream().filter(s -> s.getCharacter().getHealth() != 0).collect(Collectors.toList());
+                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
             }
         }
 
@@ -250,7 +260,7 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (!grid.equals(focussedTile)) {
+        if (grid != null && !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
@@ -314,8 +324,10 @@ public class GameScreen extends ScreenAdapter {
         TextButton readyButton = new TextButton("", skin) {
             @Override
             public void act(float delta) {
-                if (mapInputProcessor.getGameScreenMode() == GameScreenMode.COMMAND_MODE) {
+                if (mapInputProcessor.getGameScreenMode() == GameScreenMode.COMMAND_MODE || mapInputProcessor.getGameScreenMode() == GameScreenMode.GAME_INIT) {
                     setDisabled(false);
+                } else {
+                    setDisabled(true);
                 }
 
                 int commandCount = 0;
@@ -326,10 +338,8 @@ public class GameScreen extends ScreenAdapter {
 
                 if (commandCount == requiredCommandCount) {
                     setText("Send commands!");
-                    setDisabled(false);
                 } else if (mapInputProcessor.getGameScreenMode().equals(GameScreenMode.COMMAND_MODE)) {
                     setText(commandCount + " of " + requiredCommandCount + "\nCommands set!");
-                    setDisabled(false);
                 }
             }
         };
@@ -344,6 +354,7 @@ public class GameScreen extends ScreenAdapter {
             Main.getCommandManagementService().sendCommandsToServer();
             Main.getCommandManagementService().clearAll();
 
+            resetSelection();
 
             readyButton.setDisabled(true);
             readyButton.setText("Waiting for next\nturn to start!");
@@ -400,7 +411,31 @@ public class GameScreen extends ScreenAdapter {
 
         showStartRows(startRows);
         createSpritesForCharacters();
+
+        initializeStats();
     }
+
+    public void initializeStats() {
+        List<CharacterEntity> friendlyCharacters = Main.getGameStateService().getFriendlyCharacters();
+        List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
+
+        if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
+            CharacterStatsTable player1StatsTable = new CharacterStatsTable("Your Characters", skin, this);
+            player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
+            player1StatsTable.setSize(450, 420);
+            player1StatsTable.setPosition(50, stage.getHeight() - 450);
+            stage.addActor(player1StatsTable);
+        }
+
+        if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
+            CharacterStatsTable player2StatsTable = new CharacterStatsTable("Opponent's Characters", skin, this);
+            player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
+            player2StatsTable.setSize(450, 420);
+            player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
+            stage.addActor(player2StatsTable);
+        }
+    }
+
 
     /**
      * Transitions the game to the main phase
@@ -421,6 +456,25 @@ public class GameScreen extends ScreenAdapter {
             CharacterSprite sprite = new CharacterSprite(textureRegion, character.getPosition(), character, mathService);
             characterSprites.add(sprite);
             spriteMapper.put(character.getId(), sprite);
+        }
+    }
+
+    /**
+     * Kill a character
+     * @param character
+     */
+
+    private void killCharacter(CharacterEntity character) {
+        deleteSpriteForCharacter(character.getId());
+    }
+
+    /**
+     * Removes a Sprite for a given Character
+     */
+    private void deleteSpriteForCharacter(String id){
+        var sprite = spriteMapper.remove(id);
+        if (sprite != null) {
+            characterSprites.remove(sprite);
         }
     }
 
@@ -592,7 +646,7 @@ public class GameScreen extends ScreenAdapter {
     /**
      * Getter for the selected {@link CharacterEntity}
      *
-     * @return
+     * @return the selected character
      */
     public CharacterEntity getSelectedCharacter() {
         return selectedCharacter;
@@ -686,6 +740,23 @@ public class GameScreen extends ScreenAdapter {
         endGameDialog.show(stage);
     }
 
+    /**
+     * Creates and opens a menu
+     * <p>
+     * Gives the player the possibility to exit a match and go back to the main menu
+     */
+    public void openEscapeMenu() {
+        new EscapeMenu(skin).show(stage);
+    }
+
+    public void reset() {
+        getGameStateService().resetGame();
+        animationHandler = null;
+        if (!characterSprites.isEmpty()) characterSprites.clear();
+        if (!spriteMapper.isEmpty()) spriteMapper.clear();
+        getCommandManagementService().clearAll();
+    }
+
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
@@ -698,4 +769,9 @@ public class GameScreen extends ScreenAdapter {
         atlas.dispose();
         batch.dispose();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
 }

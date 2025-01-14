@@ -13,8 +13,11 @@ import com.bteam.fantasychess_client.Main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import static com.bteam.fantasychess_client.Main.getLogger;
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
@@ -28,7 +31,8 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
 public class ClientGameStateService {
     private final List<CharacterEntity> friendlyCharacters;
     private final List<CharacterEntity> enemyCharacters;
-    public Event<TurnResult> onApplyTurnResult = new Event<>();
+    public final Event<TurnResult> onApplyTurnResult = new Event<>();
+    public final Event<CharacterEntity> onCharacterDeath = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
@@ -83,6 +87,23 @@ public class ClientGameStateService {
      */
     public List<CharacterEntity> getCharacters() {
         return characters;
+    }
+
+
+    /**
+     * Set all Characters on the Board and update its data
+     *
+     * @param characters list of all Characters to set
+     */
+    public void setCharacters(List<CharacterEntity> characters) {
+        for (CharacterEntity character : characters) {
+            try {
+                gridService.setCharacterTo(character.getPosition(), character);
+            } catch (Exception e) {
+                Main.getLogger().log(Level.SEVERE, e.getMessage());
+            }
+        }
+        updateCharacters(characters);
     }
 
     /**
@@ -174,16 +195,36 @@ public class ClientGameStateService {
         Main.getLogger().log(Level.SEVERE, "Set turn result");
         TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
         //TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
-
-        List<CharacterEntity> deadCharacters = new ArrayList<>();
-        for (CharacterEntity character : characters) {
-            if (character.getHealth() == 0){
-                deadCharacters.add(character);
-            }
-        }
-        characters.removeAll(deadCharacters);
-
         onApplyTurnResult.invoke(turnResult);
+    }
+
+    /**
+     * Synchronize All Characters with current server state
+     *
+     * @param turnResult
+     */
+    public void syncCharacters(TurnResult turnResult) {
+
+        List<String> markedForDelete = new ArrayList<>();
+        for (CharacterEntity character : characters) {
+            if (turnResult.getUpdatedCharacters().stream()
+                .anyMatch(c -> c.getId().equals(character.getId()))) continue;
+            markedForDelete.add(character.getId());
+            onCharacterDeath.invoke(character);
+        }
+
+        updateCharacters(characters.stream().filter(p -> !markedForDelete.contains(p.getId()))
+            .collect(Collectors.toList()));
+
+        characters.forEach(character -> {
+            var optional = turnResult.getUpdatedCharacters().stream()
+                .filter(p -> Objects.equals(p.getId(), character.getId())).findFirst();
+            if (optional.isEmpty()) {
+                getLogger().log(Level.SEVERE, "Character " + character.getId() + " has no updated character");
+                return;
+            }
+            character.setHealth(optional.get().getHealth());
+        });
     }
 
     public String getGameId() {
@@ -192,5 +233,15 @@ public class ClientGameStateService {
 
     public void setGameId(String gameId) {
         this.gameId = gameId;
+    }
+
+    public void resetGame() {
+        friendlyCharacters.clear();
+        enemyCharacters.clear();
+        characters.clear();
+        gridService = new GridService(new GridModel(9, 9));
+        gameId = null;
+        turnResult = null;
+        onApplyTurnResult.clear();
     }
 }

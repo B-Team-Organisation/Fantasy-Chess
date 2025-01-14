@@ -14,6 +14,7 @@ import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.CommandMode;
+import com.bteam.fantasychess_client.ui.EscapeMenu;
 import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.ui.GameScreenMode;
 import com.bteam.fantasychess_client.utils.TileMathService;
@@ -56,10 +57,24 @@ public class MapInputAdapter extends InputAdapter {
     }
 
     @Override
+    public boolean keyUp(int keycode){
+        if (keycode == Input.Keys.ESCAPE){
+            gameScreen.openEscapeMenu();
+        }
+        return false;
+    }
+
+    @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
+
+        if (gridPos == null){
+            return false;
+        }
+
+        Main.getLogger().log(Level.SEVERE,"Clicked");
 
         if (button == Input.Buttons.LEFT) {
 
@@ -76,7 +91,6 @@ public class MapInputAdapter extends InputAdapter {
             return true;
 
         } else if (button == Input.Buttons.RIGHT) {
-
             gameScreen.resetSelection();
             commandMode = CommandMode.NO_SELECTION;
             return true;
@@ -85,6 +99,7 @@ public class MapInputAdapter extends InputAdapter {
 
         return false;
     }
+
 
     /**
      * Process the click in the context of the init mode
@@ -240,4 +255,6 @@ public class MapInputAdapter extends InputAdapter {
         this.commandMode = commandMode;
     }
 
+
 }
+

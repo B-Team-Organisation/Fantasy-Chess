@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.models.Vector2D;
+import com.bteam.fantasychess_client.ui.GameScreen;
 
 /**
  * Mathematical Functions for Grid
@@ -103,6 +104,7 @@ public class TileMathService {
      * @return {@link Vector2D} containing rows and columns on the grid.
      */
     public Vector2D worldToGrid(float x, float y) {
+
         Vector2 point = new Vector2(x, y + (y-center.getY()));
         float columnTileUnit = 1f / mapWidth;
         float rowTileUnit = 1f / mapHeight;
@@ -112,10 +114,14 @@ public class TileMathService {
         Vector2 rowProjection = pointLineProjection(doubleTopCorner, leftCorner, point.cpy());
 
         float colPercent = percentOnLine(rowProjection, doubleTopCorner.cpy(), leftCorner.cpy());
+        float rowPercent = percentOnLine(columnProjection, doubleTopCorner.cpy(), rightCorner.cpy());
+
+        if( colPercent <0.0f || colPercent > 1.0f || rowPercent <0.0f || rowPercent > 1.0f ) {
+            return null;
+        }
         int column = (int)(colPercent/rowTileUnit);
         if (column >= mapWidth) column = mapWidth-1; // cap at grid limit
 
-        float rowPercent = percentOnLine(columnProjection, doubleTopCorner.cpy(), rightCorner.cpy());
         int row = (int)(rowPercent/columnTileUnit);
         if (row >= mapHeight) row = mapHeight-1;
 
@@ -153,6 +159,8 @@ public class TileMathService {
      * @return Percentage of the distance between the points
      */
     public float percentOnLine(Vector2 point, Vector2 startPoint, Vector2 endPoint) {
+
+
         Vector2 lineVector = endPoint.cpy().sub(startPoint);
         float lineLengthSquared = lineVector.len2();
 
@@ -163,7 +171,8 @@ public class TileMathService {
         Vector2 pointVector = point.cpy().sub(startPoint);
         float percentage = pointVector.dot(lineVector) / lineLengthSquared;
 
-        return Math.max(0f, Math.min(1f, percentage));
+        return percentage;
+        //return Math.max(0f, Math.min(1f, percentage));
     }
 
     /**

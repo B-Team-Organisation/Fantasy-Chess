@@ -137,13 +137,7 @@ public class CharacterSprite extends Sprite {
      */
     @Override
     public void draw (Batch batch) {
-        if (character.getHealth() == 0){
-            batch.setColor(deathColor);
-        }
         batch.draw(this, getX() - xOffset, getY() - yOffset);
-        batch.setColor(Color.WHITE);
-
-        font.draw(batch,character.getHealth()+"",getX(),getY());
     }
 
     public void drawAt(Batch batch, Vector2 position){

@@ -55,18 +55,22 @@ public class AttackAnimation extends AbstractAnimation {
 
         CharacterEntity attacker = Main.getGameStateService().getCharacterById(attackDataModel.getAttacker());
 
-        if (attacker.getPosition() != attackDataModel.getAttackPosition()){
-            sprite.moveToGridPos(attackDataModel.getAttackPosition());
-            sprite.moveToWorldPos(initialPos);
-        } else {
+        if (attackedInPlace(attacker.getPosition())) {
+            Main.getLogger().log(Level.SEVERE,"Long animation");
+
             Vector2 leftPos = new Vector2(initialPos.x - 5,initialPos.y);
             Vector2 rightPos = new Vector2(initialPos.x + 5,initialPos.y);
 
-            sprite.moveToWorldPos(leftPos);
-            sprite.moveToWorldPos(rightPos);
-            sprite.moveToWorldPos(leftPos);
-            sprite.moveToWorldPos(rightPos);
+            for (int i = 0;i < 2;i++){
+                sprite.moveToWorldPos(leftPos);
+                sprite.moveToWorldPos(rightPos);
+            }
 
+            sprite.moveToWorldPos(initialPos);
+        } else {
+            Main.getLogger().log(Level.SEVERE,"Short animation"+attackDataModel.getAttackPosition().getX()+"  "+attackDataModel.getAttackPosition().getY());
+
+            sprite.moveToGridPos(attackDataModel.getAttackPosition());
             sprite.moveToWorldPos(initialPos);
         }
 
@@ -87,6 +91,11 @@ public class AttackAnimation extends AbstractAnimation {
             outcomeLayer.setCell(tilePosition.getX(), tilePosition.getY(), cell);
         }
 
+    }
+
+    private boolean attackedInPlace(Vector2D position) {
+        return position.getX() == attackDataModel.getAttackPosition().getX() &&
+            position.getY() == attackDataModel.getAttackPosition().getY();
     }
 
 }

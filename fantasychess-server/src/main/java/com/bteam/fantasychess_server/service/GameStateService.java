@@ -115,14 +115,14 @@ public class GameStateService {
             }
         }
 
+        TurnResult result;
         if (game.getTurn() == 0) {
             TurnLogicService.applyMovement(movements, game.getEntities(), gridService);
-            var result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
-            game.setTurn(game.getTurn() + 1);
-            return new Pair<>(result, gridService.getGridModel());
+            result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
+        } else {
+            result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks,
+                    gridService, host.getPlayerId());
         }
-
-        var result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks, gridService, host.getPlayerId());
         game.getCommands().clear();
         game.setTurn(game.getTurn() + 1);
         return new Pair<>(result, gridService.getGridModel());
@@ -171,5 +171,12 @@ public class GameStateService {
         var x = DEFAULT_GRID_SIZE - model.getMovementVector().getX() - 1;
         var y = DEFAULT_GRID_SIZE - model.getMovementVector().getY() - 1;
         return new MovementDataModel(model.getCharacterId(), new Vector2D(x, y));
+    }
+
+    public GameModel getGameModelForLobby(String lobbyId) {
+        for (var game : games.values()) {
+            if (game.getLobbyId().equals(lobbyId)) return game;
+        }
+        return null;
     }
 }

@@ -2,28 +2,33 @@ package com.bteam.common.dto;
 
 import com.bteam.common.utils.JsonWriter;
 
-public class PlayerReadyDTO implements JsonDTO {
+public class PlayerStatusDTO implements JsonDTO {
     public static final String PLAYER_READY = "playerReady";
     public static final String PLAYER_NOT_READY = "playerNotReady";
+    public static final String PLAYER_ABANDON = "playerAbandon";
     String status;
     String clientId;
 
-    public PlayerReadyDTO() {
+    public PlayerStatusDTO() {
         status = PLAYER_READY;
         clientId = "";
     }
 
-    public PlayerReadyDTO(String status, String clientId) {
+    public PlayerStatusDTO(String status, String clientId) {
         this.status = status;
         this.clientId = clientId;
     }
 
-    public static PlayerReadyDTO ready(String clientId) {
-        return new PlayerReadyDTO(PLAYER_READY, clientId);
+    public static PlayerStatusDTO ready(String clientId) {
+        return new PlayerStatusDTO(PLAYER_READY, clientId);
     }
 
-    public static PlayerReadyDTO notReady(String clientId) {
-        return new PlayerReadyDTO(PLAYER_NOT_READY, clientId);
+    public static PlayerStatusDTO notReady(String clientId) {
+        return new PlayerStatusDTO(PLAYER_NOT_READY, clientId);
+    }
+
+    public static PlayerStatusDTO abandoned(String clientId) {
+        return new PlayerStatusDTO(PLAYER_ABANDON, clientId);
     }
 
     public String getStatus() {
