@@ -20,10 +20,7 @@ import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.JoinLobbyDTO;
 import com.bteam.common.dto.JoinLobbyResultDTO;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.LobbyModel;
-import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 import com.bteam.fantasychess_client.data.mapper.PlayerInfoMapper;
@@ -32,6 +29,7 @@ import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -113,7 +111,7 @@ public class MainMenu extends ScreenAdapter {
 
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         onChange(refreshButton, () -> {
-            Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+            Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, LOBBY_ALL)));
             stage.setKeyboardFocus(null);
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
@@ -143,13 +141,13 @@ public class MainMenu extends ScreenAdapter {
 
         table.add(noMatchingLobbyLabel).padTop(10);
 
-        getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
-        getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
-        getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
-        getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
-        getWebSocketService().addPacketHandler("PLAYER_JOINED", this::onPlayerJoined);
+        getWebSocketService().addPacketHandler(LOBBY_INFO, this::onLobbyInfo);
+        getWebSocketService().addPacketHandler(LOBBY_CREATED, this::onLobbyCreated);
+        getWebSocketService().addPacketHandler(LOBBY_JOINED, this::onLobbyJoined);
+        getWebSocketService().addPacketHandler(LOBBY_CLOSED, getLobbyService()::onLobbyClosed);
+        getWebSocketService().addPacketHandler(PLAYER_JOINED, this::onPlayerJoined);
 
-        Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+        Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, LOBBY_ALL)));
 
         stage.addActor(table);
 
@@ -184,7 +182,7 @@ public class MainMenu extends ScreenAdapter {
      */
     private Label createUserNameLabel() {
         username = Gdx.app.getPreferences("userinfo").getString("username");
-        Label usernameLabel = new Label("Username: "+username, skin);
+        Label usernameLabel = new Label("Username: " + username, skin);
         usernameLabel.setFontScale(1f);
         usernameLabel.setAlignment(Align.center);
         return usernameLabel;
@@ -223,7 +221,7 @@ public class MainMenu extends ScreenAdapter {
             protected void result(Object object) {
                 if ("create".equals(object)) {
                     Gdx.app.postRunnable(() -> {
-                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), LOBBY_CREATE);
                         Main.getWebSocketService().send(packet);
                     });
                 }
@@ -321,7 +319,7 @@ public class MainMenu extends ScreenAdapter {
                     public void clicked(InputEvent event, float x, float y) {
                         Main.getLogger().log(Level.SEVERE, "Creating lobby " + lobby.getLobbyName());
                         Gdx.app.postRunnable(() -> {
-                            var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
+                            var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), LOBBY_JOIN);
                             Main.getWebSocketService().send(packet);
                             getLobbyService().setCurrentLobby(lobby);
                         });
