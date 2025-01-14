@@ -388,13 +388,9 @@ public class GameScreen extends ScreenAdapter {
      */
     public void initializeGame() {
         mapInputProcessor.setGameScreenMode(GameScreenMode.GAME_INIT);
-
-        List<CharacterEntity> characters = getGameStateService().getCharacters();
-
         int[] startRows = new int[]{6, 7, 8};
         try {
             Main.getGameStateService().getGridService().setStartTiles(startRows);
-            //GridPlacementService.placeCharacters(Main.getGameStateService().getGridService(), characters, startRows);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
