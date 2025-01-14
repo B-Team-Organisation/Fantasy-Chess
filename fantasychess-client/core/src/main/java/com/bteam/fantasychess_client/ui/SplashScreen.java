@@ -113,9 +113,13 @@ public class SplashScreen extends ScreenAdapter {
         stage.addActor(creditLabel);
 
         // Fullscreen button
+        Table fullscreenTable = new Table();
+        fullscreenTable.setFillParent(true);
+        fullscreenTable.left().top();
+
         TextButton fullscreenButton = new TextButton("Fullscreen", skin);
-        fullscreenButton.setPosition(20, 1060, Align.topLeft);
-        stage.addActor(fullscreenButton);
+        fullscreenTable.add(fullscreenButton).pad(20);
+        stage.addActor(fullscreenTable);
         onChange(fullscreenButton, () -> Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode()));
 
         // Input handling
