@@ -1,5 +1,6 @@
 package com.bteam.common.dto;
 
+import com.bteam.common.utils.JsonWriter;
 import com.bteam.common.utils.PairNoOrder;
 
 import java.util.List;
@@ -8,11 +9,13 @@ public class TurnResultDTO implements JsonDTO {
     private final List<CharacterEntityDTO> updatedCharacters;
     private final List<PairNoOrder<CommandDTO, CommandDTO>> conflictCommands;
     private final CommandListDTO validCommands;
+    private final String winner;
 
-    public TurnResultDTO(List<CharacterEntityDTO> updatedCharacters, List<PairNoOrder<CommandDTO, CommandDTO>> conflictCommands, CommandListDTO validCommands) {
+    public TurnResultDTO(List<CharacterEntityDTO> updatedCharacters, List<PairNoOrder<CommandDTO, CommandDTO>> conflictCommands, CommandListDTO validCommands, String winner) {
         this.updatedCharacters = updatedCharacters;
         this.conflictCommands = conflictCommands;
         this.validCommands = validCommands;
+        this.winner = winner;
     }
 
     public List<CharacterEntityDTO> getUpdatedCharacters() {
@@ -27,33 +30,16 @@ public class TurnResultDTO implements JsonDTO {
         return validCommands;
     }
 
+    public String getWinner() {
+        return winner;
+    }
+
     @Override
     public String toJson() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"updatedCharacters\":[");
-        for (CharacterEntityDTO character : getUpdatedCharacters()) {
-            sb.append(character.toJson());
-            sb.append(",");
-        }
-        if (!getUpdatedCharacters().isEmpty()) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("],\"conflictCommands\":[");
-        for (PairNoOrder<CommandDTO, CommandDTO> conflictCommand : getConflictCommands()) {
-            sb.append("{\"first\":").append(conflictCommand.getFirst().toJson());
-            sb.append(",\"second\":").append(conflictCommand.getSecond().toJson());
-            sb.append("},");
-        }
-        if (!conflictCommands.isEmpty()) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-        sb.append("],\"validCommands\":").append(getValidCommands().toJson());
-        sb.append("}");
-        return sb.toString();
-
-        /*return new JsonWriter().writeList("updatedCharacters", getUpdatedCharacters())
-                .and().writeList("conflictCommands", getConflictCommands())
-                .and().writeKeyValue("validCommands", getValidCommands()).toString();*/
+        return new JsonWriter().writeList("updatedCharacters", getUpdatedCharacters())
+            .and().writeList("conflictCommands", getConflictCommands())
+            .and().writeKeyValue("validCommands", getValidCommands())
+            .and().writeKeyValue("winner",getWinner())
+            .toString();
     }
 }

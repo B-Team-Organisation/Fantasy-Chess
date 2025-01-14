@@ -5,6 +5,7 @@ import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.GridService;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
+import com.bteam.common.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,14 +55,11 @@ public class TurnLogicService {
 
         checkForDeaths(characters, gridService);
 
-        /*
-        return new TurnResult(
-                characters, null,
-                moves, attacks
-        );
-         */
+        String winner = null;
+        if (characters.isEmpty()) winner = "DRAW";
+        else winner = checkForWinner(characters);
 
-        return new TurnResult(characters, validation.getMovementConflicts(), validMovements, validAttacks);
+        return new TurnResult(characters, validation.getMovementConflicts(), validMovements, validAttacks, winner);
     }
 
     public static void checkForDeaths(List<CharacterEntity> characters, GridService gridService) {

@@ -33,6 +33,7 @@ public class ClientGameStateService {
     private final List<CharacterEntity> enemyCharacters;
     public final Event<TurnResult> onApplyTurnResult = new Event<>();
     public final Event<CharacterEntity> onCharacterDeath = new Event<>();
+    public final Event<String> onWin = new Event<>();
     private GridService gridService;
     private List<CharacterEntity> characters;
     private String gameId;
@@ -48,10 +49,6 @@ public class ClientGameStateService {
         enemyCharacters = new ArrayList<>();
         gridService = new GridService(new GridModel(9, 9));
         characterMapper = new HashMap<>();
-    }
-
-    public void initNewGame() {
-        // TODO: Sent init Packet once players are ready
     }
 
     /**
@@ -194,8 +191,9 @@ public class ClientGameStateService {
         this.turnResult = turnResult;
         Main.getLogger().log(Level.SEVERE, "Set turn result");
         TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
-        //TurnLogicService.applyAttacks(turnResult.getValidAttacks(), characters, gridService);
         onApplyTurnResult.invoke(turnResult);
+        if (turnResult.getWinner() != null)
+            onWin.invoke(turnResult.getWinner());
     }
 
     /**
@@ -210,6 +208,11 @@ public class ClientGameStateService {
             if (turnResult.getUpdatedCharacters().stream()
                 .anyMatch(c -> c.getId().equals(character.getId()))) continue;
             markedForDelete.add(character.getId());
+            try{
+                gridService.removeCharacterFrom(character.getPosition());
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE, e.getMessage());
+            }
             onCharacterDeath.invoke(character);
         }
 

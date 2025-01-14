@@ -15,7 +15,7 @@ import java.util.Objects;
  * valid {@link AttackDataModel}attacks and movement conflicts where opponent characters
  * tried to move to the same position.
  *
- * @author Albano, Jacinto
+ * @author Albano, Jacinto, Marc
  * @version 1.0
   */
 public class TurnResult {
@@ -23,7 +23,7 @@ public class TurnResult {
     private final List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts;
     private final List <MovementDataModel> validMoves;
     private final List <AttackDataModel> validAttacks;
-
+    private final String winner;
 
     /**
      * New TurnResult relative to the given round
@@ -39,11 +39,12 @@ public class TurnResult {
     public TurnResult(List<CharacterEntity> updatedCharacters,
                       List<PairNoOrder<MovementDataModel, MovementDataModel>> movementConflicts,
                       List<MovementDataModel> validMoves,
-                      List<AttackDataModel> validAttacks) {
+                      List<AttackDataModel> validAttacks, String winner) {
         this.updatedCharacters = updatedCharacters;
         this.movementConflicts = movementConflicts;
         this.validMoves = validMoves;
         this.validAttacks = validAttacks;
+        this.winner = winner;
     }
 
     public List<CharacterEntity> getUpdatedCharacters() {
@@ -62,10 +63,14 @@ public class TurnResult {
         return validAttacks;
     }
 
+    public String getWinner() {
+        return winner;
+    }
+
     @Override
     public String toString() {
         return "TurnResult [updatedCharacters=" + updatedCharacters + ", movementConflicts=" + movementConflicts
-                + ", validMoves=" + validMoves + ", validAttacks=" + validAttacks + "]";
+                + ", validMoves=" + validMoves + ", validAttacks=" + validAttacks + ", winner= " + winner + "]";
     }
 
     @Override
@@ -73,11 +78,12 @@ public class TurnResult {
         return o instanceof TurnResult && updatedCharacters.equals(((TurnResult) o).updatedCharacters)
                 && movementConflicts.equals(((TurnResult) o).movementConflicts)
                 && validMoves.equals(((TurnResult) o).validMoves)
-                && validAttacks.equals(((TurnResult) o).validAttacks);
+                && validAttacks.equals(((TurnResult) o).validAttacks)
+                && winner.equals(((TurnResult) o).winner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(updatedCharacters, movementConflicts, validMoves, validAttacks);
+        return Objects.hash(updatedCharacters, movementConflicts, validMoves, validAttacks, winner);
     }
 }

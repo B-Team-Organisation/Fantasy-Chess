@@ -118,7 +118,7 @@ public class GameStateService {
         TurnResult result;
         if (game.getTurn() == 0) {
             TurnLogicService.applyMovement(movements, game.getEntities(), gridService);
-            result = new TurnResult(game.getEntities(), List.of(), movements, List.of());
+            result = new TurnResult(game.getEntities(), List.of(), movements, List.of(),null);
         } else {
             result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks,
                     gridService, host.getPlayerId());
@@ -137,7 +137,7 @@ public class GameStateService {
                     var second = movementInverter(pair.getSecond());
                     return new PairNoOrder<>(first, second);
                 }).toList() : null;
-        return new TurnResult(result.getUpdatedCharacters(), movementConflicts, validMovement, validAttacks);
+        return new TurnResult(result.getUpdatedCharacters(), movementConflicts, validMovement, validAttacks, result.getWinner());
     }
 
     public boolean checkForOwnership(GameModel model, String characterId, Player owner) {
@@ -178,5 +178,12 @@ public class GameStateService {
             if (game.getLobbyId().equals(lobbyId)) return game;
         }
         return null;
+    }
+
+    public String checkForWinner(UUID gameId){
+        var game = getGame(gameId);
+        if (game == null) return null;
+        if (game.getEntities().isEmpty()) return "DRAW";
+        return TurnLogicService.checkForWinner(game.getEntities());
     }
 }

@@ -1,9 +1,6 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
-import com.bteam.common.dto.CharacterEntityDTO;
-import com.bteam.common.dto.GameInitDTO;
-import com.bteam.common.dto.Packet;
-import com.bteam.common.dto.PlayerStatusDTO;
+import com.bteam.common.dto.*;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GameSettingsModel;
 import com.bteam.common.models.Player;
@@ -94,6 +91,15 @@ public class PlayerPacketHandler implements PacketHandler {
 
                 abandonedLobby.removePlayer(client.getPlayer());
                 lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()),"Opponent has abandoned the game");
+                break;
+            case "PLAYER_INFO":
+                var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
+                var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
+                var player = playerService.getPlayer(requestedInfoId);
+                if (player == null) return;
+                var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
+                var playerInfoResult = new Packet(playerInfoDto, "PLAYER_INFO");
+                client.sendPacket(playerInfoResult);
                 break;
             default:
                 break;

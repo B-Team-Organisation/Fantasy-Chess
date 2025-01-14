@@ -81,10 +81,11 @@ public class GamePacketHandler implements PacketHandler {
                         rejectedCommands.addAll(mappedCommands);
                     }
 
-                    var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands, validCommandsDto);
+                    var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands,
+                        validCommandsDto, turnResult.getWinner());
                     packetToSend = new Packet(dto, "GAME_TURN_RESULT");
                     System.out.println(dto.toJson());
-                    webSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+                    WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                 }
 
                 break;

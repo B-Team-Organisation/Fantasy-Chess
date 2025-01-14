@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 
 public final class TurnResultMapper {
+
+    private TurnResultMapper() {}
+
     public static TurnResult fromDTO(String str) {
         JsonValue value = new JsonReader().parse(str);
         var data = value.get("data");
@@ -35,14 +38,9 @@ public final class TurnResultMapper {
             }
         });
 
-        return new TurnResult(characters, conflicts, validMoves, validAttacks);
+        var winner = data.getString("winner");
+        return new TurnResult(characters, conflicts, validMoves, validAttacks,winner);
     }
-
-    /*MovementDataModel
-    updatedCharacters
-    conflictCommands
-    validCommands
-     */
 
     public static PairNoOrder<MovementDataModel, MovementDataModel> movementPairFromJson(JsonValue value) {
         var first = movementFromJson(value.get("first"));
