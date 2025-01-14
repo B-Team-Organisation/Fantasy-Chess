@@ -101,6 +101,7 @@ public class LobbyModel {
      * @param player - the player to add
      */
     public void addPlayer(Player player) {
+        if (gameState == GameState.CLOSED) throw new IllegalStateException("Game is closed");
         if (this.players.size() < maxPlayers) {
             this.players.add(player);
             if (this.maxPlayers == players.size()) {

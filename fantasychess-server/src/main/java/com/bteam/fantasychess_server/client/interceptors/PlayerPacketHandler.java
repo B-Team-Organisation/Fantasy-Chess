@@ -48,59 +48,83 @@ public class PlayerPacketHandler implements PacketHandler {
 
         switch (id) {
             case "PLAYER_READY":
-                var dto = mapper.convertValue(data, PlayerStatusDTO.class);
-                var playerId = UUID.fromString(client.getPlayer().getPlayerId());
-                var isReady = Objects.equals(dto.getStatus(), PlayerStatusDTO.PLAYER_READY);
-                var lobby = lobbyService.getLobbyWithPlayer(playerId);
-                playerService.setPlayerStatus(playerId, isReady ?
-                    Player.Status.READY : Player.Status.NOT_READY);
-                var playersToNotify = lobby.getPlayers();
-                for (var player : playersToNotify) {
-                    var readyPlayerId = player.getPlayerId();
-                    var statusPacket = new Packet(isReady ?
-                        PlayerStatusDTO.ready(readyPlayerId) :
-                        PlayerStatusDTO.notReady(readyPlayerId), "PLAYER_READY");
-                    webSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
-                }
-                if (lobby.getPlayers().size() == 2) {
-                    var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
-                    var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
-                    var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
-
-                    for (var p : lobby.getPlayers()) {
-                        var playerUUID = UUID.fromString(p.getPlayerId());
-                        var charactersToSend = lobbyService.getLobbyWithPlayer(playerUUID).isHost(p) ?
-                            dtos.stream().map(this::invertEntityPosition).toList() : dtos;
-
-                        var dataToSend = new GameInitDTO(charactersToSend, model.getId());
-                        var packetToSend = new Packet(dataToSend, "GAME_INIT");
-                        webSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+                try {
+                    var dto = mapper.convertValue(data, PlayerStatusDTO.class);
+                    var playerId = UUID.fromString(client.getPlayer().getPlayerId());
+                    var isReady = Objects.equals(dto.getStatus(), PlayerStatusDTO.PLAYER_READY);
+                    var lobby = lobbyService.getLobbyWithPlayer(playerId);
+                    playerService.setPlayerStatus(playerId, isReady ?
+                            Player.Status.READY : Player.Status.NOT_READY);
+                    var playersToNotify = lobby.getPlayers();
+                    for (var player : playersToNotify) {
+                        var readyPlayerId = player.getPlayerId();
+                        var statusPacket = new Packet(isReady ?
+                                PlayerStatusDTO.ready(readyPlayerId) :
+                                PlayerStatusDTO.notReady(readyPlayerId), "PLAYER_READY");
+                        WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                     }
+                    if (lobby.getPlayers().size() == 2) {
+                        var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
+                        var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
+                        var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
+
+                        for (var p : lobby.getPlayers()) {
+                            var playerUUID = UUID.fromString(p.getPlayerId());
+                            var charactersToSend = lobbyService.getLobbyWithPlayer(playerUUID).isHost(p) ?
+                                    dtos.stream().map(this::invertEntityPosition).toList() : dtos;
+
+                            var dataToSend = new GameInitDTO(charactersToSend, model.getId());
+                            var packetToSend = new Packet(dataToSend, "GAME_INIT");
+                            WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
             case "PLAYER_ABANDONED":
-                var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
-                var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
+                try {
+                    var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
+                    var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
 
-                var game = gameStateService.getGameModelForLobby(abandonedLobby.getLobbyId());
-                gameStateService.cancelGame(UUID.fromString(game.getId()));
+                    var game = gameStateService.getGameModelForLobby(abandonedLobby.getLobbyId());
+                    gameStateService.cancelGame(UUID.fromString(game.getId()));
 
-                for (var player : abandonedLobby.getPlayers()) {
-                    player.setStatus(Player.Status.NOT_READY);
+                    for (var player : abandonedLobby.getPlayers()) {
+                        player.setStatus(Player.Status.NOT_READY);
+                    }
+
+                    abandonedLobby.removePlayer(client.getPlayer());
+                    lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()), "Opponent has abandoned the game");
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                abandonedLobby.removePlayer(client.getPlayer());
-                lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()),"Opponent has abandoned the game");
                 break;
             case "PLAYER_INFO":
-                var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
-                var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
-                var player = playerService.getPlayer(requestedInfoId);
-                if (player == null) return;
-                var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
-                var playerInfoResult = new Packet(playerInfoDto, "PLAYER_INFO");
-                client.sendPacket(playerInfoResult);
+                try {
+                    var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
+                    var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
+                    var player = playerService.getPlayer(requestedInfoId);
+                    if (player == null) return;
+                    var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
+                    var playerInfoResult = new Packet(playerInfoDto, "PLAYER_INFO");
+                    client.sendPacket(playerInfoResult);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
+            case "PLAYER_LEAVE":
+                try {
+                    var playerId = UUID.fromString(client.getPlayer().getPlayerId());
+                    var lobby = lobbyService.getLobbyWithPlayer(playerId);
+                    lobby.removePlayer(client.getPlayer());
+                    if (lobby.getPlayers().isEmpty()) {
+                        lobbyService.closeLobby(UUID.fromString(lobby.getLobbyId()),
+                                "All Players Disconnected");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             default:
                 break;
         }
@@ -109,14 +133,14 @@ public class PlayerPacketHandler implements PacketHandler {
     private CharacterEntityDTO invertEntityPosition(CharacterEntityDTO entityDto) {
         var character = entityDto.getCharacter();
         var invertedPosition = new Vector2D(
-            8 - character.getPosition().getX(),
-            8 - character.getPosition().getY());
+                8 - character.getPosition().getX(),
+                8 - character.getPosition().getY());
         var invertedEntity = new CharacterEntity(
-            character.getCharacterBaseModel(),
-            character.getId(),
-            character.getHealth(),
-            invertedPosition,
-            character.getPlayerId());
+                character.getCharacterBaseModel(),
+                character.getId(),
+                character.getHealth(),
+                invertedPosition,
+                character.getPlayerId());
         return new CharacterEntityDTO(invertedEntity);
     }
 
