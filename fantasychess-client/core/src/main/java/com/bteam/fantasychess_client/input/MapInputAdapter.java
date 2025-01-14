@@ -199,7 +199,7 @@ public class MapInputAdapter extends InputAdapter {
             case ATTACK_MODE: {
                 getLogger().log(Level.SEVERE, "Attack pressed at:" + gridPos.toString());
 
-                if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) {
+                if (Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) {
                     CharacterEntity selectedCharacter = gameScreen.getSelectedCharacter();
 
                     AttackDataModel attackDataModel = new AttackDataModel(gridPos, selectedCharacter.getId());
