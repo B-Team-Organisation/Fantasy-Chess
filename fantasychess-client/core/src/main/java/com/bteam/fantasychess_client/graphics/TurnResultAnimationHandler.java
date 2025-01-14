@@ -35,8 +35,6 @@ public class TurnResultAnimationHandler {
     private TiledMapTileLayer outcomeLayer;
 
     private boolean animationOver = false;
-
-    private ArrayDeque<AbstractAnimation> animationQueue;
     private boolean animationStarted;
 
     /**

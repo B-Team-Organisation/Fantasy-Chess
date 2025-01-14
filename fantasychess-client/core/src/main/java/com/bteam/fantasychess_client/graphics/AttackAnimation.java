@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.CharacterDataModel;
+import com.bteam.common.models.PatternService;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.utils.TileMathService;
@@ -51,10 +52,31 @@ public class AttackAnimation extends AbstractAnimation {
     public void startAnimation(TiledMapTileLayer outcomeLayer){
         this.outcomeLayer = outcomeLayer;
         Vector2 initialPos = new Vector2(sprite.getX(), sprite.getY());
-        sprite.moveToGridPos(attackDataModel.getAttackPosition());
 
         CharacterEntity attacker = Main.getGameStateService().getCharacterById(attackDataModel.getAttacker());
-        Vector2D[] areaOfEffect = attacker.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(attacker.getPosition(), attackDataModel.getAttackPosition());
+
+        if (attacker.getPosition() != attackDataModel.getAttackPosition()){
+            sprite.moveToGridPos(attackDataModel.getAttackPosition());
+            sprite.moveToWorldPos(initialPos);
+        } else {
+            Vector2 leftPos = new Vector2(initialPos.x - 5,initialPos.y);
+            Vector2 rightPos = new Vector2(initialPos.x + 5,initialPos.y);
+
+            sprite.moveToWorldPos(leftPos);
+            sprite.moveToWorldPos(rightPos);
+            sprite.moveToWorldPos(leftPos);
+            sprite.moveToWorldPos(rightPos);
+
+            sprite.moveToWorldPos(initialPos);
+        }
+
+        PatternService attackPattern = attacker.getCharacterBaseModel().getAttackPatterns()[0];
+        if (Main.getGameStateService().getEnemyCharacters().contains(attacker)){
+            Main.getLogger().log(Level.SEVERE,"Enemy!");
+            attackPattern = attackPattern.reversePattern();
+        }
+
+        Vector2D[] areaOfEffect = attackPattern.getAreaOfEffect(attacker.getPosition(), attackDataModel.getAttackPosition());
 
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(damageTile);
@@ -65,7 +87,6 @@ public class AttackAnimation extends AbstractAnimation {
             outcomeLayer.setCell(tilePosition.getX(), tilePosition.getY(), cell);
         }
 
-        sprite.moveToWorldPos(initialPos);
     }
 
 }

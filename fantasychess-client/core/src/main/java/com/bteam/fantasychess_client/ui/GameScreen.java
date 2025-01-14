@@ -219,7 +219,7 @@ public class GameScreen extends ScreenAdapter {
                     return;
                 }
 
-                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper);
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper,tiledMap,mathService,atlas);
                 animationHandler.startAnimation();
             }
 
