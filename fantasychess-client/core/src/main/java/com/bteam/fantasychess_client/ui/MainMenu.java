@@ -152,6 +152,9 @@ public class MainMenu extends ScreenAdapter {
         stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);
+
+        getWebSocketService().getClient().onCloseEvent.clear();
+        getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
     }
 
     /**
@@ -430,6 +433,12 @@ public class MainMenu extends ScreenAdapter {
                 getLobbyService().setCurrentLobby(null);
             }
         });
+    }
+
+    public void onDisconnect(String reason) {
+        GenericModal.Build("Disconnected",
+            "Connection to the server has been lost: " + reason,
+            skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 
     private void onPlayerJoined(String packetJson) {

@@ -15,13 +15,10 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
@@ -41,9 +38,9 @@ import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
+import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
 
 import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
@@ -129,10 +126,15 @@ public class GameScreen extends ScreenAdapter {
 
         stage = new Stage(uiViewport);
 
-        readyButton = createReadyButton();
-        readyButton.setPosition(stage.getWidth() - 250, 50);
-        stage.addActor(readyButton);
+        Table table = new Table();
+        table.setFillParent(true);
 
+        readyButton = createReadyButton();
+        table.pad(0, 30, 30, 30);
+        readyButton.setSize(200, 100);
+        table.bottom().right().add(readyButton).size(200, 100);
+
+        stage.addActor(table);
 
         atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
         batch = new SpriteBatch();
@@ -227,6 +229,9 @@ public class GameScreen extends ScreenAdapter {
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
+
+        getWebSocketService().getClient().onCloseEvent.clear();
+        getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
         waitingDialog = new Dialog("WAITING FOR OPPONENT...", skin);
         waitingDialog.show(stage);
@@ -372,8 +377,6 @@ public class GameScreen extends ScreenAdapter {
             readyButton.setText("Waiting for next\nturn to start!");
         });
 
-        readyButton.setSize(200, 100);
-
         return readyButton;
     }
 
@@ -427,21 +430,23 @@ public class GameScreen extends ScreenAdapter {
         List<CharacterEntity> friendlyCharacters = Main.getGameStateService().getFriendlyCharacters();
         List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
 
+        Table outerTable = new Table();
+        outerTable.setFillParent(true);
+        outerTable.top().left();
+
         if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
             CharacterStatsTable player1StatsTable = new CharacterStatsTable("Your Characters", skin, this);
             player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
-            player1StatsTable.setSize(450, 420);
-            player1StatsTable.setPosition(50, stage.getHeight() - 450);
-            stage.addActor(player1StatsTable);
+            outerTable.add(player1StatsTable).align(Align.left).pad(30).expandX();
         }
 
         if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
             CharacterStatsTable player2StatsTable = new CharacterStatsTable("Opponent's Characters", skin, this);
             player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
-            player2StatsTable.setSize(450, 420);
-            player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
-            stage.addActor(player2StatsTable);
+            outerTable.add(player2StatsTable).align(Align.right).pad(30).expandX();
         }
+
+        stage.addActor(outerTable);
     }
 
 
@@ -769,6 +774,8 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
+        uiViewport.update(width, height, true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -781,6 +788,11 @@ public class GameScreen extends ScreenAdapter {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public void onDisconnect(String reason) {
+        GenericModal.Build("Disconnected", "Connection to the server has been lost: " + reason,
+            skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 
 }
