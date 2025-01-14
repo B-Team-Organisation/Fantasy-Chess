@@ -117,8 +117,20 @@ public class GameStateService {
 
         TurnResult result;
         if (game.getTurn() == 0) {
-            TurnLogicService.applyMovement(movements, game.getEntities(), gridService);
-            result = new TurnResult(game.getEntities(), List.of(), movements, List.of(),null);
+            var grid = new GridService(new GridModel(DEFAULT_GRID_SIZE, DEFAULT_GRID_SIZE));
+            var entities = game.getEntities();
+            movements.forEach(p -> {
+                try {
+                    var character = entities.stream().filter(c ->
+                            c.getId().equals(p.getCharacterId())).findFirst().get();
+                    grid.setCharacterTo(p.getMovementVector(), character);
+                    character.setPosition(p.getMovementVector());
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+            });
+            game.setGrid(grid.getGridModel());
+            result = new TurnResult(game.getEntities(), List.of(), movements, List.of(), null);
         } else {
             result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks,
                     gridService, host.getPlayerId());
@@ -180,7 +192,7 @@ public class GameStateService {
         return null;
     }
 
-    public String checkForWinner(UUID gameId){
+    public String checkForWinner(UUID gameId) {
         var game = getGame(gameId);
         if (game == null) return null;
         if (game.getEntities().isEmpty()) return "DRAW";
