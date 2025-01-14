@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
@@ -41,6 +41,7 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
