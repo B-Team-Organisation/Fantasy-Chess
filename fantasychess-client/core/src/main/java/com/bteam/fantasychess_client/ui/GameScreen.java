@@ -28,9 +28,7 @@ import com.bteam.common.models.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
-import com.bteam.fantasychess_client.graphics.CharacterSprite;
-import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
-import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
+import com.bteam.fantasychess_client.graphics.*;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
@@ -40,6 +38,7 @@ import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.common.services.TurnLogicService.checkForWinner;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -213,6 +212,13 @@ public class GameScreen extends ScreenAdapter {
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
+
+        getGameStateService().onWin.addListener(playerID -> {
+            getLogger().log(Level.SEVERE, "Received Win Result: " + playerID);
+            EndGameDialog endDialog = new EndGameDialog(skin,playerID);
+            getLogger().log(Level.SEVERE, "Calling endDialog...");
+            endDialog.show(getStage());
+        });
 
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);

@@ -187,11 +187,13 @@ public class ClientGameStateService {
 
     public void applyTurnResult(TurnResult turnResult) {
         this.turnResult = turnResult;
-        Main.getLogger().log(Level.SEVERE, "Set turn result");
+        Main.getLogger().log(Level.SEVERE, "Set turn result"+ characters);
         TurnLogic.applyMovement(turnResult.getValidMoves(), characters, gridService);
         onApplyTurnResult.invoke(turnResult);
+        Main.getLogger().log(Level.SEVERE,"winner"+turnResult.getWinner());
         if (turnResult.getWinner() != null)
             onWin.invoke(turnResult.getWinner());
+
     }
 
     /**
