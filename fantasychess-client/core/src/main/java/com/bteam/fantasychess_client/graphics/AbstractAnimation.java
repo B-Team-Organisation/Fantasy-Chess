@@ -1,5 +1,7 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+
 /**
  * Abstract class for a turn outcome animation
  * <p>
@@ -9,6 +11,8 @@ package com.bteam.fantasychess_client.graphics;
  * @author jacinto lukas
  */
 public abstract class AbstractAnimation {
+    protected TiledMapTileLayer outcomeLayer;
+
     /**
      * Method to test if the animated has finished playing
      *
@@ -19,5 +23,5 @@ public abstract class AbstractAnimation {
     /**
      * Method to start the animation
      */
-    public abstract void startAnimation();
+    public abstract void startAnimation(TiledMapTileLayer outcomeLayer);
 }

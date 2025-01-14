@@ -6,9 +6,12 @@ import com.bteam.common.models.GridService;
 import com.bteam.common.services.TurnLogicService;
 import com.bteam.common.services.TurnResult;
 import com.bteam.common.utils.Event;
+import com.bteam.common.services.TurnLogicService;
+import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -34,6 +37,7 @@ public class ClientGameStateService {
     private List<CharacterEntity> characters;
     private String gameId;
     private TurnResult turnResult;
+    private HashMap<String,CharacterEntity> characterMapper;
 
     /**
      * Default constructor of {@link ClientGameStateService}
@@ -43,6 +47,7 @@ public class ClientGameStateService {
         friendlyCharacters = new ArrayList<>();
         enemyCharacters = new ArrayList<>();
         gridService = new GridService(new GridModel(9, 9));
+        characterMapper = new HashMap<>();
     }
 
     public void initNewGame() {
@@ -63,6 +68,7 @@ public class ClientGameStateService {
         characters.clear();
         friendlyCharacters.clear();
         enemyCharacters.clear();
+        characterMapper.clear();
     }
 
     /**
@@ -112,16 +118,36 @@ public class ClientGameStateService {
 
         friendlyCharacters.clear();
         enemyCharacters.clear();
+        characterMapper.clear();
 
         String playerId = getWebSocketService().getUserid();
 
         for (CharacterEntity character : characters) {
+
+            characterMapper.put(character.getId(),character);
+
+            try {
+                gridService.setCharacterTo(character.getPosition(), character);
+            } catch (Exception e) {
+                Main.getLogger().log(Level.SEVERE, e.getMessage());
+            }
+
             if (character.getPlayerId().equals(playerId)) {
                 friendlyCharacters.add(character);
             } else {
                 enemyCharacters.add(character);
             }
         }
+    }
+
+    /**
+     * Returns the character with the given id
+     *
+     * @param characterId id of the requested {@link CharacterEntity}
+     * @return {@link CharacterEntity} with the given id
+     */
+    public CharacterEntity getCharacterById(String characterId) {
+        return characterMapper.get(characterId);
     }
 
     /**

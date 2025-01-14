@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.entities.CharacterEntity;
 
@@ -31,7 +32,8 @@ public class MovementAnimation extends AbstractAnimation {
     }
 
     @Override
-    public void startAnimation(){
+    public void startAnimation(TiledMapTileLayer outcomeLayer){
+        this.outcomeLayer = outcomeLayer;
         sprite.moveToGridPos(movementDataModel.getMovementVector());
     }
 

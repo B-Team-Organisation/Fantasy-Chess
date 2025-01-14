@@ -1,6 +1,8 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -32,10 +34,6 @@ public class CharacterSprite extends Sprite {
 
     private final float xOffset;
     private final float yOffset;
-
-    public CharacterEntity getCharacter() {
-        return character;
-    }
 
     /**
      * Constructor for CharacterSprites
@@ -127,6 +125,9 @@ public class CharacterSprite extends Sprite {
         return destination != null || !destinations.isEmpty();
     }
 
+    private static final Color deathColor = new Color(1,0,0,1);
+    private BitmapFont font = new BitmapFont();
+
     /**
      * Draws the sprite using the batch
      * <p>
@@ -141,5 +142,9 @@ public class CharacterSprite extends Sprite {
 
     public void drawAt(Batch batch, Vector2 position){
         batch.draw(this, position.x - xOffset, position.y - yOffset);
+    }
+
+    public CharacterEntity getCharacter() {
+        return character;
     }
 }

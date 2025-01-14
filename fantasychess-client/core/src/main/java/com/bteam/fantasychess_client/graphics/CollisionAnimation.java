@@ -1,5 +1,6 @@
 package com.bteam.fantasychess_client.graphics;
 
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.models.MovementDataModel;
 
@@ -37,7 +38,8 @@ public class CollisionAnimation extends AbstractAnimation {
     }
 
     @Override
-    public void startAnimation(){
+    public void startAnimation(TiledMapTileLayer outcomeLayer){
+        this.outcomeLayer = outcomeLayer;
         Vector2 origin = new Vector2(sprite1.getX(),sprite1.getY());
         sprite1.moveToGridPos(movementDataModel1.getMovementVector());
         sprite1.moveToWorldPos(origin);
