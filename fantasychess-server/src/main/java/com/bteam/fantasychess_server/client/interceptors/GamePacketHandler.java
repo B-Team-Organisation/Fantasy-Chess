@@ -1,6 +1,7 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
 import com.bteam.common.dto.*;
+import com.bteam.common.models.LobbyModel;
 import com.bteam.common.services.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
 import com.bteam.fantasychess_server.client.Client;
@@ -42,52 +43,60 @@ public class GamePacketHandler implements PacketHandler {
 
         switch (id) {
             case "GAME_COMMANDS":
-                var commands = mapper.convertValue(data, CommandListDTO.class);
-                var attacks = CommandMapper.attacksFromDTO(commands);
-                var movements = CommandMapper.movementsFromDTO(commands);
-                var uuid = UUID.fromString(client.getPlayer().getPlayerId());
-                var gameId = UUID.fromString(commands.getGameId());
+                try {
+                    var commands = mapper.convertValue(data, CommandListDTO.class);
+                    var attacks = CommandMapper.attacksFromDTO(commands);
+                    var movements = CommandMapper.movementsFromDTO(commands);
+                    var uuid = UUID.fromString(client.getPlayer().getPlayerId());
+                    var gameId = UUID.fromString(commands.getGameId());
 
-                gameStateService.setPlayerCommands(uuid, gameId, movements, attacks);
+                    gameStateService.setPlayerCommands(uuid, gameId, movements, attacks);
 
-                var game = gameStateService.getGame(gameId);
-                if (game.getCommands().size() < 2) break;
+                    var game = gameStateService.getGame(gameId);
+                    if (game.getCommands().size() < 2) break;
 
-                var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
-                var players = lobbyService.getLobbyWithPlayer(playerUUID).getPlayers();
-                var result = gameStateService.processMoves(gameId, game.getCommands());
-                for (var p : players) {
-                    Packet packetToSend;
-                    TurnResult turnResult = result.getFirst();
-                    if (lobbyService.getLobby(UUID.fromString(game.getLobbyId())).isHost(p))
-                        turnResult = gameStateService.invertResult(result.getFirst());
+                    var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
+                    var lobby = lobbyService.getLobbyWithPlayer(playerUUID);
+                    var players = lobby.getPlayers();
+                    var result = gameStateService.processMoves(gameId, game.getCommands());
+                    for (var p : players) {
+                        Packet packetToSend;
+                        TurnResult turnResult = result.getFirst();
+                        if (lobbyService.getLobby(UUID.fromString(game.getLobbyId())).isHost(p))
+                            turnResult = gameStateService.invertResult(result.getFirst());
 
-                    var updatedCharactersDTO = turnResult.getUpdatedCharacters().stream().map(CharacterEntityDTO::new).toList();
+                        var updatedCharactersDTO = turnResult.getUpdatedCharacters().stream().map(CharacterEntityDTO::new).toList();
 
-                    var validCommands = new ArrayList<CommandDTO>();
-                    validCommands.addAll(turnResult.getValidAttacks().stream().map(CommandDTO::new).toList());
-                    validCommands.addAll(turnResult.getValidMoves().stream().map(CommandDTO::new).toList());
-                    var validCommandsDto = new CommandListDTO(validCommands, gameId.toString());
+                        var validCommands = new ArrayList<CommandDTO>();
+                        validCommands.addAll(turnResult.getValidAttacks().stream().map(CommandDTO::new).toList());
+                        validCommands.addAll(turnResult.getValidMoves().stream().map(CommandDTO::new).toList());
+                        var validCommandsDto = new CommandListDTO(validCommands, gameId.toString());
 
-                    var rejectedCommands = new ArrayList<PairNoOrder<CommandDTO, CommandDTO>>();
-                    if (turnResult.getMovementConflicts() != null) {
-                        var mappedCommands = turnResult
-                                .getMovementConflicts()
-                                .stream()
-                                .map(pair ->
-                                        new PairNoOrder<>(new CommandDTO(pair.getFirst()),
-                                                new CommandDTO(pair.getSecond())))
-                                .toList();
-                        rejectedCommands.addAll(mappedCommands);
+                        var rejectedCommands = new ArrayList<PairNoOrder<CommandDTO, CommandDTO>>();
+                        if (turnResult.getMovementConflicts() != null) {
+                            var mappedCommands = turnResult
+                                    .getMovementConflicts()
+                                    .stream()
+                                    .map(pair ->
+                                            new PairNoOrder<>(new CommandDTO(pair.getFirst()),
+                                                    new CommandDTO(pair.getSecond())))
+                                    .toList();
+                            rejectedCommands.addAll(mappedCommands);
+                        }
+
+                        var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands,
+                                validCommandsDto, turnResult.getWinner());
+                        packetToSend = new Packet(dto, "GAME_TURN_RESULT");
+                        System.out.println(dto.toJson());
+                        WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                     }
 
-                    var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands,
-                        validCommandsDto, turnResult.getWinner());
-                    packetToSend = new Packet(dto, "GAME_TURN_RESULT");
-                    System.out.println(dto.toJson());
-                    WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+                    if (result.getFirst().getWinner() != null) {
+                        lobby.setGameState(LobbyModel.GameState.CLOSED);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
                 break;
             default:
                 System.out.println("Unknown packet: " + packet);
