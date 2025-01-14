@@ -26,13 +26,13 @@ import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
+import com.bteam.fantasychess_client.data.mapper.PlayerInfoMapper;
 
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.bteam.fantasychess_client.Main.getLobbyService;
-import static com.bteam.fantasychess_client.Main.getScreenManager;
+import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -143,10 +143,11 @@ public class MainMenu extends ScreenAdapter {
 
         table.add(noMatchingLobbyLabel).padTop(10);
 
-        Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
-        Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
-        Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
-        Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
+        getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
+        getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
+        getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
+        getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
+        getWebSocketService().addPacketHandler("PLAYER_JOINED", this::onPlayerJoined);
 
         Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
 
@@ -421,6 +422,11 @@ public class MainMenu extends ScreenAdapter {
                 getLobbyService().setCurrentLobby(null);
             }
         });
+    }
+
+    private void onPlayerJoined(String packetJson) {
+        var player = PlayerInfoMapper.fromDTO(packetJson);
+        getLobbyService().addPlayer(player);
     }
 }
 

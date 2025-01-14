@@ -9,7 +9,7 @@ public final class PlayerInfoMapper {
     private PlayerInfoMapper() { }
 
     public static Player fromDTO(String dto) {
-        var json = new JsonReader().parse(dto);
+        var json = new JsonReader().parse(dto).get("data");
         String username = json.getString("username");
         String playerId = json.getString("playerId");
 

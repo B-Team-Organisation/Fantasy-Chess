@@ -1,9 +1,11 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
 import com.bteam.common.dto.*;
+import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
 import com.bteam.fantasychess_server.service.LobbyService;
+import com.bteam.fantasychess_server.service.WebSocketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -14,9 +16,11 @@ import java.util.UUID;
 public class LobbyPacketHandler implements PacketHandler {
     private final String packetPattern = "LOBBY_";
     private final LobbyService lobbyService;
+    private final WebSocketService webSocketService;
 
-    public LobbyPacketHandler(LobbyService lobbyService) {
+    public LobbyPacketHandler(LobbyService lobbyService, WebSocketService webSocketService) {
         this.lobbyService = lobbyService;
+        this.webSocketService = webSocketService;
     }
 
     @Override
@@ -57,6 +61,15 @@ public class LobbyPacketHandler implements PacketHandler {
                             result ? JoinLobbyResultDTO.success() : JoinLobbyResultDTO.error(),
                             "LOBBY_JOINED");
                     client.sendPacket(resultPacket);
+                    var lobby = lobbyService.getLobby(lobbyID);
+                    var players = lobby.getPlayers();
+
+                    players.forEach(player -> {
+                        var playerClient = WebSocketService.getCurrentClientForPlayer(player);
+                        var playerPacket = new Packet(new PlayerDTO(client.getPlayer()),"PLAYER_JOINED");
+                        playerClient.sendPacket(playerPacket);
+                    });
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
