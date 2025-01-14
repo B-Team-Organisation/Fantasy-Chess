@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
@@ -30,7 +30,10 @@ import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
-import com.bteam.fantasychess_client.graphics.*;
+import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
+import com.bteam.fantasychess_client.graphics.EndGameDialog;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
@@ -39,6 +42,7 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
@@ -240,7 +244,7 @@ public class GameScreen extends ScreenAdapter {
             //} else {
             //    new EndGameDialog(skin,players.get(1).getUsername()).show(stage);
             //}
-            new EndGameDialog(skin,playerID).show(stage);
+            new EndGameDialog(skin, playerID).show(stage);
         });
 
         waitingDialog = new Dialog("WAITING FOR OPPONENT...", skin);
@@ -363,7 +367,7 @@ public class GameScreen extends ScreenAdapter {
 
                 int requiredCommandCount = Main.getGameStateService().getFriendlyCharacterCount();
 
-                if (requiredCommandCount == 0){
+                if (requiredCommandCount == 0) {
                     setVisible(false);
                     return;
                 }
