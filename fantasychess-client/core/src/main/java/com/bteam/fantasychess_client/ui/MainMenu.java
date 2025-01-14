@@ -23,11 +23,13 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
+import com.bteam.fantasychess_client.data.mapper.PlayerInfoMapper;
 
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -109,7 +111,7 @@ public class MainMenu extends ScreenAdapter {
 
         TextButton refreshButton = new TextButton("Refresh lobbies", skin);
         onChange(refreshButton, () -> {
-            Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+            Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, LOBBY_ALL)));
             stage.setKeyboardFocus(null);
         });
         TextButton createLobby = new TextButton("Create Lobby", skin);
@@ -139,12 +141,13 @@ public class MainMenu extends ScreenAdapter {
 
         table.add(noMatchingLobbyLabel).padTop(10);
 
-        Main.getWebSocketService().addPacketHandler("LOBBY_INFO", this::onLobbyInfo);
-        Main.getWebSocketService().addPacketHandler("LOBBY_CREATED", this::onLobbyCreated);
-        Main.getWebSocketService().addPacketHandler("LOBBY_JOINED", this::onLobbyJoined);
-        Main.getWebSocketService().addPacketHandler("LOBBY_CLOSED", getLobbyService()::onLobbyClosed);
+        getWebSocketService().addPacketHandler(LOBBY_INFO, this::onLobbyInfo);
+        getWebSocketService().addPacketHandler(LOBBY_CREATED, this::onLobbyCreated);
+        getWebSocketService().addPacketHandler(LOBBY_JOINED, this::onLobbyJoined);
+        getWebSocketService().addPacketHandler(LOBBY_CLOSED, getLobbyService()::onLobbyClosed);
+        getWebSocketService().addPacketHandler(PLAYER_JOINED, this::onPlayerJoined);
 
-        Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, "LOBBY_ALL")));
+        Gdx.app.postRunnable(() -> Main.getWebSocketService().send(new Packet(null, LOBBY_ALL)));
 
         stage.addActor(table);
 
@@ -164,6 +167,16 @@ public class MainMenu extends ScreenAdapter {
         titleLabel.setFontScale(0.6f);
         return titleLabel;
     }
+
+    /**
+     * Creates and opens a menu
+     * <p>
+     * Gives the player the possibility to exit a match and go back to the main menu
+     */
+    public void openEscapeMenu() {
+        new EscapeMenu(skin).show(stage);
+    }
+
 
     /**
      * Creates the label that shows the user his name
@@ -211,7 +224,7 @@ public class MainMenu extends ScreenAdapter {
             protected void result(Object object) {
                 if ("create".equals(object)) {
                     Gdx.app.postRunnable(() -> {
-                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), "LOBBY_CREATE");
+                        Packet packet = new Packet(new CreateLobbyDTO(lobbyNameField.getText()), LOBBY_CREATE);
                         Main.getWebSocketService().send(packet);
                     });
                 }
@@ -309,7 +322,7 @@ public class MainMenu extends ScreenAdapter {
                     public void clicked(InputEvent event, float x, float y) {
                         Main.getLogger().log(Level.SEVERE, "Creating lobby " + lobby.getLobbyName());
                         Gdx.app.postRunnable(() -> {
-                            var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), "LOBBY_JOIN");
+                            var packet = new Packet(new JoinLobbyDTO(lobby.getLobbyId()), LOBBY_JOIN);
                             Main.getWebSocketService().send(packet);
                             getLobbyService().setCurrentLobby(lobby);
                         });
@@ -426,6 +439,11 @@ public class MainMenu extends ScreenAdapter {
         GenericModal.Build("Disconnected",
             "Connection to the server has been lost: " + reason,
             skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
+    }
+
+    private void onPlayerJoined(String packetJson) {
+        var player = PlayerInfoMapper.fromDTO(packetJson);
+        getLobbyService().addPlayer(player);
     }
 }
 

@@ -86,6 +86,8 @@ public class LobbyModel {
         return lobbyName;
     }
 
+    public int getMaxPlayers() { return maxPlayers; }
+
     /**
      * Checks if the specified player is the host of the lobby.
      *
@@ -121,7 +123,8 @@ public class LobbyModel {
      * @param player the player to remove
      */
     public void removePlayer(Player player) {
-        this.players.remove(player);
+        var playerInList = this.players.stream().filter(p -> p.getPlayerId().equals(player.getPlayerId())).findFirst();
+        playerInList.ifPresent(this.players::remove);
 
         if (this.players.size() < maxPlayers) {
             gameState = GameState.OPEN;

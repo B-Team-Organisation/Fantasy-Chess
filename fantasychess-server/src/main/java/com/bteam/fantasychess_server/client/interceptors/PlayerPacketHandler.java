@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Objects;
 import java.util.UUID;
 
+import static com.bteam.common.constants.PacketConstants.*;
+
 /**
  * Packet handler for any player related data, such as setting the player's status
  * (or receiving player details)
@@ -47,7 +49,7 @@ public class PlayerPacketHandler implements PacketHandler {
         var data = tree.get("data");
 
         switch (id) {
-            case "PLAYER_READY":
+            case PLAYER_READY:
                 try {
                     var dto = mapper.convertValue(data, PlayerStatusDTO.class);
                     var playerId = UUID.fromString(client.getPlayer().getPlayerId());
@@ -60,7 +62,7 @@ public class PlayerPacketHandler implements PacketHandler {
                         var readyPlayerId = player.getPlayerId();
                         var statusPacket = new Packet(isReady ?
                                 PlayerStatusDTO.ready(readyPlayerId) :
-                                PlayerStatusDTO.notReady(readyPlayerId), "PLAYER_READY");
+                                PlayerStatusDTO.notReady(readyPlayerId), PLAYER_READY);
                         WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                     }
                     if (lobby.getPlayers().size() == 2) {
@@ -74,7 +76,7 @@ public class PlayerPacketHandler implements PacketHandler {
                                     dtos.stream().map(this::invertEntityPosition).toList() : dtos;
 
                             var dataToSend = new GameInitDTO(charactersToSend, model.getId());
-                            var packetToSend = new Packet(dataToSend, "GAME_INIT");
+                            var packetToSend = new Packet(dataToSend, GAME_INIT);
                             WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                         }
                     }
@@ -82,7 +84,7 @@ public class PlayerPacketHandler implements PacketHandler {
                     e.printStackTrace();
                 }
                 break;
-            case "PLAYER_ABANDONED":
+            case PLAYER_ABANDONED:
                 try {
                     var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
                     var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
@@ -100,14 +102,14 @@ public class PlayerPacketHandler implements PacketHandler {
                     e.printStackTrace();
                 }
                 break;
-            case "PLAYER_INFO":
+            case PLAYER_INFO:
                 try {
                     var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
                     var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
                     var player = playerService.getPlayer(requestedInfoId);
                     if (player == null) return;
                     var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
-                    var playerInfoResult = new Packet(playerInfoDto, "PLAYER_INFO");
+                    var playerInfoResult = new Packet(playerInfoDto, PLAYER_INFO);
                     client.sendPacket(playerInfoResult);
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.bteam.common.constants.PacketConstants.LOBBY_CLOSED;
+
 @Service
 public class LobbyService {
     final PlayerService playerService;
@@ -49,9 +51,6 @@ public class LobbyService {
             lobby.removePlayer(playerService.getPlayer(playerId));
             if (lobby.getPlayers().isEmpty() || lobby.getHost().getPlayerId().equals(playerId.toString())) {
                 closeLobby(uuid, "Host oder alle Spieler haben die Lobby verlassen");
-            } else {
-
-                //updateLobbyStatus(lobby);
             }
             return true;
         }
@@ -65,7 +64,7 @@ public class LobbyService {
             for (Player player : lobby.getPlayers()) {
                 var client = WebSocketService.getCurrentClientForPlayer(player);
                 if (client != null) {
-                    var packet = new Packet(new LobbyClosedDTO(lobby.getLobbyId(), reason), "LOBBY_CLOSED");
+                    var packet = new Packet(new LobbyClosedDTO(lobby.getLobbyId(), reason), LOBBY_CLOSED);
                     client.sendPacket(packet);
                 }
             }
@@ -81,9 +80,9 @@ public class LobbyService {
 
     public LobbyModel getLobbyWithPlayer(UUID uuid) {
         return lobbyModels.values().stream().filter(
-                lobby -> lobby.getPlayers().stream().anyMatch(
-                    p -> Objects.equals(p.getPlayerId(), uuid.toString())))
-            .findFirst().orElse(null);
+                        lobby -> lobby.getPlayers().stream().anyMatch(
+                                p -> Objects.equals(p.getPlayerId(), uuid.toString())))
+                .findFirst().orElse(null);
     }
 
     public Collection<LobbyModel> getHostedLobbies(UUID uuid) {

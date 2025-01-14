@@ -18,11 +18,13 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
+import com.bteam.common.models.Player;
 import com.bteam.common.models.Vector2D;
 import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
@@ -38,7 +40,7 @@ import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.bteam.common.services.TurnLogicService.checkForWinner;
+import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -83,6 +85,7 @@ public class GameScreen extends ScreenAdapter {
     private Vector2D[] validCommandDestinations = new Vector2D[0];
     private MapInputAdapter mapInputProcessor;
     private TurnResultAnimationHandler animationHandler;
+    private Dialog waitingDialog;
 
     /**
      * Constructor of GameScreen
@@ -115,6 +118,8 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         reset();
+        getLogger().log(Level.SEVERE, getLobbyService().getCurrentLobby().getPlayers().stream()
+            .map(s -> s.toString()).collect(Collectors.joining(",")));
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -168,15 +173,27 @@ public class GameScreen extends ScreenAdapter {
         getLogger().log(Level.SEVERE, "Registering PLAYER_READY packet handler");
 
         getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
-        getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(LOBBY_CLOSED, p -> Gdx.app.postRunnable(() -> {
             var content = getLobbyService().onLobbyClosed(p);
             GenericModal.Build("Lobby Closed!", content + "\nReturning to Main Menu.", skin,
                 () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
         }));
+        getWebSocketService().addPacketHandler(PLAYER_READY, p -> Gdx.app.postRunnable(() -> {
+            JsonReader reader = new JsonReader();
+            JsonValue data = reader.parse(p).get("data");
+            String clientId = data.getString("clientId");
+            boolean ready = data.getString("status").equals(PlayerStatusDTO.PLAYER_READY);
+            getLobbyService().getCurrentLobby().getPlayers().forEach(player -> {
+                if (player.getPlayerId().equals(clientId)) {
+                    player.setStatus(ready ? Player.Status.READY : Player.Status.NOT_READY);
+                }
+            });
+        }));
 
 
         getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
-        getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(GAME_INIT, str -> Gdx.app.postRunnable(() -> {
+            waitingDialog.hide();
             getGameStateService().registerNewGame(9, 9);
             var characters = CharacterEntityMapper.fromListDTO(str);
             String gameId = new JsonReader().parse(str).get("data").getString("gameId");
@@ -185,10 +202,11 @@ public class GameScreen extends ScreenAdapter {
             initializeGame();
         }));
 
-        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
+        getWebSocketService().addPacketHandler(PLAYER_READY, str -> Main.getLogger().log(Level.SEVERE, PLAYER_READY));
 
+        //TODO: Move to ready button once lobby ui exists
         Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
+            Packet packet = new Packet(PlayerStatusDTO.ready(""), PLAYER_READY);
             getWebSocketService().send(packet);
         });
 
@@ -203,7 +221,7 @@ public class GameScreen extends ScreenAdapter {
 
         getGameStateService().onCharacterDeath.addListener(this::killCharacter);
 
-        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(GAME_TURN_RESULT, str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
             TurnResult turnResult = TurnResultMapper.fromDTO(str);
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
@@ -224,6 +242,9 @@ public class GameScreen extends ScreenAdapter {
             //}
             new EndGameDialog(skin,playerID).show(stage);
         });
+
+        waitingDialog = new Dialog("WAITING FOR OPPONENT...", skin);
+        waitingDialog.show(stage);
     }
 
     @Override
