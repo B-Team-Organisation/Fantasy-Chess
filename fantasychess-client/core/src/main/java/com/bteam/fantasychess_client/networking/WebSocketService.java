@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
+import static com.bteam.fantasychess_client.data.Constants.BASE_API_URL;
 
 /**
  * Websocket Service to establish communication with the Server,
@@ -124,7 +125,8 @@ public class WebSocketService {
         Net.HttpRequest httpRequest = requestBuilder
             .newRequest()
             .method(Net.HttpMethods.POST)
-            .url("http://127.0.0.1:5050/api/v1/register")
+            .url("http://" + BASE_API_URL + "/api/v1/register")
+            .header("Access-Control-Allow-Origin", "*")
             .content(username)
             .build();
 
@@ -142,7 +144,7 @@ public class WebSocketService {
         Net.HttpRequest httpRequest = requestBuilder
             .newRequest()
             .method(Net.HttpMethods.GET)
-            .url("http://127.0.0.1:5050/api/v1/token")
+            .url("http://" + BASE_API_URL + "/api/v1/token")
             .header("X-USER-ID", userid)
             .build();
         Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onTokenResult));
