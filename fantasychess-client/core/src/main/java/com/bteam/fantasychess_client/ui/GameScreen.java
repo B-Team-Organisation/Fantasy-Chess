@@ -129,10 +129,15 @@ public class GameScreen extends ScreenAdapter {
 
         stage = new Stage(uiViewport);
 
-        readyButton = createReadyButton();
-        readyButton.setPosition(stage.getWidth() - 250, 50);
-        stage.addActor(readyButton);
+        Table table = new Table();
+        table.setFillParent(true);
 
+        readyButton = createReadyButton();
+        table.pad(0,30,30,30);
+        readyButton.setSize(200,100);
+        table.bottom().right().add(readyButton).size(200,100);
+
+        stage.addActor(table);
 
         atlas = new TextureAtlas(Gdx.files.internal("auto-generated-atlas.atlas"));
         batch = new SpriteBatch();
@@ -360,8 +365,6 @@ public class GameScreen extends ScreenAdapter {
             readyButton.setText("Waiting for next\nturn to start!");
         });
 
-        readyButton.setSize(200, 100);
-
         return readyButton;
     }
 
@@ -415,21 +418,23 @@ public class GameScreen extends ScreenAdapter {
         List<CharacterEntity> friendlyCharacters = Main.getGameStateService().getFriendlyCharacters();
         List<CharacterEntity> enemyCharacters = Main.getGameStateService().getEnemyCharacters();
 
+        Table outerTable = new Table();
+        outerTable.setFillParent(true);
+        outerTable.top().left();
+
         if (friendlyCharacters != null && !friendlyCharacters.isEmpty()) {
             CharacterStatsTable player1StatsTable = new CharacterStatsTable("Your Characters", skin, this);
             player1StatsTable.updateContent(friendlyCharacters, "Your Characters");
-            player1StatsTable.setSize(450, 420);
-            player1StatsTable.setPosition(50, stage.getHeight() - 450);
-            stage.addActor(player1StatsTable);
+            outerTable.add(player1StatsTable).align(Align.left).pad(30).expandX();
         }
 
         if (enemyCharacters != null && !enemyCharacters.isEmpty()) {
             CharacterStatsTable player2StatsTable = new CharacterStatsTable("Opponent's Characters", skin, this);
             player2StatsTable.updateContent(enemyCharacters, "Opponent's Characters");
-            player2StatsTable.setSize(450, 420);
-            player2StatsTable.setPosition(stage.getWidth() - 450, stage.getHeight() - 450);
-            stage.addActor(player2StatsTable);
+            outerTable.add(player2StatsTable).align(Align.right).pad(30).expandX();
         }
+
+        stage.addActor(outerTable);
     }
 
 
@@ -756,6 +761,8 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
+        uiViewport.update(width,height,true);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
