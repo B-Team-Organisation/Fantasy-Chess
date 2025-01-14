@@ -20,10 +20,7 @@ import com.bteam.common.dto.CreateLobbyDTO;
 import com.bteam.common.dto.JoinLobbyDTO;
 import com.bteam.common.dto.JoinLobbyResultDTO;
 import com.bteam.common.dto.Packet;
-import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.LobbyModel;
-import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.LobbyMapper;
 
@@ -31,8 +28,7 @@ import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.bteam.fantasychess_client.Main.getLobbyService;
-import static com.bteam.fantasychess_client.Main.getScreenManager;
+import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
 /**
@@ -153,6 +149,9 @@ public class MainMenu extends ScreenAdapter {
         stage.addActor(table);
 
         Gdx.input.setInputProcessor(stage);
+
+        getWebSocketService().getClient().onCloseEvent.clear();
+        getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
     }
 
     /**
@@ -173,7 +172,7 @@ public class MainMenu extends ScreenAdapter {
      */
     private Label createUserNameLabel() {
         username = Gdx.app.getPreferences("userinfo").getString("username");
-        Label usernameLabel = new Label("Username: "+username, skin);
+        Label usernameLabel = new Label("Username: " + username, skin);
         usernameLabel.setFontScale(1f);
         usernameLabel.setAlignment(Align.center);
         return usernameLabel;
@@ -421,6 +420,12 @@ public class MainMenu extends ScreenAdapter {
                 getLobbyService().setCurrentLobby(null);
             }
         });
+    }
+
+    public void onDisconnect(String reason) {
+        GenericModal.Build("Disconnected",
+            "Connection to the server has been lost: " + reason,
+            skin, () -> getScreenManager().navigateTo(Screens.Splash), stage);
     }
 }
 

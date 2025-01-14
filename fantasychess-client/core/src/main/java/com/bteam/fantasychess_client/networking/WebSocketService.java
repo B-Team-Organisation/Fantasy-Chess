@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.bteam.common.dto.Packet;
+import com.bteam.common.utils.Event;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.errors.UnhandledPacketException;
 import com.github.czyzby.websocket.WebSocket;
@@ -27,9 +28,10 @@ import static com.bteam.common.constants.PacketConstants.CONNECTED_STATUS;
  * @author Marc
  */
 public class WebSocketService {
+    public final Event<Throwable> onRequestError = new Event<>();
+    public final Event<Void> onRequestCanceled = new Event<>();
     private final Map<String, PacketHandler> listeners = new HashMap<>();
     private final Json json = new Json();
-
     WebSocket webSocket;
     WebSocketClient client;
     String userid;
@@ -128,13 +130,22 @@ public class WebSocketService {
             .content(username)
             .build();
 
-        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onRegisterResult));
+        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onRegisterResult,
+            this::onRequestFailed, this::onRequestCancelled));
     }
 
     private void onRegisterResult(Net.HttpResponse response) {
         userid = response.getResultAsString();
         Gdx.app.getPreferences("userinfo").putString("userid", userid);
         getToken(userid);
+    }
+
+    private void onRequestFailed(Throwable throwable) {
+        onRequestError.invoke(throwable);
+    }
+
+    private void onRequestCancelled() {
+        onRequestCanceled.invoke(null);
     }
 
     private void getToken(String userid) {
@@ -145,7 +156,8 @@ public class WebSocketService {
             .url("http://127.0.0.1:5050/api/v1/token")
             .header("X-USER-ID", userid)
             .build();
-        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(this::onTokenResult));
+        Gdx.net.sendHttpRequest(httpRequest, new HttpResponseCallbackListener(
+            this::onTokenResult, this::onRequestFailed, this::onRequestCancelled));
     }
 
     private void onTokenResult(Net.HttpResponse response) {
