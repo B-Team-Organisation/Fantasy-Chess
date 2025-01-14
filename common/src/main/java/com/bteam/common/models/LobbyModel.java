@@ -126,7 +126,7 @@ public class LobbyModel {
         var playerInList = this.players.stream().filter(p -> p.getPlayerId().equals(player.getPlayerId())).findFirst();
         playerInList.ifPresent(this.players::remove);
 
-        if (this.players.size() < maxPlayers) {
+        if (gameState != GameState.CLOSED && this.players.size() < maxPlayers) {
             gameState = GameState.OPEN;
         }
     }
