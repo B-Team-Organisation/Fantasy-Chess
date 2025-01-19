@@ -88,7 +88,7 @@ public class GameScreen extends ScreenAdapter {
     private Vector2D[] validCommandDestinations = new Vector2D[0];
     private MapInputAdapter mapInputProcessor;
     private TurnResultAnimationHandler animationHandler;
-    private Dialog waitingDialog;
+    private LobbyScreen lobbyScreen;
 
     /**
      * Constructor of GameScreen
@@ -196,7 +196,7 @@ public class GameScreen extends ScreenAdapter {
 
         getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
         getWebSocketService().addPacketHandler(GAME_INIT, str -> Gdx.app.postRunnable(() -> {
-            waitingDialog.hide();
+            lobbyScreen.hide();
             getGameStateService().registerNewGame(9, 9);
             var characters = CharacterEntityMapper.fromListDTO(str);
             String gameId = new JsonReader().parse(str).get("data").getString("gameId");
@@ -234,8 +234,9 @@ public class GameScreen extends ScreenAdapter {
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
-        waitingDialog = new Dialog("WAITING FOR OPPONENT...", skin);
-        waitingDialog.show(stage);
+        lobbyScreen = new LobbyScreen(skin, "Lobby", "PlayerName");
+        lobbyScreen.show(stage);
+
     }
 
     @Override
