@@ -4,14 +4,21 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
+import com.bteam.common.exceptions.PlayerNotFoundException;
+import com.bteam.common.models.Player;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
+import com.bteam.common.models.Player.Status;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 
 import static com.bteam.common.constants.PacketConstants.PLAYER_ABANDONED;
+import static com.bteam.common.constants.PacketConstants.PLAYER_READY;
+import static com.bteam.fantasychess_client.Main.getLobbyService;
+import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
 /**
  * A lobby screen for waiting after lobby creation.
@@ -22,27 +29,6 @@ import static com.bteam.common.constants.PacketConstants.PLAYER_ABANDONED;
  * @version 1.0
  */
 public class LobbyScreen extends Dialog {
-
-    private enum Status {
-        READY {
-            public String toString() {
-                return "READY";
-            }
-            public Status toggle() {
-                return NOT_READY;
-            }
-        },
-        NOT_READY {
-            public String toString() {
-                return "NOT READY";
-            }
-            public Status toggle() {
-                return READY;
-            }
-        };
-
-        public abstract Status toggle();
-    }
 
     /**
      * Player Name and Status
@@ -99,7 +85,16 @@ public class LobbyScreen extends Dialog {
         this.skin = skin;
         this.hostName = hostName;
 
-        addPlayerInfoRow(hostName, Status.NOT_READY);
+        for (Player player : getPlayerList()) {
+            addPlayerInfoRow(player.getUsername(), Status.NOT_READY);
+        }
+
+        getLobbyService().onPlayerJoined.addListener(
+            player -> Gdx.app.postRunnable(() -> addPlayer(player.getUsername()))
+        );
+        getLobbyService().onPlayerReadyChanged.addListener(
+            player -> Gdx.app.postRunnable(() -> setPlayerStatus(player.getUsername(), player.getStatus()))
+        );
 
         button("< LEAVE", "leave");
         button("READY", "ready");
@@ -113,8 +108,12 @@ public class LobbyScreen extends Dialog {
             Gdx.app.postRunnable(this::sendAbandonPacket);
             Main.getScreenManager().navigateTo(Screens.MainMenu);
         } else if (obj.equals("ready")) {
-            togglePlayerStatus(hostName); // TODO: use actual player
-            removePlayer("Hans Peter");
+            try {
+                togglePlayerStatus(getUserName());
+            } catch (PlayerNotFoundException e) {
+                Main.getLogger().log(Level.SEVERE, e.getMessage());
+            }
+            sendReadyStatus();
             cancel();
         } else if (obj.equals("start")) {
             hide();
@@ -123,6 +122,24 @@ public class LobbyScreen extends Dialog {
 
     public void addPlayer(String playerName) {
         addPlayerInfoRow(playerName, Status.NOT_READY);
+    }
+
+    private List<Player> getPlayerList() {
+        return getLobbyService().getCurrentLobby().getPlayers();
+    }
+
+    private String getUserName() throws PlayerNotFoundException {
+         String userID = getWebSocketService().getUserid();
+         return getNameFromID(userID);
+    }
+
+    private String getNameFromID(String id) throws PlayerNotFoundException {
+        List<Player> players = getPlayerList();
+        return players.stream()
+            .filter(player -> player.getPlayerId().equals(id))
+            .findFirst()
+            .map(Player::getUsername)
+            .orElseThrow(() -> new PlayerNotFoundException("ID: " + id));
     }
 
     public void removePlayer(String playerName) {
@@ -178,19 +195,17 @@ public class LobbyScreen extends Dialog {
         this.pack(); // resize
     }
 
-    /*
     private void sendReadyStatus() {
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(PlayerStatusDTO.ready(""), PLAYER_READY);
             getWebSocketService().send(packet);
         });
     }
-    */
 
     private void sendAbandonPacket() {
-        var dto = PlayerStatusDTO.abandoned(Main.getWebSocketService().getUserid());
+        var dto = PlayerStatusDTO.abandoned(getWebSocketService().getUserid());
         var packet = new Packet(dto, PLAYER_ABANDONED);
-        Main.getWebSocketService().send(packet);
+        getWebSocketService().send(packet);
     }
 
 }

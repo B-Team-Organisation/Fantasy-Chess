@@ -64,7 +64,7 @@ public class PlayerPacketHandler implements PacketHandler {
                             PlayerStatusDTO.notReady(readyPlayerId), PLAYER_READY);
                     WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
-                if (lobby.getPlayers().size() == 2) {
+                if (lobby.getPlayers().size() == 2 && lobby.getPlayers().stream().allMatch(player -> player.getStatus().equals(Player.Status.READY))) {
                     var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
                     var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
                     var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();

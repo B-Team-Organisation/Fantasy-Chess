@@ -109,7 +109,22 @@ public class Player {
     }
 
     public enum Status {
-        NOT_READY,
-        READY,
+        NOT_READY {
+            public String toString() {
+                return "READY";
+            }
+            public Status toggle() {
+                return NOT_READY;
+            }
+        },
+        READY {
+            public String toString() {
+                return "NOT READY";
+            }
+            public Status toggle() {
+                return READY;
+            }
+        };
+        public abstract Status toggle();
     }
 }

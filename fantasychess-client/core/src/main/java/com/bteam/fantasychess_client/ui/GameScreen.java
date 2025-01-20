@@ -189,6 +189,7 @@ public class GameScreen extends ScreenAdapter {
             getLobbyService().getCurrentLobby().getPlayers().forEach(player -> {
                 if (player.getPlayerId().equals(clientId)) {
                     player.setStatus(ready ? Player.Status.READY : Player.Status.NOT_READY);
+                    getLobbyService().onPlayerReadyChanged.invoke(player);
                 }
             });
         }));
@@ -206,12 +207,6 @@ public class GameScreen extends ScreenAdapter {
         }));
 
         getWebSocketService().addPacketHandler(PLAYER_READY, str -> Main.getLogger().log(Level.SEVERE, PLAYER_READY));
-
-        //TODO: Move to ready button once lobby ui exists
-        Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerStatusDTO.ready(""), PLAYER_READY);
-            getWebSocketService().send(packet);
-        });
 
         getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {

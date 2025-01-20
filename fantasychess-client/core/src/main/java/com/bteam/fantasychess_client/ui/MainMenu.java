@@ -444,6 +444,7 @@ public class MainMenu extends ScreenAdapter {
     private void onPlayerJoined(String packetJson) {
         var player = PlayerInfoMapper.fromDTO(packetJson);
         getLobbyService().addPlayer(player);
+        getLobbyService().onPlayerJoined.invoke(player);
     }
 }
 

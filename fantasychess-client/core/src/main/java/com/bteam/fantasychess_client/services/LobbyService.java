@@ -3,6 +3,7 @@ package com.bteam.fantasychess_client.services;
 import com.badlogic.gdx.utils.JsonReader;
 import com.bteam.common.models.LobbyModel;
 import com.bteam.common.models.Player;
+import com.bteam.common.utils.Event;
 
 import java.util.Objects;
 import java.util.logging.Level;
@@ -25,6 +26,9 @@ public class LobbyService {
     public LobbyModel getCurrentLobby() {
         return currentLobby;
     }
+
+    public final Event<Player> onPlayerJoined = new Event<>();
+    public final Event<Player> onPlayerReadyChanged = new Event<>();
 
     public void setCurrentLobby(LobbyModel currentLobby) {
         this.currentLobby = currentLobby;
