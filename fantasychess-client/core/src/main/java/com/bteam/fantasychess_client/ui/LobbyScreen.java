@@ -1,28 +1,30 @@
 package com.bteam.fantasychess_client.ui;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
-import com.bteam.common.exceptions.PlayerNotFoundException;
-import com.bteam.common.models.Player;
-import com.bteam.fantasychess_client.Main;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
+import com.bteam.common.exceptions.PlayerNotFoundException;
+import com.bteam.common.models.Player;
 import com.bteam.common.models.Player.Status;
+import com.bteam.fantasychess_client.Main;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
-import static com.bteam.common.constants.PacketConstants.PLAYER_ABANDONED;
+import static com.bteam.common.constants.PacketConstants.PLAYER_LEAVE;
 import static com.bteam.common.constants.PacketConstants.PLAYER_READY;
-import static com.bteam.fantasychess_client.Main.getLobbyService;
-import static com.bteam.fantasychess_client.Main.getWebSocketService;
+import static com.bteam.fantasychess_client.Main.*;
 
 /**
  * A lobby screen for waiting after lobby creation.
- * <p />
+ * <p/>
  * Shows players in lobby and offers leaving and starting game
  *
  * @author jacinto
@@ -30,48 +32,9 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
  */
 public class LobbyScreen extends Dialog {
 
-    /**
-     * Player Name and Status
-     */
-    private class PlayerLabels {
-        private Label nameLabel;
-        private Label statusLabel;
-        private Status status;
-
-        public PlayerLabels(Label nameLabel, Label statusLabel, Status status) {
-            this.nameLabel = nameLabel;
-            this.statusLabel = statusLabel;
-            this.status = status;
-        }
-
-        public void updateStatus(Status status) {
-            statusLabel.setText(status.toString());
-            this.status = status;
-        }
-
-        public void toggleStatus() {
-            statusLabel.setText(status.toggle().toString());
-            status = status.toggle();
-        }
-
-        public Label getStatusLabel() {
-            return this.statusLabel;
-        }
-
-        public Label getNameLabel() {
-            return this.nameLabel;
-        }
-
-        @Override
-        public String toString() {
-            return "[nameLabel=" + nameLabel + "; statusLabel=" + statusLabel
-                + "; status=" + status + "]";
-        }
-    }
-
+    private final String hostName;
+    private final HashMap<String, PlayerLabels> playerLabelMap = new HashMap<>();
     Skin skin;
-    private String hostName;
-    private HashMap<String, PlayerLabels> playerLabelMap = new HashMap<>();
 
     public LobbyScreen(Skin skin, String lobbyName, String hostName) {
         super(lobbyName, skin);
@@ -95,6 +58,7 @@ public class LobbyScreen extends Dialog {
         getLobbyService().onPlayerReadyChanged.addListener(
             player -> Gdx.app.postRunnable(() -> setPlayerStatus(player.getUsername(), player.getStatus()))
         );
+        getWebSocketService().addPacketHandler(PLAYER_LEAVE, this::onPlayerLeave);
 
         button("< LEAVE", "leave");
         button("READY", "ready");
@@ -129,8 +93,8 @@ public class LobbyScreen extends Dialog {
     }
 
     private String getUserName() throws PlayerNotFoundException {
-         String userID = getWebSocketService().getUserid();
-         return getNameFromID(userID);
+        String userID = getWebSocketService().getUserid();
+        return getNameFromID(userID);
     }
 
     private String getNameFromID(String id) throws PlayerNotFoundException {
@@ -176,7 +140,8 @@ public class LobbyScreen extends Dialog {
 
     /**
      * Add a new row for a player, including name and status.
-     * @param playerName The name of the player.
+     *
+     * @param playerName   The name of the player.
      * @param playerStatus The {@link Status} of the player.
      */
     private void addPlayerInfoRow(String playerName, Status playerStatus) {
@@ -204,8 +169,59 @@ public class LobbyScreen extends Dialog {
 
     private void sendAbandonPacket() {
         var dto = PlayerStatusDTO.abandoned(getWebSocketService().getUserid());
-        var packet = new Packet(dto, PLAYER_ABANDONED);
+        var packet = new Packet(dto, PLAYER_LEAVE);
         getWebSocketService().send(packet);
+    }
+
+    private void onPlayerLeave(String packet) {
+        try {
+            JsonReader reader = new JsonReader();
+            JsonValue data = reader.parse(packet).get("data");
+            String playerId = data.getString("playerId");
+            var name = getNameFromID(playerId);
+            removePlayer(name);
+        } catch (PlayerNotFoundException e) {
+            getLogger().log(Level.SEVERE, e.getMessage());
+        }
+    }
+
+    /**
+     * Player Name and Status
+     */
+    private class PlayerLabels {
+        private final Label nameLabel;
+        private final Label statusLabel;
+        private Status status;
+
+        public PlayerLabels(Label nameLabel, Label statusLabel, Status status) {
+            this.nameLabel = nameLabel;
+            this.statusLabel = statusLabel;
+            this.status = status;
+        }
+
+        public void updateStatus(Status status) {
+            statusLabel.setText(status.toString());
+            this.status = status;
+        }
+
+        public void toggleStatus() {
+            statusLabel.setText(status.toggle().toString());
+            status = status.toggle();
+        }
+
+        public Label getStatusLabel() {
+            return this.statusLabel;
+        }
+
+        public Label getNameLabel() {
+            return this.nameLabel;
+        }
+
+        @Override
+        public String toString() {
+            return "[nameLabel=" + nameLabel + "; statusLabel=" + statusLabel
+                + "; status=" + status + "]";
+        }
     }
 
 }

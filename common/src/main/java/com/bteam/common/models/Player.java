@@ -91,7 +91,7 @@ public class Player {
 
     @Override
     public String toString() {
-        return "[Username=" + username + ", PlayerId=" + playerId + ", Status=" + status + ", Characters=" + characters +"]";
+        return "[Username=" + username + ", PlayerId=" + playerId + ", Status=" + status + ", Characters=" + characters + "]";
     }
 
     @Override
@@ -101,30 +101,33 @@ public class Player {
 
     public boolean equals(Object o) {
         return o instanceof Player
-            && ((Player) o).playerId.equals(playerId)
-            && ((Player) o).username.equals(username)
-            && ((Player) o).status.equals(status)
-            && ((Player) o).characters.equals(characters);
+                && ((Player) o).playerId.equals(playerId)
+                && ((Player) o).username.equals(username)
+                && ((Player) o).status.equals(status)
+                && ((Player) o).characters.equals(characters);
 
     }
 
     public enum Status {
         NOT_READY {
             public String toString() {
-                return "READY";
+                return "NOT READY";
             }
+
             public Status toggle() {
                 return NOT_READY;
             }
         },
         READY {
             public String toString() {
-                return "NOT READY";
+                return "READY";
             }
+
             public Status toggle() {
                 return READY;
             }
         };
+
         public abstract Status toggle();
     }
 }

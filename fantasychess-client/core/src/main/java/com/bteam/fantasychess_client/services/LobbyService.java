@@ -17,6 +17,8 @@ import static com.bteam.fantasychess_client.Main.*;
  * @author Marc
  */
 public class LobbyService {
+    public final Event<Player> onPlayerJoined = new Event<>();
+    public final Event<Player> onPlayerReadyChanged = new Event<>();
     private LobbyModel currentLobby;
 
     /**
@@ -26,9 +28,6 @@ public class LobbyService {
     public LobbyModel getCurrentLobby() {
         return currentLobby;
     }
-
-    public final Event<Player> onPlayerJoined = new Event<>();
-    public final Event<Player> onPlayerReadyChanged = new Event<>();
 
     public void setCurrentLobby(LobbyModel currentLobby) {
         this.currentLobby = currentLobby;

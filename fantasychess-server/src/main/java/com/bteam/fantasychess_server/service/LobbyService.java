@@ -28,6 +28,12 @@ public class LobbyService {
     }
 
     public LobbyModel getLobby(UUID uuid) {
+        var lobby = lobbyModels.get(uuid);
+        var updatedPlayers = lobby.getPlayers().stream()
+                .map(player -> playerService.getPlayer(UUID.fromString(player.getPlayerId())))
+                .toList();
+        lobby.getPlayers().clear();
+        lobby.getPlayers().addAll(updatedPlayers);
         return lobbyModels.get(uuid);
     }
 

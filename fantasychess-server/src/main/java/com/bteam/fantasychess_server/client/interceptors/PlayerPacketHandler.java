@@ -54,22 +54,28 @@ public class PlayerPacketHandler implements PacketHandler {
                 var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                 var isReady = Objects.equals(dto.getStatus(), PlayerStatusDTO.PLAYER_READY);
                 var lobby = lobbyService.getLobbyWithPlayer(playerId);
+
                 playerService.setPlayerStatus(playerId, isReady ?
                         Player.Status.READY : Player.Status.NOT_READY);
-                var playersToNotify = lobby.getPlayers();
-                for (var player : playersToNotify) {
+
+                lobby = lobbyService.getLobby(UUID.fromString(lobby.getLobbyId()));
+                var playersInLobby = lobby.getPlayers();
+
+                for (var player : playersInLobby) {
                     var readyPlayerId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
                             PlayerStatusDTO.ready(readyPlayerId) :
                             PlayerStatusDTO.notReady(readyPlayerId), PLAYER_READY);
                     WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
-                if (lobby.getPlayers().size() == 2 && lobby.getPlayers().stream().allMatch(player -> player.getStatus().equals(Player.Status.READY))) {
-                    var players = lobby.getPlayers().stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
+
+                if (playersInLobby.size() == 2 && playersInLobby.stream()
+                        .allMatch(player -> player.getStatus().equals(Player.Status.READY))) {
+                    var players = playersInLobby.stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
                     var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
                     var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
 
-                    for (var p : lobby.getPlayers()) {
+                    for (var p : playersInLobby) {
                         var playerUUID = UUID.fromString(p.getPlayerId());
                         var charactersToSend = lobbyService.getLobbyWithPlayer(playerUUID).isHost(p) ?
                                 dtos.stream().map(this::invertEntityPosition).toList() : dtos;
@@ -81,27 +87,57 @@ public class PlayerPacketHandler implements PacketHandler {
                 }
                 break;
             case PLAYER_ABANDONED:
-                var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
-                var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
+                try {
+                    var abandonPlayerId = UUID.fromString(client.getPlayer().getPlayerId());
+                    var abandonedLobby = lobbyService.getLobbyWithPlayer(abandonPlayerId);
 
-                var game = gameStateService.getGameModelForLobby(abandonedLobby.getLobbyId());
-                gameStateService.cancelGame(UUID.fromString(game.getId()));
+                    var game = gameStateService.getGameModelForLobby(abandonedLobby.getLobbyId());
+                    gameStateService.cancelGame(UUID.fromString(game.getId()));
 
-                for (var player : abandonedLobby.getPlayers()) {
-                    player.setStatus(Player.Status.NOT_READY);
+                    for (var player : abandonedLobby.getPlayers()) {
+                        player.setStatus(Player.Status.NOT_READY);
+                    }
+
+                    abandonedLobby.removePlayer(client.getPlayer());
+                    lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()), "Opponent has abandoned the game");
+                } catch (Exception e) {
+                    System.out.println(e);
                 }
+                break;
 
-                abandonedLobby.removePlayer(client.getPlayer());
-                lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()), "Opponent has abandoned the game");
+            case PLAYER_LEAVE:
+                try {
+                    var player = client.getPlayer();
+                    var playerID = UUID.fromString(player.getPlayerId());
+                    var abandonedLobby = lobbyService.getLobbyWithPlayer(playerID);
+                    abandonedLobby.removePlayer(player);
+
+                    if (abandonedLobby.getPlayers().isEmpty()) {
+                        lobbyService.closeLobby(UUID.fromString(abandonedLobby.getLobbyId()), "Noone is in the lobby");
+                        break;
+                    }
+
+                    for (var p : abandonedLobby.getPlayers()) {
+                        var dataToSend = new PlayerInfoDTO(player.getPlayerId(), player.getUsername());
+                        var packetToSend = new Packet(dataToSend, PLAYER_LEAVE);
+                        WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             case PLAYER_INFO:
-                var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
-                var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
-                var player = playerService.getPlayer(requestedInfoId);
-                if (player == null) return;
-                var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
-                var playerInfoResult = new Packet(playerInfoDto, PLAYER_INFO);
-                client.sendPacket(playerInfoResult);
+                try {
+                    var playerInfoRequest = mapper.convertValue(data, PlayerInfoDTO.class);
+                    var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
+                    var player = playerService.getPlayer(requestedInfoId);
+                    if (player == null) return;
+                    var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
+                    var playerInfoResult = new Packet(playerInfoDto, PLAYER_INFO);
+                    client.sendPacket(playerInfoResult);
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
                 break;
             default:
                 break;

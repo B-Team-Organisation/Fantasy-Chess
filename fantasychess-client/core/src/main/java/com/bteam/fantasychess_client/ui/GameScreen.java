@@ -20,7 +20,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
@@ -205,8 +204,6 @@ public class GameScreen extends ScreenAdapter {
             getGameStateService().setCharacters(characters);
             initializeGame();
         }));
-
-        getWebSocketService().addPacketHandler(PLAYER_READY, str -> Main.getLogger().log(Level.SEVERE, PLAYER_READY));
 
         getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {
