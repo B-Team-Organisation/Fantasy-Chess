@@ -141,7 +141,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         // Todo: Keep in mind that this method of dimension retrieval is
-        //  bound to run into issues as soon as the map also contains surrounding foliage.
+        // bound to run into issues as soon as the map also contains surrounding foliage.
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
@@ -234,7 +234,7 @@ public class GameScreen extends ScreenAdapter {
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
-        lobbyScreen = new LobbyScreen(skin, "Lobby", "PlayerName");
+        lobbyScreen = new LobbyScreen(skin, "Lobby", "PlayerName here");
         lobbyScreen.show(stage);
 
     }
