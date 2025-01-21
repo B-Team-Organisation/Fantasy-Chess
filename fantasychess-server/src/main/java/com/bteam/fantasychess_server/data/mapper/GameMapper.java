@@ -1,6 +1,6 @@
 package com.bteam.fantasychess_server.data.mapper;
 
-import Exceptions.NotImplementedException;
+import com.bteam.common.exceptions.NotImplementedException;
 import com.bteam.common.models.GameModel;
 import com.bteam.fantasychess_server.data.entities.GameEntity;
 import com.bteam.fantasychess_server.data.repositories.GameRepository;
