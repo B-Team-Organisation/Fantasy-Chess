@@ -35,8 +35,8 @@ jobs:
         run: chmod +x ./fantasychess-server/gradlew
 
 
-      - name: Build with Gradle Wrapper
-        run: ./fantasychess-server/gradlew wrapper
+      # - name: Build with Gradle Wrapper
+      #   run: ./fantasychess-server/gradlew wrapper
 
       - name: Build with Gradle Wrapper
         run: ./fantasychess-server/gradlew build
