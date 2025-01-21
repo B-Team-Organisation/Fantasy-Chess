@@ -1,7 +1,7 @@
-package Exceptions;
+package com.bteam.common.exceptions;
 
 public class NotImplementedException extends RuntimeException {
     public NotImplementedException(String methodName) {
-        super(String.format("Method %s not implemented", methodName));
+        super("Method " + methodName + " not implemented");
     }
 }
