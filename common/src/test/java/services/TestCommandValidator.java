@@ -5,11 +5,11 @@ import com.bteam.common.exceptions.InvalidSubpatternMappingException;
 import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.models.*;
 import com.bteam.common.services.ValidationResult;
+import com.bteam.common.utils.ListNoOrder;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.bteam.common.utils.ListNoOrder;
 
 import java.util.*;
 
@@ -20,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TestCommandValidator {
 
+    private final String hostID = "player1";
+    private final String opponentID = "player2";
     private GridService basicGrid;
     private CharacterDataModel baseModel1;
     private CharacterDataModel baseModel2;
@@ -33,8 +35,111 @@ class TestCommandValidator {
     private CharacterEntity basicEntity5;
     private CharacterEntity basicEntity6;
     private CharacterEntity asymmetricEntity;
-    private final String hostID = "player1";
-    private final String opponentID = "player2";
+
+    /**
+     * Create multiple movements from multiple vertices with the same characterId
+     *
+     * @param positions   The positions
+     * @param characterId The characterID
+     * @return The movements
+     */
+    private static List<MovementDataModel> movesFromList(List<Vector2D> positions, String characterId) {
+        ArrayList<MovementDataModel> movements = new ArrayList<>();
+        for (Vector2D position : positions) {
+            movements.add(new MovementDataModel(characterId, position));
+        }
+        return movements;
+    }
+
+    /**
+     * Create multiple attacks from multiple vertices with the same characterId
+     *
+     * @param positions   The positions
+     * @param characterId The characterID
+     * @return The attacks
+     */
+    private static List<AttackDataModel> attacksFromList(List<Vector2D> positions, String characterId) {
+        ArrayList<AttackDataModel> attacks = new ArrayList<>();
+        for (Vector2D position : positions) {
+            attacks.add(new AttackDataModel(position, characterId));
+        }
+        return attacks;
+    }
+
+    /**
+     * Create a List of 2D vertices that span fromX and fromY to toX and toY, essentially spanning a plane.
+     *
+     * @param fromX Starting x coordinate
+     * @param fromY Starting y coordinate
+     * @param toX   Ending x coordinate
+     * @param toY   Ending y coordinate
+     * @return The list of vertices
+     */
+    private static List<Vector2D> createGridFromTo(int fromX, int fromY, int toX, int toY) {
+        List<Vector2D> grid = new ArrayList<>();
+        for (int x = fromX; x <= toX; x++) {
+            for (int y = fromY; y <= toY; y++) {
+                grid.add(new Vector2D(x, y));
+            }
+        }
+        return grid;
+    }
+
+    /**
+     * Get the matching characterEntity given an id.
+     *
+     * @param characterEntities The entities
+     * @param characterId       The id to search for
+     * @return The character
+     */
+    private static CharacterEntity getCharacterWithId(
+            List<CharacterEntity> characterEntities, String characterId
+    ) {
+        for (CharacterEntity character : characterEntities) {
+            if (characterId.equals(character.getId())) {
+                return character;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if move is inside characters patterns
+     */
+    private static boolean isMoveInsideCharacterPattern(MovementDataModel move, List<CharacterEntity> characters) {
+        boolean isMoveValid = false;
+
+        CharacterEntity character = getCharacterWithId(characters, move.getCharacterId());
+        assertNotNull(character);
+        PatternService[] movementPatterns = character.getCharacterBaseModel().getMovementPatterns();
+        for (PatternService movementPattern : movementPatterns) {
+            Vector2D position = character.getPosition();
+            Vector2D intendedMove = move.getMovementVector();
+            List<Vector2D> allowedPositions = Arrays.asList(movementPattern.getPossibleTargetPositions(position));
+            if (allowedPositions.contains(intendedMove)) isMoveValid = true;
+        }
+
+        return isMoveValid;
+    }
+
+    /**
+     * Check if move is inside characters patterns
+     */
+    private static boolean isAttackInsideCharacterPattern(AttackDataModel attack, List<CharacterEntity> characters) {
+        boolean isAttackValid = false;
+
+        CharacterEntity character = getCharacterWithId(characters, attack.getAttacker());
+        assertNotNull(character);
+        PatternService[] attackPatterns = character.getCharacterBaseModel().getAttackPatterns();
+        for (PatternService attackPattern : attackPatterns) {
+            Vector2D position = character.getPosition();
+            Vector2D intendedMove = attack.getAttackPosition();
+            List<Vector2D> allowedPositions = Arrays.asList(attackPattern.getPossibleTargetPositions(position));
+            if (allowedPositions.contains(intendedMove)) isAttackValid = true;
+        }
+
+        return isAttackValid;
+    }
 
     @BeforeEach
     void setup() throws PatternShapeInvalidException, InvalidSubpatternMappingException {
@@ -135,31 +240,31 @@ class TestCommandValidator {
                 "baseModel1", "Test",
                 4, 8,
                 new PatternService[]{longRangeAttackService},
-                new PatternService[]{shortMovementService},"",""
+                new PatternService[]{shortMovementService}, "", ""
         );
         baseModel2 = new CharacterDataModel(
-            "baseModel2", "Test Test",
-                    8, 4,
-                    new PatternService[]{shortRangeAttackService},
-                    new PatternService[]{longMovementService},"",""
+                "baseModel2", "Test Test",
+                8, 4,
+                new PatternService[]{shortRangeAttackService},
+                new PatternService[]{longMovementService}, "", ""
         );
         baseModel3 = new CharacterDataModel(
                 "baseModel3", "Test Test Test",
                 4, 8,
                 new PatternService[]{longRangeAttackService, shortMovementService},
-                new PatternService[]{shortMovementService, longMovementService},"",""
+                new PatternService[]{shortMovementService, longMovementService}, "", ""
         );
         baseModel4 = new CharacterDataModel(
                 "baseModel4", "Test Test Test Test",
                 4, 8,
                 new PatternService[]{simpleAttackService},
-                new PatternService[]{simpleMovementService},"",""
+                new PatternService[]{simpleMovementService}, "", ""
         );
         asymmetricModel = new CharacterDataModel(
                 "asymetricModel", "Test Test Test Test Test",
                 4, 8,
                 new PatternService[]{asymetricPatternService},
-                new PatternService[]{asymetricPatternService}
+                new PatternService[]{asymetricPatternService}, "", ""
         );
         basicEntity1 = new CharacterEntity(baseModel1, "baseEntity1", 4, new Vector2D(2, 2), hostID);
         basicEntity2 = new CharacterEntity(baseModel2, "baseEntity2", 2, new Vector2D(7, 7), opponentID);
@@ -228,54 +333,54 @@ class TestCommandValidator {
 
         //empty
         assertEquals(
-            new ValidationResult(List.of(), List.of(), List.of()),
-            validateCommands(characters, List.of(), List.of(), basicGrid, hostID)
+                new ValidationResult(List.of(), List.of(), List.of()),
+                validateCommands(characters, List.of(), List.of(), basicGrid, hostID)
         );
         //all Valid
         assertEquals(
-            new ValidationResult(List.of(), List.of(validMove1, validMove2), List.of(validAttack3)),
-            validateCommands(characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid, hostID)
+                new ValidationResult(List.of(), List.of(validMove1, validMove2), List.of(validAttack3)),
+                validateCommands(characters, List.of(validMove1, validMove2), List.of(validAttack3), basicGrid, hostID)
         );
         // Bounce, forbidden attack
         assertEquals(
-            new ValidationResult(List.of(
-                new PairNoOrder<>(validMove1, bounceWith1)), List.of(), List.of(validAttack2)
-            ),
-            validateCommands(
-                characters, List.of(validMove1, bounceWith1), List.of(validAttack2, attack3Forbidden), basicGrid, hostID
-            )
+                new ValidationResult(List.of(
+                        new PairNoOrder<>(validMove1, bounceWith1)), List.of(), List.of(validAttack2)
+                ),
+                validateCommands(
+                        characters, List.of(validMove1, bounceWith1), List.of(validAttack2, attack3Forbidden), basicGrid, hostID
+                )
         );
         //non-single command, outOfBoundsAttack
         assertEquals(
-            new ValidationResult(List.of(), List.of(), List.of(validAttack2)),
-            validateCommands(
-                characters, List.of(validMove1, doubleMoveOn1), List.of(validAttack2, attack3Forbidden),
-                basicGrid, hostID
-            )
+                new ValidationResult(List.of(), List.of(), List.of(validAttack2)),
+                validateCommands(
+                        characters, List.of(validMove1, doubleMoveOn1), List.of(validAttack2, attack3Forbidden),
+                        basicGrid, hostID
+                )
         );
         //checks from validateMoves + validAttack4
         assertEquals(
-            new ValidationResult(List.of(), List.of(validMove2), List.of(validAttack4)),
-            validateCommands(
-                characters, List.of(validMove1, validMove2, moving3Like1),
-                List.of(validAttack4), basicGrid, hostID
-            )
+                new ValidationResult(List.of(), List.of(validMove2), List.of(validAttack4)),
+                validateCommands(
+                        characters, List.of(validMove1, validMove2, moving3Like1),
+                        List.of(validAttack4), basicGrid, hostID
+                )
         );
         assertEquals(
-            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
-            validateCommands(characters, List.of(validMove1, moving3To1), List.of(validAttack4), basicGrid, hostID)
+                new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+                validateCommands(characters, List.of(validMove1, moving3To1), List.of(validAttack4), basicGrid, hostID)
         );
         assertEquals(
-            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
-            validateCommands(
-                    characters, List.of(validMove1, moving2OutOfBounds), List.of(validAttack4), basicGrid, hostID
-            )
+                new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+                validateCommands(
+                        characters, List.of(validMove1, moving2OutOfBounds), List.of(validAttack4), basicGrid, hostID
+                )
         );
         assertEquals(
-            new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
-            validateCommands(
-                characters, List.of(validMove1, moving2ForbiddenMovement), List.of(validAttack4), basicGrid, hostID
-            )
+                new ValidationResult(List.of(), List.of(validMove1), List.of(validAttack4)),
+                validateCommands(
+                        characters, List.of(validMove1, moving2ForbiddenMovement), List.of(validAttack4), basicGrid, hostID
+                )
         );
         //test that reverted moves aren't filtered out
         assertEquals(
@@ -387,7 +492,6 @@ class TestCommandValidator {
         assertEquals(List.of(move1, move3), validateMovingToSamePosition(List.of(move1, move3), characters));
         assertEquals(List.of(move2To1Valid), validateMovingToSamePosition(List.of(move1, move2To1Valid, move4), characters));
     }
-
 
     @Test
     void testMovingInsideBounds() {
@@ -516,39 +620,39 @@ class TestCommandValidator {
     @Test
     void testValidateSingleCommandsOnly() {
 
-        AttackDataModel attack1 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
-        AttackDataModel attack1v2 = new AttackDataModel(new Vector2D(0,0), basicEntity1.getId());
-        AttackDataModel attack2 = new AttackDataModel(new Vector2D(0,0), basicEntity2.getId());
-        AttackDataModel attack3 = new AttackDataModel(new Vector2D(0,0), basicEntity3.getId());
-        
-        MovementDataModel move1 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0,0));
-        MovementDataModel move1v2 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0,0));
+        AttackDataModel attack1 = new AttackDataModel(new Vector2D(0, 0), basicEntity1.getId());
+        AttackDataModel attack1v2 = new AttackDataModel(new Vector2D(0, 0), basicEntity1.getId());
+        AttackDataModel attack2 = new AttackDataModel(new Vector2D(0, 0), basicEntity2.getId());
+        AttackDataModel attack3 = new AttackDataModel(new Vector2D(0, 0), basicEntity3.getId());
+
+        MovementDataModel move1 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0, 0));
+        MovementDataModel move1v2 = new MovementDataModel(basicEntity1.getId(), new Vector2D(0, 0));
         MovementDataModel move2 = new MovementDataModel(basicEntity2.getId(), new Vector2D(0, 0));
         MovementDataModel move3 = new MovementDataModel(basicEntity3.getId(), new Vector2D(0, 0));
 
         //Two conflicting attacks, one none conflicting move
-        Pair<List<MovementDataModel>, List<AttackDataModel>> result1 =validateSingleCommandsOnly(
-                List.of(move2), List.of(attack1,attack1v2)
+        Pair<List<MovementDataModel>, List<AttackDataModel>> result1 = validateSingleCommandsOnly(
+                List.of(move2), List.of(attack1, attack1v2)
         );
         assertEquals(List.of(move2), result1.getFirst());
         assertEquals(List.of(), result1.getSecond());
 
         //Two conflicting moves, one none conflicting attack
-        Pair<List<MovementDataModel>,List<AttackDataModel>> result2 = validateSingleCommandsOnly(
-                List.of(move1,move1v2), List.of(attack3)
+        Pair<List<MovementDataModel>, List<AttackDataModel>> result2 = validateSingleCommandsOnly(
+                List.of(move1, move1v2), List.of(attack3)
         );
         assertEquals(List.of(), result2.getFirst());
         assertEquals(List.of(attack3), result2.getSecond());
 
         //Conflicting attack & move, and one non-conflicting attack and move each
-        Pair<List<MovementDataModel>,List<AttackDataModel>> result3 = validateSingleCommandsOnly(
-                List.of(move1,move3), List.of(attack1,attack2)
+        Pair<List<MovementDataModel>, List<AttackDataModel>> result3 = validateSingleCommandsOnly(
+                List.of(move1, move3), List.of(attack1, attack2)
         );
         assertEquals(List.of(move3), result3.getFirst());
         assertEquals(List.of(attack2), result3.getSecond());
 
         //One of each non-conflicting attack and move
-        Pair<List<MovementDataModel>,List<AttackDataModel>> result4 = validateSingleCommandsOnly(
+        Pair<List<MovementDataModel>, List<AttackDataModel>> result4 = validateSingleCommandsOnly(
                 List.of(move1), List.of(attack2)
         );
         assertEquals(List.of(move1), result4.getFirst());
@@ -593,7 +697,7 @@ class TestCommandValidator {
         assertEquals(List.of(insidePatternAttack), validateAttacks(
                 outsideBoundsInsidePattern, availableCharacters, basicGrid, hostID
         ));//only the inside attacks
-        assertEquals(List.of(insidePatternAttack,insideBoundsAttack), validateAttacks(
+        assertEquals(List.of(insidePatternAttack, insideBoundsAttack), validateAttacks(
                 insideBoth, availableCharacters, basicGrid, hostID
         ));
     }
@@ -629,9 +733,9 @@ class TestCommandValidator {
 
         // Get all possible attacks from character1 and character3 (one with 1 pattern and 1 with multiple patterns
         List<Vector2D> character1Attacks = Arrays.asList(
-                    basicEntity1.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(
-                            basicEntity1.getPosition()
-                    )
+                basicEntity1.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(
+                        basicEntity1.getPosition()
+                )
         );
         ArrayList<Vector2D> character3Attacks = new ArrayList<>(Arrays.asList(
                 basicEntity3.getCharacterBaseModel().getAttackPatterns()[0].getPossibleTargetPositions(
@@ -640,9 +744,9 @@ class TestCommandValidator {
         ));
         character3Attacks.addAll(
                 Arrays.asList(
-                    basicEntity3.getCharacterBaseModel().getAttackPatterns()[1].getPossibleTargetPositions(
-                            basicEntity3.getPosition()
-                    )
+                        basicEntity3.getCharacterBaseModel().getAttackPatterns()[1].getPossibleTargetPositions(
+                                basicEntity3.getPosition()
+                        )
                 )
         );
 
@@ -662,7 +766,7 @@ class TestCommandValidator {
         AttackDataModel asymmetricAttack = new AttackDataModel(new Vector2D(2, 1), opponentID);
 
         Vector2D[] availableForAsymmetric = asymmetricEntity.getCharacterBaseModel().getAttackPatterns()[0]
-                        .getPossibleTargetPositions(asymmetricEntity.getPosition());
+                .getPossibleTargetPositions(asymmetricEntity.getPosition());
 
         working1.forEach(attack -> assertTrue(attackingInsideAttackPattern(
                 attack, availableCharactersMap.get(attack.getAttacker()), hostID
@@ -683,111 +787,6 @@ class TestCommandValidator {
                         vectorArrayToPatternString(availableForAsymmetric, asymmetricEntity.getPosition()) + "\""
         );
 
-    }
-
-    /**
-     * Create multiple movements from multiple vertices with the same characterId
-     *
-     * @param positions The positions
-     * @param characterId The characterID
-     * @return The movements
-     */
-    private static List<MovementDataModel> movesFromList(List<Vector2D> positions, String characterId) {
-        ArrayList<MovementDataModel> movements = new ArrayList<>();
-        for (Vector2D position : positions) {
-            movements.add(new MovementDataModel(characterId, position));
-        }
-        return movements;
-    }
-
-    /**
-     * Create multiple attacks from multiple vertices with the same characterId
-     *
-     * @param positions The positions
-     * @param characterId The characterID
-     * @return The attacks
-     */
-    private static List<AttackDataModel> attacksFromList(List<Vector2D> positions, String characterId) {
-        ArrayList<AttackDataModel> attacks = new ArrayList<>();
-        for (Vector2D position : positions) {
-            attacks.add(new AttackDataModel(position, characterId));
-        }
-        return attacks;
-    }
-
-    /**
-     * Create a List of 2D vertices that span fromX and fromY to toX and toY, essentially spanning a plane.
-     *
-     * @param fromX Starting x coordinate
-     * @param fromY Starting y coordinate
-     * @param toX Ending x coordinate
-     * @param toY Ending y coordinate
-     * @return The list of vertices
-     */
-    private static List<Vector2D> createGridFromTo(int fromX, int fromY, int toX, int toY) {
-        List<Vector2D> grid = new ArrayList<>();
-        for (int x = fromX; x <= toX; x++) {
-            for (int y = fromY; y <= toY; y++) {
-                grid.add(new Vector2D(x, y));
-            }
-        }
-        return grid;
-    }
-
-    /**
-     * Get the matching characterEntity given an id.
-     *
-     * @param characterEntities The entities
-     * @param characterId The id to search for
-     * @return The character
-     */
-    private static CharacterEntity getCharacterWithId(
-            List<CharacterEntity> characterEntities, String characterId
-    ) {
-        for (CharacterEntity character : characterEntities) {
-            if (characterId.equals(character.getId())) {
-                return character;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Check if move is inside characters patterns
-     */
-    private static boolean isMoveInsideCharacterPattern(MovementDataModel move, List<CharacterEntity> characters) {
-        boolean isMoveValid = false;
-
-        CharacterEntity character = getCharacterWithId(characters, move.getCharacterId());
-        assertNotNull(character);
-        PatternService[] movementPatterns = character.getCharacterBaseModel().getMovementPatterns();
-        for (PatternService movementPattern : movementPatterns) {
-            Vector2D position = character.getPosition();
-            Vector2D intendedMove = move.getMovementVector();
-            List<Vector2D> allowedPositions = Arrays.asList(movementPattern.getPossibleTargetPositions(position));
-            if (allowedPositions.contains(intendedMove)) isMoveValid = true;
-        }
-
-        return isMoveValid;
-    }
-
-    /**
-     * Check if move is inside characters patterns
-     */
-    private static boolean isAttackInsideCharacterPattern(AttackDataModel attack, List<CharacterEntity> characters) {
-        boolean isAttackValid = false;
-
-        CharacterEntity character = getCharacterWithId(characters, attack.getAttacker());
-        assertNotNull(character);
-        PatternService[] attackPatterns = character.getCharacterBaseModel().getAttackPatterns();
-        for (PatternService attackPattern : attackPatterns) {
-            Vector2D position = character.getPosition();
-            Vector2D intendedMove = attack.getAttackPosition();
-            List<Vector2D> allowedPositions = Arrays.asList(attackPattern.getPossibleTargetPositions(position));
-            if (allowedPositions.contains(intendedMove)) isAttackValid = true;
-        }
-
-        return isAttackValid;
     }
 
 }
