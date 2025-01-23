@@ -62,7 +62,6 @@ public class LobbyScreen extends Dialog {
 
         button("< LEAVE", "leave");
         button("READY", "ready");
-        button("START >", "start");
 
     }
 
@@ -79,8 +78,6 @@ public class LobbyScreen extends Dialog {
             }
             sendReadyStatus();
             cancel();
-        } else if (obj.equals("start")) {
-            hide();
         }
     }
 
