@@ -115,7 +115,7 @@ public class Player {
             }
 
             public Status toggle() {
-                return NOT_READY;
+                return READY;
             }
         },
         READY {
@@ -124,7 +124,7 @@ public class Player {
             }
 
             public Status toggle() {
-                return READY;
+                return NOT_READY;
             }
         };
 
