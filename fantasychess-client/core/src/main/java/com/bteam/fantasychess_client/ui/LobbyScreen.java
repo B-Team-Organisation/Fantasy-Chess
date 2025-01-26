@@ -71,12 +71,14 @@ public class LobbyScreen extends Dialog {
             Gdx.app.postRunnable(this::sendAbandonPacket);
             Main.getScreenManager().navigateTo(Screens.MainMenu);
         } else if (obj.equals("ready")) {
+            Status status = Status.READY;
             try {
                 togglePlayerStatus(getUserName());
+                status = playerLabelMap.get(getUserName()).getStatus();
             } catch (PlayerNotFoundException e) {
                 Main.getLogger().log(Level.SEVERE, e.getMessage());
             }
-            sendReadyStatus();
+            sendReadyStatus(status);
             cancel();
         }
     }
@@ -157,9 +159,12 @@ public class LobbyScreen extends Dialog {
         this.pack(); // resize
     }
 
-    private void sendReadyStatus() {
+    private void sendReadyStatus(Status status) {
         Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerStatusDTO.ready(""), PLAYER_READY);
+            Packet packet = new Packet(
+                status.equals(Status.READY) ? PlayerStatusDTO.ready("") : PlayerStatusDTO.notReady(""),
+                PLAYER_READY
+            );
             getWebSocketService().send(packet);
         });
     }
@@ -212,6 +217,10 @@ public class LobbyScreen extends Dialog {
 
         public Label getNameLabel() {
             return this.nameLabel;
+        }
+
+        public Status getStatus() {
+            return this.status;
         }
 
         @Override
