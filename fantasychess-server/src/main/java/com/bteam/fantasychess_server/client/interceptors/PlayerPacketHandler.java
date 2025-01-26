@@ -118,7 +118,10 @@ public class PlayerPacketHandler implements PacketHandler {
                     }
 
                     for (var p : abandonedLobby.getPlayers()) {
-                        var dataToSend = new PlayerInfoDTO(player.getPlayerId(), player.getUsername());
+                        var dataToSend = new PlayerInfoDTO(
+                                player.getPlayerId(),
+                                player.getUsername(),
+                                player.getStatus());
                         var packetToSend = new Packet(dataToSend, PLAYER_LEAVE);
                         WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                     }
@@ -132,7 +135,10 @@ public class PlayerPacketHandler implements PacketHandler {
                     var requestedInfoId = UUID.fromString(playerInfoRequest.getPlayerId());
                     var player = playerService.getPlayer(requestedInfoId);
                     if (player == null) return;
-                    var playerInfoDto = new PlayerInfoDTO(requestedInfoId.toString(), player.getUsername());
+                    var playerInfoDto = new PlayerInfoDTO(
+                            requestedInfoId.toString(),
+                            player.getUsername(),
+                            player.getStatus());
                     var playerInfoResult = new Packet(playerInfoDto, PLAYER_INFO);
                     client.sendPacket(playerInfoResult);
                 } catch (Exception e) {
