@@ -226,7 +226,7 @@ public class GameScreen extends ScreenAdapter {
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
-        lobbyScreen = new LobbyScreen(skin, "Lobby", "PlayerName here");
+        lobbyScreen = new LobbyScreen(skin, getLobbyService().getCurrentLobby().getLobbyName());
         lobbyScreen.show(stage);
 
     }

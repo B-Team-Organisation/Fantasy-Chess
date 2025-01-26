@@ -62,7 +62,7 @@ public class PlayerPacketHandler implements PacketHandler {
                 var playersInLobby = lobby.getPlayers();
 
                 for (var player : playersInLobby) {
-                    String playerReadyId = player.getPlayerId();
+                    String playerReadyId = playerId.toString();
                     var statusPacket = new Packet(isReady ?
                             PlayerStatusDTO.ready(playerReadyId) :
                             PlayerStatusDTO.notReady(playerReadyId), PLAYER_READY);

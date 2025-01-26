@@ -33,11 +33,10 @@ import static com.bteam.fantasychess_client.Main.*;
  */
 public class LobbyScreen extends Dialog {
 
-    private final String hostName;
     private final HashMap<String, PlayerLabels> playerLabelMap = new HashMap<>();
     Skin skin;
 
-    public LobbyScreen(Skin skin, String lobbyName, String hostName) {
+    public LobbyScreen(Skin skin, String lobbyName) {
         super(lobbyName, skin);
         getTitleLabel().setAlignment(Align.center);
         getTitleTable().align(Align.center);
@@ -47,7 +46,6 @@ public class LobbyScreen extends Dialog {
         setResizable(false);
 
         this.skin = skin;
-        this.hostName = hostName;
 
         for (Player player : getPlayerList()) {
             addPlayerInfoRow(player.getUsername(), player.getStatus());
