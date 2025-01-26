@@ -52,7 +52,7 @@ public class LobbyScreen extends Dialog {
         }
 
         getLobbyService().onPlayerJoined.addListener(
-            player -> Gdx.app.postRunnable(() -> addPlayer(player.getUsername()))
+            player -> Gdx.app.postRunnable(() -> addPlayerInfoRow(player.getUsername(), player.getStatus()))
         );
         getLobbyService().onPlayerReadyChanged.addListener(
             player -> Gdx.app.postRunnable(() -> setPlayerStatus(player.getUsername(), player.getStatus()))
@@ -80,10 +80,6 @@ public class LobbyScreen extends Dialog {
             sendReadyStatus(status);
             cancel();
         }
-    }
-
-    public void addPlayer(String playerName) {
-        addPlayerInfoRow(playerName, Status.NOT_READY);
     }
 
     private List<Player> getPlayerList() {
