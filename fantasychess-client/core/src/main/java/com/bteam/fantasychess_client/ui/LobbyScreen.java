@@ -50,7 +50,7 @@ public class LobbyScreen extends Dialog {
         this.hostName = hostName;
 
         for (Player player : getPlayerList()) {
-            addPlayerInfoRow(player.getUsername(), Status.NOT_READY);
+            addPlayerInfoRow(player.getUsername(), player.getStatus());
         }
 
         getLobbyService().onPlayerJoined.addListener(
