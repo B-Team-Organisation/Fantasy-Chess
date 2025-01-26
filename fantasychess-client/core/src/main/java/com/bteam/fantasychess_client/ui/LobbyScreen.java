@@ -25,7 +25,8 @@ import static com.bteam.fantasychess_client.Main.*;
 /**
  * A lobby screen for waiting after lobby creation.
  * <p/>
- * Shows players in lobby and offers leaving and starting game
+ * Shows players in lobby and offers leaving and toggeling ready status.
+ * If both players are ready, the game should start.
  *
  * @author jacinto
  * @version 1.0
@@ -116,15 +117,10 @@ public class LobbyScreen extends Dialog {
             return;
         }
 
-        Main.getLogger().log(Level.SEVERE, playerLabels.toString());
-
         getContentTable().removeActor(playerLabels.getNameLabel());
-        Main.getLogger().log(Level.SEVERE, "removed name");
         getContentTable().removeActor(playerLabels.getStatusLabel());
-        Main.getLogger().log(Level.SEVERE, "removed label");
 
         playerLabelMap.remove(playerName);
-        Main.getLogger().log(Level.SEVERE, "removed from HashMap");
 
         this.pack(); // resize
     }
@@ -160,9 +156,10 @@ public class LobbyScreen extends Dialog {
     }
 
     private void sendReadyStatus(Status status) {
+        String clientId = Main.getWebSocketService().getUserid();
         Gdx.app.postRunnable(() -> {
             Packet packet = new Packet(
-                status.equals(Status.READY) ? PlayerStatusDTO.ready("") : PlayerStatusDTO.notReady(""),
+                status.equals(Status.READY) ? PlayerStatusDTO.ready(clientId) : PlayerStatusDTO.notReady(clientId),
                 PLAYER_READY
             );
             getWebSocketService().send(packet);

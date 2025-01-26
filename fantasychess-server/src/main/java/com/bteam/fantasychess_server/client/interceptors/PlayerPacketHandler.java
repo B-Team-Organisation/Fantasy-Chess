@@ -62,10 +62,10 @@ public class PlayerPacketHandler implements PacketHandler {
                 var playersInLobby = lobby.getPlayers();
 
                 for (var player : playersInLobby) {
-                    var readyPlayerId = player.getPlayerId();
+                    String playerReadyId = player.getPlayerId();
                     var statusPacket = new Packet(isReady ?
-                            PlayerStatusDTO.ready(readyPlayerId) :
-                            PlayerStatusDTO.notReady(readyPlayerId), PLAYER_READY);
+                            PlayerStatusDTO.ready(playerReadyId) :
+                            PlayerStatusDTO.notReady(playerReadyId), PLAYER_READY);
                     WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
                 }
 
