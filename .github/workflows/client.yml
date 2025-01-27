@@ -30,7 +30,7 @@ jobs:
         working-directory: fantasychess-server
         run: chmod +x ./gradlew
 
-      - name: Run Tests
+      - name: Gradle Build
         working-directory: fantasychess-server
         run: gradle build
 
@@ -38,13 +38,16 @@ jobs:
         working-directory: fantasychess-server
         run: gradle test
 
-      - name: Build with Gradle 8.9
+      - name: DistZip
         working-directory: fantasychess-client
         run: gradle distZip
+
+      - name: let-me-see
+        run: ls && ls fantasychess-client && ls fantasychess-client/html && fantasychess-client/html/build
 
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
           name: client-build
-          path: fantasychess-client/html/build/dist/fantasychess-client-dist-1.0.0.zip
+          path: html/build/dist/fantasychess-client-dist-1.0.0.zip
           retention-days: 5
