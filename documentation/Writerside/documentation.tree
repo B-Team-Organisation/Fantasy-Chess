@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="documentation"
+                 name="Fantasy-Chess Documentation"
+                 start-page="Introduction.md">
+
+    <toc-element topic="Introduction.md"/>
+    <toc-element topic="Gameplay.md"/>
+    <toc-element toc-title="Specifications">
+        <toc-element topic="Characters.md"/>
+        <toc-element topic="Design.md"/>
+    </toc-element>
+    <toc-element toc-title="Technical Reference">
+        <toc-element topic="Architecture.md"/>
+        <toc-element toc-title="Server"/>
+        <toc-element toc-title="Client"/>
+        <toc-element toc-title="Comon"/>
+    </toc-element>
+</instance-profile>
