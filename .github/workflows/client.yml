@@ -1,11 +1,4 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
+name: Client Pipeline
 
 on:
   pull_request:
@@ -39,8 +32,19 @@ jobs:
 
       - name: Run Tests
         working-directory: fantasychess-server
+        run: gradle build
+
+      - name: Run Tests
+        working-directory: fantasychess-server
         run: gradle test
 
       - name: Build with Gradle 8.9
         working-directory: fantasychess-client
-        run: gradle dist
+        run: gradle distZip
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: fantasychess-client/html/build/dist/dist.zip
+          retention-days: 5

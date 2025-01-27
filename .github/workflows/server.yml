@@ -1,5 +1,5 @@
 
-name: Java CI with Gradle
+name: Server Pipeline
 
 on:
   pull_request:
@@ -31,10 +31,14 @@ jobs:
         working-directory: fantasychess-server
         run: chmod +x ./gradlew
 
+      - name: Build with Gradle 8.9
+        working-directory: fantasychess-server
+        run: gradle build
+
       - name: Run Tests
         working-directory: fantasychess-server
         run: gradle test
 
-      - name: Build with Gradle 8.9
+      - name: Build Jar
         working-directory: fantasychess-server
-        run: gradle build
+        run: gradle bootJar
