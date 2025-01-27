@@ -46,5 +46,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: client-build
-          path: fantasychess-client/html/build/dist/dist.zip
+          path: fantasychess-client/html/build/dist/fantasychess-client-dist-1.0.0.zip
           retention-days: 5

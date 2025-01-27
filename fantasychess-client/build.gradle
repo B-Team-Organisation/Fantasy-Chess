@@ -1,13 +1,13 @@
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
+    maven { url "https://s01.oss.sonatype.org" }
     maven { url "https://jitpack.io/" }
     gradlePluginPortal()
     mavenLocal()
     google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
   }
   dependencies {
     classpath "org.docstr:gwt-gradle-plugin:$gwtPluginVersion"
@@ -21,7 +21,7 @@ import com.badlogic.gdx.tools.texturepacker.TexturePacker
 
 task texturePacker {
   doLast {
-    if (project.ext.has('texturePacker')) {
+    if (project.ext.has("texturePacker")) {
       logger.info "Calling TexturePacker: "+texturePacker
       TexturePacker.process(texturePacker[0], texturePacker[1], texturePacker[2])
     }
@@ -29,20 +29,20 @@ task texturePacker {
 }
 
 allprojects {
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
+  apply plugin: "eclipse"
+  apply plugin: "idea"
 
-  // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
+  // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA"s Settings.
   idea {
     module {
-      outputDir file('build/classes/java/main')
-      testOutputDir file('build/classes/java/test')
+      outputDir file("build/classes/java/main")
+      testOutputDir file("build/classes/java/test")
     }
   }
 }
 
 configure(subprojects) {
-  apply plugin: 'java-library'
+  apply plugin: "java-library"
   sourceCompatibility = 11
   compileJava {
     options.incremental = true
@@ -54,7 +54,7 @@ configure(subprojects) {
     def assetsFolder = new File("${project.rootDir}/assets/")
     // projectFolder/assets/assets.txt
     def assetsFile = new File(assetsFolder, "assets.txt")
-    // delete that file in case we've already created it
+    // delete that file in case we"ve already created it
     assetsFile.delete()
 
     // iterate through all files inside that folder
@@ -67,17 +67,17 @@ configure(subprojects) {
 }
 
 subprojects {
-  version = '$projectVersion'
-  ext.appName = 'fantasychess-client'
+  version = "$projectVersion"
+  ext.appName = "fantasychess-client"
   repositories {
     mavenCentral()
-    maven { url 'https://s01.oss.sonatype.org' }
+    maven { url "https://s01.oss.sonatype.org" }
     // You may want to remove the following line if you have errors downloading dependencies.
     mavenLocal()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
-    maven { url 'https://jitpack.io' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url "https://jitpack.io" }
   }
 }
 
-eclipse.project.name = 'fantasychess-client' + '-parent'
+eclipse.project.name = "fantasychess-client" + "-parent"
