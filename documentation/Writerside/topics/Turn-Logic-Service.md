@@ -61,3 +61,5 @@ there is a check for characters with no remaining health and if there is a winne
 The `applyCommands` method will do all the aforementioned and return a `TurnResult` object, storing 
 the state of all characters after command application, as well as the movement conflicts, valid movements and attacks from
 the `ValidationResult` and the id of a winner or `null`, if there is none.
+
+> A draw can be ascertained if there are no characters left and the winner is still `null`.
