@@ -1,0 +1,120 @@
+name: Fantasy-Chess Pipeline
+
+on:
+  pull_request:
+    branches: "*"
+
+jobs:
+  build-commons:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          gradle-version: 8.9
+
+      - name: Grant execute permission for gradle
+        working-directory: commons
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle 8.9
+        working-directory: commons
+        run: gradle build
+
+      - name: Run Tests
+        working-directory: commons
+        run: gradle test
+
+  build-client:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          gradle-version: 8.9
+
+      - name: Grant execute permission for gradle
+        working-directory: fantasychess-server
+        run: chmod +x ./gradlew
+
+      - name: Gradle Build
+        working-directory: fantasychess-server
+        run: gradle build
+
+      - name: Run Tests
+        working-directory: fantasychess-server
+        run: gradle test
+
+      - name: DistZip
+        working-directory: fantasychess-client
+        run: gradle distZip
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-build
+          path: fantasychess-client/html/build/fantasychess-client-dist-1.0.0.zip
+          retention-days: 5
+
+  build-server:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
+      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+        with:
+          gradle-version: 8.9
+
+      - name: Grant execute permission for gradle
+        working-directory: fantasychess-server
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle 8.9
+        working-directory: fantasychess-server
+        run: gradle build
+
+      - name: Run Tests
+        working-directory: fantasychess-server
+        run: gradle test
+
+      - name: Build Jar
+        working-directory: fantasychess-server
+        run: gradle bootJar
