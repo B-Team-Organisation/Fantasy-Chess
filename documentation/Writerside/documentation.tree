@@ -9,6 +9,7 @@
     <toc-element topic="Introduction.md"/>
     <toc-element topic="Gameplay.md"/>
     <toc-element toc-title="Specifications">
+        <toc-element topic="Patterns.md"/>
         <toc-element topic="Characters.md"/>
         <toc-element topic="Design.md"/>
     </toc-element>
