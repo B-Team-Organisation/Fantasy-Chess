@@ -1,9 +1,7 @@
-package Exceptions;
-
-import java.util.UUID;
+package com.bteam.common.exceptions;
 
 public class GameNotRunningException extends RuntimeException {
-    public GameNotRunningException(UUID id) {
-        super(String.format("The game with the id %s is not running.", id));
+    public GameNotRunningException(String id) {
+        super("The game with the id " + id + " is not running.");
     }
 }

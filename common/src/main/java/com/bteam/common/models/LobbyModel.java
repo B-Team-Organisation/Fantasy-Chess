@@ -12,7 +12,6 @@ import java.util.Objects;
  * {@link GameState}
  *
  * @author Adnan
- * @link 1.0
  */
 public class LobbyModel {
     private final String lobbyId;

@@ -116,7 +116,6 @@ public class GridService {
      * @param character the {@link CharacterEntity} it tries to place at the {@link Vector2D}
      * @throws DestinationInvalidException         if the {@link Vector2D}-position is invalid
      * @throws DestinationAlreadyOccupiedException if the destination-tile is already occupied
-     * @throws NotAStartPositionException          if the destination-tile isn't a valid starting position
      */
     public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException { //, NotAStartPositionException {
         TileModel tile = getTileAt(to);

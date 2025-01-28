@@ -7,10 +7,6 @@ import org.hibernate.type.SqlTypes;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Reference @see <a src="/documentation/database-data-structure.drawio.svg">Data Documentation</a>
- */
-
 @Entity
 public class LobbyEntity {
     @Id
