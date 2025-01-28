@@ -37,3 +37,11 @@ jobs:
           FOLDER: fantasychess-client/html/build/dist # The directory where your assets are generated
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
           MESSAGE: "Build: ({sha}) {msg}" # The commit message
+
+      # https://webserver5.deinserverhost.de:8443/modules/git/public/web-hook.php?uuid=b692b479-b720-2cfd-66d7-02beba580623
+
+      - name: Invoke deployment hook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
