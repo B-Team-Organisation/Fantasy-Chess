@@ -5,7 +5,7 @@ on:
     branches: "*"
 
 jobs:
-  build-commons:
+  build-common:
 
     runs-on: ubuntu-latest
     permissions:
@@ -27,15 +27,15 @@ jobs:
           gradle-version: 8.9
 
       - name: Grant execute permission for gradle
-        working-directory: commons
+        working-directory: common
         run: chmod +x ./gradlew
 
       - name: Build with Gradle 8.9
-        working-directory: commons
+        working-directory: common
         run: gradle build
 
       - name: Run Tests
-        working-directory: commons
+        working-directory: common
         run: gradle test
 
   build-client:
