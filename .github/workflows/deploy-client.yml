@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main # Remove this line if your primary branch is "master"
-      - feature/deploy-to-branch
 
 jobs:
   build:
