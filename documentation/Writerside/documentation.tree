@@ -16,6 +16,6 @@
         <toc-element topic="Architecture.md"/>
         <toc-element toc-title="Server"/>
         <toc-element toc-title="Client"/>
-        <toc-element toc-title="Comon"/>
+        <toc-element toc-title="Common"/>
     </toc-element>
 </instance-profile>
