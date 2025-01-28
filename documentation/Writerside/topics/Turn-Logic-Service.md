@@ -20,7 +20,8 @@ valid commands and return it back to the server.
 **UML Diagram for Classes here**
 
 #### 1. Command Validation
-<p>The `CommandValidator` class validates that attack and movement commands follow all game rules. They are as follows:</p>
+The `CommandValidator` class validates that attack and movement commands follow all game rules. They are as follows:
+<p></p>
 <anchor id="rule1" name="rule1"></anchor>
 1. Each Character can only have one command.
 <anchor id="rule2" name="rule2"></anchor>
