@@ -38,11 +38,27 @@ jobs:
         working-directory: common
         run: gradle test
 
+      - name: Build Documentation
+        working-directory: common
+        run: | 
+          gradle javadoc
+          zip -r build/docs/common-javadocs.zip build/docs/* 
+
+      - name: Upload Documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: common-javadocs
+          path: common/build/docs/common-javadocs.zip
+          retention-days: 5
+        
+
   build-client:
 
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    needs:
+      - build-common
 
     steps:
       - uses: actions/checkout@v4
@@ -87,6 +103,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    needs:
+      - build-common
 
     steps:
       - uses: actions/checkout@v4
