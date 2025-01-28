@@ -50,25 +50,33 @@ Z. Zukunft <code>Wer noch was braucht</code>
 -->
 
 ---
+
 # Introduction
 
 ---
+
 # Projektorganisation
 
 ---
+
 # Scrum
 
 ---
+
 # Spiel
 
 ---
+
 # Technologie
 
 ---
+
 # Qualität
 
 ---
+
 # Doku
 
 ---
+
 # Zukunft
