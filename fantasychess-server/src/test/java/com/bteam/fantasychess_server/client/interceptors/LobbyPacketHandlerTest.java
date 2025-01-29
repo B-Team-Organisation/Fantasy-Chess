@@ -38,7 +38,7 @@ class LobbyPacketHandlerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks
-        lobbyPacketHandler = new LobbyPacketHandler(lobbyService);
+        lobbyPacketHandler = new LobbyPacketHandler(lobbyService, null);
     }
 
     @Test
