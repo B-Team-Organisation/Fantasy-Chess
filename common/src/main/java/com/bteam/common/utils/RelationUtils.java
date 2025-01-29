@@ -76,7 +76,7 @@ public class RelationUtils {
 
     /**
      * Get a string visualization of a vector array representing a pattern.
-     * <p />
+     * <p>
      * The pattern will be displayed around the middle position in all directions,
      * with x marking all vertices from the array and P for the middle.
      * If middle is also part of the array, it'll be marked as + instead of 0.

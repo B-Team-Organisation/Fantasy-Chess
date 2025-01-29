@@ -40,7 +40,7 @@ public class CommandValidator {
      * @param gridService gridService containing the playing field
      * @param hostID the playerID of the host
      * @return {@link TurnResult} with unaltered characters but only
-     * valid movements & attacks as well as a list of movement conflicts
+     * valid movements and attacks as well as a list of movement conflicts
      * between players
      */
     public static ValidationResult validateCommands(
