@@ -4,7 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 /**
  * A lobby screen for waiting after lobby creation.
- * <p />
+ * <p>
  * Shows players in lobby and offers leaving and starting game
  *
  * @author jacinto
