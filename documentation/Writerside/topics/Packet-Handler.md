@@ -15,11 +15,15 @@ PacketPattern: `GAME_`
 ## Lobby Packet Handler
 
 The Lobby Packet Handler processes all Packets relevant to lobbies, such as creating a new one 
-([LOBBY_CREATE](Packet.md)), joining a lobby ([LOBBY_JOIN](Packet.md)), leaving a lobby ([LOBBY_LEAVE](Packet.md)) and
-more that can be found [here](Packet.md##Lobby Packets).
+([LOBBY_CREATE](Packet.md#LOBBY_CREATE)), joining a lobby ([LOBBY_JOIN](Packet.md#LOBBY_JOIN)), leaving a lobby 
+([LOBBY_LEAVE](Packet.md#LOBBY_LEAVE)) and more that can be found [here](Packet.md##Lobby Packets).
 
 PacketPattern: `LOBBY_`
 
 ## Player Packet Handler
+
+The Player Packet handler processes all Packets relevant to player data, such as setting a Players Ready status 
+([PLAYER_READY](Packet.md#PLAYER_READY)), as well as an abandoning Player ([PLAYER_ABANDONED](Packet.md#PLAYER_ABANDONED)) 
+and current information about a Player ([PLAYER_INFO](Packet.md#PLAYER_INFO)).
 
 PacketPattern: `PLAYER_`
