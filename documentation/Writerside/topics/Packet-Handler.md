@@ -8,22 +8,30 @@ the `WebSocketService` to process the packet.
 ## Game Packet Handler
 
 The Game Packet Handler processes all Packets relevant to a running game. Which currently only consists of the:
-[GAME_COMMANDS](Packet.md###GAME_COMMANDS) packet, which contains the current commands a player has set for their characters.
+[](Packet.md#game-commands) packet, which contains the current commands a player has set for their characters.
+
+> A list of all game packets can be found [here](Packet.md#game-packets).
+
 
 PacketPattern: `GAME_`
 
 ## Lobby Packet Handler
 
 The Lobby Packet Handler processes all Packets relevant to lobbies, such as creating a new one 
-([LOBBY_CREATE](Packet.md#LOBBY_CREATE)), joining a lobby ([LOBBY_JOIN](Packet.md#LOBBY_JOIN)), leaving a lobby 
-([LOBBY_LEAVE](Packet.md#LOBBY_LEAVE)) and more that can be found [here](Packet.md##Lobby Packets).
+([](Packet.md#lobby-create)), joining a lobby ([](Packet.md#lobby-join)), closing a lobby 
+([](Packet.md#lobby-close)) and more.
+
+> A list of all lobby packets can be found [here](Packet.md#lobby-packets).
+
 
 PacketPattern: `LOBBY_`
 
 ## Player Packet Handler
 
 The Player Packet handler processes all Packets relevant to player data, such as setting a Players Ready status 
-([PLAYER_READY](Packet.md#PLAYER_READY)), as well as an abandoning Player ([PLAYER_ABANDONED](Packet.md#PLAYER_ABANDONED)) 
-and current information about a Player ([PLAYER_INFO](Packet.md#PLAYER_INFO)).
+([](Packet.md#player-ready)), as well as an abandoning Player ([](Packet.md#player-abandoned)) 
+and current information about a Player ([](Packet.md#player-info)).
+
+> A list of all player packets can be found [here](Packet.md#player-packets).
 
 PacketPattern: `PLAYER_`
