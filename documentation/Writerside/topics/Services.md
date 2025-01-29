@@ -1,5 +1,9 @@
 # Services
 
+All services are SpringBoot services classes, which are Singletons within the Server context and can automatically
+be referenced in fields using dependency Injection. They are the backbone of the server and form the link between
+incoming requests and the database.
+
 ## Token Service
 
 The token service is used to generate a token for a given user and check its validity.
@@ -45,3 +49,8 @@ after the required operations with the token have succeeded.
 <procedure title="Token Invalidation" id="token-invalidation">
     <p>To invalidate a token, simply delete it from the <code>TokenRepository</code></p>
 </procedure>
+
+## WebSocket Service
+
+The Websocket Service is used for handling all active WebSocket connections and routing the incoming [Packets](Packet.md)
+to the correct [](Packet-Handler.md).
