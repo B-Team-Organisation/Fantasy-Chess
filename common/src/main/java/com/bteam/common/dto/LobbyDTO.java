@@ -73,27 +73,5 @@ public class LobbyDTO implements JsonDTO {
             .and().writeKeyValue("hostId", hostId)
             .and().writeKeyValue("gameState", gameState.name())
             .toString();
-
-        /*String sb = "{" +
-            "\"lobbyId\":\"" +
-            lobbyId +
-            "\"," +
-            "\"name\":\"" +
-            lobbyName +
-            "\"," +
-            "\"maxPlayers\":" +
-            maxPlayers +
-            "," +
-            "\"playerIds\":[" +
-            playerIds.stream().collect(Collectors.joining(",")) +
-            "]," +
-            "\"hostId\":\"" +
-            hostId +
-            "\"," +
-            "\"gameState\":\"" +
-            gameState.name() +
-            "\"" +
-            "}";
-        return sb;*/
     }
 }
