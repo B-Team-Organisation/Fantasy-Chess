@@ -5,6 +5,7 @@ class can be serialized to JSON. This process needs to be done manually using th
 provided in the [common](Common.md) package.
 
 ### CharacterEntityDTO
+Represents an in-game character entity with its model, health, owner, position, and unique identifier.
 ```json
 {
   "modelId":"[CHARACTER MODEL NAME]",
@@ -17,6 +18,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### CommandDTO
+Transmits a command issued to a character, including movement or attack actions and target coordinates.
 ```json
 {
   "characterId":"[COMMANDED CHARACTER ID]",
@@ -26,9 +28,8 @@ provided in the [common](Common.md) package.
 }
 ```
 
-
 ### CommandListDTO
-
+Contains a list of commands for a game session, along with the game’s unique identifier.
 **Json:**
 ```json
 {
@@ -37,19 +38,16 @@ provided in the [common](Common.md) package.
 }
 ```
 
-
 ### CreateLobbyDTO
-
-**Json:**
+Carries data to request the creation of a new game lobby.
 ```json
 {
   "lobbyName" : "[LOBBYNAME]"
 }
 ```
 
-
 ### GameInitDTO
-
+Contains initial game data, including a list of character entities and the unique game identifier.
 ```json
 {
   "characters" : [{CharacterEntityDTO},...],
@@ -57,9 +55,8 @@ provided in the [common](Common.md) package.
 }
 ```
 
-
 ### JoinLobbyDTO
-
+Carries data to request joining an existing lobby by its unique identifier.
 ```json
 {
   "id" : "[ID OF LOBBY TO JOIN]"
@@ -67,7 +64,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### JoinLobbyResultDTO
-
+Transmits the result of a lobby join request, indicating success or error.
 ```json
 {
   "result" : "success" | "error" 
@@ -75,7 +72,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### LobbyClosedDTO
-
+Contains information about a closed lobby, including its identifier and the reason for closure.
 ```json
 {
   "id" : "[UUID OF CLOSED LOBBY]",
@@ -84,7 +81,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### LobbyDTO
-
+Represents a game lobby, containing its metadata such as name, players, host, and state.
 ```json
 {
   "lobbyId" :  "[UUID OF LOBBY]",
@@ -97,7 +94,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### LobbyListDTO
-
+Transmits a list of available lobbies.
 ```json
 {
   "lobbies" : [{LobbyDTO}]
@@ -105,7 +102,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### PatternDTO
-
+Represents a pattern with its name, structure, and mappings of subpatterns.
 ```json
 {
   "patternName" : "[PATTERN NAME]",
@@ -117,7 +114,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### PatternListDTO
-
+Transmits a list of pattern definitions.
 ```json
 {
   "lobbies" : [{PatternDTO}]
@@ -125,7 +122,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### PlayerInfoDTO
-
+Contains basic player information, including their username and unique identifier.
 ```json
 {
   "username" : "[USERNAME]",
@@ -134,7 +131,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### PlayerStatusDTO
-
+Transmits a player’s current status in the game or lobby.
 ```json
 {
   "status" : "playerReady" | "playerNotReady" | "playerAbandon",
@@ -143,7 +140,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### StatusDTO
-
+Provides a simple status update about the client’s connection state.
 ```json
 {
   "status" : "connected" // status of connection
@@ -151,7 +148,7 @@ provided in the [common](Common.md) package.
 ```
 
 ### TokenDTO
-
+Transmits an authentication token and its expiration timestamp.
 ```json
 {
   // 14 Character base64 URL string with 2 digit CRC8
@@ -161,18 +158,18 @@ provided in the [common](Common.md) package.
 ```
 
 ### TurnResultDTO
-
+Contains the results of a game turn, including updated characters, conflict resolution, and the winner.
 ```json
 {
   "updatedCharacters": [{CharacterEntityDTO}]
-  "conflictCommands": 
+  "conflictCommands":
   [
     {
-      "first" :  {CommandDTO} , 
+      "first" :  {CommandDTO} ,
       "second" :  {CommandDTO}
     }
   ],
   "validCommands":  [{CommandDTO}],
-  "winner": "[WINNDER UUID]" | null
+  "winner": "[WINNER UUID]" | null
 }
 ```
