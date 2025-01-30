@@ -42,7 +42,6 @@
             <toc-element topic="Interceptors.md"/>
             <toc-element topic="Repositories.md"/>
             <toc-element topic="Entities.md"/>
-            <toc-element topic="Mapper.md"/>
         </toc-element>
     </toc-element>
 </instance-profile>

@@ -79,7 +79,7 @@ Marc Matija
 **Website:** [casqan.net](https://casqan.net/)
 
 Jacinto Schwarzwälder
-: **Email:** [jacinto.schwarzwälder@student.hs-rm.de](mailto:jacinto.schwarzwälder@student.hs-rm.de)  
+: **Email:** [schwarzwaelder.jacinto@gmail.com](mailto:schwarzwaelder.jacinto@gmail.com)  
 **Website:** [schwarzwaelder.dev](https://schwarzwaelder.dev/)
 
 Lukas Walker

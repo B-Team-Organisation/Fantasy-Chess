@@ -1,3 +1,0 @@
-# Mapper
-
-Start typing here...
