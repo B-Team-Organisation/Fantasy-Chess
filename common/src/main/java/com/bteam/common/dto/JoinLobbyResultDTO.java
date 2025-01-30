@@ -14,7 +14,7 @@ public class JoinLobbyResultDTO implements JsonDTO {
     private String result;
 
     public JoinLobbyResultDTO() {
-        result = "SUCCESS";
+        result = SUCCESS;
     }
 
     public JoinLobbyResultDTO(String result) {
@@ -34,7 +34,7 @@ public class JoinLobbyResultDTO implements JsonDTO {
     }
 
     public boolean isSuccess() {
-        return SUCCESS.equals(result);
+        return result.equals(SUCCESS);
     }
 
     public String getResult() {
