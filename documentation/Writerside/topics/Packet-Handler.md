@@ -47,19 +47,6 @@ public class ExampleHandler implements PacketHandler
         return packetPattern;
     }
 
-To be able to call a handler is needs to be assigned when the [](Services.md#websocket-service) is created.
-
-```java
-public WebSocketService(/* ... */) {
-        /* ... */
-        addPacketHandler(new ExampleHandler());
-        /* ... */
-    }
-```
-
-The `handle` method of the handler will then be called, whenever a packet with an id that matches the Packet Pattern
-of the handler matches.
-
 ## Game Packet Handler
 
 The Game Packet Handler processes all Packets relevant to a running game. Which currently only consists of the:

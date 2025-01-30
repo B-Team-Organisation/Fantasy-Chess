@@ -27,7 +27,7 @@ later be swapped out for an OICD or 0auth authentiction process to be able to ea
 > docs.
 > {style="warning"}
 
-> More Information on the authentication flow can be found [here](Authentication.md)
+> More Information on the authentication flow can be found [here](Authentication.md#auth-flow)
 
 
 ### `api/v1/register`  
@@ -50,6 +50,11 @@ Body: `{UUID}`
 
 
 ### `api/v1/token`
+
+<warning>This endpoint is currently not secured, this goes against the authentication flow, as this is THE endpoint
+that needs to be secured, however, to add proper authentication and platform independent authentication, you just need
+to secure this endpoint.</warning>
+
 Method: `GET`
 
 **Request:**  

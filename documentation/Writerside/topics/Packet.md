@@ -43,6 +43,15 @@ public class Packet
 ```
 {collapsible="true"}
 
+## Connection Packets
+
+### CONNECTED_STATUS
+
+Sends the connected status
+
+**DTO:** [](JsonDTOs.md#statusdto)
+**Sent by:** Server
+
 ## Lobby Packets
 Lobby Packets contain relevant information to actions on or with lobbies.
 

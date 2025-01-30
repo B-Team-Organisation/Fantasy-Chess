@@ -4,6 +4,74 @@ All services are SpringBoot services classes, which are Singletons within the Se
 be referenced in fields using dependency Injection. They are the backbone of the server and form the link between
 incoming requests and the database.
 
+Creating a service
+:
+```java
+@Service
+public class ExampleService{
+    // Add one or more repositories to this service
+    private final ExampleRepository exampleRepository;
+    /* ... */
+    public ExampleService( 
+        // Springboot automatically wires the created singleton
+        // into the constructor witht the Autowired Keyword
+        @Autowired ExampleRepository exampleRepository;
+    ){
+        //Inject the Repository Dependency into the service
+        this.exampleRepository = exampleRepository;    
+    }
+}
+```
+
+## Game State Service
+
+Handling all data regarding the game's current state, the Game State Service is arguably the most important of the
+services. It incorporates the [](Turn-Logic-Service.md) from the common package. It gathers all commands the player
+send and then forwards them to the said service. It also rotates the coordinates according to the players view
+within their browser and sets up new games. Additionally, it provides the ability to query for specific games
+or see all currently running games.
+
+The most important methods include:
+
+startNewGame
+: Takes in a `GameSettingsModel` instance, the `lobbyId` and the `playerIds` and returns a new Game model as well 
+as saving the newly created game to a hashmap for later reference.
+
+processMoves
+: Takes in a `gameId` along with all move and attack commands made for this turn and processes them, returning a 
+`TurnResult` along with the current `GridModel`.
+
+> For more information, please look at the Java Docs.
+
+## Lobby Service
+
+Used to manage active lobbies and routing players to the correct ones. It exposes basic CRUD operations for lobbies,
+along with a way to join and leave a lobby. It does not rely on database connections and just saves all lobbies to 
+a `HashMap`. This is done out of simplicity for now, but could be expanded on later to make this service stateless.
+The HashMap saves instances of [](Models.md#lobby-model) to later be queried.
+
+Some notable methods include:
+
+joinLobby
+: Takes in the uuid of a lobby and a player id and assigns him to a lobby, granted this doesn't fail.
+
+leaveLobby
+: Given the uuid of a lobby and the player to remove, it removes the player from the lobby and checks, if the player
+was the host. If it was the host, or there are no more players within the lobby. it automatically closes the lobby.
+
+closeLobby
+: Given the uuid of a lobby and a reason, it closes the lobby and calls the WebSocketService to get the current
+connected client for all remaining players and sends them a [](Packet.md#lobby-closed) packet.
+
+## Player Service
+
+The player service handles all data regarding a player's state and information, such as username and userid. It
+communicates with the Database using the [](Repositories.md#player-repository) and exposes methods to get a player,
+create a new one and set a player's status.
+
+> This service should be expanded upon, once proper authentication has been implemented. For the current state of
+> Authentication see [](Authentication.md).
+
 ## Token Service
 
 The token service is used to generate a token for a given user and check its validity.
@@ -52,5 +120,32 @@ after the required operations with the token have succeeded.
 
 ## WebSocket Service
 
-The Websocket Service is used for handling all active WebSocket connections and routing the incoming [Packets](Packet.md)
-to the correct [](Packet-Handler.md).
+The Websocket Service is used for handling all active WebSocket connections and routing the incoming [](Packet.md)
+to the correct [](Packet-Handler.md). It stores all currently connected clients within a `HashMap<String, Client>` for
+quick access. Also housed within the WebSocket Service are the [](Packet-Handler.md), which get assigned to the
+websocket service inside the constructor.
+
+Registering a Packet Handler in the Websocket Service
+:
+```java
+public WebSocketService(/* ... */) {
+        /* ... */
+        addPacketHandler(new ExampleHandler());
+        /* ... */
+    }
+```
+
+Some of the most important methods exposed by this service include:
+
+`registerSession(WebSocketSession session, Player player)`
+:
+Given a WebSocket Session and a Player it will link them together and return a new `Client` instance which gets
+saved to the hashmap. It also adds an OnClientDisconnected listener to the created client, as well as sending the
+[](Packet.md#connected-status) packet to the client to indicate a successful connection.
+
+`handleTextMessage(WebSocketSession session, TextMessage message)`
+:
+Handles incoming messages, figures out, which id they belong to and calls the proper handler given the id in the
+packet. If the packet is invalid it prints the Stack Trace to the standard console.
+
+>  For further information and Methods, please have a look at the [JavaDocs](https://fantasy-chess.github.io/javadocs/server/).

@@ -1,7 +1,7 @@
 # Authentication
 
 > Within the scope of the MVP, Player's identities are not yet properly secured. They are authenticated once registered
-> but the current implementation does not do authentication when requesting a token. This NEEDS to be address for proper
+> but the current implementation does not do authentication when requesting a token. This NEEDS to be addressed for proper
 > production deployment.
 {style="warning"}
 
@@ -26,6 +26,9 @@ sequenceDiagram
 Once the client has sent the token back, it is to be invalidated immediately, otherwise bad actors might be able to
 reuse the token and authenticate themselves. It is also crucial that this exchange happens over `HTTPS`, it is otherwise
 susceptible to man-in-the-middle attacks.
+
+> This flow is currently provided by the [`Auth Controller`](Controller.md#authentication) click 
+> [here](Controller.md#authentication) to read more
 
 ## Token
 
