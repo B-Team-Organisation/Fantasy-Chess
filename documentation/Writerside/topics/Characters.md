@@ -1,6 +1,6 @@
-# Character Entity 
+# Character Entity
 
-All character entities are core components of the game, representing active instances of characters that players control. These entities integrate with the game's logic and maintain their dynamic state throughout the game lifecycle.
+The character entities are core components of the game, representing active instances of characters that players control. These entities integrate with the game's logic and maintain their dynamic state throughout the game lifecycle.
 
 Creating a character entity:
 ```java
@@ -27,8 +27,11 @@ Handling all data regarding a character’s current state, the Character Entity 
 
 The most important aspects include:
 
-### Relationship with Character Data Model
-Each `CharacterEntity` instance is directly linked to a `CharacterDataModel`, which acts as its blueprint. While the data model provides static properties such as movement and attack patterns, the entity dynamically maintains the character’s real-time status.
+## Importance of Character Entity in the Game
+The `CharacterEntity` serves as the link between the static character definitions and the in-game logic. It ensures that character behavior remains consistent while allowing flexibility in combat, movement, and player interactions.
+
+By maintaining structured entity states, the game supports engaging and tactical gameplay, enabling expansions such as inventory systems, experience points, and status effects in future updates.
+
 
 ## Character Attributes
 
@@ -81,16 +84,24 @@ public class CharacterDataModel {
 
 ### Relationship Between CharacterDataModel and CharacterEntity
 
-The `CharacterDataModel` acts as a foundation for `CharacterEntity`. When a new character is instantiated, it references the `CharacterDataModel` to determine its initial attributes. However, the entity itself evolves based on player actions, while the data model remains a static reference.
+The `CharacterDataModel` acts as a blueprint for `CharacterEntity` creation. When a new `CharacterEntity` is instantiated, it references the `CharacterDataModel` to determine its initial attributes. However, the entity itself evolves based on player actions, while the data model remains a static reference.
 
-## Character Lifecycle
+# Character Lifecycle
 
-### Creation
-- A `CharacterEntity` is instantiated with a reference to its `CharacterDataModel`.
-- It is assigned to a player and placed at a specific starting position.
+## Character Definition and Instantiation
 
-### State Updates
-- Position and health values update dynamically.
+- ###  Character Definition
+Before creating a `CharacterEntity`, a `CharacterDataModel` must first be defined. This step involves setting static attributes such as health, attack patterns, movement patterns, and descriptions. The `CharacterDataModel` serves as the foundation for the entity.
+
+- ### Character Instantiation
+Once the `CharacterDataModel` is defined, a `CharacterEntity` can be instantiated. This process involves assigning a unique ID, initializing the character’s current health and position, and associating it with a player.
+
+
+## State Updates
+
+The `CharacterEntity` updates dynamically during the game.
+
+- Position and health values change in response to game actions.
 - Movement and attack actions interact with the `GridModel` and `Turn Logic Service`.
 
 ### Combat and Damage Handling
@@ -100,30 +111,4 @@ The `CharacterDataModel` acts as a foundation for `CharacterEntity`. When a new 
 ### Destruction and Removal
 - Characters that die are removed from active gameplay but may remain in logs .
 
-## Key Methods
-
-#### `getCharacterBaseModel()`
-- **Returns**: `CharacterDataModel`
-- **Description**: Retrieves the base model, providing reference to static attributes.
-
-#### `getId()`
-- **Returns**: `String`
-- **Description**: Retrieves the unique identifier of the character.
-
-#### `getHealth()` and `setHealth(int health)`
-- **Returns**: `int`
-- **Description**: Retrieves or updates the character’s health.
-
-#### `getPosition()` and `setPosition(Vector2D position)`
-- **Returns**: `Vector2D`
-- **Description**: Retrieves or updates the character’s grid position.
-
-#### `getPlayerId()`
-- **Returns**: `String`
-- **Description**: Retrieves the player ID controlling this character.
-
-## Importance of Character Entity in the Game
-The `CharacterEntity` serves as the link between the static character definitions and the in-game logic. It ensures that character behavior remains consistent while allowing flexibility in combat, movement, and player interactions.
-
-By maintaining structured entity states, the game supports engaging and tactical gameplay, enabling expansions such as inventory systems, experience points, and status effects in future updates.
 
