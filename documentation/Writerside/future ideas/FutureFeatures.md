@@ -14,7 +14,7 @@ These are essential tasks that must be completed to ensure a polished and functi
 ### Basic Settings Menu
 - **Difficulty**: Easy
 - **Reward**: Medium
-- **Description**: Add a menu for adjusting settings like volume, graphics, and other basic preferences.
+- **Description**: Add a menu for adjusting settings like graphics and other basic preferences.
 
 ### Tutorial System
 - **Difficulty**: Hard
@@ -42,10 +42,10 @@ Optional but exciting features that could significantly enhance gameplay and eng
 - **Reward**: High
 - **Description**: Add unique characters with innovative attack patterns and abilities beyond the initial 10.
 
-#### Advanced Movement Patterns
+#### Advanced Movement Ability
 - **Difficulty**: Medium
 - **Reward**: Medium
-- **Description**: Introduce dynamic movement patterns, such as invisibility or pattern copying (e.g., a "Ditto"-like character).
+- **Description**: Introduce dynamic movement, such as invisible Position or pattern copying (e.g., a "Ditto"-like character).
 
 #### Character Customization
 - **Difficulty**: Hard
