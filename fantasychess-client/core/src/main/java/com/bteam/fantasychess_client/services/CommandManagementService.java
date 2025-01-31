@@ -25,7 +25,7 @@ public class CommandManagementService {
     private final Map<String, AttackDataModel> attacks;
     private final Map<String, MovementDataModel> movements;
 
-    private final Map<AttackDataModel,Map<Vector2D,Integer>> commandDamageMappings;
+    private final Map<String,Map<Vector2D,Integer>> commandDamageMappings;
 
     /**
      * Constructor
@@ -56,9 +56,8 @@ public class CommandManagementService {
     public void setCommand(AttackDataModel attack, Map<Vector2D, Integer> damageValues) {
         movements.remove(attack.getAttacker());
 
-        AttackDataModel oldAttack = attacks.get(attack.getAttacker());
-        commandDamageMappings.remove(oldAttack);
-        commandDamageMappings.put(attack,damageValues);
+        commandDamageMappings.remove(attack.getAttacker());
+        commandDamageMappings.put(attack.getAttacker(),damageValues);
 
         attacks.put(attack.getAttacker(), attack);
     }
@@ -70,6 +69,9 @@ public class CommandManagementService {
      */
     public void setCommand(MovementDataModel movement) {
         attacks.remove(movement.getCharacterId());
+
+        commandDamageMappings.remove(movement.getCharacterId());
+
         movements.put(movement.getCharacterId(), movement);
     }
 
@@ -94,7 +96,7 @@ public class CommandManagementService {
     /**
      * Getter for command damage mappings
      */
-    public Map<AttackDataModel, Map<Vector2D, Integer>> getCommandDamageMappings() {
+    public Map<String, Map<Vector2D, Integer>> getCommandDamageMappings() {
         return commandDamageMappings;
     }
 
