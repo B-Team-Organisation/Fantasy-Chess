@@ -4,7 +4,13 @@ Clientside networking is handled by the [`gdx-websockets`](https://github.com/Mr
 
 ## WebSocket Service
 
-Forms the backbone of the clientside networking, managing packet routing and 
+Forms the backbone of the clientside networking, managing packet routing and client authentication. To facilitate 
+routing, the service makes use of the `PacketHandler` functional interface, which allows inline or outside declaration
+of handlers. 
+
+> Only one Packet handler may be registered per packet at a time.
+
+
 
 ## WebSocket Client
 
@@ -55,6 +61,32 @@ The client is now authenticated and can connect to the websocket server.
 
 ## Packet Handler
 
+A packet handler is a simple FunctionalInterface that accepts the packet as a string and doesn't return anything.
+
+```java
+@FunctionalInterface
+public interface PacketHandler {
+    void handle(String packet);
+}
+```
 
 ## Deserialization
+
+Packets get deserialized using LibGDX's built in JsonReader to convert JSON strings into JsonValue instances,
+that can easily query and extract the data from Json. Each incoming messages needs to be deserialized this way.
+
+Example from `TurnResultMapper`
+:
+```java
+public static TurnResult fromDTO(String str){
+    JsonValue value = new JsonReader().parse(str);
+    var data = value.get("data");
+    var characters = CharacterEntityMapper
+        .fromListJson(data.get("updatedCharacters"));
+    /* ... */
+    var winner = data.getString("winner");
+    return new TurnResult(characters, conflicts, 
+        validMoves, validAttacks,winner);
+}
+```
 
