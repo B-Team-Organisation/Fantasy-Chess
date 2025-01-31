@@ -18,7 +18,6 @@ public class TileMathService {
     private final int mapWidth;
     private final int mapHeight;
 
-    private final Vector2 doubleTopCorner;
     private final Vector2 bottomCorner;
 
     private final Vector2 topCorner;
@@ -32,10 +31,7 @@ public class TileMathService {
     /**
      * Create a new Service for a map.
      * <p>
-     * Corners are calculated for the grid based on center, map and tile sizes,
-     * whereas the fake corner is offsetting height differences from the isometric
-     * map so that the borders of the map can be treated as perpendicular,
-     * simplifying {@link #pointLineProjection}
+     * Corners are calculated for the grid based on center, map and tile sizes.
      *
      * @param mapWidth Width of grid in tiles
      * @param mapHeight Height of grid in tiles
@@ -54,9 +50,6 @@ public class TileMathService {
         this.rightCorner = new Vector2(center.getX()+(mapWidth/2f)*tilePixelWidth,center.getY());
         this.topCorner = new Vector2(center.getX(),center.getY()+(mapHeight/2f)*tilePixelHeight);
         this.bottomCorner = new Vector2(center.getX(),center.getY()-(mapHeight/2f)*tilePixelHeight);
-
-        // tilePixelWidth is correct in this context, because it makes sure the map is treated is a square.
-        this.doubleTopCorner = new Vector2(center.getX(),center.getY()+(mapHeight/2f)*tilePixelWidth);
     }
 
     /**
@@ -101,20 +94,21 @@ public class TileMathService {
      *
      * @param x the x world coordinate
      * @param y the y world coordinate
-     * @return {@link Vector2D} containing rows and columns on the grid.
+     * @return {@link Vector2D} containing rows and columns on the grid, or null if percent not within 0-100.
      */
     public Vector2D worldToGrid(float x, float y) {
 
         Vector2 point = new Vector2(x, y + (y-center.getY()));
         float columnTileUnit = 1f / mapWidth;
         float rowTileUnit = 1f / mapHeight;
+        Vector2 leftTop = topCorner.cpy().sub(leftCorner.cpy());
+        Vector2 rightTop = topCorner.cpy().sub(rightCorner.cpy());
 
-        // Use fake top corner because the edges aren't perpendicular, avoids angle transformation
-        Vector2 columnProjection = pointLineProjection(doubleTopCorner, rightCorner, point.cpy());
-        Vector2 rowProjection = pointLineProjection(doubleTopCorner, leftCorner, point.cpy());
+        Vector2 columnProjection = lineIntersection(point.cpy(), leftCorner.cpy(), rightCorner.cpy(), rightTop);
+        Vector2 rowProjection = lineIntersection(point.cpy(), rightCorner.cpy(), leftCorner.cpy(), leftTop);
 
-        float colPercent = percentOnLine(rowProjection, doubleTopCorner.cpy(), leftCorner.cpy());
-        float rowPercent = percentOnLine(columnProjection, doubleTopCorner.cpy(), rightCorner.cpy());
+        float colPercent = percentOnLine(rowProjection, topCorner.cpy(), leftCorner.cpy());
+        float rowPercent = percentOnLine(columnProjection, topCorner.cpy(), rightCorner.cpy());
 
         if( colPercent <0.0f || colPercent > 1.0f || rowPercent <0.0f || rowPercent > 1.0f ) {
             return null;
@@ -129,22 +123,27 @@ public class TileMathService {
     }
 
     /**
-     * Project a point on a line.
-     * <p>
-     * Simple math, can be found on Wikipedia (orthogonal projection)
+     * Find the intersection between two lines.
      *
-     * @param start the location vector of the line
-     * @param end the direction vector of the line
-     * @param point the point to project onto the line
-     * @return the nearest point on the line.
+     * @param pointVector1 The point vector of the first line
+     * @param directionVector1 The direction vector of the first line
+     * @param pointVector2 The point vector of the second line
+     * @param directionVector2 The direction vector of the second line
+     * @return The coordinates of the intersection, or null, if non-existent
      */
-    public Vector2 pointLineProjection(Vector2 start, Vector2 end, Vector2 point) {
-        Vector2 directionVector = end.cpy().sub(start);
-        Vector2 dirNorm = directionVector.cpy().nor();
-        Vector2 lineToPoint = point.cpy().sub(start);
-        float projectionFactor = lineToPoint.dot(dirNorm);
-        Vector2 scaled = dirNorm.scl(projectionFactor);
-        return start.cpy().add(scaled);
+    public Vector2 lineIntersection(
+        Vector2 pointVector1, Vector2 directionVector1, Vector2 pointVector2, Vector2 directionVector2
+    ) {
+        float det = directionVector1.x * (-directionVector2.y) - directionVector1.y * (-directionVector2.x);
+
+        if (Math.abs(det) < 1e-10) return null;
+
+        float dx = pointVector2.x - pointVector1.x;
+        float dy = pointVector2.y - pointVector1.y;
+
+        float lambda = (dx * (-directionVector2.y) - dy * (-directionVector2.x)) / det;
+
+        return new Vector2(pointVector1.x + lambda * directionVector1.x, pointVector1.y + lambda * directionVector1.y);
     }
 
     /**

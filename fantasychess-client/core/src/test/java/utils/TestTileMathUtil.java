@@ -91,30 +91,46 @@ class TestTileMathUtil {
         Assertions.assertNull(result);
     }
 
+
     @Test
-    void testPointLineProjection() {
+    void testLineIntersection() {
         TileMathService tileMathService = new TileMathService(9,9, basicTiledMap,32,16);
 
-        Vector2 start1 = new Vector2(10,40);
-        Vector2 end1 = new Vector2(30,0);
-        Vector2 project1 = new Vector2(10,20);
-        Vector2 result1 = tileMathService.pointLineProjection(start1, end1, project1);
-        Vector2 expected1 = new Vector2(18,24);
-        Assertions.assertEquals(result1, expected1);
+        //normal case
+        Vector2 point1 = new Vector2(2, 8);
+        Vector2 orientation1 = point1.cpy().sub(new Vector2(8, 2));
+        Vector2 point2 = new Vector2(2, 2);
+        Vector2 orientation2 = point2.cpy().sub(new Vector2(6, 8));
+        Vector2 result1 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
+        Vector2 expected1 = new Vector2(4.4f,5.6f);
+        Assertions.assertEquals(expected1, result1);
 
-        Vector2 start2 = new Vector2(10,40);
-        Vector2 end2 = new Vector2(30,0);
-        Vector2 project2 = new Vector2(-10,-10);
-        Vector2 result2 = tileMathService.pointLineProjection(start2, end2, project2);
-        Vector2 expected2 = new Vector2(26,8);
-        Assertions.assertEquals(result2, expected2);
+        // first test but direction vertices in other direction
+        point1 = new Vector2(2, 8);
+        orientation1 = new Vector2(8, 2).sub(point1.cpy());
+        point2 = new Vector2(2, 2);
+        orientation2 = new Vector2(6, 8).sub(point2.cpy());
+        Vector2 result2 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
+        Vector2 expected2 = new Vector2(4.4f,5.6f);
+        Assertions.assertEquals(expected2, result2);
 
-        Vector2 start4 = new Vector2(-40,-10);
-        Vector2 end4 = new Vector2(-20,-20);
-        Vector2 project4 = new Vector2(10,10);
-        Vector2 result4 = tileMathService.pointLineProjection(start4, end4, project4);
-        Vector2 expected4 = new Vector2(-8,-26);
-        Assertions.assertEquals(result4, expected4);
+        // first line has both points before intersection
+        point1 = new Vector2(2, 8);
+        orientation1 = point1.cpy().sub(new Vector2(4, 6));
+        point2 = new Vector2(2, 2);
+        orientation2 = point2.cpy().sub(new Vector2(12, 4));
+        Vector2 result3 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
+        Vector2 expected3 = new Vector2(7,3);
+        Assertions.assertEquals(expected3, result3);
+
+
+        // parallel lines
+        point1 = new Vector2(2, 8);
+        orientation1 = point1.cpy().sub(new Vector2(4, 6));
+        point2 = new Vector2(6, 8);
+        orientation2 = point2.cpy().sub(new Vector2(8, 6));
+        Vector2 result4 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
+        Assertions.assertNull(result4);
     }
 
     @Test
