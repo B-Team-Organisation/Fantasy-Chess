@@ -2,7 +2,7 @@ name: Documentation Deploy
 
 on:
   push:
-    branches: ["dev", "*197*"]
+    branches: ["dev", "documentation/197-autodeploy-of-documentations-and-javadocs-to-github-pages"]
 
 env:
   INSTANCE: 'Fantasy-Chess Documentation/documentation'
