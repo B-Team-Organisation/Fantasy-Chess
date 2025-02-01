@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class TestTileMathUtil {
+class TestTileMathService {
 
     TiledMap basicTiledMap;
     TiledMap nullTiledMap;
