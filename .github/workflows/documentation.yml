@@ -33,15 +33,18 @@ jobs:
         working-directory: common
         run: |
           gradle javadoc
-          mv build/docs/ ../pages-out/java-docs/common/
+          mkdir ../pages-out/java-docs/common/
+          mv build/docs/* ../pages-out/java-docs/common/
         # zip -r build/docs/common-javadocs.zip build/docs/* 
 
       - name: Build Client Documentation
         working-directory: fantasychess-client
         run: |
           gradle javadoc
-          mv html/build/docs/ ../pages-out/java-docs/client/html/
-          mv core/build/docs/ ../pages-out/java-docs/client/core/
+          mkdir ../pages-out/java-docs/client/html/
+          mkdir ../pages-out/java-docs/client/core/
+          mv html/build/docs/* ../pages-out/java-docs/client/html/
+          mv core/build/docs/* ../pages-out/java-docs/client/core/
         # zip -r html/build/docs/client-html-javadocs.zip html/build/docs/* 
         # zip -r core/build/docs/client-core-javadocs.zip core/build/docs/* 
 
@@ -49,7 +52,8 @@ jobs:
         working-directory: fantasychess-server
         run: |
           gradle javadoc
-          mv build/docs/ ../pages-out/java-docs/server/
+          mkdir ../pages-out/java-docs/server/
+          mv build/docs/* ../pages-out/java-docs/server/
         #  zip -r build/docs/server-javadocs.zip build/docs/* 
 
       - name: Define instance id and artifacts
