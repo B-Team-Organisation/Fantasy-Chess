@@ -15,7 +15,11 @@ Registering a Packet Handler
 ```java
 getWebSocketService().addPacketHandler(
     "EXAMPLE_PACKET",
-    (str) -> { /* ... */ }
+    (str) -> { 
+        // str - Received packet in JSON format: 
+        // {"id" : "EXAMPLE_PACKET", "data" : { ... }} 
+        /* ... */ 
+    }
 );
 ```
 
@@ -32,7 +36,7 @@ This is done for easier access to the exposed methods within the [](#websocket-s
 
 ## HTTP Response Callback Listener
 
-Maps exposed by the HttpResponseListener to consumers to be able to dynamically assign them at runtime.
+Maps method exposed by the HttpResponseListener to consumers to be able to dynamically assign them at runtime.
 
 Mapped events are:
 - `handleHttpResponse` - a successful HTTP request
