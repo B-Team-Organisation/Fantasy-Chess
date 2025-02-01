@@ -86,7 +86,7 @@ Lukas Walker
 : **Email:** [lukas.walker@student.hs-rm.de](mailto:lukas.walker@student.hs-rm.de)
 
 Dania Anwar
-: **Email:** [dania.anwar@student.hs-rm.de](mailto:dania.anwar@student.hs-rm.de)
+: **Email:** [daniairam.anwar@gmail.com](mailto:daniairam.anwar@gmail.com)
 
 Adnan Benis
 : **Email:** [adnan.benis@student.hs-rm.de](mailto:adnan.benis@student.hs-rm.de)
