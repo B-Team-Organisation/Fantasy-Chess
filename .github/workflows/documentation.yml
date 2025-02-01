@@ -33,7 +33,7 @@ jobs:
         working-directory: common
         run: |
           gradle javadoc
-          mkdir -R ../pages-out/java-docs/common/
+          mkdir -p ../pages-out/java-docs/common/
           mv build/docs/* ../pages-out/java-docs/common/
         # zip -r build/docs/common-javadocs.zip build/docs/* 
 
@@ -41,8 +41,8 @@ jobs:
         working-directory: fantasychess-client
         run: |
           gradle javadoc
-          mkdir -R ../pages-out/java-docs/client/html/
-          mkdir -R ../pages-out/java-docs/client/core/
+          mkdir -p ../pages-out/java-docs/client/html/
+          mkdir -p ../pages-out/java-docs/client/core/
           mv html/build/docs/* ../pages-out/java-docs/client/html/
           mv core/build/docs/* ../pages-out/java-docs/client/core/
         # zip -r html/build/docs/client-html-javadocs.zip html/build/docs/* 
@@ -52,7 +52,7 @@ jobs:
         working-directory: fantasychess-server
         run: |
           gradle javadoc
-          mkdir -R ../pages-out/java-docs/server/
+          mkdir -p ../pages-out/java-docs/server/
           mv build/docs/* ../pages-out/java-docs/server/
         #  zip -r build/docs/server-javadocs.zip build/docs/* 
 
