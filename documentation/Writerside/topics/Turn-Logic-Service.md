@@ -20,19 +20,19 @@ valid commands and return it back to the server.
 **UML Diagram for Classes here**
 
 #### 1. Command Validation
-The `CommandValidator` class validates that attack and movement commands follow all game rules. They are as follows:
-<p></p>
+The `CommandValidator` class validates that attack and movement commands follow all game rules.
+<procedure title="Turn-Related Game Rules:">
 <anchor id="rule1" name="rule1"></anchor>
-1. Each Character can only have one command.
+<step>Each Character can only have one command.</step>
 <anchor id="rule2" name="rule2"></anchor>
-2. Characters may not attack or move out of bounds regarding the grid map.
+<step>Characters may not attack or move out of bounds regarding the grid map.</step>
 <anchor id="rule3" name="rule3"></anchor>
-3. Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`.
-4. A character may not move to where another character already is.
-5. Multiple characters of the same player may not move to the same position.
+<step>Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`.</step>
+<step>A character may not move to where another character already is.</step>
+<step>Multiple characters of the same player may not move to the same position.</step>
 <anchor id="rule6" name="rule6"></anchor>
-6. Opposing players may not move to the same position.
-
+<step>Opposing players may not move to the same position.</step>
+</procedure>
 
 > Movement to the same position is separately checked for opposing players, because we treat them individually as `bounces`.
 > This is because it's impossible to know if it will happen in advance, so the players are shown a special animation.
