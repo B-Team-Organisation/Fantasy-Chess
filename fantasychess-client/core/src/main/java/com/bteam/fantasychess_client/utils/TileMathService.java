@@ -4,7 +4,6 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.models.Vector2D;
-import com.bteam.fantasychess_client.ui.GameScreen;
 
 /**
  * Mathematical Functions for Grid
@@ -98,14 +97,14 @@ public class TileMathService {
      */
     public Vector2D worldToGrid(float x, float y) {
 
-        Vector2 point = new Vector2(x, y + (y-center.getY()));
+        Vector2 point = new Vector2(x, y);
         float columnTileUnit = 1f / mapWidth;
         float rowTileUnit = 1f / mapHeight;
         Vector2 leftTop = topCorner.cpy().sub(leftCorner.cpy());
         Vector2 rightTop = topCorner.cpy().sub(rightCorner.cpy());
 
-        Vector2 columnProjection = lineIntersection(point.cpy(), leftCorner.cpy(), rightCorner.cpy(), rightTop);
-        Vector2 rowProjection = lineIntersection(point.cpy(), rightCorner.cpy(), leftCorner.cpy(), leftTop);
+        Vector2 columnProjection = lineIntersection(point.cpy(), leftTop.cpy(), rightCorner.cpy(), rightTop.cpy());
+        Vector2 rowProjection = lineIntersection(point.cpy(), rightTop.cpy(), leftCorner.cpy(), leftTop.cpy());
 
         float colPercent = percentOnLine(rowProjection, topCorner.cpy(), leftCorner.cpy());
         float rowPercent = percentOnLine(columnProjection, topCorner.cpy(), rightCorner.cpy());
