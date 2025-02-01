@@ -6,7 +6,8 @@ for each Packet Handler and defines the types of packets sent to each handler. T
 the `WebSocketService` to process the packet.
 
 A Simple Example Handler
-: ```java
+: 
+```java
 public class ExampleHandler implements PacketHandler 
 {
     private final String packetPattern = "EXAMPLE_";
@@ -46,6 +47,7 @@ public class ExampleHandler implements PacketHandler
     public String getPacketPattern() {
         return packetPattern;
     }
+```
 
 ## Game Packet Handler
 
