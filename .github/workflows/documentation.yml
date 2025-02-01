@@ -36,7 +36,7 @@ jobs:
         run: |
           gradle javadoc
           mkdir -p ../pages-out/java-docs/common/
-          mv build/docs/* ../pages-out/java-docs/common/javadoc/
+          mv build/docs/javadoc/* ../pages-out/java-docs/common/
         # zip -r build/docs/common-javadocs.zip build/docs/* 
 
       - name: Build Client Documentation
@@ -55,7 +55,7 @@ jobs:
         run: |
           gradle javadoc
           mkdir -p ../pages-out/java-docs/server/
-          mv build/docs* ../pages-out/java-docs/server/javadoc/
+          mv build/docs/javadoc/* ../pages-out/java-docs/server/
         #  zip -r build/docs/server-javadocs.zip build/docs/* 
 
       - name: Define instance id and artifacts
