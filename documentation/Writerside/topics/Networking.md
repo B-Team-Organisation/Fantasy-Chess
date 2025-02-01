@@ -10,7 +10,14 @@ of handlers.
 
 > Only one Packet handler may be registered per packet at a time.
 
-
+Registering a Packet Handler
+:
+```java
+getWebSocketService().addPacketHandler(
+    "EXAMPLE_PACKET",
+    (str) -> { /* ... */ }
+);
+```
 
 ## WebSocket Client
 
@@ -26,6 +33,11 @@ This is done for easier access to the exposed methods within the [](#websocket-s
 ## HTTP Response Callback Listener
 
 Maps exposed by the HttpResponseListener to consumers to be able to dynamically assign them at runtime.
+
+Mapped events are:
+- `handleHttpResponse` - a successful HTTP request
+- `failed` - should the HTTP request fail, or return an error code
+- `cancelled` - should the response be cancelled on the client
 
 ## Auth
 
