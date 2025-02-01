@@ -18,9 +18,8 @@
     </def>
 </deflist>
 
-> Tile coordinates differ from the grid coordinates we use, because of technical debt. They could
-> be merged, it was practical (for rendering code readability) and more intuitive to have (0, 0) at the top, 
-> rather than on the left.
+> Tile coordinates differ from the grid coordinates we use because of technical debt as it was practical
+> more practical and intuitive to have (0, 0) at the top, rather than on the left.
  
 ![Coordinate Systems illustration](./../img/client/CoordinateMaps.png)
 {width="705"}
@@ -28,7 +27,8 @@
 
 Because we are using isometric tile maps, which are rotated along the z axis to create the illusion of 3D, the position 
 of the mouse (world coordinates) can not be easily converted to a specific tile on the grid (grid coordinates).
-The `TileMathService` provides a way to convert between all three coordinate systems, independent of any screen sizes and mostly of the map format.
+The `TileMathService` provides methods for all necessary conversions between the three coordinate systems,
+independent of any screen sizes and mostly of the map format.
 
 To create a `TileMathService` instance, you need the `TiledMap` and the width and height of both the map and an 
 individual tile. <br />
