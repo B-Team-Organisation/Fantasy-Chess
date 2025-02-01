@@ -19,15 +19,16 @@
 </deflist>
 
 > Tile coordinates differ from the grid coordinates we use, because of technical debt. They could
-> be merged, but we found it more intuitive to have (0, 0) at the top, rather than on the left.
+> be merged, it was practical (for rendering code readability) and more intuitive to have (0, 0) at the top, 
+> rather than on the left.
  
 ![Coordinate Systems illustration](./../img/client/CoordinateMaps.png)
 {width="705"}
 
 
-Because we are using isometric tile maps, which are rotated along the z axis to create the illusion of 3D, the position of the mouse (world coordinates) can not be easily converted 
-to a specific tile on the grid (grid coordinates). The `TileMathService` provides a way to calculate this, independent
-of any screen sizes and mostly of the map format. It provides methods to go from screen to grid and the other way around.
+Because we are using isometric tile maps, which are rotated along the z axis to create the illusion of 3D, the position 
+of the mouse (world coordinates) can not be easily converted to a specific tile on the grid (grid coordinates).
+The `TileMathService` provides a way to convert between all three coordinate systems, independent of any screen sizes and mostly of the map format.
 
 To create a `TileMathService` instance, you need the `TiledMap` and the width and height of both the map and an 
 individual tile. <br />
@@ -43,20 +44,20 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
 > In the following, we will be using linear algebra. <br/>
 > We are defining a line in parametric form as:
 > <math> \mathbf{r}(t) = \mathbf{r_0} + t \mathbf{d} </math> <br/>
-> Where <math>r(t)</math> is any point on the line, 
+> where <math>r(t)</math> is any point on the line, 
 > <math>\mathbf{r_0}</math> is the point vector (a given point on the line),
 > <math>\mathbf{d}</math> the directional vector (the direction of the line, which can be calculated by subtracting any point on the line)
 > and <math>t</math> the scaling parameter (multiply <math>\mathbf{d}</math> to move from the point vector to any point on the line, using the direction of <math>\mathbf{d}</math>.
 > Calculating <math>r(t)</math> can also be called linear interpolation.
 > 
-> We are also refering to the edges as top, bottom, left and bottom as given by their position on the grid.
+> We are also referring to the corners as top, bottom, left and bottom as given by their position on the grid.
 
 <procedure title="Grid to World Algorithm" id="gridToWorld">
-    <p>Given: The edges of the grid as points in world coordinates (x, y), marked with red "x"'s in the figure below and
+    <p>Given: The corners of the grid as points in world coordinates (x, y), marked with red "x"'s in the figure below and
     the point that we're searching for, marked with the red "x" in the middle (also in world coordinates).
     </p>
     <step>
-    Use the edge points to form a line on the column edges, one from left to top and one from bottom to right.
+    Use the corner points to form a line on the column edges, one from left to top and one from bottom to right.
     </step>
     <step>
     Using percentages of the tile to width ratio, project the point onto the column lines (factor <math>t</math> for <math>\mathbf{r}(t)</math>).
@@ -65,8 +66,8 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
     </step>
     <step>Using the percentage, we can use linear interpolation to go to the middle of the tile representing the column number, for both lines.</step>
     <step>We can use both points and repeat the same process but for rows to get to our final target point.</step>
-    <step>Because we have been using world coordinates for all the edge points, our final result is also in world coordinates.</step>
-    <p>(As shown in the example figure below)</p>
+    <step>Because we have been using world coordinates for all the corner points, our final result is also in world coordinates.</step>
+    <p>(See figures below)</p>
 </procedure>
 
 
@@ -78,7 +79,7 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
 {style="note"}
  
 <procedure title="World to Grid Algorithm" id="worldToGrid">
-    <step>Take two lines from left to top and right to top edges.</step>
+    <step>Take two lines from left to top and right to top corners.</step>
     <step>
     We can create two new lines using the point we are calculating as point vector and the directional vector of each line, respectively.
     This is useful, because we can now calculate where those lines are crossing with the lines from the edges, thus projecting the point 
@@ -86,7 +87,7 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
     </step>
     <step>Use both projected points on the lines to calculate the percentages, just as in the grid to world algorithm.</step>
     <step>Round the percentages to the respective column/row number.</step>
-    <p>(As shown in the example figure below)</p>
+    <p>(See figures below)</p>
 </procedure>
 
 
