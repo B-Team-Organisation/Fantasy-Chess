@@ -22,6 +22,7 @@
 > be merged, but we found it more intuitive to have (0, 0) at the top, rather than on the left.
  
 ![Coordinate Systems illustration](./../img/client/CoordinateMaps.png)
+{width="705"}
 
 
 Because we are using isometric tile maps, which are rotated along the z axis to create the illusion of 3D, the position of the mouse (world coordinates) can not be easily converted 
@@ -70,6 +71,7 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
 
 
 ![Grid to World illustration](./../img/client/gridToWorld.png)
+{width="705"}
 
 > Because this is dynamically calculated using the map size, it works completely independent of 
 > the maps' size and shape, as long as it is rectangular.
@@ -89,8 +91,9 @@ coordinates and is used before interactions with `gdx.maps.tiled`.
 
 
 ![World to Grid illustration](./../img/client/worldToGrid.png)
+{width="705"}
 
-> Note, again that this works independently of the maps shape and size.
+> Note, again, that this works independently of the maps shape and size.
 {style="note"}
  
 <procedure title="Grid to Tiled Algorithm" id="gridToTiled">
