@@ -241,6 +241,14 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
+        GlyphLayout layout = new GlyphLayout(damageFont, "Grid: "+grid);
+        damageFont.draw(batch, layout, mouse.x, mouse.y);
+
+        if (grid != null) {
+            layout = new GlyphLayout(damageFont, "Tiled: "+mathService.gridToTiled(grid));
+            damageFont.draw(batch, layout, mouse.x, mouse.y+20);
+        }
+
         if (grid != null && !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
