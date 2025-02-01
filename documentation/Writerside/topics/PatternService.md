@@ -1,7 +1,10 @@
 # Pattern Services
 
-Pattern Services wrap a [Pattern Model](PatternModel.md) and provide methods to manipulate and retrieve information about the [Pattern](Patterns.md).
-A pattern service holds its underlying [Pattern Model](PatternModel.md), a reference to the [Pattern Store](PatternStore.md) and two Maps, one mapping from relative position to `char` and one mappings from relative position to effected positions.
+Pattern Services wrap a [Pattern Model](PatternModel.md) and provide methods to manipulate and retrieve information
+about the [Pattern](Patterns.md).
+A pattern service holds its underlying [Pattern Model](PatternModel.md), a reference to 
+the [Pattern Store](PatternStore.md) and two Maps, one mapping from relative position to `char` and one 
+mappings from relative position to effected positions.
 They are created directly by the client or server and are never send over the network.
 
 Their main task is to provide target positions and positions effected by commands on target positions.
@@ -13,21 +16,23 @@ Their main task is to provide target positions and positions effected by command
 Pattern Services are created from a [Pattern Model](PatternModel.md) and a [Pattern Store](PatternStore.md):
 
 ```java
-    public PatternService(PatternModel patternModel, PatternStore patternStore) throws PatternShapeInvalidException, InvalidSubpatternMappingException {
-        this.patternStore = patternStore;
-        this.patternModel = patternModel;
-        validatePattern(patternModel);
-        relativeTargetMappings = createMappingsFromPattern(patternModel);
-
-        attackAreasPerRelativePosition = new HashMap<>();
-        for (Vector2D target : relativeTargetMappings.keySet()) {
-            attackAreasPerRelativePosition.put(target,calculateAreaOfEffect(target));
-        }
+    public PatternService(PatternModel patternModel, PatternStore patternStore) 
+        throws PatternShapeInvalidException, InvalidSubpatternMappingException {
+            this.patternStore = patternStore;
+            this.patternModel = patternModel;
+            validatePattern(patternModel);
+            relativeTargetMappings = createMappingsFromPattern(patternModel);
+    
+            attackAreasPerRelativePosition = new HashMap<>();
+            for (Vector2D target : relativeTargetMappings.keySet()) {
+                attackAreasPerRelativePosition
+                    .put(target,calculateAreaOfEffect(target));
+            }
     }
 ```
 
-When constructed like this, they are directly validated for possible ambiguity due to pattern shape or errors in the subpattern-mappings.
-If nothing arises from these checks, the two maps are calculated and saved.
+When constructed like this, they are directly validated for possible ambiguity due to pattern shape or errors in 
+the subpattern-mappings. If nothing arises from these checks, the two maps are calculated and saved.
 
 Pattern Services can also be created directly using components, which is important for [reversal](#reversal):
 
@@ -47,20 +52,24 @@ Pattern Services can also be created directly using components, which is importa
 Method to calculate mappings from relative position to `char`:
 
 ```java
-    private Map<Vector2D,Character> createMappingsFromPattern(PatternModel patternModel) {
-        String[] lines = patternModel.getPatternString().split("\n");
-
-        Map<Vector2D,Character> mappings = new HashMap<>();
-        for (int y = 0; y < lines.length; y++) {
-            String line = lines[y];
-            for (int x = 0; x < lines.length; x++) {
-                char tileChar = line.charAt(x);
-                if (tileChar != ' '){
-                    mappings.put(new Vector2D(x-lines.length/2, y-lines.length/2), tileChar);
+    private Map<Vector2D,Character> createMappingsFromPattern(
+        PatternModel patternModel) {
+            String[] lines = patternModel.getPatternString().split("\n");
+    
+            Map<Vector2D,Character> mappings = new HashMap<>();
+            for (int y = 0; y < lines.length; y++) {
+                String line = lines[y];
+                for (int x = 0; x < lines.length; x++) {
+                    char tileChar = line.charAt(x);
+                    if (tileChar != ' '){
+                        mappings.put(
+                            new Vector2D(x-lines.length/2, y-lines.length/2), 
+                            tileChar
+                        );
+                    }
                 }
             }
-        }
-        return mappings;
+            return mappings;
     }
 ```
 
@@ -73,7 +82,8 @@ Methods to calculate effected areas:
         Set<Vector2D> targets = new HashSet<>();
 
         if (patternModel.getSubpatternMappings().containsKey(c)) {
-            PatternModel subpatternModel = patternStore.getPatternByName(patternModel.getSubpatternMappings().get(c));
+            PatternModel subpatternModel = patternStore
+                .getPatternByName(patternModel.getSubpatternMappings().get(c));
             collectTargetsFromSubpattern(subpatternModel,targetPosition,targets);
         } else {
             targets.add(targetPosition);
@@ -82,18 +92,26 @@ Methods to calculate effected areas:
         return targets.toArray(new Vector2D[0]);
     }
     
-    private void collectTargetsFromSubpattern(PatternModel patternModel, Vector2D targetPosition, Set<Vector2D> targets) {
-        Map<Vector2D,Character> mappings = createMappingsFromPattern(patternModel);
-        for (Vector2D relativeSubpatternPosition : mappings.keySet()) {
-            char c = mappings.get(relativeSubpatternPosition);
-            Vector2D subpatternTarget = targetPosition.add(relativeSubpatternPosition);
-            if (patternModel.getSubpatternMappings().containsKey(c)) {
-                PatternModel subpatternModel = patternStore.getPatternByName(patternModel.getSubpatternMappings().get(c));
-                collectTargetsFromSubpattern(subpatternModel,subpatternTarget,targets);
-            } else {
-                targets.add(subpatternTarget);
+    private void collectTargetsFromSubpattern(PatternModel patternModel, 
+        Vector2D targetPosition, Set<Vector2D> targets) {
+            Map<Vector2D,Character> mappings = createMappingsFromPattern(
+                patternModel
+            );
+            for (Vector2D relativeSubpatternPosition : mappings.keySet()) {
+                char c = mappings.get(relativeSubpatternPosition);
+                Vector2D subpatternTarget = targetPosition
+                    .add(relativeSubpatternPosition);
+                if (patternModel.getSubpatternMappings().containsKey(c)) {
+                    PatternModel subpatternModel = patternStore
+                        .getPatternByName(patternModel
+                            .getSubpatternMappings().get(c));
+                    collectTargetsFromSubpattern(subpatternModel,
+                        subpatternTarget,targets
+                    );
+                } else {
+                    targets.add(subpatternTarget);
+                }
             }
-        }
     }
 ```
 
@@ -103,7 +121,8 @@ Use the method "getPossibleTargetPositions" to retrieve all absolute target posi
 
 ```java
     public Vector2D[] getPossibleTargetPositions(Vector2D player){
-        return Arrays.stream(relativeTargetMappings.keySet().toArray(new Vector2D[0])).map(player::add).toArray(Vector2D[]::new);
+        return Arrays.stream(relativeTargetMappings.keySet()
+            .toArray(new Vector2D[0])).map(player::add).toArray(Vector2D[]::new);
     }
 ```
 
@@ -116,8 +135,10 @@ Use the method "getAreaOfEffect" to retrieve a list of all absolute positions ef
             return new Vector2D[0];
         }
 
-        Vector2D[] relativePositions = attackAreasPerRelativePosition.get(relativePosition);
-        return Arrays.stream(relativePositions).map(player::add).toArray(Vector2D[]::new);
+        Vector2D[] relativePositions = attackAreasPerRelativePosition
+            .get(relativePosition);
+        return Arrays.stream(relativePositions).map(player::add)
+            .toArray(Vector2D[]::new);
     }
 ```
 
@@ -134,22 +155,27 @@ Pattern services provide a method to create a new pattern service that holds the
 
         for (Vector2D target : attackAreasPerRelativePosition.keySet()) {
 
-            Vector2D[] oldSubtargets = attackAreasPerRelativePosition.get(target);
+            Vector2D[] oldSubtargets = attackAreasPerRelativePosition
+                .get(target);
             Vector2D[] newSubtargets = new Vector2D[oldSubtargets.length];
 
             for (int i = 0; i < oldSubtargets.length; i++) {
                 newSubtargets[i] = reversePosition(oldSubtargets[i]);
             }
 
-            newAttackAreasPerRelativePosition.put(reversePosition(target),newSubtargets);
+            newAttackAreasPerRelativePosition
+                .put(reversePosition(target),newSubtargets);
         }
 
         for (Vector2D target : relativeTargetMappings.keySet()) {
-            newRelativeTargetMappings.put(reversePosition(target), relativeTargetMappings.get(target));
+            newRelativeTargetMappings.put(reversePosition(target),
+                relativeTargetMappings.get(target)
+            );
         }
 
         return new PatternService(
-                patternModel, patternStore, newRelativeTargetMappings, newAttackAreasPerRelativePosition
+                patternModel, patternStore, newRelativeTargetMappings,
+                newAttackAreasPerRelativePosition
         );
     }
     
@@ -165,15 +191,16 @@ This method effectively turns the pattern including all subpattern-information b
 Method to validate [Pattern Model](PatternModel.md) using all validation methods
 
 ```java
-    private void validatePattern(PatternModel patternModel) throws PatternShapeInvalidException, InvalidSubpatternMappingException {
-        String[] lines = patternModel.getPatternString().split("\n");
-
-        if (isPatternShapeInvalid(lines)) {
-            throw new PatternShapeInvalidException();
-        }
-        if (arePatternMappingsInvalid(patternModel)){
-            throw new InvalidSubpatternMappingException();
-        }
+    private void validatePattern(PatternModel patternModel) 
+        throws PatternShapeInvalidException, InvalidSubpatternMappingException {
+            String[] lines = patternModel.getPatternString().split("\n");
+    
+            if (isPatternShapeInvalid(lines)) {
+                throw new PatternShapeInvalidException();
+            }
+            if (arePatternMappingsInvalid(patternModel)){
+                throw new InvalidSubpatternMappingException();
+            }
     }
 ```
 
@@ -207,9 +234,11 @@ Method to recursively check subpattern-mappings
                 if (!patternModel.getSubpatternMappings().containsKey(c)){
                     continue;
                 }
-                String subpatternName = patternModel.getSubpatternMappings().get(c);
+                String subpatternName = patternModel
+                    .getSubpatternMappings().get(c);
 
-                PatternModel subpatternModel = patternStore.getPatternByName(subpatternName);
+                PatternModel subpatternModel = patternStore
+                    .getPatternByName(subpatternName);
                 if (subpatternModel == null){
                     return true;
                 }

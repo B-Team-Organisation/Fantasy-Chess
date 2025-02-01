@@ -6,9 +6,9 @@ They are defined using [Pattern Models](PatternModel.md).
 # Requirements
 
 * Intuitive to create
+* Human readable
 * Easy to store and transfer
 * Reusable
-* Human readable
+* Unambiguous
 * Able to scale in both size and depth (area of effect attacks)
-* Reversible
 
