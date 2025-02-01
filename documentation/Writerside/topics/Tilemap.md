@@ -18,8 +18,8 @@
     </def>
 </deflist>
 
-> Tile coordinates differ from the grid coordinates we use because of technical debt as it was practical
-> more practical and intuitive to have (0, 0) at the top, rather than on the left.
+> Tile coordinates differ from the grid coordinates we use because of technical debt. They could be merged, but we found
+> it was more practical and intuitive to have (0, 0) at the top, rather than on the left.
  
 ![Coordinate Systems illustration](./../img/client/CoordinateMaps.png)
 {width="705"}
