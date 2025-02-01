@@ -2,7 +2,7 @@ name: Documentation Deploy
 
 on:
   push:
-    branches: ["dev", "documentation/197-autodeploy-of-documentations-and-javadocs-to-github-pages"]
+    branches: ["dev"]
 
 env:
   INSTANCE: 'Writerside/documentation'
