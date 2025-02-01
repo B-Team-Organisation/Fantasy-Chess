@@ -90,12 +90,10 @@ The `CharacterDataModel` acts as a blueprint for `CharacterEntity` creation. Whe
 
 ## Character Definition and Instantiation
 
-- ###  Character Definition
-Before creating a `CharacterEntity`, a `CharacterDataModel` must first be defined. This step involves setting static attributes such as health, attack patterns, movement patterns, and descriptions. The `CharacterDataModel` serves as the foundation for the entity.
-
-- ### Character Instantiation
-Once the `CharacterDataModel` is defined, a `CharacterEntity` can be instantiated. This process involves assigning a unique ID, initializing the character’s current health and position, and associating it with a player.
-
+- ###  Character Definition(Server-Side)
+Before creating a `CharacterEntity`, a `CharacterDataModel` must first be defined on the server. This step involves setting static attributes such as health, attack patterns, movement patterns, and descriptions. The `CharacterDataModel serves as the foundation for the entity and ensures uniformity across all game instances. 
+- ### Character Instantiation(Server-Side)
+Once the `CharacterDataModel` is defined on the server, a `CharacterEntity` can be instantiated for a match. This process involves the server assigning a unique ID, initializing the character’s current health and position, and associating it with a player. The instantiated entities are then sent to the client, ensuring synchronized gameplay between server and client.
 
 ## State Updates
 
