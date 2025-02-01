@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.bteam.fantasychess_client.gwt","l":"GwtLauncher"}];updateSearchResults();

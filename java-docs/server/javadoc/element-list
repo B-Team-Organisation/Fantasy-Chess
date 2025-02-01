@@ -1,0 +1,13 @@
+com.bteam.fantasychess_server
+com.bteam.fantasychess_server.client
+com.bteam.fantasychess_server.client.interceptors
+com.bteam.fantasychess_server.config
+com.bteam.fantasychess_server.controller
+com.bteam.fantasychess_server.data.dto
+com.bteam.fantasychess_server.data.entities
+com.bteam.fantasychess_server.data.mapper
+com.bteam.fantasychess_server.data.repositories
+com.bteam.fantasychess_server.handler
+com.bteam.fantasychess_server.interceptors
+com.bteam.fantasychess_server.service
+com.bteam.fantasychess_server.utils

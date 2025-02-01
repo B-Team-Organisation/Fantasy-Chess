@@ -1,3 +1,0 @@
-# Characters
-
-Start typing here...

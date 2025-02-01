@@ -1,3 +1,0 @@
-# Client
-
-Start typing here...

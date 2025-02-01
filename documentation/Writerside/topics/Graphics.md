@@ -1,3 +1,0 @@
-# Graphics
-
-Start typing here...

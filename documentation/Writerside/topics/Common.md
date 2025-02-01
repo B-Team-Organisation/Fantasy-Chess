@@ -1,3 +1,0 @@
-# Common
-
-Start typing here...

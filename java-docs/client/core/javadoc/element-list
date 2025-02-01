@@ -1,0 +1,10 @@
+com.bteam.fantasychess_client
+com.bteam.fantasychess_client.data.errors
+com.bteam.fantasychess_client.data.mapper
+com.bteam.fantasychess_client.graphics
+com.bteam.fantasychess_client.input
+com.bteam.fantasychess_client.manger
+com.bteam.fantasychess_client.networking
+com.bteam.fantasychess_client.services
+com.bteam.fantasychess_client.ui
+com.bteam.fantasychess_client.utils

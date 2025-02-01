@@ -1,3 +1,0 @@
-# Design
-
-Start typing here...

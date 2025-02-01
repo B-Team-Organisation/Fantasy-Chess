@@ -1,3 +1,0 @@
-rootProject.name = 'fantasychess-server'
-include ':common'
-project(':common').projectDir = new File('../common')
