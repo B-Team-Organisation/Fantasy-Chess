@@ -21,8 +21,14 @@
             <toc-element topic="Json-Writer.md"/>
             <toc-element topic="Packet.md"/>
             <toc-element topic="Events.md"/>
-            <toc-element topic="Models.md"/>
-            <toc-element topic="JsonDTOs.md"/>
+            <toc-element toc-title="Data Structures">
+                <toc-element topic="Models.md"/>
+                <toc-element topic="JsonDTOs.md"/>
+                <toc-element topic="CharacterDataModel.md"/>
+                <toc-element topic="CharacterEntity.md"/>
+            </toc-element>
+            <toc-element toc-title="Services">
+            </toc-element>
             <toc-element topic="Turn-Logic-Service.md"/>
         </toc-element>
         <toc-element toc-title="Client">
