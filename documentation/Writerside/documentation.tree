@@ -30,7 +30,9 @@
                 <toc-element topic="TileModel.md"/>
                 <toc-element topic="AttackDataModel.md"/>
                 <toc-element topic="MovementDataModel.md"/>
+                <toc-element topic="CharacterDataModel.md"/>
                 <toc-element topic="CharacterEntity.md"/>
+                <toc-element topic="CharacterStore.md"/>
             </toc-element>
             <toc-element toc-title="Services">
                 <toc-element topic="PatternService.md"/>
