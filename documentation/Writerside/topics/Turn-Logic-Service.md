@@ -11,19 +11,11 @@ Both these requirements are met with service classes exposing not only a general
 but all important helper methods that the methods are broken down into.
 This way, the server can perform all checks at once, whilst additional features can use individual rules and procedures.
 
-The general procedure is as follows: <br/>
-The client sends all commands to the server. The server takes those commands and adds its own version of the 
-CharacterEntities. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
-and then apply all valid commands and return the modified characters and other processing information described below back to the server.
-
-> Commands are validated with characters stored in the server to filter any client mistakes and to avert any cheating.
-
 ```plantuml
 @startuml
 
 title Turn Logic Classes
 
-' Core Turn Logic Service
 class TurnLogicService {
     + static TurnResult applyCommands()
     + static checkForDeaths()
@@ -32,9 +24,9 @@ class TurnLogicService {
     + static String checkForWinner()
 }
 
-' Stores results after turn application
 class TurnResult {
     + List<CharacterEntity> updatedCharacters
+    ' movementConflicts are broken down so the diagram fits on the page
     + movementConflicts : List<PairNoOrder<\n   MovementDataModel, MovementDataModel\n  >>
     + List<MovementDataModel> validMoves
     + List<AttackDataModel> validAttacks
@@ -46,7 +38,6 @@ class TurnResult {
     + getWinner()
 }
 
-' Command validation service ensuring all commands follow game rules
 class CommandValidatorService { 
     + static ValidationResult validateCommands()
     + static validateMovements()
@@ -61,7 +52,6 @@ class CommandValidatorService {
     + static attackingInsideAttackPattern()
 }
 
-' Stores validation results (valid commands & movement conflicts)
 class ValidationResult {
     + movementConflicts : List<PairNoOrder<\n   MovementDataModel, MovementDataModel\n  >>
     + List<MovementDataModel> validMoves
@@ -79,6 +69,25 @@ CommandValidatorService --> ValidationResult : "Provides Validation Results"
 @enduml
 ```
 
+The general procedure is as follows: <br/>
+The client sends all commands to the server. The server takes those commands and adds its own version of the 
+CharacterEntities. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
+and then apply all valid commands and return the modified characters and other processing information described below back to the server.
+
+This method of the `TurnLogicService` will do all the aforementioned:
+```java
+    public static TurnResult applyCommands(
+            List<MovementDataModel> moves,
+            List<CharacterEntity> characters,
+            List<AttackDataModel> attacks,
+            GridService gridService,
+            String hostID) {
+            ...
+    }
+```
+
+> Commands are validated with characters stored in the server to filter any client mistakes and to avert any cheating.
+
 ```mermaid
 sequenceDiagram
     participant Server
@@ -88,20 +97,24 @@ sequenceDiagram
     participant TurnResult
         
     activate Server    
-    Server ->>TurnLogicService: Send Commands, Characters, GridService and HostId
+    Server ->>TurnLogicService: <<create>>
     activate TurnLogicService
-    
-    TurnLogicService->>CommandValidatorService: Validate Commands
+    Server ->>TurnLogicService: Send Commands, Characters, GridService and HostId
+
+    TurnLogicService->>CommandValidatorService: <<create>>
     activate CommandValidatorService
+    TurnLogicService->>CommandValidatorService: Validate Commands
     
-    CommandValidatorService-->>ValidationResult: Create ValidationResult
+    CommandValidatorService-->>ValidationResult: <<create>>
     activate ValidationResult
+    ValidationResult-->>CommandValidatorService: 
     CommandValidatorService-->>TurnLogicService: Return ValidationResult
     deactivate CommandValidatorService
-    
-    TurnLogicService-->>TurnResult: Create TurnResult
     deactivate ValidationResult
+
+    TurnLogicService-->>TurnResult: <<create>>
     activate TurnResult
+    TurnResult-->>TurnLogicService: 
     TurnLogicService-->>Server: Return TurnResult
     deactivate TurnLogicService
     deactivate TurnResult
@@ -158,6 +171,52 @@ graph LR
 
     validateAttacks --> attackingInsideBounds["attackingInsideBounds()"]
     validateAttacks --> attackingInsideAttackPattern["attackingInsideAttackPattern()"]
+```
+
+For reference, here the most relevant method heads:
+```java
+    public static ValidationResult validateCommands(
+            List<CharacterEntity> characters,
+            List<MovementDataModel> intendedMovements,
+            List<AttackDataModel> intendedAttacks,
+            GridService gridService,
+            String hostID
+    )
+```
+
+```java
+    public static List<MovementDataModel> validateMovements(
+            List<MovementDataModel> intendedMovements,
+            List<CharacterEntity> characters,
+            GridService gridService,
+            String hostID
+    )
+```
+
+```java
+    public static List<AttackDataModel> validateAttacks(
+            List<AttackDataModel> intendedAttacks,
+            List<CharacterEntity> characters,
+            GridService gridService,
+            String hostID
+    )
+```
+
+```java
+    public static List<PairNoOrder<
+            MovementDataModel, MovementDataModel
+        >> opposingPlayersMovingToSamePosition(
+            List<CharacterEntity> characterEntities,
+            List<MovementDataModel> intendedMovements
+    )
+```
+
+```java
+    public static boolean movingInsideMovementPattern(
+            MovementDataModel intendedMovement,
+            CharacterEntity character,
+            String hostID
+    )
 ```
 
 #### 2. Command Application
