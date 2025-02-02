@@ -72,6 +72,173 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
+# Game Screen
+
+<!-- Bild vom Gamescreen: Command Mode -->
+
+![Game Screen in Command Mode w:900px center](assets/img/GameScreenCommandMode.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Zyklus
+
+<!-- Zyklus Diagram -->
+
+![Game Screen Cycle w:900px center](assets/img/ScreenModes.drawio.svg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Initialisation
+
+<!-- Bild vom Gamescreen: Init Mode -->
+
+![Game Screen in Command Mode w:900px center](assets/img/GameScreenInit.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Command Mode
+
+<!-- Bild vom Gamescreen: Command Mode -->
+
+![Game Screen in Command Mode w:900px center](assets/img/GameScreenCommandMode.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Command Menu
+
+<!-- Bild vom Gamescreen: Command Menu -->
+
+![Game Screen in Command Menu w:900px center](assets/img/CommandModeCommands.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Move Command Mode
+
+<!-- Bild vom Gamescreen: Command Mode -->
+
+![Game Screen in Movement Preview Mode w:900px center](assets/img/CommandModeMove.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Attack Command Mode
+
+<!-- Bild vom Gamescreen: Command Mode -->
+
+![Game Screen in Attack Preview Mode w:900px center](assets/img/CommandModeAttack.jpg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Game Screen - Turn Outcome Animation
+
+<!-- Video vom Gamescreen: Turn Outcome Animation -->
+
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/TurnOutcomeAnimation.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# CharacterSprite
+
+## Graphische Representation eines CharacterEntities
+- Methoden zum Rendern
+- Methoden zum Bewegen
+- Methoden zum Überprüfen/Vorantreiben der Animation
+
+![bg right width:300px right](assets/img/stablin-high-res.png)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Turn Result Animation Handler
+
+## Orchestriert Animation eines TurnResults
+- Queue mit Animationsobjekten füllen
+- Animationen abarbeiten
+- Abschluss kommunizieren
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Turn Result Animation Handler
+
+<!-- UML: Animations -->
+
+![Name w:900px center](assets/img/AnimationUMLsimple.svg)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Patterns
+
+## Datenstruktur zum Speichern von Befehlsmustern
+- Einfach zu erstellen und lesen
+- Gut skalierbar
+- Alle vorstellbaren Muster speichern
+- Wiederverwendbar
+
+Umsetzung: Name + String-Representation + Subpattern-Mappings
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Patterns - Beispiel
+
+Name: plus
+<pre>
+String: " x 
+         xxx
+          x "
+</pre>
+Subpattern Mappings: -
+
+![Plus Pattern bg right width:300px](assets/img/plusPatternHighRes.png)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Patterns - Beispiel
+
+Name: bombThrow
+<pre>
+String: " +++ \n
+         ++ ++\n
+         +   +\n
+         ++ ++\n
+          +++ "
+</pre>
+Subpattern Mappings: '+' -> "plus"
+
+![Bombo Pattern bg right width:300px](assets/img/bomboPatternHighRes.png)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
 # Turn Logic
 
 Rundenbasierte Regeln:
