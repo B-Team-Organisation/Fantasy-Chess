@@ -71,7 +71,7 @@ CommandValidatorService --> ValidationResult : "Provides Validation Results"
 
 The general procedure is as follows: <br/>
 The client sends all commands to the server. The server takes those commands and adds its own version of the 
-CharacterEntities. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
+<a href="CharacterEntity.md">CharacterEntities</a>. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
 and then apply all valid commands and return the modified characters and other processing information described below back to the server.
 
 This method of the `TurnLogicService` will do all the aforementioned:
