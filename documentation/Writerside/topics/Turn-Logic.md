@@ -1,4 +1,4 @@
-# Turn Logic Service
+# Turn Logic
 
 The Turn Logic handles the application of all turn-related rules *after the commands have been sent by the players*.
 Thus, its scope is all movement and attack commands as well as the potential result of the game.
@@ -7,7 +7,7 @@ For the application of a turn, the TurnLogic component is structured into two st
 1. Check if commands follow all rules
 2. Apply the commands that are valid
 
-Both these requirements are met with service classes exposing not only a general method to do these steps, 
+Both these requirements are met with utility classes exposing not only a general method to do these steps, 
 but all important helper methods that the methods are broken down into.
 This way, the server can perform all checks at once, whilst additional features can use individual rules and procedures.
 
@@ -16,7 +16,7 @@ This way, the server can perform all checks at once, whilst additional features 
 
 title Turn Logic Classes
 
-class TurnLogicService {
+class TurnLogic {
     + static TurnResult applyCommands()
     + static checkForDeaths()
     + static applyMovement()
@@ -38,7 +38,7 @@ class TurnResult {
     + getWinner()
 }
 
-class CommandValidatorService { 
+class CommandValidator { 
     + static ValidationResult validateCommands()
     + static validateMovements()
     + static validateAttacks()
@@ -62,19 +62,19 @@ class ValidationResult {
 }
 
 ' Relationships between components
-TurnLogicService --> CommandValidatorService : "Validates Commands"
-TurnLogicService --> TurnResult : "Returns Turn Outcome"
-CommandValidatorService --> ValidationResult : "Provides Validation Results"
+TurnLogic --> CommandValidator: "Validates Commands"
+TurnLogic --> TurnResult : "Returns Turn Outcome"
+CommandValidator --> ValidationResult : "Provides Validation Results"
 
 @enduml
 ```
 
 The general procedure is as follows: <br/>
 The client sends all commands to the server. The server takes those commands and adds its own version of the 
-<a href="CharacterEntity.md">CharacterEntities</a>. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
+<a href="CharacterEntity.md">CharacterEntities</a>. These will be given to the `TurnLogic`, which will firstly validate them using the `CommandValidator`,
 and then apply all valid commands and return the modified characters and other processing information described below back to the server.
 
-This method of the `TurnLogicService` will do all the aforementioned:
+This method of the `TurnLogic` will do all the aforementioned:
 ```java
     public static TurnResult applyCommands(
             List<MovementDataModel> moves,
@@ -91,38 +91,38 @@ This method of the `TurnLogicService` will do all the aforementioned:
 ```mermaid
 sequenceDiagram
     participant Server
-    participant TurnLogicService
-    participant CommandValidatorService
+    participant TurnLogic
+    participant CommandValidator
     participant ValidationResult
     participant TurnResult
         
     activate Server    
-    Server ->>TurnLogicService: <<create>>
-    activate TurnLogicService
-    Server ->>TurnLogicService: Send Commands, Characters, GridService and HostId
+    Server ->>TurnLogic: <<create>>
+    activate TurnLogic
+    Server ->>TurnLogic: Send Commands, Characters, GridService and HostId
 
-    TurnLogicService->>CommandValidatorService: <<create>>
-    activate CommandValidatorService
-    TurnLogicService->>CommandValidatorService: Validate Commands
+    TurnLogic->>CommandValidator: <<create>>
+    activate CommandValidator
+    TurnLogic->>CommandValidator: Validate Commands
     
-    CommandValidatorService-->>ValidationResult: <<create>>
+    CommandValidator-->>ValidationResult: <<create>>
     activate ValidationResult
-    ValidationResult-->>CommandValidatorService: 
-    CommandValidatorService-->>TurnLogicService: Return ValidationResult
-    deactivate CommandValidatorService
+    ValidationResult-->>CommandValidator: 
+    CommandValidator-->>TurnLogic: Return ValidationResult
+    deactivate CommandValidator
     deactivate ValidationResult
 
-    TurnLogicService-->>TurnResult: <<create>>
+    TurnLogic-->>TurnResult: <<create>>
     activate TurnResult
-    TurnResult-->>TurnLogicService: 
-    TurnLogicService-->>Server: Return TurnResult
-    deactivate TurnLogicService
+    TurnResult-->>TurnLogic: 
+    TurnLogic-->>Server: Return TurnResult
+    deactivate TurnLogic
     deactivate TurnResult
     deactivate Server
 ```
 
 #### 1. Command Validation
-The `CommandValidatorService` class validates that attack and movement commands follow all game rules.
+The `CommandValidator` class validates that attack and movement commands follow all game rules.
 <procedure title="Turn-Related Game Rules:">
 <anchor id="rule1" name="rule1"></anchor>
 <step>Each Character can only have one command.</step>
@@ -140,18 +140,18 @@ The `CommandValidatorService` class validates that attack and movement commands 
 > This is because it's impossible to know if it will happen in advance, so the players are shown a special animation.
 {style="note"}
 
-To check the rules, the `CommandValidatorService` will not only need the moves and characters, but also a copy of the
+To check the rules, the `CommandValidator` will not only need the moves and characters, but also a copy of the
 `GridService` in use and the PlayerID of the host. The GridService is needed for 
-<a href="Turn-Logic-Service.md#rule2" summary="Characters may not attack or move out of Bounds regarding the grid map">rule 2</a>. The playerID of the host is needed to reverse the Patterns of his opponent
-before checking <a href="Turn-Logic-Service.md#rule3" summary="Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`">rule 3</a>.
+<a href="Turn-Logic.md#rule2" summary="Characters may not attack or move out of Bounds regarding the grid map">rule 2</a>. The playerID of the host is needed to reverse the Patterns of his opponent
+before checking <a href="Turn-Logic.md#rule3" summary="Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`">rule 3</a>.
 
 > Internally, the opposing player moves in the opposite direction to the host. However, the patterns are only stored
 > with the direction of the host in mind. For the opponent, the `PatternService` has a `reversePattern` method.
 {style="note"}
 
 Running the method `validateCommands` will check all the rules. Movement and attack checks are further consolidated as methods, 
-whereas <a href="Turn-Logic-Service.md#rule1" summary="Each Character can only have one command">rule 1</a> 
-and <a href="Turn-Logic-Service.md#rule6" summary="Opposing players may not move to the same position">rule 6</a> are not.
+whereas <a href="Turn-Logic.md#rule1" summary="Each Character can only have one command">rule 1</a> 
+and <a href="Turn-Logic.md#rule6" summary="Opposing players may not move to the same position">rule 6</a> are not.
 The resulting `ValidationResult` object contains a list of `MovementConflict`-Pairs ('bounces') and lists of valid
 moves and valid attacks.
 

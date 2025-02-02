@@ -1,14 +1,13 @@
-package com.bteam.common.services;
+package com.bteam.common.models;
+import com.bteam.common.utils.CommandValidator;
 import com.bteam.common.utils.ListNoOrder;
 import com.bteam.common.utils.PairNoOrder;
-import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.models.AttackDataModel;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents the result of a validation from {@link CommandValidatorService}.
+ * Represents the result of a validation from {@link CommandValidator}.
  * <p>
  * Contains the movement conflicts appearing when two players
  * try to move to the same location as a List of {@link PairNoOrder}

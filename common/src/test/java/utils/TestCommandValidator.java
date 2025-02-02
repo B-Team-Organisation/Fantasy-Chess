@@ -1,10 +1,10 @@
-package services;
+package utils;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.InvalidSubpatternMappingException;
 import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.models.*;
-import com.bteam.common.services.ValidationResult;
+import com.bteam.common.models.ValidationResult;
 import com.bteam.common.utils.ListNoOrder;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static com.bteam.common.services.CommandValidatorService.*;
+import static com.bteam.common.utils.CommandValidator.*;
 import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 import static com.bteam.common.utils.RelationUtils.vectorArrayToPatternString;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestCommandValidatorService {
+class TestCommandValidator {
 
     private final String hostID = "player1";
     private final String opponentID = "player2";

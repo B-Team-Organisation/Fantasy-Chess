@@ -1,7 +1,7 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
 import com.bteam.common.dto.*;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;

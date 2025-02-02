@@ -6,7 +6,7 @@ import com.bteam.common.dto.CommandDTO;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
 import com.bteam.fantasychess_client.Main;
 

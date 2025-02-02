@@ -24,7 +24,7 @@ import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;

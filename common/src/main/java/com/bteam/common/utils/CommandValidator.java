@@ -1,9 +1,10 @@
-package com.bteam.common.services;
+package com.bteam.common.utils;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.*;
-import com.bteam.common.utils.Pair;
-import com.bteam.common.utils.PairNoOrder;
+import com.bteam.common.models.TurnResult;
+import com.bteam.common.models.ValidationResult;
+
 import static com.bteam.common.utils.RelationUtils.groupMovesByPlayerId;
 import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 import static com.bteam.common.utils.RelationUtils.reversePatternServiceArray;
@@ -17,12 +18,12 @@ import java.util.stream.Collectors;
  * @author Jacinto, Albano
  * @version 1.0
  */
-public class CommandValidatorService {
+public class CommandValidator {
 
     /**
      * private constructor for hiding implicit public one
      */
-    private CommandValidatorService() {}
+    private CommandValidator() {}
 
     /**
      * Test all commands for their legality.
