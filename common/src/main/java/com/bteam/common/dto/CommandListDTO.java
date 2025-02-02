@@ -31,15 +31,5 @@ public class CommandListDTO implements JsonDTO {
     public String toJson() {
         return new JsonWriter().writeList("commands", getCommands())
             .and().writeKeyValue("gameId", getGameId()).toString();
-
-
-        /*StringBuilder sb = new StringBuilder();
-        sb.append("{\"commands\": [");
-        for (CommandDTO commandDTO : getCommands()) sb.append(commandDTO.toJson()).append(",");
-        if (!getCommands().isEmpty()) sb.deleteCharAt(sb.length() - 1);
-        sb.append("],");
-        sb.append("\"gameId\": \"").append(getGameId()).append("\"");
-        sb.append("}");
-        return sb.toString();*/
     }
 }

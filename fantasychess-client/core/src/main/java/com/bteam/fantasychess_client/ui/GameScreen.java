@@ -63,18 +63,24 @@ public class GameScreen extends ScreenAdapter {
     private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
-
+    private Stage stage;
     private final OrthographicCamera uiCamera;
     private final ExtendViewport uiViewport;
     private final Skin skin;
-    private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
-    private final BitmapFont damageFont;
-    private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
-    private final List<CharacterSprite> characterSprites = new ArrayList<>();
-    private Stage stage;
-    private TextButton readyButton;
     private TextureAtlas atlas;
     private SpriteBatch batch;
+
+    private TileMathService mathService;
+    private MapInputAdapter mapInputProcessor;
+
+    private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
+    private final List<CharacterSprite> characterSprites = new ArrayList<>();
+    private TurnResultAnimationHandler animationHandler;
+
+    private final BitmapFont damageFont;
+    private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
+
+    private TextButton readyButton;
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private TiledMapTileLayer startRowsLayer;
@@ -82,13 +88,10 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
-    private TileMathService mathService;
     private Vector2D focussedTile;
 
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
-    private MapInputAdapter mapInputProcessor;
-    private TurnResultAnimationHandler animationHandler;
     private Dialog waitingDialog;
 
     /**
@@ -251,28 +254,7 @@ public class GameScreen extends ScreenAdapter {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
-            if (animationHandler == null) {
-                TurnResult turnResult = Main.getGameStateService().getTurnResult();
-                if (turnResult.getValidMoves().isEmpty() &&
-                    turnResult.getMovementConflicts().isEmpty() &&
-                    turnResult.getValidAttacks().isEmpty()) {
-                    mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
-                    return;
-                }
-
-                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
-                animationHandler.startAnimation();
-            }
-
-            animationHandler.progressAnimation();
-
-            if (animationHandler.isDoneWithAnimation()) {
-                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
-                animationHandler = null;
-                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
-            }
-        }
+        handleAnimation();
 
         gameViewport.apply();
 
@@ -312,6 +294,18 @@ public class GameScreen extends ScreenAdapter {
             batch.setColor(255, 255, 255, 1f);
         }
 
+        handleDamageNumbers();
+
+        batch.end();
+        batch.disableBlending();
+
+        uiViewport.apply();
+
+        stage.act();
+        stage.draw();
+    }
+
+    private void handleDamageNumbers() {
         if (damagePreviewValues.isEmpty()) {
             Map<Vector2D, Integer> finalDamageValues = new HashMap<>();
             for (Map<Vector2D, Integer> damageValues : Main.getCommandManagementService().getCommandDamageMappings().values()) {
@@ -341,14 +335,31 @@ public class GameScreen extends ScreenAdapter {
                 damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
             }
         }
+    }
 
-        batch.end();
-        batch.disableBlending();
+    private void handleAnimation() {
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
+            if (animationHandler == null) {
+                TurnResult turnResult = Main.getGameStateService().getTurnResult();
+                if (turnResult.getValidMoves().isEmpty() &&
+                    turnResult.getMovementConflicts().isEmpty() &&
+                    turnResult.getValidAttacks().isEmpty()) {
+                    mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                    return;
+                }
 
-        uiViewport.apply();
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
+                animationHandler.startAnimation();
+            }
 
-        stage.act();
-        stage.draw();
+            animationHandler.progressAnimation();
+
+            if (animationHandler.isDoneWithAnimation()) {
+                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                animationHandler = null;
+                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
+            }
+        }
     }
 
     private TextButton createReadyButton() {
@@ -571,9 +582,7 @@ public class GameScreen extends ScreenAdapter {
                     Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(), focussedTile);
 
                     TiledMapTileLayer.Cell previewCell = new TiledMapTileLayer.Cell();
-
                     TextureRegion region = atlas.findRegion("special_tiles/filled-red");
-
                     previewCell.setTile(new StaticTiledMapTile(region));
 
                     damagePreviewValues.clear();
