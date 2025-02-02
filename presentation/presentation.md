@@ -9,7 +9,7 @@ footer: B-Team
 
 A PvP multiplayer browser game.
 
-> Marc Matija, Jacinto Schwarzwälder, Lukas Walker, Albano, Dania, Adnan Benis
+> Marc Matija, Jacinto Schwarzwälder, Lukas Walker, Albano Vukelaj, Dania Anwar, Adnan Bennis
 
 ---
 
@@ -72,6 +72,22 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
+# Turn Logic
+
+Rundenbasierte Regeln:
+
+- Jeder Charakter darf nur einen Befehl (Angriff oder Movement) haben
+- Befehle dürfen nicht außerhalb der Map liegen
+- Befehle müssen sich an die Movement / Attack Patterns der Charaktere halten -> Charaktere vom Server als anticheat
+- Charaktere dürfen sich nicht dahin bewegen, wo andere Charaktere sind<br />-> Auch nicht wenn der sich wegbewegt
+- Mehrere Spieler dürfen sich nicht an die gleiche Stelle bewegen
+- Eigener Check für Charktere gegnerischer Spieler -> "Bounces"
+
+<!--Ggf. Gif von Bounces oder so-->
+<!--Ggf. Architekturmodell oder so-->
+
+---
+
 # Qualität
 
 ---
@@ -81,3 +97,4 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Zukunft
+

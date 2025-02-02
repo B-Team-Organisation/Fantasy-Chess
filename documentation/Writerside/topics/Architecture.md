@@ -7,7 +7,7 @@ The Project has been layed out to feature 3 Main components.
 - [Server](Server.md)
 
 The [Commons](Common.md) project is a plain Java Project without dependencies, which handles logic that is shared 
-between client and server. This includes, but is not limited to the [Turn Logic Service](Turn-Logic-Service.md),
+between client and server. This includes, but is not limited to the [Turn Logic](Turn-Logic.md),
 [JsonDTOs](JsonDTOs.md) and [Models](Models.md).
 
 The [Client](Client.md) is a LibGDX Project that is exported to JavaScript and hosted in the browser, where LibGDX 

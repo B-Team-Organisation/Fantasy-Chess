@@ -1,6 +1,6 @@
 package utils;
 
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.ListNoOrder;
 
 public class TurnResultNoOrder {
