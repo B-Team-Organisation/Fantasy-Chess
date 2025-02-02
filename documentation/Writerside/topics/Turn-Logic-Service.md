@@ -173,7 +173,7 @@ graph LR
     validateAttacks --> attackingInsideAttackPattern["attackingInsideAttackPattern()"]
 ```
 
-For reference, here the most relevant method heads:
+For reference, here are the most relevant method heads:
 ```java
     public static ValidationResult validateCommands(
             List<CharacterEntity> characters,
