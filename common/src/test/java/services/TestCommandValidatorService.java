@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static com.bteam.common.services.CommandValidator.*;
+import static com.bteam.common.services.CommandValidatorService.*;
 import static com.bteam.common.utils.RelationUtils.getIdCharacterMap;
 import static com.bteam.common.utils.RelationUtils.vectorArrayToPatternString;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestCommandValidator {
+class TestCommandValidatorService {
 
     private final String hostID = "player1";
     private final String opponentID = "player2";

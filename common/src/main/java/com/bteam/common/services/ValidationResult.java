@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents the result of a validation from {@link CommandValidator}.
+ * Represents the result of a validation from {@link CommandValidatorService}.
  * <p>
  * Contains the movement conflicts appearing when two players
  * try to move to the same location as a List of {@link PairNoOrder}

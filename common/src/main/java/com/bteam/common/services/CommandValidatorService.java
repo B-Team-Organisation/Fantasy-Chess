@@ -1,8 +1,6 @@
 package com.bteam.common.services;
 
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.exceptions.InvalidSubpatternMappingException;
-import com.bteam.common.exceptions.PatternShapeInvalidException;
 import com.bteam.common.models.*;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
@@ -19,12 +17,12 @@ import java.util.stream.Collectors;
  * @author Jacinto, Albano
  * @version 1.0
  */
-public class CommandValidator {
+public class CommandValidatorService {
 
     /**
      * private constructor for hiding implicit public one
      */
-    private CommandValidator() {}
+    private CommandValidatorService() {}
 
     /**
      * Test all commands for their legality.
