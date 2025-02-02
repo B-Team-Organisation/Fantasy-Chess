@@ -129,7 +129,7 @@ The `CommandValidator` class validates that attack and movement commands follow 
 <anchor id="rule2" name="rule2"></anchor>
 <step>Characters may not attack or move out of bounds regarding the grid map.</step>
 <anchor id="rule3" name="rule3"></anchor>
-<step>Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`.</step>
+<step>Characters may not move or attack different to the movement/attack pattern as defined by their <a href="CharacterDataModel.md">CharacterDataModel</a></step>
 <step>A character may not move to where another character already is (even if they are set to move away during that turn).</step>
 <step>Multiple characters of the same player may not move to the same position.</step>
 <anchor id="rule6" name="rule6"></anchor>
@@ -141,8 +141,8 @@ The `CommandValidator` class validates that attack and movement commands follow 
 {style="note"}
 
 To check the rules, the `CommandValidator` will not only need the moves and characters, but also a copy of the
-`GridService` in use and the PlayerID of the host. The GridService is needed for 
-<a href="Turn-Logic.md#rule2" summary="Characters may not attack or move out of Bounds regarding the grid map">rule 2</a>. The playerID of the host is needed to reverse the Patterns of his opponent
+[](GridService.md) in use and the PlayerID String of the host. The GridService is needed for 
+<a href="Turn-Logic.md#rule2" summary="Characters may not attack or move out of Bounds regarding the grid map">rule 2</a>. The PlayerID of the host is needed to reverse the [](Patterns.md) of his opponent
 before checking <a href="Turn-Logic.md#rule3" summary="Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`">rule 3</a>.
 
 > Internally, the opposing player moves in the opposite direction to the host. However, the patterns are only stored
@@ -152,7 +152,7 @@ before checking <a href="Turn-Logic.md#rule3" summary="Characters may not move o
 Running the method `validateCommands` will check all the rules. Movement and attack checks are further consolidated as methods, 
 whereas <a href="Turn-Logic.md#rule1" summary="Each Character can only have one command">rule 1</a> 
 and <a href="Turn-Logic.md#rule6" summary="Opposing players may not move to the same position">rule 6</a> are not.
-The resulting `ValidationResult` object contains a list of `MovementConflict`-Pairs ('bounces') and lists of valid
+The resulting `ValidationResult` object contains a list of conflicting [MovementDataModel](MovementDataModel.md)-Pairs ('bounces') and lists of valid
 moves and valid attacks.
 
 ```mermaid
@@ -225,6 +225,6 @@ there is a check for characters with no remaining health and if there is a winne
 
 The `applyCommands` method is responsible for the aforementioned and returns a `TurnResult` object. This object stores
 the state of all characters after command application, movement conflicts, valid movements and attacks from
-the `ValidationResult` as well as the `PlayerId` of the winner or `null`, if there is none.
+the `ValidationResult` as well as the `PlayerID` of the winner or `null`, if there is none.
 
 > A draw can be ascertained if there are no characters left and the winner is still `null`.
