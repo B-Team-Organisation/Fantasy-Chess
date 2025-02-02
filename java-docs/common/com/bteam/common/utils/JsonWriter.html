@@ -91,6 +91,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">JsonWriter</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
+<div class="block">A utility class for constructing JSON strings in a structured manner.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -103,7 +104,9 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">JsonWriter</a>()</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block">Initializes a new instance of <code>JsonWriter</code> with an opening curly brace.</div>
+</div>
 </div>
 </section>
 </li>
@@ -120,23 +123,33 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#and()" class="member-name-link">and</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Appends a comma to separate JSON entries.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toString()" class="member-name-link">toString</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the generated JSON string, ensuring it is properly closed with a closing curly brace.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#writeKeyValue(java.lang.String,T)" class="member-name-link">writeKeyValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  T&nbsp;object)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Writes a key-value pair to the JSON output.</div>
+</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#writeList(java.lang.String,java.util.List)" class="member-name-link">writeList</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;&nbsp;objects)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Writes a JSON array with the given key and list of objects.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T,<wbr>
 U&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#writeMap(java.lang.String,java.util.Map)" class="member-name-link">writeMap</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;T,<wbr>U&gt;&nbsp;map)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Writes a JSON object from a map, where each entry represents a key-value pair.</div>
+</div>
 </div>
 </div>
 </div>
@@ -158,6 +171,7 @@ U&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">Jso
 <section class="detail" id="&lt;init&gt;()">
 <h3>JsonWriter</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">JsonWriter</span>()</div>
+<div class="block">Initializes a new instance of <code>JsonWriter</code> with an opening curly brace.</div>
 </section>
 </li>
 </ul>
@@ -173,6 +187,16 @@ U&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">Jso
 <h3>writeList</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></span>&nbsp;<span class="element-name">writeList</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;&nbsp;objects)</span></div>
+<div class="block">Writes a JSON array with the given key and list of objects.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - The type of objects in the list.</dd>
+<dt>Parameters:</dt>
+<dd><code>key</code> - The key for the JSON array.</dd>
+<dd><code>objects</code> - The list of objects to be included in the array.</dd>
+<dt>Returns:</dt>
+<dd>The current <code>JsonWriter</code> instance.</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -180,6 +204,16 @@ U&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">Jso
 <h3 id="writeKeyValue(java.lang.String,java.lang.Object)">writeKeyValue</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></span>&nbsp;<span class="element-name">writeKeyValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  T&nbsp;object)</span></div>
+<div class="block">Writes a key-value pair to the JSON output.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - The type of the value.</dd>
+<dt>Parameters:</dt>
+<dd><code>key</code> - The key for the JSON entry.</dd>
+<dd><code>object</code> - The value associated with the key.</dd>
+<dt>Returns:</dt>
+<dd>The current <code>JsonWriter</code> instance.</dd>
+</dl>
 </section>
 </li>
 <li>
@@ -188,21 +222,40 @@ U&gt;&nbsp;<a href="JsonWriter.html" title="class in com.bteam.common.utils">Jso
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T,<wbr>
 U&gt;</span>&nbsp;<span class="return-type"><a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></span>&nbsp;<span class="element-name">writeMap</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;key,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;T,<wbr>U&gt;&nbsp;map)</span></div>
+<div class="block">Writes a JSON object from a map, where each entry represents a key-value pair.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - The type of keys in the map.</dd>
+<dd><code>U</code> - The type of values in the map.</dd>
+<dt>Parameters:</dt>
+<dd><code>key</code> - The key for the JSON object.</dd>
+<dd><code>map</code> - The map containing key-value pairs.</dd>
+<dt>Returns:</dt>
+<dd>The current <code>JsonWriter</code> instance.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="and()">
 <h3>and</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="JsonWriter.html" title="class in com.bteam.common.utils">JsonWriter</a></span>&nbsp;<span class="element-name">and</span>()</div>
+<div class="block">Appends a comma to separate JSON entries.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The current <code>JsonWriter</code> instance.</dd>
+</dl>
 </section>
 </li>
 <li>
 <section class="detail" id="toString()">
 <h3>toString</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">toString</span>()</div>
+<div class="block">Returns the generated JSON string, ensuring it is properly closed with a closing curly brace.</div>
 <dl class="notes">
 <dt>Overrides:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html#toString()" title="class or interface in java.lang" class="external-link">toString</a></code>&nbsp;in class&nbsp;<code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></code></dd>
+<dt>Returns:</dt>
+<dd>The constructed JSON string.</dd>
 </dl>
 </section>
 </li>

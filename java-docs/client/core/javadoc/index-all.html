@@ -97,7 +97,9 @@ loadScripts(document, 'script');</script>
 <h2 class="title" id="I:C">C</h2>
 <dl class="index">
 <dt><a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html#cancelled()" class="member-name-link">cancelled()</a> - Method in class com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html" title="class in com.bteam.fantasychess_client.networking">HttpResponseCallbackListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Handles a cancelled HTTP request, logs the cancellation, and invokes the cancellation consumer if available.</div>
+</dd>
 <dt><a href="com/bteam/fantasychess_client/data/mapper/CharacterEntityMapper.html" class="type-name-link" title="class in com.bteam.fantasychess_client.data.mapper">CharacterEntityMapper</a> - Class in <a href="com/bteam/fantasychess_client/data/mapper/package-summary.html">com.bteam.fantasychess_client.data.mapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bteam/fantasychess_client/data/mapper/CharacterEntityMapper.html#%3Cinit%3E()" class="member-name-link">CharacterEntityMapper()</a> - Constructor for class com.bteam.fantasychess_client.data.mapper.<a href="com/bteam/fantasychess_client/data/mapper/CharacterEntityMapper.html" title="class in com.bteam.fantasychess_client.data.mapper">CharacterEntityMapper</a></dt>
@@ -219,7 +221,9 @@ loadScripts(document, 'script');</script>
 <h2 class="title" id="I:F">F</h2>
 <dl class="index">
 <dt><a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html#failed(java.lang.Throwable)" class="member-name-link">failed(Throwable)</a> - Method in class com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html" title="class in com.bteam.fantasychess_client.networking">HttpResponseCallbackListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Handles a failed HTTP request, logs the failure, and invokes the failure consumer if available.</div>
+</dd>
 <dt><a href="com/bteam/fantasychess_client/data/mapper/CharacterEntityMapper.html#fromDTO(java.lang.String)" class="member-name-link">fromDTO(String)</a> - Static method in class com.bteam.fantasychess_client.data.mapper.<a href="com/bteam/fantasychess_client/data/mapper/CharacterEntityMapper.html" title="class in com.bteam.fantasychess_client.data.mapper">CharacterEntityMapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bteam/fantasychess_client/data/mapper/PlayerInfoMapper.html#fromDTO(java.lang.String)" class="member-name-link">fromDTO(String)</a> - Static method in class com.bteam.fantasychess_client.data.mapper.<a href="com/bteam/fantasychess_client/data/mapper/PlayerInfoMapper.html" title="class in com.bteam.fantasychess_client.data.mapper">PlayerInfoMapper</a></dt>
@@ -399,15 +403,21 @@ loadScripts(document, 'script');</script>
 <dt><a href="com/bteam/fantasychess_client/networking/PacketHandler.html#handle(java.lang.String)" class="member-name-link">handle(String)</a> - Method in interface com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/PacketHandler.html" title="interface in com.bteam.fantasychess_client.networking">PacketHandler</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html#handleHttpResponse(com.badlogic.gdx.Net.HttpResponse)" class="member-name-link">handleHttpResponse(Net.HttpResponse)</a> - Method in class com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html" title="class in com.bteam.fantasychess_client.networking">HttpResponseCallbackListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Handles a successful HTTP response by passing it to the response consumer.</div>
+</dd>
 <dt><a href="com/bteam/fantasychess_client/networking/WebSocketService.html#handlePacket(java.lang.String)" class="member-name-link">handlePacket(String)</a> - Method in class com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/WebSocketService.html" title="class in com.bteam.fantasychess_client.networking">WebSocketService</a></dt>
 <dd>
 <div class="block">Takes the arrived packet in, reads it's ID and calls it's corresponding handler function</div>
 </dd>
 <dt><a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html" class="type-name-link" title="class in com.bteam.fantasychess_client.networking">HttpResponseCallbackListener</a> - Class in <a href="com/bteam/fantasychess_client/networking/package-summary.html">com.bteam.fantasychess_client.networking</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">A callback listener for handling HTTP responses, failures, and cancellations.</div>
+</dd>
 <dt><a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html#%3Cinit%3E(java.util.function.Consumer,java.util.function.Consumer,java.lang.Runnable)" class="member-name-link">HttpResponseCallbackListener(Consumer&lt;Net.HttpResponse&gt;, Consumer&lt;Throwable&gt;, Runnable)</a> - Constructor for class com.bteam.fantasychess_client.networking.<a href="com/bteam/fantasychess_client/networking/HttpResponseCallbackListener.html" title="class in com.bteam.fantasychess_client.networking">HttpResponseCallbackListener</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Constructs an <code>HttpResponseCallbackListener</code> with the provided consumers for handling responses.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:I">I</h2>
 <dl class="index">
