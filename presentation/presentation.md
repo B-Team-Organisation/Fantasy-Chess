@@ -18,6 +18,8 @@ A PvP multiplayer browser game.
 - Kombination aus der chaotischen Natur von Diplomacy mit der schnellen Strategie von Schach
 - Größe Überraschungen und höhere schwierigkeit 
 
+<!-- _something funny here idk_ -->
+
 ![bg right:30%](assets/img/pitch-chess-diplomacy.png)
 
 <!-- _footer: "B-Team: Marc Matija"-->
@@ -135,13 +137,51 @@ Rundenbasierte Regeln:
 
 ---
 
+# Architecture
+
+![architecture.drawio.svg](../documentation/Writerside/img/architecture/architecture.drawio.svg)
+
+---
+
 # Auth
 
-![width:600px](assets/img/auth-sequence.svg)
+![width:600px bg left](assets/img/auth-sequence.svg)
+
+- Client 
 
 > Für nähere infos: [`Authentication`](https://b-team-organisation.github.io/Fantasy-Chess/authentication.html)
 
 <!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+# [Token Service](https://b-team-organisation.github.io/Fantasy-Chess/services.html#token-service)
+
+- Generiert Single-Use Token
+- speichert diesen im `TokenRepository`
+- Validiert Token
+- Invalidiert Token
+
+**Token Format**: `V3D5qNVl8IpP2y_qEgQ24`
+- 14 Character Base64URL String mit CRC8 Checksum
+
+<!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+## [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
+
+Simple Json struktur, welche die gesendeten daten in `data` und die id des packets in `id` angibt
+
+```json
+{
+  // strukturiert nach TOPIC_PACKET
+  "id": "<PACKETID>", 
+  "data" : {}
+}
+```
+
+> Serialisiert mit [JsonWriter](https://b-team-organisation.github.io/Fantasy-Chess/json-writer.html)
 
 ---
 
@@ -165,6 +205,10 @@ public interface PacketHandler {
 **[Player Packet Handler](https://b-team-organisation.github.io/Fantasy-Chess/packet-handler.html#player-packet-handler):** Packet Pattern: `PLAYER_`
 
 <!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+![bg 60%](assets/img/packet-handler-diagram.svg)
 
 ---
 
