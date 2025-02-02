@@ -28,12 +28,13 @@ A PvP multiplayer browser game.
 2. Pitch <code>Marc</code>
 3. Projektorganisation <code>Jacinto</code>
 3.1 Scrum + Sprintstruktur <code>Jacinto</code>
-3.2 Technologien <code>Lukas</code> 
+3.2 Technologien <code>Adnan</code> 
 4. "Spiel an sich"
-4.a Spielablauf <code>Adnan</code> 
+4.a Screens <code>Dania</code> 
 4.b Hauptmenu <code>Albano</code> 
-4.c Spielzyklus <code>Lukas</code> 
-4.d Patterns <code>Lukas</code> 
+4.c GameScreen + Spielzyklus <code>Lukas</code> 
+4.d CharacterEntities + Animationen <code>Lukas</code> 
+4.dd Patterns <code>Lukas</code>
 4.e Interaktion mit dem Spiel (Mausumrechnung) <code>Jacinto</code> 
 4.f Turn Logic + Validation <code>Albano</code> + <code>Jacinto</code> 
 4.w Character Integration <code>daniiaaa</code> 
@@ -50,21 +51,27 @@ Z. Zukunft <code>Wer noch was braucht</code>
 -->
 
 ---
+
 # Introduction
 
 ---
+
 # Projektorganisation
 
 ---
+
 # Scrum
 
 ---
-# Spiel
 
----
 # Technologie
 
 ---
+
+# Spiel an sich
+
+---
+
 # Turn Logic
 
 Rundenbasierte Regeln:
@@ -80,10 +87,14 @@ Rundenbasierte Regeln:
 <!--Ggf. Architekturmodell oder so-->
 
 ---
+
 # Qualität
 
 ---
+
 # Doku
 
 ---
+
 # Zukunft
+
