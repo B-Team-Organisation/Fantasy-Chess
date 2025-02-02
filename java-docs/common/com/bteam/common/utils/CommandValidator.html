@@ -5,7 +5,7 @@
 <title>CommandValidator (common 1.0-SNAPSHOT API)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="description" content="declaration: package: com.bteam.common.services, class: CommandValidator">
+<meta name="description" content="declaration: package: com.bteam.common.utils, class: CommandValidator">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -81,11 +81,11 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.bteam.common.services</a></div>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.bteam.common.utils</a></div>
 <h1 title="Class CommandValidator" class="title">Class CommandValidator</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.bteam.common.services.CommandValidator</div>
+<div class="inheritance">com.bteam.common.utils.CommandValidator</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
@@ -132,7 +132,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Test if a character is moving outside their allowed movement patterns</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#opposingPlayersMovingToSamePosition(java.util.List,java.util.List)" class="member-name-link">opposingPlayersMovingToSamePosition</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characterEntities,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -146,7 +146,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Check the validity of attacks and only return those that are legal <br/></div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="ValidationResult.html" title="class in com.bteam.common.services">ValidationResult</a></code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../models/ValidationResult.html" title="class in com.bteam.common.models">ValidationResult</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#validateCommands(java.util.List,java.util.List,java.util.List,com.bteam.common.models.GridService,java.lang.String)" class="member-name-link">validateCommands</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characters,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;intendedAttacks,
@@ -175,7 +175,7 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Test if multiple characters are moving to the same position.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="../utils/Pair.html" title="class in com.bteam.common.utils">Pair</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Pair.html" title="class in com.bteam.common.utils">Pair</a><wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#validateSingleCommandsOnly(java.util.List,java.util.List)" class="member-name-link">validateSingleCommandsOnly</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;intendedAttacks)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
@@ -201,7 +201,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="validateCommands(java.util.List,java.util.List,java.util.List,com.bteam.common.models.GridService,java.lang.String)">
 <h3>validateCommands</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="ValidationResult.html" title="class in com.bteam.common.services">ValidationResult</a></span>&nbsp;<span class="element-name">validateCommands</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characters,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../models/ValidationResult.html" title="class in com.bteam.common.models">ValidationResult</a></span>&nbsp;<span class="element-name">validateCommands</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characters,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;intendedAttacks,
  <a href="../models/GridService.html" title="class in com.bteam.common.models">GridService</a>&nbsp;gridService,
@@ -220,7 +220,7 @@ loadScripts(document, 'script');</script>
 <dd><code>gridService</code> - gridService containing the playing field</dd>
 <dd><code>hostID</code> - the playerID of the host</dd>
 <dt>Returns:</dt>
-<dd><a href="TurnResult.html" title="class in com.bteam.common.services"><code>TurnResult</code></a> with unaltered characters but only
+<dd><a href="../models/TurnResult.html" title="class in com.bteam.common.models"><code>TurnResult</code></a> with unaltered characters but only
  valid movements and attacks as well as a list of movement conflicts
  between players</dd>
 </dl>
@@ -283,7 +283,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="validateSingleCommandsOnly(java.util.List,java.util.List)">
 <h3>validateSingleCommandsOnly</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="../utils/Pair.html" title="class in com.bteam.common.utils">Pair</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">validateSingleCommandsOnly</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Pair.html" title="class in com.bteam.common.utils">Pair</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">validateSingleCommandsOnly</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;intendedAttacks)</span></div>
 <div class="block">Makes sure there aren't multiple commands to the same entity.
  <p>
@@ -300,7 +300,7 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="opposingPlayersMovingToSamePosition(java.util.List,java.util.List)">
 <h3>opposingPlayersMovingToSamePosition</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">opposingPlayersMovingToSamePosition</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characterEntities,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">opposingPlayersMovingToSamePosition</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities">CharacterEntity</a>&gt;&nbsp;characterEntities,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;intendedMovements)</span></div>
 <div class="block">Test if opposing players are moving their characters to the same position.
  <p>
@@ -311,7 +311,7 @@ loadScripts(document, 'script');</script>
 <dd><code>characterEntities</code> - The character entities (for player reference)</dd>
 <dd><code>intendedMovements</code> - All movements from two players</dd>
 <dt>Returns:</dt>
-<dd>Movement conflicts in the form of <a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils"><code>PairNoOrder</code></a>'s of <a href="../models/MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s</dd>
+<dd>Movement conflicts in the form of <a href="PairNoOrder.html" title="class in com.bteam.common.utils"><code>PairNoOrder</code></a>'s of <a href="../models/MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s</dd>
 </dl>
 </section>
 </li>

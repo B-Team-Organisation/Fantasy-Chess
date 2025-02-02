@@ -5,7 +5,7 @@
 <title>ValidationResult (common 1.0-SNAPSHOT API)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="description" content="declaration: package: com.bteam.common.services, class: ValidationResult">
+<meta name="description" content="declaration: package: com.bteam.common.models, class: ValidationResult">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../../../../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../../../../script-dir/jquery-ui.min.css" title="Style">
@@ -81,23 +81,23 @@ loadScripts(document, 'script');</script>
 <main role="main">
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
-<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.bteam.common.services</a></div>
+<div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">com.bteam.common.models</a></div>
 <h1 title="Class ValidationResult" class="title">Class ValidationResult</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">java.lang.Object</a>
-<div class="inheritance">com.bteam.common.services.ValidationResult</div>
+<div class="inheritance">com.bteam.common.models.ValidationResult</div>
 </div>
 <section class="class-description" id="class-description">
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">ValidationResult</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Represents the result of a validation from <a href="CommandValidator.html" title="class in com.bteam.common.services"><code>CommandValidator</code></a>.
+<div class="block">Represents the result of a validation from <a href="../utils/CommandValidator.html" title="class in com.bteam.common.utils"><code>CommandValidator</code></a>.
  <p>
  Contains the movement conflicts appearing when two players
  try to move to the same location as a List of <a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils"><code>PairNoOrder</code></a>
- of clashing <a href="../models/MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s, as well as a list
+ of clashing <a href="MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s, as well as a list
  of all valid movements and attacks, represented by Lists of
- <a href="../models/MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s and <a href="../models/AttackDataModel.html" title="class in com.bteam.common.models"><code>AttackDataModel</code></a>'s
+ <a href="MovementDataModel.html" title="class in com.bteam.common.models"><code>MovementDataModel</code></a>'s and <a href="AttackDataModel.html" title="class in com.bteam.common.models"><code>AttackDataModel</code></a>'s
  respectively.</div>
 </section>
 <section class="summary">
@@ -110,9 +110,9 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.util.List,java.util.List,java.util.List)" class="member-name-link">ValidationResult</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;&nbsp;movementConflicts,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;validMoves,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;validAttacks)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.util.List,java.util.List,java.util.List)" class="member-name-link">ValidationResult</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;&nbsp;movementConflicts,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;validMoves,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;validAttacks)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Create a new ValidationResult object.</div>
 </div>
@@ -133,13 +133,13 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>boolean</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#equals(java.lang.Object)" class="member-name-link">equals</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;o)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getMovementConflicts()" class="member-name-link">getMovementConflicts</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getValidAttacks()" class="member-name-link">getValidAttacks</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getValidMoves()" class="member-name-link">getValidMoves</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
@@ -168,9 +168,9 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(java.util.List,java.util.List,java.util.List)">
 <h3>ValidationResult</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ValidationResult</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;&nbsp;movementConflicts,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;validMoves,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;validAttacks)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ValidationResult</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;&nbsp;movementConflicts,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&nbsp;validMoves,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;&nbsp;validAttacks)</span></div>
 <div class="block">Create a new ValidationResult object.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -191,19 +191,19 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="getMovementConflicts()">
 <h3>getMovementConflicts</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">getMovementConflicts</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../utils/PairNoOrder.html" title="class in com.bteam.common.utils">PairNoOrder</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>,<wbr><a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;&gt;</span>&nbsp;<span class="element-name">getMovementConflicts</span>()</div>
 </section>
 </li>
 <li>
 <section class="detail" id="getValidMoves()">
 <h3>getValidMoves</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;</span>&nbsp;<span class="element-name">getValidMoves</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="MovementDataModel.html" title="class in com.bteam.common.models">MovementDataModel</a>&gt;</span>&nbsp;<span class="element-name">getValidMoves</span>()</div>
 </section>
 </li>
 <li>
 <section class="detail" id="getValidAttacks()">
 <h3>getValidAttacks</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="../models/AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;</span>&nbsp;<span class="element-name">getValidAttacks</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="AttackDataModel.html" title="class in com.bteam.common.models">AttackDataModel</a>&gt;</span>&nbsp;<span class="element-name">getValidAttacks</span>()</div>
 </section>
 </li>
 <li>
