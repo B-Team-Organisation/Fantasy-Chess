@@ -1,16 +1,17 @@
-package com.bteam.common.services;
+package com.bteam.common.utils;
 
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.GridService;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.utils.Pair;
+import com.bteam.common.models.TurnResult;
+import com.bteam.common.models.ValidationResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bteam.common.services.CommandValidator.validateCommands;
+import static com.bteam.common.utils.CommandValidator.validateCommands;
 import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
 
 /**
@@ -22,9 +23,9 @@ import static com.bteam.common.utils.RelationUtils.getCharacterWithId;
  * @author Albano, Jacinto
  * @version 1.0
  */
-public class TurnLogicService {
+public class TurnLogic {
 
-    private TurnLogicService() {
+    private TurnLogic() {
     }
 
     /**
