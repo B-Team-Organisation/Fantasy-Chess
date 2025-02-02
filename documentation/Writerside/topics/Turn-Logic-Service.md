@@ -13,15 +13,103 @@ This way, the server can perform all checks at once, whilst additional features 
 
 The general procedure is as follows: <br/>
 The client sends all commands to the server. The server takes those commands and adds its own version of the 
-CharacterEntities. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidator` service,
+CharacterEntities. These will be given to the `TurnLogicService`, which will firstly validate them using the `CommandValidatorService`,
 and then apply all valid commands and return the modified characters and other processing information described below back to the server.
 
 > Commands are validated with characters stored in the server to filter any client mistakes and to avert any cheating.
 
-**UML Diagram for Classes here**
+```plantuml
+@startuml
+
+title Turn Logic Classes
+
+' Core Turn Logic Service
+class TurnLogicService {
+    + static TurnResult applyCommands()
+    + static checkForDeaths()
+    + static applyMovement()
+    + static applyAttacks()
+    + static String checkForWinner()
+}
+
+' Stores results after turn application
+class TurnResult {
+    + List<CharacterEntity> updatedCharacters
+    + movementConflicts : List<PairNoOrder<\n   MovementDataModel, MovementDataModel\n  >>
+    + List<MovementDataModel> validMoves
+    + List<AttackDataModel> validAttacks
+    + String winner
+    + getUpdatedCharacters()
+    + getMovementConflicts()
+    + getValidMoves()
+    + getValidAttacks()
+    + getWinner()
+}
+
+' Command validation service ensuring all commands follow game rules
+class CommandValidatorService { 
+    + static ValidationResult validateCommands()
+    + static validateMovements()
+    + static validateAttacks()
+    + static validateSingleCommandsOnly()
+    + static opposingPlayersMovingToSamePosition()
+    + static movingInsideMovementPattern()
+    + static movingInsideBounds()
+    + static validateMovingToSamePosition()
+    + static validateMovingToOccupiedPosition()
+    + static attackInsideBounds()
+    + static attackingInsideAttackPattern()
+}
+
+' Stores validation results (valid commands & movement conflicts)
+class ValidationResult {
+    + movementConflicts : List<PairNoOrder<\n   MovementDataModel, MovementDataModel\n  >>
+    + List<MovementDataModel> validMoves
+    + List<AttackDataModel> validAttacks
+    + getMovementConflicts()
+    + getValidMoves()
+    + getValidAttacks()
+}
+
+' Relationships between components
+TurnLogicService --> CommandValidatorService : "Validates Commands"
+TurnLogicService --> TurnResult : "Returns Turn Outcome"
+CommandValidatorService --> ValidationResult : "Provides Validation Results"
+
+@enduml
+```
+
+```mermaid
+sequenceDiagram
+    participant Server
+    participant TurnLogicService
+    participant CommandValidatorService
+    participant ValidationResult
+    participant TurnResult
+        
+    activate Server    
+    Server ->>TurnLogicService: Send Commands, Characters, GridService and HostId
+    activate TurnLogicService
+    
+    TurnLogicService->>CommandValidatorService: Validate Commands
+    activate CommandValidatorService
+    
+    CommandValidatorService-->>ValidationResult: Create ValidationResult
+    activate ValidationResult
+    CommandValidatorService-->>TurnLogicService: Return ValidationResult
+    deactivate CommandValidatorService
+    
+    TurnLogicService-->>TurnResult: Create TurnResult
+    deactivate ValidationResult
+    activate TurnResult
+    TurnLogicService-->>Server: Return TurnResult
+    deactivate TurnLogicService
+    deactivate TurnResult
+    deactivate Server
+```
 
 #### 1. Command Validation
-The `CommandValidator` class validates that attack and movement commands follow all game rules.
+The `CommandValidatorService` class validates that attack and movement commands follow all game rules.
 <procedure title="Turn-Related Game Rules:">
 <anchor id="rule1" name="rule1"></anchor>
 <step>Each Character can only have one command.</step>
@@ -39,7 +127,7 @@ The `CommandValidator` class validates that attack and movement commands follow 
 > This is because it's impossible to know if it will happen in advance, so the players are shown a special animation.
 {style="note"}
 
-To check the rules, the `CommandValidator` will not only need the moves and characters, but also a copy of the
+To check the rules, the `CommandValidatorService` will not only need the moves and characters, but also a copy of the
 `GridService` in use and the PlayerID of the host. The GridService is needed for 
 <a href="Turn-Logic-Service.md#rule2" summary="Characters may not attack or move out of Bounds regarding the grid map">rule 2</a>. The playerID of the host is needed to reverse the Patterns of his opponent
 before checking <a href="Turn-Logic-Service.md#rule3" summary="Characters may not move or attack different to the movement/attack pattern as defined by their `CharacterDataModel`">rule 3</a>.
@@ -54,7 +142,23 @@ and <a href="Turn-Logic-Service.md#rule6" summary="Opposing players may not move
 The resulting `ValidationResult` object contains a list of `MovementConflict`-Pairs ('bounces') and lists of valid
 moves and valid attacks.
 
-**UML Diagram for methods here**
+```mermaid
+graph LR
+    validateCommands["validateCommands()"]
+
+    validateCommands --> validateSingleCommandsOnly["validateSingleCommandsOnly()"]
+    validateCommands --> validateMovements["validateMovements()"]
+    validateCommands --> validateAttacks["validateAttacks()"]
+    validateCommands --> opposingPlayersMovingToSamePosition["opposingPlayersMovingToSamePosition()"]
+
+    validateMovements --> movingInsideBounds["movingInsideBounds()"]
+    validateMovements --> movingInsideMovementPattern["movingInsideMovementPattern()"]
+    validateMovements --> validateMovingToSamePosition["validateMovingToSamePosition()"]
+    validateMovements --> validateMovingToOccupiedPosition["validateMovingToOccupiedPosition()"]
+
+    validateAttacks --> attackingInsideBounds["attackingInsideBounds()"]
+    validateAttacks --> attackingInsideAttackPattern["attackingInsideAttackPattern()"]
+```
 
 #### 2. Command Application
 After filtering all commands by validation, they can be safely applied to the characters. Besides applying attacks and movements, 
