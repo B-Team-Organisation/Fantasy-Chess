@@ -286,9 +286,10 @@ loadScripts(document, 'script');</script>
                     throws <span class="exceptions"><a href="../exceptions/DestinationInvalidException.html" title="class in com.bteam.common.exceptions">DestinationInvalidException</a>,
 <a href="../exceptions/DestinationAlreadyOccupiedException.html" title="class in com.bteam.common.exceptions">DestinationAlreadyOccupiedException</a></span></div>
 <div class="block">Tries to place the given <a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities"><code>CharacterEntity</code></a> at the specified <a href="Vector2D.html" title="class in com.bteam.common.models"><code>Vector2D</code></a>-position.
- This only works if the position is marked as a valid starting position.
  <p>
- Will throw an exception if anything goes wrong.</div>
+ Will throw an exception if anything goes wrong.
+ When using this method in initialisation, please check if the tile this command is
+ performed on is a start tile first.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>to</code> - the <a href="Vector2D.html" title="class in com.bteam.common.models"><code>Vector2D</code></a>-position it tries to place the <a href="../entities/CharacterEntity.html" title="class in com.bteam.common.entities"><code>CharacterEntity</code></a> at</dd>

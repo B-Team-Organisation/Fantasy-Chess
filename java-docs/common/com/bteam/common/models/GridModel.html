@@ -171,7 +171,9 @@ loadScripts(document, 'script');</script>
 <h3>GridModel</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">GridModel</span><wbr><span class="parameters">(int&nbsp;rows,
  int&nbsp;cols)</span></div>
-<div class="block">Constructor for the GridModel.</div>
+<div class="block">Constructor for the GridModel.
+ <p>
+ Row or col values below 1 will result in a 0x0 grid. This is not advised.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>rows</code> - the number of rows in the grid</dd>
