@@ -100,7 +100,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Screens
 
 **1. Splash Screen:** Benutzereingabe, Spielstart
-![alt text](SplashScreen.png) <!-- Bild geht nicht -->
+![bg right](SplashScreen.png) <!-- Bild geht nicht -->
         
 **2. Main Menu:** Lobbies erstellen und finden
     
