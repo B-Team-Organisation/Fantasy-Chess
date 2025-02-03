@@ -15,8 +15,12 @@ A PvP multiplayer browser game.
 
 # Pitch
 
-- Kombination aus der chaotischen Natur von Diplomacy mit der schnellen Strategie von Schach
-- Größe Überraschungen und höhere schwierigkeit 
+- Simultan ausgeführte Züge
+- 1v1-Taktikkämpfe auf einem 9×9-Board
+- Bluffen & Vorausdenken
+- Vielfältige Charakterfähigkeiten
+
+- Einfache Netzwerk Struktur durch runden-basiertes Kampfsystem
 
 <!-- _something funny here idk_ -->
 
@@ -141,11 +145,13 @@ Rundenbasierte Regeln:
 
 ![bg right](../documentation/Writerside/img/architecture/architecture.drawio.svg)
 
+<!-- _footer: "B-Team: Marc Matija"-->
+
 ---
 
 # Auth
 
-![width:600px bg left](assets/img/auth-sequence.svg)
+![width:600px bg right](assets/img/auth-sequence.svg)
 
 - Client Registers on Server
 - Receives UUID
@@ -187,6 +193,8 @@ Simple Json struktur, welche die gesendeten daten in `data` und die id des packe
 
 > Serialisiert mit [JsonWriter](https://b-team-organisation.github.io/Fantasy-Chess/json-writer.html)
 
+<!-- _footer: "B-Team: Marc Matija"-->
+
 ---
 
 # Packet Handling
@@ -214,6 +222,8 @@ public interface PacketHandler {
 
 ![bg 60%](assets/img/packet-handler-diagram.svg)
 
+<!-- _footer: "B-Team: Marc Matija"-->
+
 ---
 
 # Services
@@ -226,6 +236,26 @@ public interface PacketHandler {
 - WebSocketService
 
 ![bg right](assets/img/server-services.drawio.svg)
+
+<!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+# Client-Side
+
+## Packet Handler
+- 1 Packet Handler pro Packet
+- Java Functional interface
+```java
+@FunctionalInterface
+public interface PacketHandler {
+  void handle(String packet);
+}
+```
+
+![bg right 100%](assets/img/client-side-packet-handling.svg)
+
+<!-- _footer: "B-Team: Marc Matija"-->
 
 ---
 
