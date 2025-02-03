@@ -66,6 +66,16 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Spiel
 
 ---
+# 4.w Character Integration 
+
+
+
+---
+
+# 4.x Design (bzw. Map Design) 
+
+
+---
 
 # Technologie
 
