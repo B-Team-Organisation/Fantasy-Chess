@@ -71,6 +71,34 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Spiel an sich
 
 ---
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# 4.bb Character Data Model
+
+Defines all **static properties** of a character.
+
+### Key Points
+- Serves as a **template** for creating new character entities.
+- Remains **static** and **unchanging** during the game.
+- Hardcoded in the **common module** to ensure reusability across server and client.
+- Provides a foundation for characters' abilities, behaviors, and patterns.
+
+
+
+---
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# 4.bc Character Entity
+
+Represents an **active instance** of a character in the game.
+
+### Key Points:
+- Dynamically instantiated during gameplay.
+- Integrates with game logic to maintain its state.
+- Evolves throughout gameplay while referencing his `CharacterDataModel`.
+- **Unique ID (`String`)**: Assigned by the server during instantiation.
+
+---
 
 # Turn Logic
 
