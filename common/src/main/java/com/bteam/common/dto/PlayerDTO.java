@@ -3,14 +3,20 @@ package com.bteam.common.dto;
 import com.bteam.common.models.Player;
 import com.bteam.common.utils.JsonWriter;
 
-public class PlayerInfoDTO implements JsonDTO {
+public class PlayerDTO implements JsonDTO {
     private final String username;
     private final String playerId;
-    private final Player.Status status;
+    private final String status;
 
-    public PlayerInfoDTO(String playerId, String username, Player.Status status) {
-        this.playerId = playerId;
+    public PlayerDTO(Player player) {
+        this.username = player.getUsername();
+        this.playerId = player.getPlayerId();
+        this.status = player.getStatus().toString();
+    }
+
+    public PlayerDTO(String username, String playerId, String status) {
         this.username = username;
+        this.playerId = playerId;
         this.status = status;
     }
 
@@ -22,7 +28,7 @@ public class PlayerInfoDTO implements JsonDTO {
         return playerId;
     }
 
-    public Player.Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -30,6 +36,6 @@ public class PlayerInfoDTO implements JsonDTO {
     public String toJson() {
         return new JsonWriter().writeKeyValue("username", getUsername())
                 .and().writeKeyValue("playerId", getPlayerId())
-                .and().writeKeyValue("status", status.name()).toString();
+                .and().writeKeyValue("status", getStatus()).toString();
     }
 }
