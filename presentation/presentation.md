@@ -118,7 +118,7 @@ Rundenbasierte Regeln:
 - Springboot Projekt agierend als WebSocket Server
 - Eigene WebSocket Protokoll lösung wegen limitationen auf der client seite.
 - H2 zum Speichern der Daten während der Entwicklung 
-- umstellungsmöglichkeit auf PostgreSQL für Produktions Deployment
+- Umstellungsmöglichkeit auf PostgreSQL für Produktions Deployment
 
 ![bg right:30%](assets/img/server-technology.png)
 
@@ -131,7 +131,7 @@ Rundenbasierte Regeln:
 # Aufbau
 
 **Controller:**  
-- verarbeiten HTTP Request
+- Verarbeiten HTTP Request
 
 **Service:**
 - Verbindung zwischen WebSocket Nachrichten und der Datenbank
@@ -153,11 +153,11 @@ Rundenbasierte Regeln:
 
 ![width:600px bg right](assets/img/auth-sequence.svg)
 
-- Client Registers on Server
-- Receives UUID
-- Requests Token w/ UUID
-- gets Token and expiry data
-- Establish Connections
+- Client regestriert sich auf dem Server
+- Erhält UUID
+- Fordert Token mit UUID an
+- Bekommt Token und Auslaufdatum
+- Verbindet sich mit Token
 
 > Für nähere infos: [`Authentication`](https://b-team-organisation.github.io/Fantasy-Chess/authentication.html)
 
@@ -168,7 +168,7 @@ Rundenbasierte Regeln:
 # [Token Service](https://b-team-organisation.github.io/Fantasy-Chess/services.html#token-service)
 
 - Generiert Single-Use Token
-- speichert diesen im `TokenRepository`
+- Speichert diesen im `TokenRepository`
 - Validiert Token
 - Invalidiert Token
 
@@ -181,7 +181,7 @@ Rundenbasierte Regeln:
 
 ## [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
 
-Simple Json struktur, welche die gesendeten daten in `data` und die id des packets in `id` angibt
+Simple Json struktur, welche die gesendeten Daten in `data` und die id des packets in `id` angibt
 
 ```json
 {
