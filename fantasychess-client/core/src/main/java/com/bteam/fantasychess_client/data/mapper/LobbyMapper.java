@@ -9,9 +9,10 @@ import java.util.List;
 
 public final class LobbyMapper {
 
-    private LobbyMapper() {}
+    private LobbyMapper() {
+    }
 
-	public static LobbyModel lobbyFromJson(JsonValue lobbyJson) {
+    public static LobbyModel lobbyFromJson(JsonValue lobbyJson) {
         String lobbyName = lobbyJson.get("name").asString();
         String lobbyId = lobbyJson.getString("lobbyId");
         LobbyModel.GameState gameState = LobbyModel.GameState.valueOf(lobbyJson.getString("gameState"));
@@ -20,10 +21,13 @@ public final class LobbyMapper {
         lobbyJson.get("players").forEach(p -> {
             var playerId = p.getString("playerId");
             var username = p.getString("username");
-            lobby.addPlayer(new Player(username,playerId,List.of()));
+            var status = Player.Status.valueOf(p.getString("status"));
+            var player = new Player(username, playerId, List.of());
+            player.setStatus(status);
+            lobby.addPlayer(player);
         });
         return lobby;
-	}
+    }
 
     public static List<LobbyModel> lobbiesFromJson(JsonValue lobbiesJson) {
         List<LobbyModel> lobbies = new ArrayList<>();

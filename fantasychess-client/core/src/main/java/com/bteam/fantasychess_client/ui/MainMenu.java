@@ -426,10 +426,13 @@ public class MainMenu extends ScreenAdapter {
     private void onLobbyJoined(String packetJson) {
         Gdx.app.postRunnable(() -> {
             JsonValue data = new JsonReader().parse(packetJson).get("data");
-            var packet = new JoinLobbyResultDTO(data.getString("result"));
-            if (packet.isSuccess()) goToGameScreen();
-            else {
-                Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + packet.getResult());
+            var isSuccess = data.getString("result").equals(JoinLobbyResultDTO.SUCCESS);
+            var lobby = LobbyMapper.lobbyFromJson(data.get("lobby"));
+            if (isSuccess) {
+                getLobbyService().setCurrentLobby(lobby);
+                getScreenManager().navigateTo(Screens.Game);
+            } else {
+                Main.getLogger().log(Level.SEVERE, "Failed to join lobby with result:" + isSuccess);
                 getLobbyService().setCurrentLobby(null);
             }
         });

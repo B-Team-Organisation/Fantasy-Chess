@@ -58,14 +58,17 @@ public class LobbyPacketHandler implements PacketHandler {
                     var lobbyID = UUID.fromString(dto.getId());
                     var playerId = UUID.fromString(client.getPlayer().getPlayerId());
                     var result = lobbyService.joinLobby(lobbyID, playerId);
-                    var resultPacket = new Packet(
-                            result ? JoinLobbyResultDTO.success() : JoinLobbyResultDTO.error(),
-                            LOBBY_JOINED);
-                    client.sendPacket(resultPacket);
                     var lobby = lobbyService.getLobby(lobbyID);
+
+                    var resultPacket = new Packet(
+                            result ? JoinLobbyResultDTO.success(new LobbyDTO(lobby))
+                                    : JoinLobbyResultDTO.error(new LobbyDTO(lobby)),
+                            LOBBY_JOINED);
+
+                    client.sendPacket(resultPacket);
                     var players = lobby.getPlayers();
 
-                    players.forEach(player -> {
+                    if (result) players.forEach(player -> {
                         var playerClient = WebSocketService.getCurrentClientForPlayer(player);
                         var playerPacket = new Packet(new PlayerDTO(client.getPlayer()), PLAYER_JOINED);
                         playerClient.sendPacket(playerPacket);
