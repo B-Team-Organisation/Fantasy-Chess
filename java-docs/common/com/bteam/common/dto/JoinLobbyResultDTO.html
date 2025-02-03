@@ -129,7 +129,8 @@ implements <a href="JsonDTO.html" title="interface in com.bteam.common.dto">Json
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">JoinLobbyResultDTO</a>()</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String)" class="member-name-link">JoinLobbyResultDTO</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(java.lang.String,com.bteam.common.dto.LobbyDTO)" class="member-name-link">JoinLobbyResultDTO</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result,
+ <a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
@@ -146,7 +147,7 @@ implements <a href="JsonDTO.html" title="interface in com.bteam.common.dto">Json
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#error()" class="member-name-link">error</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#error(com.bteam.common.dto.LobbyDTO)" class="member-name-link">error</a><wbr>(<a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getResult()" class="member-name-link">getResult</a>()</code></div>
@@ -155,7 +156,7 @@ implements <a href="JsonDTO.html" title="interface in com.bteam.common.dto">Json
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#isSuccess()" class="member-name-link">isSuccess</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#success()" class="member-name-link">success</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#success(com.bteam.common.dto.LobbyDTO)" class="member-name-link">success</a><wbr>(<a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#toJson()" class="member-name-link">toJson</a>()</code></div>
@@ -206,9 +207,10 @@ implements <a href="JsonDTO.html" title="interface in com.bteam.common.dto">Json
 </section>
 </li>
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String)">
+<section class="detail" id="&lt;init&gt;(java.lang.String,com.bteam.common.dto.LobbyDTO)">
 <h3>JoinLobbyResultDTO</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">JoinLobbyResultDTO</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">JoinLobbyResultDTO</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;result,
+ <a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</span></div>
 </section>
 </li>
 </ul>
@@ -220,15 +222,15 @@ implements <a href="JsonDTO.html" title="interface in com.bteam.common.dto">Json
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="success()">
+<section class="detail" id="success(com.bteam.common.dto.LobbyDTO)">
 <h3>success</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></span>&nbsp;<span class="element-name">success</span>()</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></span>&nbsp;<span class="element-name">success</span><wbr><span class="parameters">(<a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="error()">
+<section class="detail" id="error(com.bteam.common.dto.LobbyDTO)">
 <h3>error</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></span>&nbsp;<span class="element-name">error</span>()</div>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="JoinLobbyResultDTO.html" title="class in com.bteam.common.dto">JoinLobbyResultDTO</a></span>&nbsp;<span class="element-name">error</span><wbr><span class="parameters">(<a href="LobbyDTO.html" title="class in com.bteam.common.dto">LobbyDTO</a>&nbsp;lobby)</span></div>
 </section>
 </li>
 <li>
