@@ -21,6 +21,19 @@ public class TestGridModel {
             var tile = gridModel.getTileGrid()[0][10];
         });
         assertNotNull(gridModel.getTileGrid()[0][0]);
+
+        GridModel gridModelNegative = new GridModel(0,0);
+        assertEquals(0,gridModelNegative.getTileGrid().length);
+
+        gridModelNegative = new GridModel(1,0);
+        assertEquals(0,gridModelNegative.getTileGrid().length);
+
+        gridModelNegative = new GridModel(0,1);
+        assertEquals(0,gridModelNegative.getTileGrid().length);
+
+
+        gridModelNegative = new GridModel(Integer.MIN_VALUE,Integer.MIN_VALUE);
+        assertEquals(0,gridModelNegative.getTileGrid().length);
     }
 
 }
