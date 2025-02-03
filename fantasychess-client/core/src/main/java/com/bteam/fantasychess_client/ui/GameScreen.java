@@ -227,6 +227,18 @@ public class GameScreen extends ScreenAdapter {
 
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
+
+        getGameStateService().onWin.addListener(playerID -> {
+            getLogger().log(Level.SEVERE, "Received Win Result: " + playerID);
+            //getLogger().log(Level.SEVERE, Main.getLobbyService().getCurrentLobby().getPlayers().toString());
+            //List<Player> players = Main.getLobbyService().getCurrentLobby().getPlayers();
+            //if (playerID.equals(players.get(0).getPlayerId())) {
+            //    new EndGameDialog(skin,players.get(0).getUsername()).show(stage);
+            //} else {
+            //    new EndGameDialog(skin,players.get(1).getUsername()).show(stage);
+            //}
+            new EndGameDialog(skin,playerID).show(stage);
+        });
     }
 
     @Override
