@@ -56,7 +56,8 @@ public class PlayerPacketHandler implements PacketHandler {
                     var isReady = Objects.equals(dto.getStatus(), PlayerStatusDTO.PLAYER_READY);
                     var lobby = lobbyService.getLobbyWithPlayer(playerId);
                     playerService.setPlayerStatus(playerId, isReady ?
-                            Player.Status.READY : Player.Status.NOT_READY);lobby = lobbyService.getLobby(UUID.fromString(lobby.getLobbyId()));
+                            Player.Status.READY : Player.Status.NOT_READY);
+                    lobby = lobbyService.getLobby(UUID.fromString(lobby.getLobbyId()));
                     var playersInLobby = lobby.getPlayers();
                     for (var player : playersInLobby) {
                         String playerReadyId = playerId.toString();
@@ -64,10 +65,10 @@ public class PlayerPacketHandler implements PacketHandler {
                                 PlayerStatusDTO.ready(playerReadyId) :
                                 PlayerStatusDTO.notReady(playerReadyId), PLAYER_READY);
                         WebSocketService.getCurrentClientForPlayer(player).sendPacket(statusPacket);
-                }
+                    }
 
                     if (playersInLobby.size() == 2 && playersInLobby.stream()
-                        .allMatch(player -> player.getStatus().equals(Player.Status.READY))) {
+                            .allMatch(player -> player.getStatus().equals(Player.Status.READY))) {
                         var players = playersInLobby.stream().map(p -> UUID.fromString(p.getPlayerId())).toList();
                         var model = gameStateService.startNewGame(new GameSettingsModel(-1), lobby.getLobbyId(), players);
                         var dtos = model.getEntities().stream().map(CharacterEntityDTO::new).toList();
@@ -145,18 +146,6 @@ public class PlayerPacketHandler implements PacketHandler {
                     System.out.println(e);
                 }
                 break;
-            case "PLAYER_LEAVE":
-                try {
-                    var playerId = UUID.fromString(client.getPlayer().getPlayerId());
-                    var lobby = lobbyService.getLobbyWithPlayer(playerId);
-                    lobby.removePlayer(client.getPlayer());
-                    if (lobby.getPlayers().isEmpty()) {
-                        lobbyService.closeLobby(UUID.fromString(lobby.getLobbyId()),
-                                "All Players Disconnected");
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             default:
                 break;
         }

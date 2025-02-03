@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerInfoDTO;
+import com.bteam.common.models.Player;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.ui.Screens;
 
@@ -46,7 +47,7 @@ public class EndGameDialog extends Dialog {
     @Override
     protected void result(Object object) {
         if ((boolean) object) {
-            var packet = new Packet(new PlayerInfoDTO("", ""), "PLAYER_LEAVE");
+            var packet = new Packet(new PlayerInfoDTO("", "", Player.Status.NOT_READY), "PLAYER_LEAVE");
             getWebSocketService().send(packet);
             Main.getScreenManager().navigateTo(Screens.MainMenu);
         }
