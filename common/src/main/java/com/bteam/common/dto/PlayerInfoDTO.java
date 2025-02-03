@@ -30,6 +30,6 @@ public class PlayerInfoDTO implements JsonDTO {
     public String toJson() {
         return new JsonWriter().writeKeyValue("username", getUsername())
                 .and().writeKeyValue("playerId", getPlayerId())
-                .and().writeKeyValue("status", status).toString();
+                .and().writeKeyValue("status", status.name()).toString();
     }
 }

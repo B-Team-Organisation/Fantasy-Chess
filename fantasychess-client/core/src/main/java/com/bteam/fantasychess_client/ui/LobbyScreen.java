@@ -193,13 +193,12 @@ public class LobbyScreen extends Dialog {
         }
 
         public void updateStatus(Status status) {
-            statusLabel.setText(status.toString());
+            statusLabel.setText(status.toString().replace('_', ' '));
             this.status = status;
         }
 
         public void toggleStatus() {
-            statusLabel.setText(status.toggle().toString());
-            status = status.toggle();
+            updateStatus(status.equals(Status.READY) ? Status.NOT_READY : Status.READY);
         }
 
         public Label getStatusLabel() {

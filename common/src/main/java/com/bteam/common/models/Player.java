@@ -110,24 +110,34 @@ public class Player {
 
     public enum Status {
         NOT_READY {
-            public String toString() {
-                return "NOT READY";
+            public static final String DISPLAY_TEXT = "NOT READY";
+
+            @Override
+            public String getDisplay() {
+                return DISPLAY_TEXT;
             }
 
+            @Override
             public Status toggle() {
                 return READY;
             }
         },
         READY {
-            public String toString() {
-                return "READY";
+            public static final String DISPLAY_TEXT = "NOT READY";
+
+            @Override
+            public String getDisplay() {
+                return DISPLAY_TEXT;
             }
 
+            @Override
             public Status toggle() {
                 return NOT_READY;
             }
         };
 
         public abstract Status toggle();
+
+        public abstract String getDisplay();
     }
 }
