@@ -71,32 +71,30 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Spiel an sich
 
 ---
+
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-# 4.bb Character Data Model
+# 4.bb CharacterDataModel
 
-Defines all **static properties** of a character.
+Definiert alle **statischen Eigenschaften** eines Charakters.
 
-### Key Points
-- Serves as a **template** for creating new character entities.
-- Remains **static** and **unchanging** during the game.
-- Hardcoded in the **common module** to ensure reusability across server and client.
-- Provides a foundation for characters' abilities, behaviors, and patterns.
-
-
+### Kernpunkte:
+- Dient als **Vorlage** zur Erstellung neuer Charakter-Instanzen.
+- Bleibt **statisch** und **unverändert** während des Spiels.
+- Fest im **Common-Modul** implementiert, um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten.
+- Legt die Grundlage für **Fähigkeiten, Verhaltensweisen und Muster** der Charaktere.
 
 ---
-<!-- _footer: "B-Team: Albano Vukelaj"-->
 
-# 4.bc Character Entity
+# 4.bc Character-Entity
 
-Represents an **active instance** of a character in the game.
+Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
 
-### Key Points:
-- Dynamically instantiated during gameplay.
-- Integrates with game logic to maintain its state.
-- Evolves throughout gameplay while referencing his `CharacterDataModel`.
-- **Unique ID (`String`)**: Assigned by the server during instantiation.
+### Kernpunkte:
+- Wird **dynamisch während des Spiels** erzeugt.
+- Integriert sich in die Spiel-Logik, um seinen Zustand zu verwalten.
+- Entwickelt sich während des Spiels weiter, indem es auf sein `CharacterDataModel` verweist.
+- **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen.
 
 ---
 
