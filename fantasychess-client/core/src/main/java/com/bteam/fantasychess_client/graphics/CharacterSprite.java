@@ -11,7 +11,6 @@ import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 
 /**
  * Combination of a {@link CharacterEntity} and a {@link Sprite}
@@ -25,8 +24,8 @@ public class CharacterSprite extends Sprite {
     private TileMathService mathService;
 
     private final float MOVEMENT_SPEED = 40f;
-    private Vector2 destination;
 
+    private Vector2 currentDestination;
     private ArrayDeque<Vector2> destinations;
 
     private Vector2 direction;
@@ -71,9 +70,6 @@ public class CharacterSprite extends Sprite {
      */
     public void moveToWorldPos(Vector2 destination) {
         destinations.add(new Vector2(destination.x, destination.y));
-
-        //steps = (int)distance;
-        //step = distanceVector.scl(1/distance);
     }
 
     /**
@@ -97,21 +93,21 @@ public class CharacterSprite extends Sprite {
      * @return the {@link CharacterEntity} for chaining
      */
     public CharacterSprite update(float delta){
-        if (destination != null) {
+        if (currentDestination != null) {
             if (distance > 0){
                 distance -= MOVEMENT_SPEED * delta;
                 setPosition(getX()+direction.x*delta*MOVEMENT_SPEED,getY()+direction.y*delta*MOVEMENT_SPEED);
             }
             if (distance <= 0){
-                setPosition(destination.x, destination.y);
-                destination = null;
+                setPosition(currentDestination.x, currentDestination.y);
+                currentDestination = null;
                 distance = 0;
                 direction = null;
             }
         } else if (!destinations.isEmpty()) {
-            destination = destinations.pop();
+            currentDestination = destinations.pop();
 
-            Vector2 distanceVector = this.destination.cpy().sub(new Vector2(getX(), getY()));
+            Vector2 distanceVector = this.currentDestination.cpy().sub(new Vector2(getX(), getY()));
             distance = (float)Math.sqrt(distanceVector.x * distanceVector.x + distanceVector.y * distanceVector.y);
 
             direction = distanceVector.nor();
@@ -122,11 +118,8 @@ public class CharacterSprite extends Sprite {
     }
 
     public boolean isInAnimation(){
-        return destination != null || !destinations.isEmpty();
+        return currentDestination != null || !destinations.isEmpty();
     }
-
-    private static final Color deathColor = new Color(1,0,0,1);
-    private BitmapFont font = new BitmapFont();
 
     /**
      * Draws the sprite using the batch
