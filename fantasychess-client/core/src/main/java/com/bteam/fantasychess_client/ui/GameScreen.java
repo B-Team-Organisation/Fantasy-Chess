@@ -26,7 +26,7 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.models.Player;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
@@ -273,11 +273,13 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (grid != null && !grid.equals(focussedTile)) {
+        if (grid == null || !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
         }
+
+
 
         SpriteSorter.sortByY(characterSprites);
         for (CharacterSprite sprite : characterSprites) {
@@ -567,6 +569,7 @@ public class GameScreen extends ScreenAdapter {
         commandPreviewLayer.setOffsetX(1f);
         tiledMap.getLayers().add(commandPreviewLayer);
 
+        damagePreviewValues.clear();
         if (focussedTile != null && Arrays.asList(validCommandDestinations).contains(focussedTile)) {
             switch (mapInputProcessor.getCommandMode()) {
                 case MOVE_MODE: {
@@ -585,9 +588,13 @@ public class GameScreen extends ScreenAdapter {
                     TextureRegion region = atlas.findRegion("special_tiles/filled-red");
                     previewCell.setTile(new StaticTiledMapTile(region));
 
-                    damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = mathService.gridToTiled(position);
+
+                        if (tilePosition.getX() < 0 || tilePosition.getY() < 0 || tilePosition.getX() >= mathService.getMapWidth()  || tilePosition.getY() >= mathService.getMapHeight()) {
+                            continue;
+                        }
+
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
 
                         damagePreviewValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower() + "");

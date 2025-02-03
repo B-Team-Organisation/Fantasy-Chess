@@ -4,7 +4,6 @@ import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
 import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.exceptions.NoCharacterFoundException;
-import com.bteam.common.exceptions.NotAStartPositionException;
 
 /**
  * Service class for the {@link GridModel}
@@ -108,23 +107,21 @@ public class GridService {
 
     /**
      * Tries to place the given {@link CharacterEntity} at the specified {@link Vector2D}-position.
-     * This only works if the position is marked as a valid starting position.
      * <p>
      * Will throw an exception if anything goes wrong.
+     * When using this method in initialisation, please check if the tile this command is
+     * performed on is a start tile first.
      *
      * @param to        the {@link Vector2D}-position it tries to place the {@link CharacterEntity} at
      * @param character the {@link CharacterEntity} it tries to place at the {@link Vector2D}
      * @throws DestinationInvalidException         if the {@link Vector2D}-position is invalid
      * @throws DestinationAlreadyOccupiedException if the destination-tile is already occupied
      */
-    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException { //, NotAStartPositionException {
+    public void setCharacterTo(Vector2D to, CharacterEntity character) throws DestinationInvalidException, DestinationAlreadyOccupiedException {
         TileModel tile = getTileAt(to);
         if (tile.getCharacter() != null) {
             throw new DestinationAlreadyOccupiedException(to);
         }
-        /*if (!tile.isStartTile()){
-            throw new NotAStartPositionException(to);
-        }*/
         tile.setCharacter(character);
         character.setPosition(to);
     }

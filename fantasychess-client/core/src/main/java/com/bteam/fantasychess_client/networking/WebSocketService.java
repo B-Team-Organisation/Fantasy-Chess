@@ -3,7 +3,6 @@ package com.bteam.fantasychess_client.networking;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.HttpRequestBuilder;
-import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.bteam.common.dto.Packet;
@@ -32,7 +31,6 @@ public class WebSocketService {
     public final Event<Throwable> onRequestError = new Event<>();
     public final Event<Void> onRequestCanceled = new Event<>();
     private final Map<String, PacketHandler> listeners = new HashMap<>();
-    private final Json json = new Json();
     WebSocket webSocket;
     WebSocketClient client;
     String userid;

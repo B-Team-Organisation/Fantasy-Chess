@@ -3,11 +3,9 @@ package com.bteam.fantasychess_client.services;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.GridModel;
 import com.bteam.common.models.GridService;
-import com.bteam.common.services.TurnLogicService;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.utils.TurnLogic;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.Event;
-import com.bteam.common.services.TurnLogicService;
-import com.bteam.common.services.TurnResult;
 import com.bteam.fantasychess_client.Main;
 
 import java.util.ArrayList;
@@ -190,7 +188,7 @@ public class ClientGameStateService {
     public void applyTurnResult(TurnResult turnResult) {
         this.turnResult = turnResult;
         Main.getLogger().log(Level.SEVERE, "Set turn result"+ characters);
-        TurnLogicService.applyMovement(turnResult.getValidMoves(), characters, gridService);
+        TurnLogic.applyMovement(turnResult.getValidMoves(), characters, gridService);
         onApplyTurnResult.invoke(turnResult);
         Main.getLogger().log(Level.SEVERE,"winner"+turnResult.getWinner());
         if (turnResult.getWinner() != null)

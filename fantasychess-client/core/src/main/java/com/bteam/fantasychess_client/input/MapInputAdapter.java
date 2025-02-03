@@ -207,7 +207,9 @@ public class MapInputAdapter extends InputAdapter {
                     Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(), gridPos);
                     HashMap<Vector2D, Integer> damageValues = new HashMap<>();
                     for (Vector2D position : areaOfEffect) {
-                        damageValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower());
+                        if (position.getX() < 0 || position.getY() < 0 || position.getX() >= mathService.getMapWidth()  || position.getY() >= mathService.getMapHeight()) {
+                        continue;
+                    }damageValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower());
                     }
 
                     Main.getCommandManagementService().setCommand(attackDataModel, damageValues);
