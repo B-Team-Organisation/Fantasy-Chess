@@ -92,7 +92,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 <!-- Zyklus Diagram -->
 
-![Game Screen Cycle w:900px center](assets/img/ScreenModes.drawio.svg)
+![Game Screen Cycle w:900px center](assets/img/ComplexCycle.svg)
 
 <!-- _footer: "B-Team: Lukas Walker"-->
 
