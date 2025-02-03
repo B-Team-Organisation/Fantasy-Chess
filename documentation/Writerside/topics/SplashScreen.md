@@ -1,0 +1,3 @@
+# Splash Screen
+
+Start typing here...
