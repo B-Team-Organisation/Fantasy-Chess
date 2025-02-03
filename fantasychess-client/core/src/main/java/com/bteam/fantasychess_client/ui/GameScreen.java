@@ -23,12 +23,16 @@ import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.models.Vector2D;
+import com.bteam.common.models.Player;
 import com.bteam.common.models.TurnResult;
+import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
-import com.bteam.fantasychess_client.graphics.*;
+import com.bteam.fantasychess_client.graphics.CharacterSprite;
+import com.bteam.fantasychess_client.graphics.CharacterStatsTable;
+import com.bteam.fantasychess_client.graphics.EndGameDialog;
+import com.bteam.fantasychess_client.graphics.TurnResultAnimationHandler;
 import com.bteam.fantasychess_client.input.FullscreenInputListener;
 import com.bteam.fantasychess_client.input.MapInputAdapter;
 import com.bteam.fantasychess_client.utils.SpriteSorter;
@@ -38,7 +42,6 @@ import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
 
-import static com.bteam.common.services.TurnLogicService.checkForWinner;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -57,23 +60,19 @@ public class GameScreen extends ScreenAdapter {
     private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
-    private Stage stage;
     private final OrthographicCamera uiCamera;
     private final ExtendViewport uiViewport;
     private final Skin skin;
-    private TextureAtlas atlas;
-    private SpriteBatch batch;
-
-    private TileMathService mathService;
-    private MapInputAdapter mapInputProcessor;
-
     private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
     private final List<CharacterSprite> characterSprites = new ArrayList<>();
-    private TurnResultAnimationHandler animationHandler;
-
     private final BitmapFont damageFont;
     private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
-
+    private Stage stage;
+    private TextureAtlas atlas;
+    private SpriteBatch batch;
+    private TileMathService mathService;
+    private MapInputAdapter mapInputProcessor;
+    private TurnResultAnimationHandler animationHandler;
     private TextButton readyButton;
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
@@ -213,31 +212,18 @@ public class GameScreen extends ScreenAdapter {
             Main.getGameStateService().applyTurnResult(turnResult);
         }));
 
-        getGameStateService().onWin.addListener(playerID -> {
-            getLogger().log(Level.SEVERE, "Received Win Result: " + playerID);
-            //getLogger().log(Level.SEVERE, Main.getLobbyService().getCurrentLobby().getPlayers().toString());
-            //List<Player> players = Main.getLobbyService().getCurrentLobby().getPlayers();
-            //if (playerID.equals(players.get(0).getPlayerId())) {
-            //    new EndGameDialog(skin,players.get(0).getUsername()).show(stage);
-            //} else {
-            //    new EndGameDialog(skin,players.get(1).getUsername()).show(stage);
-            //}
-            new EndGameDialog(skin,playerID).show(stage);
-        });
-
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
 
         getGameStateService().onWin.addListener(playerID -> {
-            getLogger().log(Level.SEVERE, "Received Win Result: " + playerID);
-            //getLogger().log(Level.SEVERE, Main.getLobbyService().getCurrentLobby().getPlayers().toString());
-            //List<Player> players = Main.getLobbyService().getCurrentLobby().getPlayers();
-            //if (playerID.equals(players.get(0).getPlayerId())) {
-            //    new EndGameDialog(skin,players.get(0).getUsername()).show(stage);
-            //} else {
-            //    new EndGameDialog(skin,players.get(1).getUsername()).show(stage);
-            //}
-            new EndGameDialog(skin,playerID).show(stage);
+            String playerName = playerID;
+
+            for (Player player : getLobbyService().getCurrentLobby().getPlayers()) {
+                if (player.getPlayerId().equals(playerID)) playerName = player.getUsername();
+            }
+
+            getLogger().log(Level.SEVERE, "Received Win Result: " + playerName);
+            new EndGameDialog(skin, playerName).show(stage);
         });
     }
 
@@ -269,7 +255,6 @@ public class GameScreen extends ScreenAdapter {
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
         }
-
 
 
         SpriteSorter.sortByY(characterSprites);
@@ -367,7 +352,7 @@ public class GameScreen extends ScreenAdapter {
 
                 int requiredCommandCount = Main.getGameStateService().getFriendlyCharacterCount();
 
-                if (requiredCommandCount == 0){
+                if (requiredCommandCount == 0) {
                     setVisible(false);
                     return;
                 }
@@ -582,7 +567,7 @@ public class GameScreen extends ScreenAdapter {
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = mathService.gridToTiled(position);
 
-                        if (tilePosition.getX() < 0 || tilePosition.getY() < 0 || tilePosition.getX() >= mathService.getMapWidth()  || tilePosition.getY() >= mathService.getMapHeight()) {
+                        if (tilePosition.getX() < 0 || tilePosition.getY() < 0 || tilePosition.getX() >= mathService.getMapWidth() || tilePosition.getY() >= mathService.getMapHeight()) {
                             continue;
                         }
 
