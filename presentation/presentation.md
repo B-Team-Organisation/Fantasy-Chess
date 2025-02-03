@@ -15,9 +15,9 @@ A PvP multiplayer browser game.
 
 # Pitch
 
-- Simultan ausgeführte Züge
 - 1v1-Taktikkämpfe auf einem 9×9-Board
 - Bluffen & Vorausdenken
+- Weniger Wartezeiten, mehr Action
 - Vielfältige Charakterfähigkeiten
 
 - Einfache Netzwerk Struktur durch runden-basiertes Kampfsystem
