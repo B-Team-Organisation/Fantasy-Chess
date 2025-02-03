@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="documentation"
+                 name="Fantasy-Chess Documentation"
+                 start-page="Introduction.md">
+
+    <toc-element topic="Introduction.md"/>
+    <toc-element topic="Gameplay.md"/>
+    <toc-element topic="Organization.md"/>
+    <toc-element toc-title="Specifications">
+        <toc-element topic="Patterns.md"/>
+        <toc-element topic="Characters.md"/>
+        <toc-element topic="Design.md"/>
+    </toc-element>
+    <toc-element toc-title="Technical Reference">
+        <toc-element topic="Architecture.md"/>
+        <toc-element toc-title="Common">
+            <toc-element topic="Common.md"/>
+            <toc-element topic="Json-Writer.md"/>
+            <toc-element topic="Packet.md"/>
+            <toc-element topic="Events.md"/>
+            <toc-element toc-title="Data Structures">
+                <toc-element topic="Models.md"/>
+                <toc-element topic="PatternModel.md"/>
+                <toc-element topic="PatternStore.md"/>
+                <toc-element topic="JsonDTOs.md"/>
+                <toc-element topic="TileModel.md"/>
+                <toc-element topic="GridModel.md"/>
+                <toc-element topic="AttackDataModel.md"/>
+                <toc-element topic="MovementDataModel.md"/>
+                <toc-element topic="CharacterDataModel.md"/>
+                <toc-element topic="CharacterEntity.md"/>
+                <toc-element topic="CharacterStore.md"/>
+            </toc-element>
+            <toc-element toc-title="Services">
+                <toc-element topic="PatternService.md"/>
+            </toc-element>
+            <toc-element topic="GridService.md"/>
+            <toc-element topic="Turn-Logic.md"/>
+        </toc-element>
+        <toc-element toc-title="Client">
+            <toc-element topic="Client.md"/>
+            <toc-element topic="Screens.md">
+                <toc-element topic="SplashScreen.md"/>
+                <toc-element topic="MainMenu.md"/>
+                <toc-element topic="GameScreen.md"/>
+            </toc-element>
+            <toc-element topic="Graphics.md">
+                <toc-element topic="CharacterSprite.md"/>
+                <toc-element topic="TurnOutcomeAnimations.md"/>
+            </toc-element>
+            <toc-element topic="Networking.md"/>
+            <toc-element topic="Tilemap.md"/>
+            <toc-element topic="Packet-Handling.md"/>
+        </toc-element>
+        <toc-element toc-title="Server">
+            <toc-element topic="Server.md"/>
+            <toc-element topic="Packet-Handler.md"/>
+            <toc-element topic="Controller.md"/>
+            <toc-element topic="Services.md"/>
+            <toc-element topic="Authentication.md"/>
+            <toc-element topic="Interceptors.md"/>
+            <toc-element topic="Repositories.md"/>
+            <toc-element topic="Entities.md"/>
+        </toc-element>
+    </toc-element>
+</instance-profile>
