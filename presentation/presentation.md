@@ -67,8 +67,11 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Spiel
 
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
 ## 4.1 Hauptmenü
+
 <style scoped>
   img.center {
     float: center;
@@ -79,7 +82,9 @@ Z. Zukunft <code>Wer noch was braucht</code>
 <img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
 
 --- 
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 <style scoped>
   img.right {
     float: right;
@@ -99,22 +104,26 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Benutzerfreundlichkeit
 - Flexibilität
 - Effizienz
+
 ---
 
 # Technologie
 
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 # 5. Qualität
 
  **Ziele:**
   - Fehlerfreiheit und robuste Funktionen.
   - Intuitive und reibungslose Spielerfahrung.
   - Erweiterbarkeit des Codes für zukünftige Features.
-  - Kompatibilität auf allen Geräten.
 
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 ## 5.1 Wie wurde getestet (Teil 1)
 
 ### Common Module
@@ -125,7 +134,9 @@ Z. Zukunft <code>Wer noch was braucht</code>
   - **Edge Cases:** Null-Werte und Extreme getestet.
 
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 ## 5.1 Wie wurde getestet (Teil 2)
 
 ### Server Module
@@ -138,24 +149,25 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-<!-- _footer: "B-Team: Albano "-->
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ## 5.1 Wie wurde getestet (Teil 3)
 
 ### Client Module
 
 - **Manual Testing:**  
-  Aufgrund von **GWT**-Einschränkungen wurden manuelle Tests verwendet.
+  Erforderlich wegen komplexer Spielzustände und visueller Validierung.
 - **Ansatz:**
   - **Funktionstests:** UI-Reaktionen und Gameplay-Funktionen wurden geprüft.
   - **Szenarien:** Spielzustände (Anfang, Mitte, Ende) wurden simuliert.
  
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 ## 5.2 Was haben wir getestet (Teil 1)
 
 ### Common Module
-
 
 - **Models:**  
   Datenintegrität 
@@ -168,7 +180,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-<!-- _footer: "B-Team: Albano "-->
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
 ## 5.2 Was haben wir getestet (Teil 2)
 
 ### Server Module
@@ -182,9 +195,9 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - **Utilities:**  
   Hilfsklassen-zuverlässigkeit 
   
-
 ---
-<!-- _footer: "B-Team: Albano "-->
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ## 5.2 Was haben wir getestet (Teil 3)
 
@@ -194,10 +207,12 @@ Z. Zukunft <code>Wer noch was braucht</code>
   - HealthBar-Rendering und Updates  
   - Charakterdarstellung und Stat-Overlays 
   - Korrekte CommandPreview and TurnOutcome
-- **Scroll-Funktionalität:**  
-  Scrollbare UI-Komponenten wie Listen und Dialoge wurden geprüft.
+  - Reaktion auf Eingaben und korrektes Rendering
+  - Spielschleife funktioniert fehlerfrei
+  - Serverkommunikation und Verarbeitung der Antworten
 
 ---
+
 # Doku
 
 ---
