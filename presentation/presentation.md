@@ -71,6 +71,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Spiel an sich
 
 ---
+
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
 # 4.bb Character Data Model
@@ -83,9 +84,8 @@ Defines all **static properties** of a character.
 - Hardcoded in the **common module** to ensure reusability across server and client.
 - Provides a foundation for characters' abilities, behaviors, and patterns.
 
-
-
 ---
+
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
 # 4.bc Character Entity
