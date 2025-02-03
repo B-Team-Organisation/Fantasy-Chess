@@ -95,7 +95,9 @@ class LobbyPacketHandlerTest {
         // Mock dependencies
         when(objectMapper.readValue(anyString(), eq(JoinLobbyDTO.class))).thenReturn(joinLobbyDTO);
         when(lobbyService.joinLobby(any(UUID.class), any(UUID.class))).thenReturn(true); // Assume joining succeeds
+        when(lobbyService.getLobby(any())).thenReturn(new LobbyModel("", new ArrayList<>(), new Player("", "", List.of()), "", 2));
         when(client.getPlayer()).thenReturn(new Player("", UUID.randomUUID().toString(), List.of()));
+
         // Call the method
         lobbyPacketHandler.handle(client, id, packet);
 
