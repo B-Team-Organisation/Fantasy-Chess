@@ -14,27 +14,6 @@ private TileModel[][] tileGrid;
 This array is dynamically created in the constructor and is theoretically able to represent every
 grid size imaginably.
 
-````Java
-public GridModel(int rows, int cols){
-
-    if (rows < 1 || cols < 1){
-        this.rows = 0;
-        this.cols = 0;
-        tileGrid = new TileModel[0][0];
-        return;
-    }
-
-    this.rows = rows;
-    this.cols = cols;
-
-    tileGrid = new TileModel[rows][cols];
-
-    for (TileModel[] tileRow : tileGrid) {
-        for (int i = 0; i < tileRow.length; i++) {
-            tileRow[i] = new TileModel();
-        }
-    }
-}
-````
-
 All fields can be accessed using getters.
+
+For implementation details, please check out the [JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/models/GridModel.html)

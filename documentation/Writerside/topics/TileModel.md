@@ -12,3 +12,5 @@ private boolean isStartTile = false;
 ```
 
 All fiends in the TileModel are read/write-able using getters/setters.
+
+For implementation details, please check out the [JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/models/TileModel.html)
