@@ -139,7 +139,7 @@ Rundenbasierte Regeln:
 
 # Architecture
 
-![architecture.drawio.svg](../documentation/Writerside/img/architecture/architecture.drawio.svg)
+![bg right](../documentation/Writerside/img/architecture/architecture.drawio.svg)
 
 ---
 
@@ -147,7 +147,11 @@ Rundenbasierte Regeln:
 
 ![width:600px bg left](assets/img/auth-sequence.svg)
 
-- Client 
+- Client Registers on Server
+- Receives UUID
+- Requests Token w/ UUID
+- gets Token and expiry data
+- Establish Connections
 
 > Für nähere infos: [`Authentication`](https://b-team-organisation.github.io/Fantasy-Chess/authentication.html)
 
@@ -209,6 +213,19 @@ public interface PacketHandler {
 ---
 
 ![bg 60%](assets/img/packet-handler-diagram.svg)
+
+---
+
+# Services
+
+- GameStateService
+  - benutzt Turn Logic Service
+- LobbyService
+- PlayerService
+- TokenService
+- WebSocketService
+
+![bg right](assets/img/server-services.drawio.svg)
 
 ---
 
