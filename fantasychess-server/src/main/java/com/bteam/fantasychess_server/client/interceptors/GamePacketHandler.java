@@ -18,6 +18,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import static com.bteam.common.constants.PacketConstants.GAME_COMMANDS;
+import static com.bteam.common.constants.PacketConstants.GAME_TURN_RESULT;
+
 public class GamePacketHandler implements PacketHandler {
     private final String packetPattern = "GAME_";
     private final GameStateService gameStateService;
@@ -43,7 +46,7 @@ public class GamePacketHandler implements PacketHandler {
         var data = tree.get("data");
 
         switch (id) {
-            case "GAME_COMMANDS":
+            case GAME_COMMANDS:
                 try {
                     var commands = mapper.convertValue(data, CommandListDTO.class);
                     var attacks = CommandMapper.attacksFromDTO(commands);
@@ -60,7 +63,8 @@ public class GamePacketHandler implements PacketHandler {
                     var lobby = lobbyService.getLobbyWithPlayer(playerUUID);
                     var players = lobby.getPlayers();
                     var result = gameStateService.processMoves(gameId, game.getCommands());
-                    for (var p : players) {
+                    for (int i = 0; i < players.size(); i++) {
+                    var p = players.get(i);
                         Packet packetToSend;
                         TurnResult turnResult = result.getFirst();
                         if (lobbyService.getLobby(UUID.fromString(game.getLobbyId())).isHost(p))
@@ -87,7 +91,7 @@ public class GamePacketHandler implements PacketHandler {
 
                         var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands,
                                 validCommandsDto, turnResult.getWinner());
-                        packetToSend = new Packet(dto, "GAME_TURN_RESULT");
+                        packetToSend = new Packet(dto, GAME_TURN_RESULT);
                         System.out.println(dto.toJson());
                         WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                     }
