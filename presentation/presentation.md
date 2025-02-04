@@ -2,7 +2,8 @@
 marp: true
 title: Fantasy-Chess
 header: Fantasy-Chess
-footer: B-Team 
+footer: B-Team
+
 ---
 
 # Fantasy-Chess
@@ -131,6 +132,49 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Scrum
+
+---
+
+# Spiel
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+## 4.1 Hauptmenü
+
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+    
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
+
+--- 
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+<style scoped>
+  img.right {
+    float: right;
+    margin-left: 20px; 
+    margin-top: 0px;
+    max-width: 60%; 
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
+
+### Funktionen
+- Lobby-Suche
+- Datenaktualisierung
+- Lobby-Erstellung
+
+### Vorteile des Hauptmenüs
+- Benutzerfreundlichkeit
+- Flexibilität
+- Effizienz
 
 ---
 
@@ -508,7 +552,102 @@ public interface PacketHandler {
 ---
 
 # Qualität
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
+ **Ziele:**
+  - Fehlerfreiheit und robuste Funktionen
+  - Intuitive und reibungslose Spielerfahrung
+  - Erweiterbarkeit des Codes für zukünftige Features
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Common Module
+
+## Wie wurde getestet?
+
+- **Automatisierte Tests:** Getestet mit **JUnit** 
+- **Ansatz:**
+  - **Unit Tests:** Methoden lieferten korrekte Ergebnisse.
+  - **Edge Cases:** Null-Werte und Extreme getestet.
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Common Module
+
+## Was wurde getestet?
+
+- **Models:**  
+  Datenintegrität 
+- **DTOs:**  
+  Korrekte Serialisierung/Deserialisierung 
+- **Services:**  
+  Spiel-Logik
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Client Module
+
+## Wie wurd getestet?
+
+- **Manual Testing:**  
+  Erforderlich wegen komplexer Spielzustände und visueller Validierung, GWT
+- **Ansatz:**
+  - **Szenarien:** Testen des Spielflusses durch Playtests
+  - **Input Reaktionen:** Validieren der korrekten Reaktion auf Inputs
+  - **Funktionstests:** UI-Reaktionen und Gameplay-Funktionen wurden geprüft
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Client Module
+
+## Was wurde getestet?
+
+- **Funktionalität:**
+  - Spielschleife funktioniert fehlerfrei
+  - Serverkommunikation und Verarbeitung der Antworten
+  - Erwartete Reaktionen auf verschiedenen Eingaben
+- **Rendering und Animationen:**
+  - Korrektes Rendering aller Elemente
+  - Korrekte CommandPreview and TurnOutcome
+- **UI Testing:**  
+  - Stat-Overlays und Dialoge
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Server Module
+
+## Wie wurde getestet?
+
+- **Automatisierte Tests:** Backend-Logik und WebSocket-Kommunikation mit **Unit Tests** 
+- **Ansatz:**
+  - WebSocket-Verbindungen und Nachrichten validiert
+  - REST-Endpunkte getestet
+  - Packet handling, services
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Server Module
+
+## Was wurde getestet?
+
+- **WebSocket Services:**  
+  Stabilität von Verbindungen und Nachrichtennutzlasten 
+- **Controllers:**  
+  REST-Endpunkte validiert
+- **Handlers:**  
+  Ereignis- und Paketverarbeitung überprüft
+  
 ---
 
 # Doku
