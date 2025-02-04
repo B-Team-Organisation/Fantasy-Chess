@@ -94,6 +94,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Scrum Master: Marc
 - Sprints gingen 2 Wochen
 - Meetings wöchentlich 1x online (DC), 1x in Person
+- Zeiterfassung über Clockify
 
 <!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
@@ -118,7 +119,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Guidelines
-![w:900](./assets/img/jacinto/guidelines.png)
+![w:900](./assets/img/jacinto/guidelines_3.png)
 
 <!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
@@ -207,7 +208,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ![w:900](./assets/img/jacinto/prototype.png)
 
-<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+<!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
 
@@ -643,7 +644,7 @@ Subpattern Mappings: '+' -> "plus"
 - Befehle müssen sich an die Movement / Attack Patterns der Charaktere halten -> Charaktere vom Server als anticheat
 - Charaktere dürfen sich nicht dahin bewegen, wo andere Charaktere sind<br />-> Auch nicht wenn der sich wegbewegt
 - Mehrere Spieler dürfen sich nicht an die gleiche Stelle bewegen
-- Eigener Check für Charktere gegnerischer Spieler -> "Bounces"
+- Eigener Check für Charaktere gegnerischer Spieler -> "Bounces"
 
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
