@@ -295,25 +295,30 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
 ---
 
-# Game Interaction
+# CharacterDataModel
+
+Definiert alle **statischen Eigenschaften** eines Charakters.
+
+## Kernpunkte:
+- Dient als **Initial Zustand** zur Erstellung neuer Charakter-Instanzen
+- **Statische Definition** eines Charakters
+- Fest im **Common-Modul** implementiert 
+<!--um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten-->
+- Entscheidet welche Statistiken und Befehlsmuster ein Character hat
 
 ---
 
-# Coordinate Systems
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
-![w:900](./assets/img/jacinto/CoordinateMaps.png)
+# Character-Entity
 
----
+Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
 
-# Grid to World
-
-![w:900](./assets/img/jacinto/gridToWorld.png)
-
----
-
-# World to Grid
-
-![w:900](./assets/img/jacinto/worldToGrid.png)
+## Kernpunkte:
+- Wird **direkt vor dem Start des Spiels** erzeugt
+- Spiel Logik bearbeitet während des laufenden Spieles den Zustand
+- Speichert Zustand des Characters während des Spiels
+- **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen
 
 ---
 
@@ -484,7 +489,25 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Turn Logic
+# Game Interaction
+
+---
+
+# Coordinate Systems
+
+![w:900](./assets/img/jacinto/CoordinateMaps.png)
+
+---
+
+# Grid to World
+
+![w:900](./assets/img/jacinto/gridToWorld.png)
+
+---
+
+# World to Grid
+
+![w:900](./assets/img/jacinto/worldToGrid.png)
 
 ---
 
