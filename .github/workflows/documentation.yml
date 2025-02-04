@@ -45,8 +45,8 @@ jobs:
           gradle javadoc
           mkdir -p ../pages-out/java-docs/client/html/
           mkdir -p ../pages-out/java-docs/client/core/
-          mv html/build/docs/* ../pages-out/java-docs/client/html/
-          mv core/build/docs/* ../pages-out/java-docs/client/core/
+          mv html/build/docs/javadoc/* ../pages-out/java-docs/client/html/
+          mv core/build/docs/javadoc/* ../pages-out/java-docs/client/core/
         # zip -r html/build/docs/client-html-javadocs.zip html/build/docs/* 
         # zip -r core/build/docs/client-core-javadocs.zip core/build/docs/* 
 

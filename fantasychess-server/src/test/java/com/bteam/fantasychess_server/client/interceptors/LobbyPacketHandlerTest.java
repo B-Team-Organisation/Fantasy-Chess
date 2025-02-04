@@ -7,6 +7,7 @@ import com.bteam.common.models.LobbyModel;
 import com.bteam.common.models.Player;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.service.LobbyService;
+import com.bteam.fantasychess_server.service.WebSocketService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 class LobbyPacketHandlerTest {
@@ -32,13 +33,17 @@ class LobbyPacketHandlerTest {
     @Mock
     private Client client; // Mocking the Client
 
+    // Mocking ObjectMapper
     @Mock
-    private ObjectMapper objectMapper; // Mocking ObjectMapper
+    private ObjectMapper objectMapper;
+
+    @Mock
+    private WebSocketService webSocketService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this); // Initialize mocks
-        lobbyPacketHandler = new LobbyPacketHandler(lobbyService);
+        lobbyPacketHandler = new LobbyPacketHandler(lobbyService, webSocketService);
     }
 
     @Test
@@ -65,7 +70,7 @@ class LobbyPacketHandlerTest {
         String id = "LOBBY_CREATE"; // The ID we are testing
 
         CreateLobbyDTO createLobbyDTO = new CreateLobbyDTO("Test Lobby");
-        LobbyModel mockLobby = new LobbyModel("",new ArrayList<>(), new Player("","",List.of()),"",2); // Mock lobby creation
+        LobbyModel mockLobby = new LobbyModel("", new ArrayList<>(), new Player("", "", List.of()), "", 2); // Mock lobby creation
 
         // Mock dependencies
         when(objectMapper.readValue(anyString(), eq(CreateLobbyDTO.class))).thenReturn(createLobbyDTO);
@@ -85,12 +90,14 @@ class LobbyPacketHandlerTest {
         String id = "LOBBY_JOIN"; // The ID we are testing
         Packet p = new Packet(new JoinLobbyDTO(UUID.randomUUID().toString()), "LOBBY_JOIN");
         String packet = p.toString();
-        System.out.println(p.toString());
+        System.out.println(p);
 
         // Mock dependencies
         when(objectMapper.readValue(anyString(), eq(JoinLobbyDTO.class))).thenReturn(joinLobbyDTO);
         when(lobbyService.joinLobby(any(UUID.class), any(UUID.class))).thenReturn(true); // Assume joining succeeds
-        when(client.getPlayer()).thenReturn(new Player("",UUID.randomUUID().toString(),List.of()));
+        when(lobbyService.getLobby(any())).thenReturn(new LobbyModel("", new ArrayList<>(), new Player("", "", List.of()), "", 2));
+        when(client.getPlayer()).thenReturn(new Player("", UUID.randomUUID().toString(), List.of()));
+
         // Call the method
         lobbyPacketHandler.handle(client, id, packet);
 
