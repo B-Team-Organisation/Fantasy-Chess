@@ -18,13 +18,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.bteam.common.dto.Packet;
 import com.bteam.common.dto.PlayerStatusDTO;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.MovementDataModel;
+import com.bteam.common.models.Player;
 import com.bteam.common.models.Vector2D;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.fantasychess_client.Main;
 import com.bteam.fantasychess_client.data.mapper.CharacterEntityMapper;
 import com.bteam.fantasychess_client.data.mapper.TurnResultMapper;
@@ -39,7 +40,9 @@ import com.bteam.fantasychess_client.utils.TileMathService;
 import java.util.List;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
+import static com.bteam.common.constants.PacketConstants.*;
 import static com.bteam.fantasychess_client.Main.*;
 import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
 
@@ -58,18 +61,24 @@ public class GameScreen extends ScreenAdapter {
     private static final String DEFAULT_MAP_PATH = "maps/Map2.tmx";
     private final OrthographicCamera gameCamera;
     private final ExtendViewport gameViewport;
-
+    private Stage stage;
     private final OrthographicCamera uiCamera;
     private final ExtendViewport uiViewport;
     private final Skin skin;
-    private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
-    private final BitmapFont damageFont;
-    private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
-    private final List<CharacterSprite> characterSprites = new ArrayList<>();
-    private Stage stage;
-    private TextButton readyButton;
     private TextureAtlas atlas;
     private SpriteBatch batch;
+
+    private TileMathService mathService;
+    private MapInputAdapter mapInputProcessor;
+
+    private final Map<String, CharacterSprite> spriteMapper = new HashMap<>();
+    private final List<CharacterSprite> characterSprites = new ArrayList<>();
+    private TurnResultAnimationHandler animationHandler;
+
+    private final BitmapFont damageFont;
+    private final Map<Vector2D, String> damagePreviewValues = new HashMap<>();
+
+    private TextButton readyButton;
     private IsometricTiledMapRenderer mapRenderer;
     private TiledMap tiledMap;
     private TiledMapTileLayer startRowsLayer;
@@ -77,13 +86,11 @@ public class GameScreen extends ScreenAdapter {
     private TiledMapTileLayer highlightLayer;
     private TiledMapTileLayer commandOptionLayer;
     private TiledMapTileLayer commandPreviewLayer;
-    private TileMathService mathService;
     private Vector2D focussedTile;
 
     private CharacterEntity selectedCharacter;
     private Vector2D[] validCommandDestinations = new Vector2D[0];
-    private MapInputAdapter mapInputProcessor;
-    private TurnResultAnimationHandler animationHandler;
+    private LobbyScreen lobbyScreen;
 
     /**
      * Constructor of GameScreen
@@ -116,6 +123,8 @@ public class GameScreen extends ScreenAdapter {
     @Override
     public void show() {
         reset();
+        getLogger().log(Level.SEVERE, getLobbyService().getCurrentLobby().getPlayers().stream()
+            .map(s -> s.toString()).collect(Collectors.joining(",")));
         Gdx.gl.glClearColor(.1f, .12f, .16f, 1);
 
         stage = new Stage(uiViewport);
@@ -134,7 +143,7 @@ public class GameScreen extends ScreenAdapter {
         batch = new SpriteBatch();
 
         // Todo: Keep in mind that this method of dimension retrieval is
-        //  bound to run into issues as soon as the map also contains surrounding foliage.
+        // bound to run into issues as soon as the map also contains surrounding foliage.
         tiledMap = new TmxMapLoader().load(DEFAULT_MAP_PATH);
         mapRenderer = new IsometricTiledMapRenderer(tiledMap);
 
@@ -169,15 +178,28 @@ public class GameScreen extends ScreenAdapter {
         getLogger().log(Level.SEVERE, "Registering PLAYER_READY packet handler");
 
         getLogger().log(Level.SEVERE, "Registering LOBBY_CLOSED packet handler");
-        getWebSocketService().addPacketHandler("LOBBY_CLOSED", p -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(LOBBY_CLOSED, p -> Gdx.app.postRunnable(() -> {
             var content = getLobbyService().onLobbyClosed(p);
             GenericModal.Build("Lobby Closed!", content + "\nReturning to Main Menu.", skin,
                 () -> getScreenManager().navigateTo(Screens.MainMenu), stage);
         }));
+        getWebSocketService().addPacketHandler(PLAYER_READY, p -> Gdx.app.postRunnable(() -> {
+            JsonReader reader = new JsonReader();
+            JsonValue data = reader.parse(p).get("data");
+            String clientId = data.getString("clientId");
+            boolean ready = data.getString("status").equals(PlayerStatusDTO.PLAYER_READY);
+            getLobbyService().getCurrentLobby().getPlayers().forEach(player -> {
+                if (player.getPlayerId().equals(clientId)) {
+                    player.setStatus(ready ? Player.Status.READY : Player.Status.NOT_READY);
+                    getLobbyService().onPlayerReadyChanged.invoke(player);
+                }
+            });
+        }));
 
 
         getLogger().log(Level.SEVERE, "Registering GAME_INIT packet handler");
-        getWebSocketService().addPacketHandler("GAME_INIT", str -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(GAME_INIT, str -> Gdx.app.postRunnable(() -> {
+            lobbyScreen.hide();
             getGameStateService().registerNewGame(9, 9);
             var characters = CharacterEntityMapper.fromListDTO(str);
             String gameId = new JsonReader().parse(str).get("data").getString("gameId");
@@ -185,13 +207,6 @@ public class GameScreen extends ScreenAdapter {
             getGameStateService().setCharacters(characters);
             initializeGame();
         }));
-
-        getWebSocketService().addPacketHandler("PLAYER_READY", str -> Main.getLogger().log(Level.SEVERE, "PLAYER_READY"));
-
-        Gdx.app.postRunnable(() -> {
-            Packet packet = new Packet(PlayerStatusDTO.ready(""), "PLAYER_READY");
-            getWebSocketService().send(packet);
-        });
 
         getLogger().log(Level.SEVERE, "Adding onApplyTurnResult listener");
         getGameStateService().onApplyTurnResult.addListener(turnResult -> {
@@ -204,7 +219,7 @@ public class GameScreen extends ScreenAdapter {
 
         getGameStateService().onCharacterDeath.addListener(this::killCharacter);
 
-        getWebSocketService().addPacketHandler("GAME_TURN_RESULT", str -> Gdx.app.postRunnable(() -> {
+        getWebSocketService().addPacketHandler(GAME_TURN_RESULT, str -> Gdx.app.postRunnable(() -> {
             Main.getLogger().log(Level.SEVERE, "Received Turn Result");
             TurnResult turnResult = TurnResultMapper.fromDTO(str);
             Main.getLogger().log(Level.SEVERE, turnResult.toString());
@@ -213,34 +228,17 @@ public class GameScreen extends ScreenAdapter {
 
         getWebSocketService().getClient().onCloseEvent.clear();
         getWebSocketService().getClient().onCloseEvent.addListener(this::onDisconnect);
+
+        lobbyScreen = new LobbyScreen(skin, getLobbyService().getCurrentLobby().getLobbyName());
+        lobbyScreen.show(stage);
+
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
-            if (animationHandler == null) {
-                TurnResult turnResult = Main.getGameStateService().getTurnResult();
-                if (turnResult.getValidMoves().isEmpty() &&
-                    turnResult.getMovementConflicts().isEmpty() &&
-                    turnResult.getValidAttacks().isEmpty()) {
-                    mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
-                    return;
-                }
-
-                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
-                animationHandler.startAnimation();
-            }
-
-            animationHandler.progressAnimation();
-
-            if (animationHandler.isDoneWithAnimation()) {
-                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
-                animationHandler = null;
-                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
-            }
-        }
+        handleAnimation();
 
         gameViewport.apply();
 
@@ -259,11 +257,13 @@ public class GameScreen extends ScreenAdapter {
         Vector3 mouse = gameCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
         Vector2D grid = mathService.worldToGrid(mouse.x, mouse.y);
 
-        if (grid != null && !grid.equals(focussedTile)) {
+        if (grid == null || !grid.equals(focussedTile)) {
             focussedTile = grid;
             createFreshHighlightLayer();
             createFreshCommandPreviewLayer();
         }
+
+
 
         SpriteSorter.sortByY(characterSprites);
         for (CharacterSprite sprite : characterSprites) {
@@ -280,6 +280,18 @@ public class GameScreen extends ScreenAdapter {
             batch.setColor(255, 255, 255, 1f);
         }
 
+        handleDamageNumbers();
+
+        batch.end();
+        batch.disableBlending();
+
+        uiViewport.apply();
+
+        stage.act();
+        stage.draw();
+    }
+
+    private void handleDamageNumbers() {
         if (damagePreviewValues.isEmpty()) {
             Map<Vector2D, Integer> finalDamageValues = new HashMap<>();
             for (Map<Vector2D, Integer> damageValues : Main.getCommandManagementService().getCommandDamageMappings().values()) {
@@ -309,14 +321,31 @@ public class GameScreen extends ScreenAdapter {
                 damageFont.draw(batch, layout, worldPos.x - textWidth / 2, worldPos.y + textHeight / 2);
             }
         }
+    }
 
-        batch.end();
-        batch.disableBlending();
+    private void handleAnimation() {
+        if (mapInputProcessor.getGameScreenMode() == GameScreenMode.TURN_OUTCOME) {
+            if (animationHandler == null) {
+                TurnResult turnResult = Main.getGameStateService().getTurnResult();
+                if (turnResult.getValidMoves().isEmpty() &&
+                    turnResult.getMovementConflicts().isEmpty() &&
+                    turnResult.getValidAttacks().isEmpty()) {
+                    mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                    return;
+                }
 
-        uiViewport.apply();
+                animationHandler = new TurnResultAnimationHandler(turnResult, spriteMapper, tiledMap, mathService, atlas);
+                animationHandler.startAnimation();
+            }
 
-        stage.act();
-        stage.draw();
+            animationHandler.progressAnimation();
+
+            if (animationHandler.isDoneWithAnimation()) {
+                mapInputProcessor.setGameScreenMode(GameScreenMode.COMMAND_MODE);
+                animationHandler = null;
+                getGameStateService().syncCharacters(getGameStateService().getTurnResult());
+            }
+        }
     }
 
     private TextButton createReadyButton() {
@@ -518,6 +547,7 @@ public class GameScreen extends ScreenAdapter {
         commandPreviewLayer.setOffsetX(1f);
         tiledMap.getLayers().add(commandPreviewLayer);
 
+        damagePreviewValues.clear();
         if (focussedTile != null && Arrays.asList(validCommandDestinations).contains(focussedTile)) {
             switch (mapInputProcessor.getCommandMode()) {
                 case MOVE_MODE: {
@@ -533,14 +563,16 @@ public class GameScreen extends ScreenAdapter {
                     Vector2D[] areaOfEffect = selectedCharacter.getCharacterBaseModel().getAttackPatterns()[0].getAreaOfEffect(selectedCharacter.getPosition(), focussedTile);
 
                     TiledMapTileLayer.Cell previewCell = new TiledMapTileLayer.Cell();
-
                     TextureRegion region = atlas.findRegion("special_tiles/filled-red");
-
                     previewCell.setTile(new StaticTiledMapTile(region));
 
-                    damagePreviewValues.clear();
                     for (Vector2D position : areaOfEffect) {
                         Vector2D tilePosition = mathService.gridToTiled(position);
+
+                        if (tilePosition.getX() < 0 || tilePosition.getY() < 0 || tilePosition.getX() >= mathService.getMapWidth()  || tilePosition.getY() >= mathService.getMapHeight()) {
+                            continue;
+                        }
+
                         commandPreviewLayer.setCell(tilePosition.getX(), tilePosition.getY(), previewCell);
 
                         damagePreviewValues.put(position, selectedCharacter.getCharacterBaseModel().getAttackPower() + "");

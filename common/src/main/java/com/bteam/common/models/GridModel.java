@@ -16,7 +16,7 @@ import java.util.Objects;
  * By this definition, a tile is addressed by tileGrid[row][column].
  *
  * @author Lukas, Albano
- * @version 1.0
+ * @version 1.1
  */
 public class GridModel{
     private int rows;
@@ -26,11 +26,21 @@ public class GridModel{
 
     /**
      * Constructor for the GridModel.
+     * <p>
+     * Row or col values below 1 will result in a 0x0 grid. This is not advised.
      *
      * @param rows the number of rows in the grid
      * @param cols the number of cols in the grid
      */
     public GridModel(int rows, int cols){
+
+        if (rows < 1 || cols < 1){
+            this.rows = 0;
+            this.cols = 0;
+            tileGrid = new TileModel[0][0];
+            return;
+        }
+
         this.rows = rows;
         this.cols = cols;
 

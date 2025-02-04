@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.bteam.common.constants.PacketConstants.GAME_COMMANDS;
 import static com.bteam.fantasychess_client.Main.getGameStateService;
 import static com.bteam.fantasychess_client.Main.getWebSocketService;
 
@@ -25,7 +26,7 @@ public class CommandManagementService {
     private final Map<String, AttackDataModel> attacks;
     private final Map<String, MovementDataModel> movements;
 
-    private final Map<AttackDataModel,Map<Vector2D,Integer>> commandDamageMappings;
+    private final Map<String, Map<Vector2D, Integer>> commandDamageMappings;
 
     /**
      * Constructor
@@ -50,15 +51,14 @@ public class CommandManagementService {
     /**
      * Sets the attack command
      *
-     * @param attack {@link AttackDataModel} of the attack command to set
+     * @param attack       {@link AttackDataModel} of the attack command to set
      * @param damageValues {@link Map} containing the attacked position mapped to its damage
      */
     public void setCommand(AttackDataModel attack, Map<Vector2D, Integer> damageValues) {
         movements.remove(attack.getAttacker());
 
-        AttackDataModel oldAttack = attacks.get(attack.getAttacker());
-        commandDamageMappings.remove(oldAttack);
-        commandDamageMappings.put(attack,damageValues);
+        commandDamageMappings.remove(attack.getAttacker());
+        commandDamageMappings.put(attack.getAttacker(), damageValues);
 
         attacks.put(attack.getAttacker(), attack);
     }
@@ -70,6 +70,9 @@ public class CommandManagementService {
      */
     public void setCommand(MovementDataModel movement) {
         attacks.remove(movement.getCharacterId());
+
+        commandDamageMappings.remove(movement.getCharacterId());
+
         movements.put(movement.getCharacterId(), movement);
     }
 
@@ -94,7 +97,7 @@ public class CommandManagementService {
     /**
      * Getter for command damage mappings
      */
-    public Map<AttackDataModel, Map<Vector2D, Integer>> getCommandDamageMappings() {
+    public Map<String, Map<Vector2D, Integer>> getCommandDamageMappings() {
         return commandDamageMappings;
     }
 
@@ -106,7 +109,7 @@ public class CommandManagementService {
         for (var movement : movements.values()) list.add(new CommandDTO(movement));
         for (var attack : attacks.values()) list.add(new CommandDTO(attack));
         CommandListDTO commandListDTO = new CommandListDTO(list, getGameStateService().getGameId());
-        Packet packet = new Packet(commandListDTO, "GAME_COMMANDS");
+        Packet packet = new Packet(commandListDTO, GAME_COMMANDS);
         getWebSocketService().send(packet);
     }
 }

@@ -1,16 +1,14 @@
-# Character Entity
-
-## CharacterEntity
+# Character Entities
 
 The `CharacterEntity` represents an active instance of a character in the game. These entities
 are dynamically instantiated during gameplay, integrating with the game's logic to maintain their
 state throughout the match lifecycle.
 
-### Structure of CharacterEntity
+## Structure of CharacterEntity
 📌 **For a full technical reference, check the** 
 [CharacterDataModel JavaDoc](../../../common/src/main/java/com/bteam/common/entities/CharacterEntity.java).
 
-### Key Attributes (Definition List)
+## Key Attributes (Definition List)
 
 - **Character Base Model ([](CharacterDataModel.md))**: Provides the static attributes,
   including attack and movement patterns, descriptions, and base health.
@@ -19,7 +17,7 @@ state throughout the match lifecycle.
 - **Position (`Vector2D`)**: The character's current position on the game grid.
 - **Player ID (`String`)**: Identifies the player controlling this character.
 
-### Role of Character Entity
+## Role of Character Entity
 
 The `CharacterEntity` bridges the gap between the static [](CharacterDataModel.md) and the game's dynamic logic.
 It evolves throughout gameplay while maintaining a reference to its original data model.
@@ -71,6 +69,7 @@ The `CharacterEntity` updates dynamically during the game.
 ### Combat and Damage Handling
 - Characters take damage based on attack interactions.
 - When health reaches zero, the character is removed from the game grid.
+
 
 
 

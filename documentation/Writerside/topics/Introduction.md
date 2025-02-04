@@ -1,8 +1,7 @@
 # Introduction
 
 Fantasy-Chess ist a PvP, turn-based action game, in which players command characters
-to fight against each other in order to claim victory. The game is fought out on a 
-9x9 Board that 
+to fight against each other in order to claim victory.
 
 ## Getting Started
 
@@ -72,6 +71,15 @@ You are now ready to start working on the Project.
 </p>
 </procedure>
 
+## JavaDocs
+
+Since the entire project is written in Java, it makes heavy use of JavaDocs, automatic deploys of the current dev docs can be found here:
+
+- [Client / HTML](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/client/html/)
+- [Client / Core](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/client/core/)
+- [Common](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/)
+- [Server](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/server/)
+
 ## Team
 
 Marc Matija
@@ -86,7 +94,7 @@ Lukas Walker
 : **Email:** [lukas.walker@student.hs-rm.de](mailto:lukas.walker@student.hs-rm.de)
 
 Dania Anwar
-: **Email:** [dania.anwar@student.hs-rm.de](mailto:dania.anwar@student.hs-rm.de)
+: **Email:** [daniairam.anwar@gmail.com](mailto:daniairam.anwar@gmail.com)
 
 Adnan Benis
 : **Email:** [adnan.benis@student.hs-rm.de](mailto:adnan.benis@student.hs-rm.de)
