@@ -16,7 +16,7 @@ The following things happen when the game screen gets created (combination of co
 - Creation of the `atlas` for texture retrieval and `batch` for sprite rendering.
 - Import of the tiled tmx map used for rendering the map + creation of its renderer
 - Creation of the `TiledMathService` for all calculations. See [](Tilemap.md)
-- Creation of custom map layers. See [](GameScreen.md#layers)
+- Creation of custom map layers. See [](GameScreen.md#other-layers)
 - Registration of input processors. See [](GameScreen.md#map-input-adapter)
 - Registration of event and packet handlers used for game state networking. See [](Networking.md#websocket-service)
 
@@ -94,7 +94,14 @@ This is the phase the player will spend most time in. All command and planed and
 
 This phase is the last phase of the game loop. Its shows both players the winner of the game in a `Dialog`.
 
-## Layers
+## Map Rendering
+
+The map was created using the tool [Tiled](http://www.mapeditor.org/) and exported as a tmx file.
+This file can be loaded using the TmxMapLoader to directly manipulate and render it in game.
+The map itself is stored in the base layer of this map, every single tile being saved with all nececarry
+information for its depiction.
+
+## Other Layers
 
 All information about the status of tiles or the possibility or effect of certain commands is delivered
 using visual clues. Most of these are implemented using custom layers in the `TiledMap` using `TiledMapTileLayers`.
@@ -103,37 +110,43 @@ they can be rendered to the screen.
 
 The following custom layers are used in the game:
 
-### Start-Rows Layer
+#### Start-Rows Layer
 
 ![](../img/client/StartTilesLayer.png)
 
 This layers contains the transparent green tiles seen in the [](GameScreen.md#game-initialisation).
 It shows the player the area in which the player can move or swap his characters during the phase.
 
-### Selected-Character Layer
+#### Selected-Character Layer
 
 ![](../img/client/SelectedCharacter.png)
 
 This layers contains a single green tile to show which character is currently selected when giving commands.
 
-### Highlight Layer
+#### Highlight Layer
 
 ![](../img/client/HighlightLayer.png)
 
 This layer contains the single highlighting the current tile hovered by the player.
 
-### Command Option/Preview Layer
+#### Command Option/Preview Layer
 
-These two layers
+![](../img/client/MovePreview.png){width=400}
 
-![](../img/client/MovePreview.png){width=400}  ![](../img/client/AttackPreview.png){width=400}
+![](../img/client/AttackPreview.png){width=400}
 
-Test
+The command option layer depicts all valid target tiles of an attack/movement command.
+In the images, it is responsible for the yellow circles (movement options) and red squares (attack options).
+
+The command preview layer visualizes the result of a command. Its responsible for all filled out tiles in yellow
+(movement) and red (attack area).
 
 ## Ready Button
 
-The ready button lets the players send their commands. His text gives some hints about the current state of the game.
-He is updates using his `act(float delta)` method that's called together with `stage.act()` in the rendering method.
+The ready button lets the players send their commands. His text gives some hints about the current state of the game,
+displaying the amount of commands set in the current round or tells the player to wait for his opponent.
+He is updates using his `act(float delta)` method that's called together with `stage.act()` in the rendering method and
+in situations where he should not be pressed.
 
 ## Stat Panels
 
