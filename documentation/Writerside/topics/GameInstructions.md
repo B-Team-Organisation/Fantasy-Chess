@@ -31,16 +31,14 @@ The splash screen displays the title of the game "Fantasy-Chess" prominently.
     1. Click the **"Create Lobby"** button.
     2. Enter the name of your lobby in the pop-up window.
     3. Confirm by clicking **"Create"** or cancel by clicking **"Cancel."**
-    4. Your created lobby will appear in the list with the status **"OPEN."**
+    4. Your created lobby will appear in the list for others to join. The status will be: **"OPEN."**
 
 ![Lobbyscreen](../img/gameplay/Lobbyscreen5.png)
 
 ## **Gamescreen: The Match**
 
 ### **Waiting for Opponents**
-Before the game begins, the empty game board is displayed while waiting for opponent to enter the game.
-
-![Gamescreen](../img/gameplay/GamescreenEmpty.png)
+Before the game begins, the lobby dialog with the game board in the back is displayed while waiting for opponent to enter the game.
 
 ### **Starting the Game**
 - **Description:** Once both players have joined, the game board will display green tiles where you can place your characters before the match begins. These tiles indicate the starting positions available for your characters.
@@ -80,7 +78,7 @@ Before the game begins, the empty game board is displayed while waiting for oppo
   - If you select **Move**, yellow circles will appear on tiles indicating where your character can move.
     ![Gamescreen](../img/gameplay/MovePattern.png)
   - Hover over a tile to preview your movement. The circle will fill in yellow to indicate the selected tile.
-    ![Gamescreen](../img/gameplay/MovePatternHover.png)
+    ![Gamescreen](../img/gameplay/HoverMovePattern.png)
   - Confirm your move by clicking on the desired yellow circle.
 
   4. **Canceling an Action:**
