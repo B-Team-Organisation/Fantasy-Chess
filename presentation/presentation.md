@@ -281,6 +281,21 @@ Erstellt mit Tiled
 
 ---
 
+# Design - Charaktere
+
+<br><br><br><br><br><br><br><br>
+
+![bg w:100](assets/img/scaled-characters/bombo.webp)
+![bg w:100](assets/img/scaled-characters/blossom.webp)
+![bg w:100](assets/img/scaled-characters/fitzooth.webp)
+![bg w:100](assets/img/scaled-characters/flash.webp)
+![bg w:100](assets/img/scaled-characters/prometheus.webp)
+![bg w:100](assets/img/scaled-characters/stablin.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
 # Spezifikationen + Technische Umsetzung
 
 ---
@@ -891,6 +906,18 @@ public interface PacketHandler {
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
 
+# Writerside Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
 
 # Dokumentation mit Javadoc
 
@@ -936,22 +963,6 @@ public class GridService {
     public Vector2D subtract(Vector2D vector) {
         return new Vector2D(this.x - vector.getX(), this.y - vector.getY());
     }
-```
-
-<!-- _footer: "B-Team: Adnan Bennis"-->
----
-
-## Methode mit Parameter
-```java
-/**
- * Makes the {@link TextField} only accept letters, digits 
- * and other defined chars as input.
- *
- * @param textField the {@link TextField} to apply the filter to.
- */
-private void addNameFilter(TextField textField) {
-    ...
-}
 ```
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
