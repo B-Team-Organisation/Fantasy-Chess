@@ -86,6 +86,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 # Projektorganisation
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Scrum
@@ -94,11 +96,15 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Sprints gingen 2 Wochen
 - Meetings wöchentlich 1x online (DC), 1x in Person
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 <!--
 # Clockify
 
 ![w:900](./assets/img/jacinto/Clockify.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 -->
@@ -109,22 +115,31 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Mit Github Pages wurde die Doku gehostet
 - Mit Github Projects haben wir unser Task Management gemacht
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Kanban
 
 ![w:900](./assets/img/jacinto/kanban.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Guidelines
 ![w:900](./assets/img/jacinto/guidelines.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
 # Prototyping
 
 ![w:900](./assets/img/jacinto/prototype.png)
+
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -191,7 +206,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Spezifikationen + Technische Umsetzung
+# Design
 
 ---
 
@@ -203,7 +218,6 @@ Z. Zukunft <code>Wer noch was braucht</code>
 <br/>
 <br/>
 <br/>
-Splash Screen  Main Menu Game Screen
 <br/>
 <br/>
 
@@ -213,6 +227,61 @@ Splash Screen  Main Menu Game Screen
 
 
 <!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<!-- _footer: "B-Team: Dania Anwar"-->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:400 bg](assets/img/figma/splashscreen.webp)
+![w:400 bg](assets/img/figma/mainmenu.webp)
+![w:400 bg](assets/img/figma/lobbyDialog.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+![w:600 bg](assets/img/figma/gamescreen.webp)
+![w:500 bg](assets/img/figma/turnoutcome.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+<br/><br/><br/><br/><br/><br/>
+# Design - Karte
+TiledMap: Isometrisches Tileset
+Erstellt mit Tiled
+
+![bg](assets/img/TiledScreenshot.png)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Spezifikationen + Technische Umsetzung
 
 ---
 
@@ -501,11 +570,15 @@ Subpattern Mappings: '+' -> "plus"
 
 # Game Interaction
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Coordinate Systems
 
 ![w:900](./assets/img/jacinto/CoordinateMaps.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -513,11 +586,15 @@ Subpattern Mappings: '+' -> "plus"
 
 ![w:900](./assets/img/jacinto/gridToWorld.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # World to Grid
 
 ![w:900](./assets/img/jacinto/worldToGrid.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -533,11 +610,15 @@ Subpattern Mappings: '+' -> "plus"
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Sequenzdiagram
 
 ![w:900](./assets/img/jacinto/sequence_diagram.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -684,56 +765,6 @@ public interface PacketHandler {
 ![bg right 100%](assets/img/client-side-packet-handling.svg)
 
 <!-- _footer: "B-Team: Marc Matija"-->
-
----
-<br/><br/><br/><br/><br/><br/>
-# Design - Karte
-TiledMap: Isometrisches Tileset
-Erstellt mit Tiled
-
-![bg](assets/img/TiledScreenshot.png)
-
-<!-- _footer: "B-Team: Dania Anwar"-->
-
----
-
-# Figma
-<!-- _footer: "B-Team: Dania Anwar"-->
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-![w:400 bg](assets/img/figma/splashscreen.webp)
-![w:400 bg](assets/img/figma/mainmenu.webp)
-![w:400 bg](assets/img/figma/lobbyDialog.webp)
-
-<!-- _footer: "B-Team: Dania Anwar"-->
-
----
-
-# Figma
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
-
-![w:600 bg](assets/img/figma/gamescreen.webp)
-![w:500 bg](assets/img/figma/turnoutcome.webp)
-
-<!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
 
