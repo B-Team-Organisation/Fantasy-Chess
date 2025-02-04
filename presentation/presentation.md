@@ -194,13 +194,13 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Client Tools
 
 - **TexturePacker**
-  - Erstellung von Texture Atlanten
+  - Erstellung des Texture Atlas
 - **SkinComposer**
-  - Anpassbare UI-Skin-Erstellung
+  - UI-Skin-Erstellung
 - **Tiled**
   - Map-Editor mit einfacher Code-Integration
 - **Piskel**
-  - Pixel-Art-Editor für Grafiken
+  - Pixel-Art-Editor für Pixel-Grafiken
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 
