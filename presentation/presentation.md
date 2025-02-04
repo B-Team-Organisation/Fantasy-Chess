@@ -84,10 +84,6 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Introduction
-
----
-
 # Projektorganisation
 
 ---
@@ -99,12 +95,13 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Meetings wöchentlich 1x online (DC), 1x in Person
 
 ---
-
+<!--
 # Clockify
 
 ![w:900](./assets/img/jacinto/Clockify.png)
 
 ---
+-->
 
 # Github
 
@@ -264,15 +261,15 @@ Splash Screen  Main Menu Game Screen
 
 # Charakter-Balancing
 
- Balancieren von **Leben, Angriff und Bewegung**.
+ Balancieren von **Leben, Angriff und Bewegung**
 
-### Prozess-Übersicht:
+## Unser Prozess:
 1. Richtlininien erstellt
 2. Richtlinien befolgt
-3. 15 Charaktere vorgeschlagen,**2 pro Typ**.  
-4. 6 endgültige Charaktere ausgewählt.   
-5. Mathematische Balance durch ein Balancing-Dreieck  
-6. Charaktere getestet und feinjustiert.
+    15 Charaktere vorgeschlagen, **2 pro Typ** 
+4. 6 endgültige Charaktere ausgewählt  
+5. Balancing durch ein Balancing-Dreieck  
+6. Charaktere getestet und feinjustiert
 
 ---
 
@@ -280,8 +277,8 @@ Splash Screen  Main Menu Game Screen
 
 Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
-- **Alle Charaktere** im Dreieck eingezeichnet.  
-- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat.  
+- **Alle Charaktere** im Dreieck eingezeichnet
+- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat 
 
 > **Theorie ≠ Praxis!** Anpassungen waren notwendig, um das Balancing im echten Spiel zu verbessern.
 
@@ -544,12 +541,6 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Klassendiagramm
-
-![h:500](./assets/img/jacinto/turn_logic_classes.png)
-
----
-
 # Server
 
 - Springboot Projekt agierend als WebSocket Server
@@ -695,10 +686,10 @@ public interface PacketHandler {
 <!-- _footer: "B-Team: Marc Matija"-->
 
 ---
-
-# Design - TiledMap
-
-- Tiled: Isometrisches Tileset
+<br/><br/><br/><br/><br/><br/>
+# Design - Karte
+TiledMap: Isometrisches Tileset
+Erstellt mit Tiled
 
 ![bg](assets/img/TiledScreenshot.png)
 
