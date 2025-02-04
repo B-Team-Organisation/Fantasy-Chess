@@ -141,7 +141,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 <!-- _footer: "B-Team: Albano Vukelaj "-->
 
-## 4.1 Hauptmenü
+# Main Menu
 
 <style scoped>
   img.center {
@@ -155,6 +155,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 --- 
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Main Menu
 
 <style scoped>
   img.right {
