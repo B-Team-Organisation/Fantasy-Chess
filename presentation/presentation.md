@@ -93,6 +93,65 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
+# Servreseite
+
+- **Spring Boot 6 & Java 21**
+  - Modernes Framework für Backend-Entwicklung
+- **Spring Messaging**
+  - WebSocket-Verbindungen für Echtzeitkommunikation
+- **Spring JPA & Hibernate**
+  - ORM für einfache Datenverarbeitung
+- **H2 Datenbank**
+  - Leichtgewichtige Entwicklungsdatenbank
+- **PostgreSQL**
+  - Stabile Datenbank für Produktion
+  
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Hosting
+
+- **Git**
+  - Versionskontrolle für Zusammenarbeit
+- **Plesk**
+  - Verwaltung von Hosting und Servern
+- **Docker**
+  - Containerisierte Bereitstellung
+- **nginx**
+  - Hochleistungs-Webserver
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Clientseite
+
+- **LibGDX**
+  - Cross-Plattform-Spieleentwicklungsframework
+- **GWT Deployment**
+  - Browser-basiertes Spielen ohne Downloads
+  - Java-Code kompiliert in JavaScript (Java 11 Einschränkungen)
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Client Tools
+
+- **TexturePacker**
+  - Erstellung von Texture Atlanten
+- **SkinComposer**
+  - Anpassbare UI-Skin-Erstellung
+- **Tiled**
+  - Map-Editor mit einfacher Code-Integration
+- **Piskel**
+  - Pixel-Art-Editor für Grafiken
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
 # Spiel an sich
 
 ---
@@ -264,6 +323,102 @@ public interface PacketHandler {
 ---
 
 # Doku
+
+---
+
+# Tools für die Dokumentation
+
+- **Writerside** → Strukturiertes Schreiben, direkt im Browser aufrufbar.
+- **Markdown** → Einfaches Format für Textdokumentation.
+- **Javadoc** → Automatische Code-Dokumentation für Entwickler.
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+# Dokumentation mit Writerside
+- Writerside ermöglicht eine zentrale, gut strukturierte Dokumentation.
+- **Vorteile:**
+  - Unterstützung für **Markdown**.
+  - Inhalte sind direkt im **Browser** aufrufbar.
+  - **Einfache Navigation** durch verschiedene Dokumentationsbereiche.
+  - Perfekt für Benutzeranleitungen, Entwickler-Dokus und Architektur-Übersichten.
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+
+# Warum Javadoc?
+
+- Verbessert die Lesbarkeit und Wartbarkeit des Codes.
+- Gibt Entwicklern in deinem Team klare Anweisungen zur Nutzung von Klassen und Methoden.
+- Automatisch generierte HTML-Dokumentation:
+  - Kann einfach geteilt und im Browser angezeigt werden.
+- Verhindert Missverständnisse durch klare Beschreibungen.
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+# Wie wir Javadoc verwenden
+
+- **Formatierung:** Kommentare beginnen mit `/**` und enden mit `*/`.
+- **Tags:** 
+  - `@param`: Beschreibt Parameter.
+  - `@return`: Erklärt, was eine Methode zurückgibt.
+  - `@throws`: Beschreibt mögliche Exceptions.
+  - `@see`: Verlinkt verwandte Klassen/Methoden.
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+# Beispiele: 
+
+## MainMenu Klasse
+
+```java
+/**
+ * First screen of the application. 
+ * Displayed after the application is created.
+ */
+public class MainMenu extends ScreenAdapter {
+    ...
+}
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+## Methode mit Javadoc
+
+```java
+/**
+ * Creates the label that shows the game title.
+ *
+ * @return the {@link Label} containing the game title.
+ */
+private Label createTitleLabel() {
+    Label titleLabel = new Label("FantasyChess", skin, "title");
+    titleLabel.setFontScale(0.6f);
+    return titleLabel;
+}
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+## Methode mit Parameter
+```java
+/**
+ * Makes the {@link TextField} only accept letters, digits 
+ * and other defined chars as input.
+ *
+ * @param textField the {@link TextField} to apply the filter to.
+ */
+private void addNameFilter(TextField textField) {
+    ...
+}
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
