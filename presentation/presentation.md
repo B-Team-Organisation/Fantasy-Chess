@@ -31,22 +31,10 @@ A PvP multiplayer browser game.
 
 ---
 
-# Live Demo
-
-<!--
-    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
-    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
-    wir öffnen eine Lobby und spielen ein wenig.
--->
-
-<!-- _footer: "B-Team: Marc Matija"-->
-
----
-
-# Agenda (WIP)
-- Projektorganisation
-- Generelles Spiel
-- Technische Umsetzung
+# Agenda
+- Projektorganisation + Technologien
+- Spezifikationen + Technische Umsetzung
+- Design
 - Qualität
 - Doku
 - (Zukunft)
@@ -81,6 +69,18 @@ A PvP multiplayer browser game.
 6.3 Spielanleitung <code>Adnan</code> 
 Z. Zukunft <code>Wer noch was braucht</code>
 -->
+
+---
+
+# Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Marc Matija"-->
 
 ---
 
@@ -128,55 +128,6 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Prototyping
 
 ![w:900](./assets/img/jacinto/prototype.png)
-
----
-
-# Scrum
-
----
-
-# Spiel
-
----
-
-<!-- _footer: "B-Team: Albano Vukelaj "-->
-
-# Main Menu
-
-<style scoped>
-  img.center {
-    float: center;
-    margin-left : 230px;
-    
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
-
---- 
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-# Main Menu
-
-<style scoped>
-  img.right {
-    float: right;
-    margin-left: 20px; 
-    margin-top: 0px;
-    max-width: 60%; 
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
-
-### Funktionen
-- Lobby-Suche
-- Datenaktualisierung
-- Lobby-Erstellung
-
-### Vorteile des Hauptmenüs
-- Benutzerfreundlichkeit
-- Flexibilität
-- Effizienz
 
 ---
 
@@ -243,7 +194,69 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Spiel an sich
+# Spezifikationen + Technische Umsetzung
+
+---
+
+# Screens
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+Splash Screen  Main Menu Game Screen
+<br/>
+<br/>
+
+![w:500 bg](assets/img/screens/SplashScreen.webp)
+![w:500 bg](assets/img/screens/Lobbyscreen5.webp)
+![w:500 bg](assets/img/screens/Gamescreen.webp)
+
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+# Main Menu
+
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+    
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
+
+--- 
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Main Menu
+
+<style scoped>
+  img.right {
+    float: right;
+    margin-left: 20px; 
+    margin-top: 0px;
+    max-width: 60%; 
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
+
+### Funktionen
+- Lobby-Suche
+- Datenaktualisierung
+- Lobby-Erstellung
+
+### Vorteile des Hauptmenüs
+- Benutzerfreundlichkeit
+- Flexibilität
+- Effizienz
 
 ---
 
@@ -680,6 +693,56 @@ public interface PacketHandler {
 ![bg right 100%](assets/img/client-side-packet-handling.svg)
 
 <!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+# Design - TiledMap
+
+- Tiled: Isometrisches Tileset
+
+![bg](assets/img/TiledScreenshot.png)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<!-- _footer: "B-Team: Dania Anwar"-->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:400 bg](assets/img/figma/splashscreen.webp)
+![w:400 bg](assets/img/figma/mainmenu.webp)
+![w:400 bg](assets/img/figma/lobbyDialog.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+![w:600 bg](assets/img/figma/gamescreen.webp)
+![w:500 bg](assets/img/figma/turnoutcome.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
 
