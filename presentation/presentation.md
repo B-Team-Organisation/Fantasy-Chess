@@ -192,11 +192,12 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 Definiert alle **statischen Eigenschaften** eines Charakters.
 
-### Kernpunkte:
-- Dient als **Initial Zustand** zur Erstellung neuer Charakter-Instanzen.
-- Bleibt **statisch** und **unverändert** während des Spiels.
-- Fest im **Common-Modul** implementiert, um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten.
-- Entscheidet welche Fähigkeiten, Verhaltensweisen und Muster ein Character hat.
+## Kernpunkte:
+- Dient als **Initial Zustand** zur Erstellung neuer Charakter-Instanzen
+- **Statische Definition** eines Charakters
+- Fest im **Common-Modul** implementiert 
+<!--um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten-->
+- Entscheidet welche Statistiken und Befehlsmuster ein Character hat
 
 ---
 
@@ -206,11 +207,11 @@ Definiert alle **statischen Eigenschaften** eines Charakters.
 
 Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
 
-### Kernpunkte:
-- Wird **direkt vor dem Start des Spiels** erzeugt.
-- Spiel Logik bearbeitet während des laufenden Spieles den Zustand.
-- Speichert zustand des Characters während des Spiels.
-- **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen.
+## Kernpunkte:
+- Wird **direkt vor dem Start des Spiels** erzeugt
+- Spiel Logik bearbeitet während des laufenden Spieles den Zustand
+- Speichert Zustand des Characters während des Spiels
+- **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen
 
 ---
 
