@@ -134,6 +134,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ![width:800px](assets/img/technology.drawio.svg)
 
+<!-- _footer: "B-Team: Adnan Bennis" -->
+
 ---
 
 # Serverseite
