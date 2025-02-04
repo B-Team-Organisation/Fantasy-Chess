@@ -26,21 +26,31 @@
                 <toc-element topic="PatternModel.md"/>
                 <toc-element topic="PatternStore.md"/>
                 <toc-element topic="JsonDTOs.md"/>
-                <toc-element topic="GridModel.md"/>
                 <toc-element topic="TileModel.md"/>
+                <toc-element topic="GridModel.md"/>
                 <toc-element topic="AttackDataModel.md"/>
                 <toc-element topic="MovementDataModel.md"/>
+                <toc-element topic="CharacterDataModel.md"/>
                 <toc-element topic="CharacterEntity.md"/>
+                <toc-element topic="CharacterStore.md"/>
             </toc-element>
             <toc-element toc-title="Services">
                 <toc-element topic="PatternService.md"/>
             </toc-element>
-            <toc-element topic="Turn-Logic-Service.md"/>
+            <toc-element topic="GridService.md"/>
+            <toc-element topic="Turn-Logic.md"/>
         </toc-element>
         <toc-element toc-title="Client">
             <toc-element topic="Client.md"/>
-            <toc-element topic="Screens.md"/>
-            <toc-element topic="Graphics.md"/>
+            <toc-element topic="Screens.md">
+                <toc-element topic="SplashScreen.md"/>
+                <toc-element topic="MainMenu.md"/>
+                <toc-element topic="GameScreen.md"/>
+            </toc-element>
+            <toc-element topic="Graphics.md">
+                <toc-element topic="CharacterSprite.md"/>
+                <toc-element topic="TurnOutcomeAnimations.md"/>
+            </toc-element>
             <toc-element topic="Networking.md"/>
             <toc-element topic="Tilemap.md"/>
             <toc-element topic="Packet-Handling.md"/>

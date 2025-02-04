@@ -4,7 +4,7 @@ Ensure you have node version 18 or higher installed.
 
 **Start in watch mode:**
 ```sh
-    npx @marp-team/marp-cli@latest -w presentation.md -o out/presentation.html
+    npx @marp-team/marp-cli@latest -w presentation.md -o local.presentation.html
 ```
 
 Once you ran this command, a html file with the contents of the presentation, as we will use it is rendered

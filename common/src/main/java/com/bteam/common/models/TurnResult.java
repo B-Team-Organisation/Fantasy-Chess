@@ -1,8 +1,6 @@
-package com.bteam.common.services;
+package com.bteam.common.models;
 
 import com.bteam.common.entities.CharacterEntity;
-import com.bteam.common.models.AttackDataModel;
-import com.bteam.common.models.MovementDataModel;
 import com.bteam.common.utils.PairNoOrder;
 import java.util.List;
 import java.util.Objects;
