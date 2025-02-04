@@ -703,7 +703,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-## [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
+# [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
 
 Simple Json struktur, welche die gesendeten Daten in `data` und die id des packets in `id` angibt
 
@@ -715,7 +715,21 @@ Simple Json struktur, welche die gesendeten Daten in `data` und die id des packe
 }
 ```
 
-> Serialisiert mit [JsonWriter](https://b-team-organisation.github.io/Fantasy-Chess/json-writer.html)
+<!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+## Serialisierung
+
+- Eigene Serialisierung
+  - LibGDX mit GWT keine `Reflection`
+- `JsonWriter`
+
+## Deserialisierung 
+- Platform Abhängig
+- Client und Server eigene Implementation
+
+> Weiteres in der Doku.
 
 <!-- _footer: "B-Team: Marc Matija"-->
 
