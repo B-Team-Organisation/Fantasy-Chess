@@ -89,11 +89,11 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Technologie
+# Technologien
 
 ---
 
-# Servreseite
+# Serverseite
 
 - **Spring Boot 6 & Java 21**
   - Modernes Framework für Backend-Entwicklung
@@ -322,65 +322,56 @@ public interface PacketHandler {
 
 ---
 
-# Doku
+# Dokumentation
 
 ---
 
 # Tools für die Dokumentation
 
-- **Writerside** → Strukturiertes Schreiben, direkt im Browser aufrufbar.
-- **Markdown** → Einfaches Format für Textdokumentation
-- **Javadoc** → Automatische Code-Dokumentation für Entwickler.
+- **Writerside** → Strukturiertes Schreiben, direkt im Browser aufrufbar
+- **Javadoc** → Code-Dokumentation für Entwickler
 
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
 
 # Dokumentation mit Writerside
-- Writerside ermöglicht eine zentrale, gut strukturierte Dokumentation.
+- Writerside ermöglicht eine zentrale, gut strukturierte Dokumentation
 - **Vorteile:**
-  - Unterstützung für **Markdown**.
-  - Inhalte sind direkt im **Browser** aufrufbar.
-  - **Einfache Navigation** durch verschiedene Dokumentationsbereiche.
-  - Perfekt für Benutzeranleitungen, Entwickler-Dokus und Architektur-Übersichten.
+  - Unterstützung für **Markdown**
+  - Inhalte sind direkt im **Browser** aufrufbar
+  - **Einfache Navigation** durch verschiedene Dokumentationsbereiche
+  - Perfekt für Benutzeranleitungen, Entwickler-Dokus und Architektur-Übersichten
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
 
 
-# Warum Javadoc?
+# Dokumentation mit Javadoc
 
-- Verbessert die Lesbarkeit und Wartbarkeit des Codes.
-- Gibt Entwicklern in deinem Team klare Anweisungen zur Nutzung von Klassen und Methoden.
+- Verbessert die Lesbarkeit und Wartbarkeit des Codes
+- Gibt Entwicklern klare Anweisungen zur Nutzung von Klassen und Methoden
 - Automatisch generierte HTML-Dokumentation:
-  - Kann einfach geteilt und im Browser angezeigt werden.
-- Verhindert Missverständnisse durch klare Beschreibungen.
-
-<!-- _footer: "B-Team: Adnan Bennis"-->
----
-
-# Wie wir Javadoc verwenden
-
-- **Formatierung:** Kommentare beginnen mit `/**` und enden mit `*/`.
-- **Tags:** 
-  - `@param`: Beschreibt Parameter.
-  - `@return`: Erklärt, was eine Methode zurückgibt.
-  - `@throws`: Beschreibt mögliche Exceptions.
-  - `@see`: Verlinkt verwandte Klassen/Methoden.
+  - Kann einfach geteilt und im Browser angezeigt werden
+- Verhindert Missverständnisse durch klare Beschreibungen
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
 
 # Beispiele: 
 
-## MainMenu Klasse
+## GridService Klasse
 
 ```java
 /**
- * First screen of the application. 
- * Displayed after the application is created.
+ * Service class for the {@link GridModel}
+ * <p>
+ * This class wraps a gridModel instance and provides useful functions for grid-manipulation and data-retrieval.
+ *
+ * @author Lukas, Albano
+ * @version 1.0
  */
-public class MainMenu extends ScreenAdapter {
+public class GridService {
     ...
 }
 ```
@@ -392,15 +383,14 @@ public class MainMenu extends ScreenAdapter {
 
 ```java
 /**
- * Creates the label that shows the game title.
- *
- * @return the {@link Label} containing the game title.
- */
-private Label createTitleLabel() {
-    Label titleLabel = new Label("FantasyChess", skin, "title");
-    titleLabel.setFontScale(0.6f);
-    return titleLabel;
-}
+     * Subtracts two vectors to get a new one with subtracted coordinates.
+     *
+     * @param vector - the vector to subtract
+     * @return a new vector with the subtracted coordinates
+     */
+    public Vector2D subtract(Vector2D vector) {
+        return new Vector2D(this.x - vector.getX(), this.y - vector.getY());
+    }
 ```
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
