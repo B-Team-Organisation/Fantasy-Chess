@@ -141,7 +141,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 <!-- _footer: "B-Team: Albano Vukelaj "-->
 
-## 4.1 Hauptmenü
+# Main Menu
 
 <style scoped>
   img.center {
@@ -155,6 +155,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 --- 
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Main Menu
 
 <style scoped>
   img.right {
@@ -242,6 +244,54 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Spiel an sich
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Charakter-Balancing
+
+ Balancieren von **Leben, Angriff und Bewegung**.
+
+### Prozess-Übersicht:
+1. Richtlininien erstellt
+2. Richtlinien befolgt
+3. 15 Charaktere vorgeschlagen,**2 pro Typ**.  
+4. 6 endgültige Charaktere ausgewählt.   
+5. Mathematische Balance durch ein Balancing-Dreieck  
+6. Charaktere getestet und feinjustiert.
+
+---
+
+#  Von der Theorie zur Praxis
+
+Visualisierung des **Health-Attack-Movement-Dreiecks**.
+
+- **Alle Charaktere** im Dreieck eingezeichnet.  
+- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat.  
+
+> **Theorie ≠ Praxis!** Anpassungen waren notwendig, um das Balancing im echten Spiel zu verbessern.
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Balanzierung Prometheus
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+  }
+  img.right {
+    float :right;
+    margin-right :150px;
+    margin-top :300px;
+  }
+</style>
+
+<img src="assets/img/Balancing_Prometheus.png" alt="Balancing Triangle" class="center" width="600" />
+
+<img src="assets/img/Prometheus.png" alt="Prometheus" class="right" width ="120">
 
 ---
 
