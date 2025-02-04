@@ -227,13 +227,10 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
     margin-top :300px;
   }
 </style>
-<!--i will change this img-syntax on tuesday-->
 
-<img src="assets/img/Balancing_Prometheus.png" alt="Main Menu" class="center" width="600" />
+<img src="assets/img/Balancing_Prometheus.png" alt="Balancing Triangle" class="center" width="600" />
 
-<img src="assets/img/prometheus-front.png" alt="Main Menu" class="right" width ="100">
-
-<!-- if possible description of his stats, tuesday -->
+<img src="assets/img/Prometheus.png" alt="Prometheus" class="right" width ="120">
 
 ---
 
