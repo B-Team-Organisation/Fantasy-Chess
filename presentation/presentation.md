@@ -141,7 +141,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 <!-- _footer: "B-Team: Albano Vukelaj "-->
 
-## 4.1 Hauptmenü
+# Main Menu
 
 <style scoped>
   img.center {
@@ -155,6 +155,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 --- 
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Main Menu
 
 <style scoped>
   img.right {
@@ -178,7 +180,66 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Technologie
+# Technologien
+
+---
+
+# Serverseite
+
+- **Spring Boot 6 & Java 21**
+  - Modernes Framework für Backend-Entwicklung
+- **Spring Messaging**
+  - WebSocket-Verbindungen für Echtzeitkommunikation
+- **Spring JPA & Hibernate**
+  - ORM für einfache Datenverarbeitung
+- **H2 Datenbank**
+  - Leichtgewichtige Entwicklungsdatenbank
+- **PostgreSQL**
+  - Stabile Datenbank für Produktion
+  
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Hosting
+
+- **Git**
+  - Versionskontrolle für Zusammenarbeit
+- **Plesk**
+  - Verwaltung von Hosting und Servern
+- **Docker**
+  - Containerisierte Bereitstellung
+- **nginx**
+  - Hochleistungs-Webserver
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Clientseite
+
+- **LibGDX**
+  - Cross-Plattform-Spieleentwicklungsframework
+- **GWT Deployment**
+  - Browser-basiertes Spielen ohne Downloads
+  - Java-Code kompiliert in JavaScript (Java 11 Einschränkungen)
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Client Tools
+
+- **TexturePacker**
+  - Erstellung von Texture Atlanten
+- **SkinComposer**
+  - Anpassbare UI-Skin-Erstellung
+- **Tiled**
+  - Map-Editor mit einfacher Code-Integration
+- **Piskel**
+  - Pixel-Art-Editor für Grafiken
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
@@ -187,6 +248,52 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Charakter-Balancing
+
+ Balancieren von **Leben, Angriff und Bewegung**.
+
+### Prozess-Übersicht:
+1. Richtlininien erstellt
+2. Richtlinien befolgt
+3. 15 Charaktere vorgeschlagen,**2 pro Typ**.  
+4. 6 endgültige Charaktere ausgewählt.   
+5. Mathematische Balance durch ein Balancing-Dreieck  
+6. Charaktere getestet und feinjustiert.
+
+---
+
+#  Von der Theorie zur Praxis
+
+Visualisierung des **Health-Attack-Movement-Dreiecks**.
+
+- **Alle Charaktere** im Dreieck eingezeichnet.  
+- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat.  
+
+> **Theorie ≠ Praxis!** Anpassungen waren notwendig, um das Balancing im echten Spiel zu verbessern.
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Balanzierung Prometheus
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+  }
+  img.right {
+    float :right;
+    margin-right :150px;
+    margin-top :300px;
+  }
+</style>
+
+<img src="assets/img/Balancing_Prometheus.png" alt="Balancing Triangle" class="center" width="600" />
+
+<img src="assets/img/Prometheus.png" alt="Prometheus" class="right" width ="120">
+
+---
 
 # CharacterDataModel
 
@@ -675,7 +782,94 @@ public interface PacketHandler {
   
 ---
 
-# Doku
+# Dokumentation
+
+---
+
+# Tools für die Dokumentation
+
+- **Writerside** → Strukturiertes Schreiben, direkt im Browser aufrufbar
+- **Javadoc** → Code-Dokumentation für Entwickler
+
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+# Dokumentation mit Writerside
+- Writerside ermöglicht eine zentrale, gut strukturierte Dokumentation
+- **Vorteile:**
+  - Unterstützung für **Markdown**
+  - Inhalte sind direkt im **Browser** aufrufbar
+  - **Einfache Navigation** durch verschiedene Dokumentationsbereiche
+  - Perfekt für Benutzeranleitungen, Entwickler-Dokus und Architektur-Übersichten
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+
+# Dokumentation mit Javadoc
+
+- Verbessert die Lesbarkeit und Wartbarkeit des Codes
+- Gibt Entwicklern klare Anweisungen zur Nutzung von Klassen und Methoden
+- Automatisch generierte HTML-Dokumentation:
+  - Kann einfach geteilt und im Browser angezeigt werden
+- Verhindert Missverständnisse durch klare Beschreibungen
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+# Beispiele: 
+
+## GridService Klasse
+
+```java
+/**
+ * Service class for the {@link GridModel}
+ * <p>
+ * This class wraps a gridModel instance and provides useful functions for grid-manipulation and data-retrieval.
+ *
+ * @author Lukas, Albano
+ * @version 1.0
+ */
+public class GridService {
+    ...
+}
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+## Methode mit Javadoc
+
+```java
+/**
+     * Subtracts two vectors to get a new one with subtracted coordinates.
+     *
+     * @param vector - the vector to subtract
+     * @return a new vector with the subtracted coordinates
+     */
+    public Vector2D subtract(Vector2D vector) {
+        return new Vector2D(this.x - vector.getX(), this.y - vector.getY());
+    }
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+---
+
+## Methode mit Parameter
+```java
+/**
+ * Makes the {@link TextField} only accept letters, digits 
+ * and other defined chars as input.
+ *
+ * @param textField the {@link TextField} to apply the filter to.
+ */
+private void addNameFilter(TextField textField) {
+    ...
+}
+```
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
