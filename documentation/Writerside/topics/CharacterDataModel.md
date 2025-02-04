@@ -6,7 +6,7 @@ Unlike [](CharacterEntity.md), which changes dynamically during the game,
 
 ### Structure of CharacterDataModel
 📌 **For a full technical reference, check the**
-[CharacterDataModel JavaDoc](../../../common/src/main/java/com/bteam/common/models/CharacterDataModel.java).
+[CharacterDataModel JavaDoc](../../common/src/main/java/com/bteam/common/models/CharacterDataModel.java).
 
 ### Key Attributes of CharacterDataModel
 
