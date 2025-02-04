@@ -643,7 +643,7 @@ Subpattern Mappings: '+' -> "plus"
 - Befehle müssen sich an die Movement / Attack Patterns der Charaktere halten -> Charaktere vom Server als anticheat
 - Charaktere dürfen sich nicht dahin bewegen, wo andere Charaktere sind<br />-> Auch nicht wenn der sich wegbewegt
 - Mehrere Spieler dürfen sich nicht an die gleiche Stelle bewegen
-- Eigener Check für Charktere gegnerischer Spieler -> "Bounces"
+- Eigener Check für Charaktere gegnerischer Spieler -> "Bounces"
 
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
