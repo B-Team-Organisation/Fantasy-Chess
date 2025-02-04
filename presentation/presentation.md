@@ -31,22 +31,10 @@ A PvP multiplayer browser game.
 
 ---
 
-# Live Demo
-
-<!--
-    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
-    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
-    wir öffnen eine Lobby und spielen ein wenig.
--->
-
-<!-- _footer: "B-Team: Marc Matija"-->
-
----
-
-# Agenda (WIP)
-- Projektorganisation
-- Generelles Spiel
-- Technische Umsetzung
+# Agenda
+- Projektorganisation + Technologien
+- Spezifikationen + Technische Umsetzung
+- Design
 - Qualität
 - Doku
 - (Zukunft)
@@ -84,11 +72,21 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Introduction
+# Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Marc Matija"-->
 
 ---
 
 # Projektorganisation
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -98,13 +96,18 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Sprints gingen 2 Wochen
 - Meetings wöchentlich 1x online (DC), 1x in Person
 
----
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
+---
+<!--
 # Clockify
 
 ![w:900](./assets/img/jacinto/Clockify.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
+-->
 
 # Github
 
@@ -112,16 +115,22 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Mit Github Pages wurde die Doku gehostet
 - Mit Github Projects haben wir unser Task Management gemacht
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Kanban
 
 ![w:900](./assets/img/jacinto/kanban.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Guidelines
 ![w:900](./assets/img/jacinto/guidelines.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -129,54 +138,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ![w:900](./assets/img/jacinto/prototype.png)
 
----
 
-# Scrum
-
----
-
-# Spiel
-
----
-
-<!-- _footer: "B-Team: Albano Vukelaj "-->
-
-# Main Menu
-
-<style scoped>
-  img.center {
-    float: center;
-    margin-left : 230px;
-    
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
-
---- 
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-# Main Menu
-
-<style scoped>
-  img.right {
-    float: right;
-    margin-left: 20px; 
-    margin-top: 0px;
-    max-width: 60%; 
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
-
-### Funktionen
-- Lobby-Suche
-- Datenaktualisierung
-- Lobby-Erstellung
-
-### Vorteile des Hauptmenüs
-- Benutzerfreundlichkeit
-- Flexibilität
-- Effizienz
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -243,7 +206,138 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Spiel an sich
+# Design
+
+---
+
+# Screens
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:500 bg](assets/img/screens/SplashScreen.webp)
+![w:500 bg](assets/img/screens/Lobbyscreen5.webp)
+![w:500 bg](assets/img/screens/Gamescreen.webp)
+
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<!-- _footer: "B-Team: Dania Anwar"-->
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:400 bg](assets/img/figma/splashscreen.webp)
+![w:400 bg](assets/img/figma/mainmenu.webp)
+![w:400 bg](assets/img/figma/lobbyDialog.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+![w:600 bg](assets/img/figma/gamescreen.webp)
+![w:500 bg](assets/img/figma/turnoutcome.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+<br/><br/><br/><br/><br/><br/>
+# Design - Karte
+TiledMap: Isometrisches Tileset
+Erstellt mit Tiled
+
+![bg](assets/img/TiledScreenshot.png)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Design - Charaktere
+
+<br><br><br><br><br><br><br><br>
+
+![bg w:100](assets/img/scaled-characters/bombo.webp)
+![bg w:100](assets/img/scaled-characters/blossom.webp)
+![bg w:100](assets/img/scaled-characters/fitzooth.webp)
+![bg w:100](assets/img/scaled-characters/flash.webp)
+![bg w:100](assets/img/scaled-characters/prometheus.webp)
+![bg w:100](assets/img/scaled-characters/stablin.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Spezifikationen + Technische Umsetzung
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+# Main Menu
+
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+    
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
+
+--- 
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Main Menu
+
+<style scoped>
+  img.right {
+    float: right;
+    margin-left: 20px; 
+    margin-top: 0px;
+    max-width: 60%; 
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
+
+### Funktionen
+- Lobby-Suche
+- Datenaktualisierung
+- Lobby-Erstellung
+
+### Vorteile des Hauptmenüs
+- Benutzerfreundlichkeit
+- Flexibilität
+- Effizienz
 
 ---
 
@@ -251,15 +345,15 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 # Charakter-Balancing
 
- Balancieren von **Leben, Angriff und Bewegung**.
+ Balancieren von **Leben, Angriff und Bewegung**
 
-### Prozess-Übersicht:
+## Unser Prozess:
 1. Richtlininien erstellt
 2. Richtlinien befolgt
-3. 15 Charaktere vorgeschlagen,**2 pro Typ**.  
-4. 6 endgültige Charaktere ausgewählt.   
-5. Mathematische Balance durch ein Balancing-Dreieck  
-6. Charaktere getestet und feinjustiert.
+    15 Charaktere vorgeschlagen, **2 pro Typ** 
+4. 6 endgültige Charaktere ausgewählt  
+5. Balancing durch ein Balancing-Dreieck  
+6. Charaktere getestet und feinjustiert
 
 ---
 
@@ -267,8 +361,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
-- **Alle Charaktere** im Dreieck eingezeichnet.  
-- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat.  
+- **Alle Charaktere** im Dreieck eingezeichnet
+- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat 
 
 > **Theorie ≠ Praxis!** Anpassungen waren notwendig, um das Balancing im echten Spiel zu verbessern.
 
@@ -491,11 +585,15 @@ Subpattern Mappings: '+' -> "plus"
 
 # Game Interaction
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Coordinate Systems
 
 ![w:900](./assets/img/jacinto/CoordinateMaps.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -503,11 +601,15 @@ Subpattern Mappings: '+' -> "plus"
 
 ![w:900](./assets/img/jacinto/gridToWorld.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # World to Grid
 
 ![w:900](./assets/img/jacinto/worldToGrid.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -523,17 +625,15 @@ Subpattern Mappings: '+' -> "plus"
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Sequenzdiagram
 
 ![w:900](./assets/img/jacinto/sequence_diagram.png)
 
----
-
-# Klassendiagramm
-
-![h:500](./assets/img/jacinto/turn_logic_classes.png)
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -820,6 +920,18 @@ public interface PacketHandler {
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
 
+# Writerside Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
 
 # Dokumentation mit Javadoc
 
@@ -865,22 +977,6 @@ public class GridService {
     public Vector2D subtract(Vector2D vector) {
         return new Vector2D(this.x - vector.getX(), this.y - vector.getY());
     }
-```
-
-<!-- _footer: "B-Team: Adnan Bennis"-->
----
-
-## Methode mit Parameter
-```java
-/**
- * Makes the {@link TextField} only accept letters, digits 
- * and other defined chars as input.
- *
- * @param textField the {@link TextField} to apply the filter to.
- */
-private void addNameFilter(TextField textField) {
-    ...
-}
 ```
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
