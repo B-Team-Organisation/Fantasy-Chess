@@ -329,8 +329,9 @@ public interface PacketHandler {
 # Tools für die Dokumentation
 
 - **Writerside** → Strukturiertes Schreiben, direkt im Browser aufrufbar.
-- **Markdown** → Einfaches Format für Textdokumentation.
+- **Markdown** → Einfaches Format für Textdokumentation
 - **Javadoc** → Automatische Code-Dokumentation für Entwickler.
+
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 ---
