@@ -74,7 +74,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-# 4.bb CharacterDataModel
+# CharacterDataModel
 
 Definiert alle **statischen Eigenschaften** eines Charakters.
 
@@ -86,7 +86,9 @@ Definiert alle **statischen Eigenschaften** eines Charakters.
 
 ---
 
-# 4.bc Character-Entity
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Character-Entity
 
 Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
 
