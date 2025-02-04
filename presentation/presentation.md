@@ -124,9 +124,15 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
-# Technologien
+# Technologien & Projektstruktur
 
 <!-- _footer: "B-Team: Adnan Bennis" -->
+
+---
+
+# Projekt Struktur
+
+![width:800px](assets/img/technology.drawio.svg)
 
 ---
 
@@ -263,10 +269,18 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ---
 
+<style scoped>
+.bg-white{
+  background-color: white;
+  padding: 0 .2em;
+}
+</style>
+
 <br/><br/><br/><br/><br/><br/>
-# Design - Karte
-TiledMap: Isometrisches Tileset
-Erstellt mit Tiled
+
+# <span class="bg-white">Design - Karte</span>
+<span class="bg-white">TiledMap: Isometrisches Tileset</span>
+<span class="bg-white">Erstellt mit Tiled</span>
 
 ![bg](assets/img/TiledScreenshot.png)
 
@@ -366,6 +380,7 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 ---
 
 # Balanzierung Prometheus
+
 <style scoped>
   img.center {
     float: center;
@@ -670,7 +685,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Architecture
+# Architektur
 
 ![bg right](../documentation/Writerside/img/architecture/architecture.drawio.svg)
 
@@ -678,7 +693,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Auth
+# Authentifikation
 
 ![width:600px bg right](assets/img/auth-sequence.svg)
 
@@ -999,3 +1014,19 @@ public class GridService {
 <!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
+
+# Direkte Änderungen
+
+- Token endpunkt mit Springboot Authentifizieren
+  - Aktuell keine sensiblen spieler daten behandelt
+- Game State in der Datenbank Speichern
+  - Aktuell nur Spieler Daten in der Datenbank
+- Charaktere in die Datenbank Schreiben
+  - Charaktere aktuell hard-coded in commons
+- Spieler und Spiel Statistiken
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Q&A
