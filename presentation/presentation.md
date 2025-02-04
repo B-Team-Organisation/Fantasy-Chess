@@ -118,7 +118,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Guidelines
-![w:900](./assets/img/jacinto/guidelines.png)
+![w:900](./assets/img/jacinto/guidelines_3.png)
 
 <!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
@@ -207,7 +207,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 ![w:900](./assets/img/jacinto/prototype.png)
 
-<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+<!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
 
