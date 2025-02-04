@@ -82,7 +82,7 @@ Definiert alle **statischen Eigenschaften** eines Charakters.
 - Dient als **Vorlage** zur Erstellung neuer Charakter-Instanzen.
 - Bleibt **statisch** und **unverändert** während des Spiels.
 - Fest im **Common-Modul** implementiert, um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten.
-- Legt die Grundlage für **Fähigkeiten, Verhaltensweisen und Muster** der Charaktere.
+- Entscheidet welche Fähigkeiten, Verhaltensweisen und Muster ein Character hat.
 
 ---
 
@@ -91,9 +91,9 @@ Definiert alle **statischen Eigenschaften** eines Charakters.
 Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
 
 ### Kernpunkte:
-- Wird **dynamisch während des Spiels** erzeugt.
-- Integriert sich in die Spiel-Logik, um seinen Zustand zu verwalten.
-- Entwickelt sich während des Spiels weiter, indem es auf sein `CharacterDataModel` verweist.
+- Wird **direkt vor dem Start des Spiels** erzeugt.
+- Spiel Logik bearbeitet während des laufenden Spieles den Zustand.
+- Speichert zustand des Characters während des Spiels.
 - **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen.
 
 ---
