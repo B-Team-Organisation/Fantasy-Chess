@@ -79,7 +79,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 Definiert alle **statischen Eigenschaften** eines Charakters.
 
 ### Kernpunkte:
-- Dient als **Vorlage** zur Erstellung neuer Charakter-Instanzen.
+- Dient als **Initial Zustand** zur Erstellung neuer Charakter-Instanzen.
 - Bleibt **statisch** und **unverändert** während des Spiels.
 - Fest im **Common-Modul** implementiert, um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten.
 - Entscheidet welche Fähigkeiten, Verhaltensweisen und Muster ein Character hat.
