@@ -306,20 +306,18 @@ public interface PacketHandler {
 # Qualität
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-# 5. Qualität
-
  **Ziele:**
-  - Fehlerfreiheit und robuste Funktionen.
-  - Intuitive und reibungslose Spielerfahrung.
-  - Erweiterbarkeit des Codes für zukünftige Features.
+  - Fehlerfreiheit und robuste Funktionen
+  - Intuitive und reibungslose Spielerfahrung
+  - Erweiterbarkeit des Codes für zukünftige Features
 
 ---
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-## 5.1 Wie wurde getestet (Teil 1)
+# Qualität - Common Module
 
-### Common Module
+## Wie wurde getestet?
 
 - **Automatisierte Tests:** Getestet mit **JUnit** 
 - **Ansatz:**
@@ -330,80 +328,78 @@ public interface PacketHandler {
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-## 5.1 Wie wurde getestet (Teil 2)
+# Qualität - Common Module
 
-### Server Module
-
-- **Automatisierte Tests:** Backend-Logik und WebSocket-Kommunikation mit **JUnit** 
-- **Ansatz:**
-  - WebSocket-Verbindungen und Nachrichten validiert.
-  - REST-Endpunkte getestet.
-
-
----
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-## 5.1 Wie wurde getestet (Teil 3)
-
-### Client Module
-
-- **Manual Testing:**  
-  Erforderlich wegen komplexer Spielzustände und visueller Validierung.
-- **Ansatz:**
-  - **Funktionstests:** UI-Reaktionen und Gameplay-Funktionen wurden geprüft.
-  - **Szenarien:** Spielzustände (Anfang, Mitte, Ende) wurden simuliert.
- 
----
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-## 5.2 Was haben wir getestet (Teil 1)
-
-### Common Module
+## Was wurde getestet?
 
 - **Models:**  
   Datenintegrität 
 - **DTOs:**  
   Korrekte Serialisierung/Deserialisierung 
 - **Services:**  
-  Spiel-Logik 
-- **Utilities:**  
-  Hilfsklassen-zuverlässigkeit 
+  Spiel-Logik
 
 ---
 
 <!-- _footer: "B-Team: Albano Vukelaj"-->
 
-## 5.2 Was haben wir getestet (Teil 2)
+# Qualität - Client Module
 
-### Server Module
+## Wie wurd getestet?
+
+- **Manual Testing:**  
+  Erforderlich wegen komplexer Spielzustände und visueller Validierung, GWT
+- **Ansatz:**
+  - **Szenarien:** Testen des Spielflusses durch Playtests
+  - **Input Reaktionen:** Validieren der korrekten Reaktion auf Inputs
+  - **Funktionstests:** UI-Reaktionen und Gameplay-Funktionen wurden geprüft
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Client Module
+
+## Was wurde getestet?
+
+- **Funktionalität:**
+  - Spielschleife funktioniert fehlerfrei
+  - Serverkommunikation und Verarbeitung der Antworten
+  - Erwartete Reaktionen auf verschiedenen Eingaben
+- **Rendering und Animationen:**
+  - Korrektes Rendering aller Elemente
+  - Korrekte CommandPreview and TurnOutcome
+- **UI Testing:**  
+  - Stat-Overlays und Dialoge
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Server Module
+
+## Wie wurde getestet?
+
+- **Automatisierte Tests:** Backend-Logik und WebSocket-Kommunikation mit **Unit Tests** 
+- **Ansatz:**
+  - WebSocket-Verbindungen und Nachrichten validiert
+  - REST-Endpunkte getestet
+  - Packet handling, services
+
+---
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
+
+# Qualität - Server Module
+
+## Was wurde getestet?
 
 - **WebSocket Services:**  
   Stabilität von Verbindungen und Nachrichtennutzlasten 
 - **Controllers:**  
-  REST-Endpunkte validiert.
+  REST-Endpunkte validiert
 - **Handlers:**  
-  Ereignis- und Paketbearbeitung sichergestellt.
-- **Utilities:**  
-  Hilfsklassen-zuverlässigkeit 
+  Ereignis- und Paketverarbeitung überprüft
   
----
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-## 5.2 Was haben wir getestet (Teil 3)
-
-### Client Module
-
-- **UI Testing:**  
-  - HealthBar-Rendering und Updates  
-  - Charakterdarstellung und Stat-Overlays 
-  - Korrekte CommandPreview and TurnOutcome
-  - Reaktion auf Eingaben und korrektes Rendering
-  - Spielschleife funktioniert fehlerfrei
-  - Serverkommunikation und Verarbeitung der Antworten
-
 ---
 
 # Doku
