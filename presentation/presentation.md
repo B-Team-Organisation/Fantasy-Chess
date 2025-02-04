@@ -93,6 +93,45 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 # Scrum
 
+- Scrum Master: Marc
+- Sprints gingen 2 Wochen
+- Meetings wöchentlich 1x online (DC), 1x in Person
+
+---
+
+# Clockify
+
+![w:900](./assets/img/jacinto/Clockify.png)
+
+---
+
+# Github
+
+- Das Fantasy-Chess Repository wurde auf Github gehostet
+- Mit Github Pages wurde die Doku gehostet
+- Mit Github Projects haben wir unser Task Management gemacht
+
+---
+
+# Kanban
+
+![w:900](./assets/img/jacinto/kanban.png)
+
+---
+
+# Guidelines
+![w:900](./assets/img/jacinto/guidelines.png)
+
+---
+
+# Prototyping
+
+![w:900](./assets/img/jacinto/prototype.png)
+
+---
+
+# Scrum
+
 ---
 
 # Technologie
@@ -100,6 +139,28 @@ Z. Zukunft <code>Wer noch was braucht</code>
 ---
 
 # Spiel an sich
+
+---
+
+# Game Interaction
+
+---
+
+# Coordinate Systems
+
+![w:900](./assets/img/jacinto/CoordinateMaps.png)
+
+---
+
+# Grid to World
+
+![w:900](./assets/img/jacinto/gridToWorld.png)
+
+---
+
+# World to Grid
+
+![w:900](./assets/img/jacinto/worldToGrid.png)
 
 ---
 
@@ -272,7 +333,9 @@ Subpattern Mappings: '+' -> "plus"
 
 # Turn Logic
 
-Rundenbasierte Regeln:
+---
+
+# Rundenbasierte Regeln
 
 - Jeder Charakter darf nur einen Befehl (Angriff oder Movement) haben
 - Befehle dürfen nicht außerhalb der Map liegen
@@ -283,6 +346,18 @@ Rundenbasierte Regeln:
 
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
+
+---
+
+# Sequenzdiagram
+
+![w:900](./assets/img/jacinto/sequence_diagram.png)
+
+---
+
+# Klassendiagramm
+
+![h:500](./assets/img/jacinto/turn_logic_classes.png)
 
 ---
 
