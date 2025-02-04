@@ -450,8 +450,8 @@ Umsetzung: Name + String-Representation + Subpattern-Mappings
 
 Name: plus
 <pre>
-String: " x 
-         xxx
+String: " x \n
+         xxx\n
           x "
 </pre>
 Subpattern Mappings: -
@@ -480,6 +480,18 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
+# Character Integration
+
+## Character ganz einfach integrieren:
+
+1. Patterns definieren
+2. Character Data Model erstellen
+3. Bilder in TextureAtlas packen
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
 # Game Screen
 
 <!-- Bild vom Gamescreen: Command Mode -->
@@ -500,11 +512,27 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
+# Game Screen - Lobby Menu
+
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/LobbyVideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
 # Game Screen - Initialisation
 
-<!-- Bild vom Gamescreen: Init Mode -->
-
-![Game Screen in Command Mode w:900px center](assets/img/GameScreenInit.jpg)
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/InitVideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
 <!-- _footer: "B-Team: Lukas Walker"-->
 
@@ -512,39 +540,12 @@ Subpattern Mappings: '+' -> "plus"
 
 # Game Screen - Command Mode
 
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Command Mode w:900px center](assets/img/GameScreenCommandMode.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Command Menu
-
-<!-- Bild vom Gamescreen: Command Menu -->
-
-![Game Screen in Command Menu w:900px center](assets/img/CommandModeCommands.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Move Command Mode
-
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Movement Preview Mode w:900px center](assets/img/CommandModeMove.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Attack Command Mode
-
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Attack Preview Mode w:900px center](assets/img/CommandModeAttack.jpg)
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/CommandMode.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
 <!-- _footer: "B-Team: Lukas Walker"-->
 
