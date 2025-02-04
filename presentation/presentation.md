@@ -94,6 +94,7 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Scrum Master: Marc
 - Sprints gingen 2 Wochen
 - Meetings wöchentlich 1x online (DC), 1x in Person
+- Zeiterfassung über Clockify
 
 <!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
