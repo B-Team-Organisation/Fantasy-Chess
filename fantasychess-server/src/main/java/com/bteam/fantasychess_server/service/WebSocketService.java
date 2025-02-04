@@ -37,7 +37,7 @@ public class WebSocketService {
     public WebSocketService(@Autowired LobbyService lobbyService,
                             @Autowired PlayerService playerService,
                             @Autowired GameStateService gameStateService) {
-        addPacketHandler(new LobbyPacketHandler(lobbyService));
+        addPacketHandler(new LobbyPacketHandler(lobbyService, this));
         addPacketHandler(new PlayerPacketHandler(playerService, lobbyService, this, gameStateService));
         addPacketHandler(new GamePacketHandler(gameStateService, this, playerService, lobbyService));
         this.lobbyService = lobbyService;
