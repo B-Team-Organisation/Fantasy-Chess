@@ -36,9 +36,9 @@
                 <toc-element topic="CharacterStore.md"/>
             </toc-element>
             <toc-element toc-title="Services">
+                <toc-element topic="GridService.md"/>
                 <toc-element topic="PatternService.md"/>
             </toc-element>
-            <toc-element topic="GridService.md"/>
             <toc-element topic="Turn-Logic.md"/>
         </toc-element>
         <toc-element toc-title="Client">

@@ -16,5 +16,8 @@ If another player joins, the names are automatically updated and in similar fash
 the ready statuses are always kept up-to-date for both players.
 ![Lobby_Screen_Ready](../img/client/lobby_screen_ready.png)
 
-
+Internally, a [Packet Handler](Networking.md#packet-handler) Listener is registered to 
+update the states after each join to a lobby and ever change of the ready status.
+Also, the class sends the according [](Packet.md) whenever a change happens.
+That way, the clients are kept synced at all times.
 
