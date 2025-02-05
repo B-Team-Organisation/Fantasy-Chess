@@ -1,5 +1,7 @@
 # Pattern Stores
 
+`Author: Lukas Walker`
+
 Pattern Stores are used to store and provide all [](Patterns.md). 
 
 ```java

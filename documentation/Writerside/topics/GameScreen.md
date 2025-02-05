@@ -1,5 +1,7 @@
 # Game Screen
 
+`Author: Lukas Walker`
+
 ![](../img/client/GameScreenCommand.png)
 
 The Game Screen is the main screen of the game. All gameplay happens here.
@@ -155,3 +157,4 @@ all characters currently alive on the board. The hp bars are colored according t
 Clicking on a character opens a `Dialog` that displays all information about the character.
 
 ## Map Input Adapter
+
