@@ -1,5 +1,5 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
-<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-02-05T22:31:47.43903806"><title>Pattern Services | Fantasy-Chess Documentation</title><script type="application/json" id="virtual-toc-data">[{"id":"creation","level":0,"title":"Creation","anchor":"#creation"},{"id":"usage","level":0,"title":"Usage","anchor":"#usage"},{"id":"reversal","level":0,"title":"Reversal","anchor":"#reversal"},{"id":"validations","level":0,"title":"Validations","anchor":"#validations"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.10.0-b575/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Pattern Services | Fantasy-Chess Documentation"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Fantasy-Chess Documentation Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/patternservice.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Pattern Services | Fantasy-Chess Documentation"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-02-05T22:33:22.012239444"><title>Pattern Services | Fantasy-Chess Documentation</title><script type="application/json" id="virtual-toc-data">[{"id":"creation","level":0,"title":"Creation","anchor":"#creation"},{"id":"usage","level":0,"title":"Usage","anchor":"#usage"},{"id":"reversal","level":0,"title":"Reversal","anchor":"#reversal"},{"id":"validations","level":0,"title":"Validations","anchor":"#validations"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.10.0-b575/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="Pattern Services | Fantasy-Chess Documentation"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Fantasy-Chess Documentation Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/patternservice.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="Pattern Services | Fantasy-Chess Documentation"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
     "@context": "http://schema.org",
     "@type": "WebPage",
     "@id": "writerside-documentation/patternservice.html#webpage",
@@ -13,7 +13,7 @@
     "@id": "writerside-documentation/#website",
     "url": "writerside-documentation/",
     "name": "Fantasy-Chess Documentation Help"
-}</script><!-- End Schema.org --></head><body data-id="PatternService" data-main-title="Pattern Services" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="Technical Reference///Common///Services"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Fantasy-Chess Documentation  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="PatternService" id="PatternService.md">Pattern Services</h1><p id="z7p4yve_3"><code class="code" id="z7p4yve_10">Author: Lukas Walker</code></p><p id="z7p4yve_4">Pattern Services wrap a <a href="patternmodel.html" id="z7p4yve_11" data-tooltip="Author: Lukas Walker">Pattern Model</a> and provide methods to manipulate and retrieve information about the <a href="patterns.html" id="z7p4yve_12" data-tooltip="Author: Lukas Walker">Pattern</a>. A pattern service holds its underlying <a href="patternmodel.html" id="z7p4yve_13" data-tooltip="Author: Lukas Walker">Pattern Model</a>, a reference to the <a href="patternstore.html" id="z7p4yve_14" data-tooltip="Author: Lukas Walker">Pattern Store</a> and two Maps, one mapping from relative position to <code class="code" id="z7p4yve_15">char</code> and one mappings from relative position to effected positions. They are created directly by the client or server and are never send over the network.</p><p id="z7p4yve_5">Their main task is to provide target positions and positions effected by commands on target positions.</p><section class="chapter"><h2 id="creation" data-toc="creation">Creation</h2><p id="z7p4yve_16">Pattern Services are created from a <a href="patternmodel.html" id="z7p4yve_25" data-tooltip="Author: Lukas Walker">Pattern Model</a> and a <a href="patternstore.html" id="z7p4yve_26" data-tooltip="Author: Lukas Walker">Pattern Store</a>:</p><div class="code-block" data-lang="java">
+}</script><!-- End Schema.org --></head><body data-id="PatternService" data-main-title="Pattern Services" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="Technical Reference///Common///Services"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Fantasy-Chess Documentation  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="PatternService" id="PatternService.md">Pattern Services</h1><p id="-cq2amv_3"><code class="code" id="-cq2amv_10">Author: Lukas Walker</code></p><p id="-cq2amv_4">Pattern Services wrap a <a href="patternmodel.html" id="-cq2amv_11" data-tooltip="Author: Lukas Walker">Pattern Model</a> and provide methods to manipulate and retrieve information about the <a href="patterns.html" id="-cq2amv_12" data-tooltip="Author: Lukas Walker">Pattern</a>. A pattern service holds its underlying <a href="patternmodel.html" id="-cq2amv_13" data-tooltip="Author: Lukas Walker">Pattern Model</a>, a reference to the <a href="patternstore.html" id="-cq2amv_14" data-tooltip="Author: Lukas Walker">Pattern Store</a> and two Maps, one mapping from relative position to <code class="code" id="-cq2amv_15">char</code> and one mappings from relative position to effected positions. They are created directly by the client or server and are never send over the network.</p><p id="-cq2amv_5">Their main task is to provide target positions and positions effected by commands on target positions.</p><section class="chapter"><h2 id="creation" data-toc="creation">Creation</h2><p id="-cq2amv_16">Pattern Services are created from a <a href="patternmodel.html" id="-cq2amv_25" data-tooltip="Author: Lukas Walker">Pattern Model</a> and a <a href="patternstore.html" id="-cq2amv_26" data-tooltip="Author: Lukas Walker">Pattern Store</a>:</p><div class="code-block" data-lang="java">
     public PatternService(PatternModel patternModel, PatternStore patternStore) 
         throws PatternShapeInvalidException, InvalidSubpatternMappingException {
             this.patternStore = patternStore;
@@ -27,7 +27,7 @@
                     .put(target,calculateAreaOfEffect(target));
             }
     }
-</div><p id="z7p4yve_18">When constructed like this, they are directly validated for possible ambiguity due to pattern shape or errors in the subpattern-mappings. If nothing arises from these checks, the two maps are calculated and saved.</p><p id="z7p4yve_19">Pattern Services can also be created directly using components, which is important for <a href="#reversal" id="z7p4yve_27" data-tooltip="The server has to transform all coordinates for one player to be able to process their commands. This includes the patterns of their characters. Pattern services provide a method to create a new pattern service that holds the same pattern in reverse.">reversal</a>:</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_18">When constructed like this, they are directly validated for possible ambiguity due to pattern shape or errors in the subpattern-mappings. If nothing arises from these checks, the two maps are calculated and saved.</p><p id="-cq2amv_19">Pattern Services can also be created directly using components, which is important for <a href="#reversal" id="-cq2amv_27" data-tooltip="The server has to transform all coordinates for one player to be able to process their commands. This includes the patterns of their characters. Pattern services provide a method to create a new pattern service that holds the same pattern in reverse.">reversal</a>:</p><div class="code-block" data-lang="java">
     private PatternService(
             PatternModel patternModel, PatternStore patternStore,
             Map&lt;Vector2D, Character&gt; relativeTargetMappings,
@@ -38,7 +38,7 @@
         this.relativeTargetMappings = relativeTargetMappings;
         this.attackAreasPerRelativePosition = attackAreasPerRelativePosition;
     }
-</div><p id="z7p4yve_21">Method to calculate mappings from relative position to <code class="code" id="z7p4yve_28">char</code>:</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_21">Method to calculate mappings from relative position to <code class="code" id="-cq2amv_28">char</code>:</p><div class="code-block" data-lang="java">
     private Map&lt;Vector2D,Character&gt; createMappingsFromPattern(
         PatternModel patternModel) {
             String[] lines = patternModel.getPatternString().split(&quot;\n&quot;);
@@ -58,7 +58,7 @@
             }
             return mappings;
     }
-</div><p id="z7p4yve_23">Methods to calculate effected areas:</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_23">Methods to calculate effected areas:</p><div class="code-block" data-lang="java">
     private Vector2D[] calculateAreaOfEffect(Vector2D targetPosition){
         char c = relativeTargetMappings.get(targetPosition);
 
@@ -96,12 +96,12 @@
                 }
             }
     }
-</div></section><section class="chapter"><h2 id="usage" data-toc="usage">Usage</h2><p id="z7p4yve_29">Use the method &quot;getPossibleTargetPositions&quot; to retrieve all absolute target positions defined by the pattern based on player position:</p><div class="code-block" data-lang="java">
+</div></section><section class="chapter"><h2 id="usage" data-toc="usage">Usage</h2><p id="-cq2amv_29">Use the method &quot;getPossibleTargetPositions&quot; to retrieve all absolute target positions defined by the pattern based on player position:</p><div class="code-block" data-lang="java">
     public Vector2D[] getPossibleTargetPositions(Vector2D player){
         return Arrays.stream(relativeTargetMappings.keySet()
             .toArray(new Vector2D[0])).map(player::add).toArray(Vector2D[]::new);
     }
-</div><p id="z7p4yve_31">Use the method &quot;getAreaOfEffect&quot; to retrieve a list of all absolute positions effected by a specified command:</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_31">Use the method &quot;getAreaOfEffect&quot; to retrieve a list of all absolute positions effected by a specified command:</p><div class="code-block" data-lang="java">
     public Vector2D[] getAreaOfEffect(Vector2D player, Vector2D targetPosition) {
         Vector2D relativePosition = targetPosition.subtract(player);
         if (!attackAreasPerRelativePosition.containsKey(relativePosition)) {
@@ -113,7 +113,7 @@
         return Arrays.stream(relativePositions).map(player::add)
             .toArray(Vector2D[]::new);
     }
-</div></section><section class="chapter"><h2 id="reversal" data-toc="reversal">Reversal</h2><p id="z7p4yve_33">The server has to transform all coordinates for one player to be able to process their commands. This includes the patterns of their <a href="characterentity.html" id="z7p4yve_36" data-tooltip="Author: Lukas Walker">characters</a>. Pattern services provide a method to create a new pattern service that holds the same <a href="patterns.html" id="z7p4yve_37" data-tooltip="Author: Lukas Walker">pattern</a> in reverse.</p><div class="code-block" data-lang="java">
+</div></section><section class="chapter"><h2 id="reversal" data-toc="reversal">Reversal</h2><p id="-cq2amv_33">The server has to transform all coordinates for one player to be able to process their commands. This includes the patterns of their <a href="characterentity.html" id="-cq2amv_36" data-tooltip="Author: Lukas Walker">characters</a>. Pattern services provide a method to create a new pattern service that holds the same <a href="patterns.html" id="-cq2amv_37" data-tooltip="Author: Lukas Walker">pattern</a> in reverse.</p><div class="code-block" data-lang="java">
     public PatternService reversePattern() {
         Map&lt;Vector2D,Vector2D[]&gt; newAttackAreasPerRelativePosition = new HashMap&lt;&gt;();
         Map&lt;Vector2D, Character&gt; newRelativeTargetMappings = new HashMap&lt;&gt;();
@@ -148,7 +148,7 @@
     private Vector2D reversePosition(Vector2D position){
         return new Vector2D(-position.getX(),-position.getY());
     }
-</div><p id="z7p4yve_35">This method effectively turns the pattern including all subpattern-information by 180 degrees.</p></section><section class="chapter"><h2 id="validations" data-toc="validations">Validations</h2><p id="z7p4yve_38">Method to validate <a href="patternmodel.html" id="z7p4yve_44" data-tooltip="Author: Lukas Walker">Pattern Model</a> using all validation methods</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_35">This method effectively turns the pattern including all subpattern-information by 180 degrees.</p></section><section class="chapter"><h2 id="validations" data-toc="validations">Validations</h2><p id="-cq2amv_38">Method to validate <a href="patternmodel.html" id="-cq2amv_44" data-tooltip="Author: Lukas Walker">Pattern Model</a> using all validation methods</p><div class="code-block" data-lang="java">
     private void validatePattern(PatternModel patternModel) 
         throws PatternShapeInvalidException, InvalidSubpatternMappingException {
             String[] lines = patternModel.getPatternString().split(&quot;\n&quot;);
@@ -160,7 +160,7 @@
                 throw new InvalidSubpatternMappingException();
             }
     }
-</div><p id="z7p4yve_40">Method to validate pattern shape</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_40">Method to validate pattern shape</p><div class="code-block" data-lang="java">
     private boolean isPatternShapeInvalid(String[] lines){
         if (lines.length % 2 == 0){
             return true;
@@ -173,7 +173,7 @@
         }
         return false;
     }
-</div><p id="z7p4yve_42">Method to recursively check subpattern-mappings</p><div class="code-block" data-lang="java">
+</div><p id="-cq2amv_42">Method to recursively check subpattern-mappings</p><div class="code-block" data-lang="java">
     private boolean arePatternMappingsInvalid(PatternModel patternModel) {
         String[] lines = patternModel.getPatternString().split(&quot;\n&quot;);
         for (String line:lines){
