@@ -1,9 +1,6 @@
-# Tilemap
+# Coordinate System Conversions
 
-
-### Coordinate System Conversions
-
-##### There are three coordinate systems:
+## There are three coordinate systems:
 
 <deflist type="medium">
     <def title="World Coordinates">

@@ -1,78 +1,31 @@
-# Character Entities
+# Character Entity
 
-`Author: Albano Vukelaj`
+`Author: Lukas Walker`
 
-The `CharacterEntity` represents an active instance of a character in the game. These entities
-are dynamically instantiated during gameplay, integrating with the game's logic to maintain their
-state throughout the match lifecycle.
+The Character Entity represents an active instance of a character in the game. 
+These entities are created by the server when the game is created and distributed
+to the clients.
 
-## Structure of CharacterEntity
-📌 **For a full technical reference, check the** 
-[CharacterDataModel JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/entities/CharacterEntity.html).
+The server acts as the single source of truth about the Character Entities and its
+versions are always to be preferred.
 
-## Key Attributes (Definition List)
+Each Character Entity consists contains the following data:
 
-- **Character Base Model ([](CharacterDataModel.md))**: Provides the static attributes,
-  including attack and movement patterns, descriptions, and base health.
-- **Unique ID (`String`)**: A unique identifier for each instance, assigned by the server.
-- **Current Health (`int`)**: Tracks the character's remaining health.
-- **Position (`Vector2D`)**: The character's current position on the game grid.
-- **Player ID (`String`)**: Identifies the player controlling this character.
+- Its [](CharacterDataModel.md)
+- Its unique ID as a String
+- Its current health
+- Its position on the grid (in [grid coordinates](CoordinateSystemConversions.md))
+- The playerID of the player it belongs to
 
-## Role of Character Entity
+The health and position are updates dynamically in order to represent and track the current state of the game.
 
-The `CharacterEntity` bridges the gap between the static [](CharacterDataModel.md) and the game's dynamic logic.
-It evolves throughout gameplay while maintaining a reference to its original data model.
+## Lifecycle
 
-Key responsibilities:
+1. Creation in the server
+2. Initial transfer to both clients
+3. Queued for information by the client
+4. Used for turn logic in the server
+5. Transfer to clients to keep the clients up to date with the ground truth 
 
-- Tracks health, position, and player association.
-- Interacts with the game grid and logic services for combat and movement.
-- Supports expansions like inventory systems, experience points, and status effects.
-
-## Character Lifecycle
-
-### Definition and Instantiation
-
-#### Character Definition
-The [](CharacterDataModel.md) is defined in the Commons-module and provides the foundation for creating
-new `CharacterEntity` instances. It sets static attributes such as health,
-attack patterns, movement patterns, and descriptions.
-
-#### Character Instantiation (Server-Side)
-The server creates a new `CharacterEntity` by referencing the [](CharacterDataModel.md):
-
-- Assigns a unique ID.
-- Initializes the character’s health and position.
-- Associates the entity with a controlling player.
-
-The instantiated entity is then sent to the client, ensuring synchronized gameplay.
-
-#### Instantiation Example
-A `CharacterEntity` is created dynamically on the server:
-
-```java
-CharacterEntity character = new CharacterEntity(
-    characterModel,   // The predefined CharacterDataModel
-    uniqueId,         // Server-assigned unique ID
-    initialHealth,    // Starting health value
-    startPosition,    // Initial position on the grid
-    playerId          // Player ID controlling this character
-);
-```
-
-### State Updates
-
-The `CharacterEntity` updates dynamically during the game.
-
-- Position and health values change in response to [](Turn-Logic.md) that elaborates game actions.
-- Movement and attack actions interact with the `GridModel`.
-
-### Combat and Damage Handling
-- Characters take damage based on attack interactions.
-- When health reaches zero, the character is removed from the game grid.
-
-
-
-
-
+Take a look at the [javadoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/)
+for more information.
