@@ -4,7 +4,7 @@
 Before developing the digital version of our game, we created a physical prototype using paper. 
 This allowed us to test the game mechanics, evaluate whether the game was enjoyable, and establish an initial visual concept.
 
-![alt text] (assets/image.png)
+![alt text] (![image.png](../img/figma/image.png))
 
 The next step in the game development process was to translate this prototype into a digital design. 
 This phase was crucial not only for creating a fluid and intuitive user experience but also for defining the requirements and expectations for the game. 
@@ -14,8 +14,8 @@ By sharing a collaborative link, the entire team could contribute their ideas an
 A clear digital sketch serves as a guideline for all team members, ensuring that everyone has a precise understanding of what needs to be implemented. 
 Based on this visual representation, we were able to define *story points* and *issues* for development. This design approach remained agile throughout the process, allowing us to adapt to changing requirements. For example, we integrated the lobby dialog directly into the main menu to improve navigation and streamline the user experience. Such integrations follow fundamental design principles to enhance usability and consistency.
 
-![alt text] (presentation/assets/img/figma/gamescreen.webp)
-![alt text] (presentation/assets/img/figma/lobbyDialog.webp)
+![alt text] (![mainmenu.webp](../img/figma/mainmenu.webp))
+![alt text] (![lobbyDialog.webp](../img/figma/lobbyDialog.webp))
 
 ### Tiled
 
@@ -24,16 +24,16 @@ This tool allows for the creation of top-down or isometric worlds.
 Our game features an isometric map designed in a chessboard-like pattern. 
 Unlike a pre-rendered static background, our map consists of tiles arranged as objects in different layers. 
 During gameplay, the system dynamically generates new layers to convey information. 
-This functionality is further elaborated in the Game Screen section. **?**
 
 
 ### Piskel
-To design the game’s characters, we used Piskel, a web-based tool for creating pixel art. 
+To design the game’s [characters](Characters.md), we used Piskel, a web-based tool for creating pixel art. 
 One of the main challenges was to develop unique and effective designs within a very small resolution. 
 A key approach was to avoid using black outlines, instead relying on alternating colors and shapes to define character features. 
-Each character fulfills a specific role in the game, which is further explained in the Balancing Characters section. **?**
 
-![alt text] (fantasychess-client/assets/tileset/characters/blossom/blossom-back.png)
+
+![alt text] (![blossom-back.png](../img/characters/blossom-back.png))
+
 
 ### Final Screens & Design Decisions
 The final screen layouts ensure that players are guided smoothly toward the essential actions—entering a username and pressing *Play*. 
@@ -47,6 +47,7 @@ By minimizing distractions, we eliminate potential misunderstandings and enhance
 - **Rounded UI Elements:** All button corners were rounded to *10 degrees* to maintain a modern, minimalistic aesthetic. This subtle refinement contributes to a more visually appealing and user-friendly interface.
 
 ![alt text!] (![Lobbyscreen.png](../img/screens/Lobbyscreen.png))
+
 
 By adhering to these fundamental UI/UX principles, we aimed to create an accessible, engaging, and immersive gaming experience for players.
 
