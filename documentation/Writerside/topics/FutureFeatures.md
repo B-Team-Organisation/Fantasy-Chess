@@ -1,5 +1,7 @@
 # Future Features 
 
+`Author: Albano Vukelaj`
+
 Fantasy-Chess MVP is complete, but there are endless possibilities to enhance the game with innovative and strategic features.
 We will be focusing on refining and expanding the gameplay to make Fantasy Chess even more engaging and dynamic.
 Below is a structured list of potential features, categorized by their complexity and impact on the game.
