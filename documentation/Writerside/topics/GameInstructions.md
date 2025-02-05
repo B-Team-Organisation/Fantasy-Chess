@@ -2,6 +2,13 @@
 
 `Author: Adnan Bennis`
 
+## **Game Controls Guide**
+
+- **Left Click** – Set Commands
+- **Right Click** – Cancel
+- **Escape (Esc)** – Open In-Game Menu
+- **F11** – Toggle Fullscreen Mode
+
 ## **Splashscreen: Starting the Game**
 
 - **Description:**
