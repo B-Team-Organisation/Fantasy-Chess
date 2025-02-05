@@ -1,7 +1,8 @@
 # Game Instructions
 
-## **Splashscreen: Starting the Game**
+`Author: Adnan Bennis`
 
+## **Splashscreen: Starting the Game**
 
 - **Description:**
 The splash screen displays the title of the game "Fantasy-Chess" prominently.
