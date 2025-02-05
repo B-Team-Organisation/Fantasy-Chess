@@ -1,5 +1,6 @@
 # LobbyScreen
-`Author: Jacinto`
+
+`Author: Jacinto Schwarzwälder`
 
 The Lobby Screen is a small dialog window to show to waiting players after creating or joining a lobby 
 and allows them some additional control about whether to enter the game immediately or not.
