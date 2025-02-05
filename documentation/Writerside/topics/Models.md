@@ -1,5 +1,7 @@
 # Models
 
+`Author: Albano Vukelaj, Lukas Walker`
+
 Start typing here...
 
 ## Player Model
