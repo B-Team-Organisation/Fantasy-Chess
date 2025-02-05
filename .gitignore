@@ -25,3 +25,10 @@ replay_pid*
 
 # Environment Files
 *.env
+
+# IDE Files
+.idea
+
+common/.gradle/
+common/build/
+fantasychess-client/assets/image.png
