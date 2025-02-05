@@ -1,5 +1,7 @@
 # Packet Handler
 
+`Author: Marc Matija`
+
 Packet Handler process incoming WebSocket Packets and implement the `PacketHandler` interface. The `PacketHandler`
 interface defines 2 methods, one for handling the incoming packet and one for it's `PacketPattern`, which is specific
 for each Packet Handler and defines the types of packets sent to each handler. The `handle` method gets called by

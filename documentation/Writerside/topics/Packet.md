@@ -1,5 +1,7 @@
 # Packets
 
+`Author: Marc Matija`
+
 Packets take the form of JSON data and are defined in the code as a Java class, which takes in a [JsonDTO](JsonDTOs.md).
 Multiple packets can have the same DTO, however each Type of packet gets an ID, which is unique to that type of packet.
 

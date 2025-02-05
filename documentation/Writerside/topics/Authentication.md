@@ -1,5 +1,7 @@
 # Authentication
 
+`Author: Marc Matija`
+
 > Within the scope of the MVP, Player's identities are not yet properly secured. They are authenticated once registered
 > but the current implementation does not do authentication when requesting a token. This NEEDS to be addressed for proper
 > production deployment.

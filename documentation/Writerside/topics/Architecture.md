@@ -1,5 +1,7 @@
 # Architecture
 
+`Author: Marc Matija`
+
 The Project has been layed out to feature 3 Main components.
 
 - [Commons](Common.md)

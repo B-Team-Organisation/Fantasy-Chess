@@ -1,5 +1,7 @@
 # Services
 
+`Author: Marc Matija`
+
 All services are SpringBoot services classes, which are Singletons within the Server context and can automatically
 be referenced in fields using dependency Injection. They are the backbone of the server and form the link between
 incoming requests and the database.
