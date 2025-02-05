@@ -26,7 +26,7 @@ import static com.bteam.fantasychess_client.ui.UserInterfaceUtil.onChange;
  * It also displays basic information about the game.
  *
  * @author lukas dania
- * @version 1.0
+ * @version 1.1
  */
 public class SplashScreen extends ScreenAdapter {
 
@@ -100,7 +100,7 @@ public class SplashScreen extends ScreenAdapter {
         stage.addActor(table);
 
         // Version label
-        Label versionLabel = new Label("Version 0.1", skin);
+        Label versionLabel = new Label("Version 0.9.0", skin);
         versionLabel.setPosition(20, 40, Align.bottomLeft);
         stage.addActor(versionLabel);
 
