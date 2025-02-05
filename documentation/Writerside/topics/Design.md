@@ -1,10 +1,9 @@
 # Design
-
 ### Concept
 Before developing the digital version of our game, we created a physical prototype using paper. 
 This allowed us to test the game mechanics, evaluate whether the game was enjoyable, and establish an initial visual concept.
 
-![alt text] (![image.png](../img/figma/image.png))
+![image.png](../img/figma/image.png)
 
 The next step in the game development process was to translate this prototype into a digital design. 
 This phase was crucial not only for creating a fluid and intuitive user experience but also for defining the requirements and expectations for the game. 
@@ -14,8 +13,8 @@ By sharing a collaborative link, the entire team could contribute their ideas an
 A clear digital sketch serves as a guideline for all team members, ensuring that everyone has a precise understanding of what needs to be implemented. 
 Based on this visual representation, we were able to define *story points* and *issues* for development. This design approach remained agile throughout the process, allowing us to adapt to changing requirements. For example, we integrated the lobby dialog directly into the main menu to improve navigation and streamline the user experience. Such integrations follow fundamental design principles to enhance usability and consistency.
 
-![alt text] (![mainmenu.webp](../img/figma/mainmenu.webp))
-![alt text] (![lobbyDialog.webp](../img/figma/lobbyDialog.webp))
+![mainmenu.webp](../img/figma/mainmenu.webp)
+![lobbyDialog.webp](../img/figma/lobbyDialog.webp)
 
 ### Tiled
 
@@ -32,7 +31,7 @@ One of the main challenges was to develop unique and effective designs within a 
 A key approach was to avoid using black outlines, instead relying on alternating colors and shapes to define character features. 
 
 
-![alt text] (![blossom-back.png](../img/characters/blossom-back.png))
+![blossom-back.png](../img/characters/blossom-back.png)
 
 
 ### Final Screens & Design Decisions
@@ -46,7 +45,7 @@ By minimizing distractions, we eliminate potential misunderstandings and enhance
 - **Minimalist & Modern Approach:** The interface follows a clean, simple design, prioritizing ease of use. Colors were harmonized carefully—black was often replaced with dark gray for a softer visual impact.
 - **Rounded UI Elements:** All button corners were rounded to *10 degrees* to maintain a modern, minimalistic aesthetic. This subtle refinement contributes to a more visually appealing and user-friendly interface.
 
-![alt text!] (![Lobbyscreen.png](../img/screens/Lobbyscreen.png))
+![Lobbyscreen.png](../img/screens/Lobbyscreen.png)
 
 
 By adhering to these fundamental UI/UX principles, we aimed to create an accessible, engaging, and immersive gaming experience for players.
