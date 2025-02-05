@@ -7,7 +7,7 @@
 
 <deflist type="medium">
     <def title="World Coordinates">
-        The x and y coordinates on the client's screen.
+        The x and y coordinates in the game world.
     </def>
     <def title="Grid Coordinates">
         Coordinates on the tile map, represented by rows and columns.
@@ -21,6 +21,9 @@
 > Tile coordinates differ from the grid coordinates we use because of technical debt. They could be merged, but we found
 > it was more practical and intuitive to have (0, 0) at the top, rather than on the left.
  
+> The world coordinates of the mouse can be retrieved by simply calling 
+> `gameCamera.unproject(new Vector3(screenX,screenY,0))`.
+
 ![Coordinate Systems illustration](./../img/client/CoordinateMaps.png)
 {width="705"}
 

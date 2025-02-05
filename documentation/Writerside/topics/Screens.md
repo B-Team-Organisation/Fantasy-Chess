@@ -18,6 +18,9 @@ public enum Screens {
 
 See [](Screens.md#screen-manager) for details about navigation.
 
+When the client is connected to the server, its either on the Main Menu or Game Screen. Disconnecting brings it back to
+the splash screen.
+
 ## Important Methods
 
 The most important methods we used of the LibGDX `ScreenAdapter` are:
@@ -36,7 +39,7 @@ from the [SkinComposer Tool](https://libgdx.com/wiki/tools/skin-composer).
 All used graphics are combined in one `TextureAtlas` for efficient storage and access.
 
 The input it handled using a `InputMultiplexer` to allow the registration of multiple input processors.
-See
+See [](Input.md).
 
 More information about each screen can be found in their subtopic or [javadoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/client/core/com/bteam/fantasychess_client/ui/package-summary.html).
 

@@ -19,17 +19,36 @@ The following things happen when the game screen gets created (combination of co
 - Import of the tiled tmx map used for rendering the map + creation of its renderer
 - Creation of the `TiledMathService` for all calculations. See [](Tilemap.md)
 - Creation of custom map layers. See [](GameScreen.md#other-layers)
-- Registration of input processors. See [](GameScreen.md#map-input-adapter)
+- Registration of input processors. See [](MapInputAdapter.md)
 - Registration of event and packet handlers used for game state networking. See [](Networking.md#websocket-service)
 
 The two stat panels are created later on in the [](GameScreen.md#game-initialisation). See [](GameScreen.md#stat-panels)
 for information about them.
+
+## Inputs
+
+The inputs in this screen are processed using a `InputMultiplexer` that stacks multiple input processors on top of each 
+other. The processors receive the InputEvent in the order they were added and if a processor returns `true`, the Event
+is regarded as handled.
+
+````Java
+InputMultiplexer multiplexer = new InputMultiplexer();
+multiplexer.addProcessor(new FullscreenInputListener());
+multiplexer.addProcessor(stage);
+multiplexer.addProcessor(mapInputProcessor);
+````
+
+See [](Input.md) about general information about input processing.
+The mapInputProcessor contains the logic for interacting with the playing field itself.
+See [](MapInputAdapter.md) or its [javadoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/client/core/com/bteam/fantasychess_client/input/MapInputAdapter.html) for more information
 
 ## Game Phases
 
 The entire time a players game shows the Game Screen, it is in some kind of phase.
 These phases represent the current context of the game screen and are use to regulate the flow of the game and
 contextualize inputs.
+
+![](../img/client/ComplexCycle.svg)
 
 The states are saved in the `MapInputAdapter` which is where most calls referencing this state are happening.
 
@@ -40,6 +59,8 @@ This puts the Game Screen in the [Lobby Phase](GameScreen.md#lobby-phase) by def
 
 The lobby phase stats when the screen is created and ends when the game starts.
 Both players have to be ready at this point.
+They can set themselfs ready using the provided dialog, leading to their status being communicated with the other client
+via the server.
 Leaving the lobby phase puts the screen into the [Game Initialisation Phase](GameScreen.md#game-initialisation).
 
 ### Game Initialisation
@@ -63,7 +84,7 @@ getWebSocketService().addPacketHandler("GAME_INIT",
 }));
 ````
 
-This method updates the current phase in the [](GameScreen.md#map-input-adapter), 
+This method updates the current phase in the [](MapInputAdapter.md), 
 handels the configuration and presentation of the start tiles (See green area on the image) of the [](GridModel.md) and
 creates the [Character Sprites](CharacterSprite.md) for all [](CharacterEntity.md).
 This is also when the [](GameScreen.md#stat-panels) are created.
@@ -71,7 +92,7 @@ This is also when the [](GameScreen.md#stat-panels) are created.
 In this phase, the players are able to position their characters however they want. Their final placement is shown
 to the other player only after both players logged in their positions. 
 
-The placement logic behind this is explained [here](GameScreen.md#map-input-adapter).
+For more information about this, see [here](MapInputAdapter.md#process-click-in-game-init-mode).
 
 When the player logs in his choice using the [](GameScreen.md#ready-button), the screen will be put into the `Waiting
 for Turn Outcome` Phase.
@@ -84,13 +105,14 @@ As soon as the [TurnResult](Turn-Logic.md) arrives, the screen starts the `Turn 
 ### Turn Outcome Animation
 
 This phase is responsible for displaying the turn outcome animation. See [](TurnOutcomeAnimations.md).
-As soon as the animation is over, the screen enter the Command Phase.
+As soon as the animation is over, the screen enter the Command Phase or Game Summary Phase (if a winner or
+draw was communicated by the server).
 
 ### Command Phase
 
 ![](../img/client/CommandModeCommands.png)
 
-This is the phase the player will spend most time in. All command and planed and chosen here.
+This is the phase the player will spend most time in. All commands are planed and chosen here.
 
 ### Game Summary
 
@@ -143,18 +165,24 @@ In the images, it is responsible for the yellow circles (movement options) and r
 The command preview layer visualizes the result of a command. Its responsible for all filled out tiles in yellow
 (movement) and red (attack area).
 
-## Ready Button
+## UI Elements
+
+The Game Screen features many UI elements, each providing valuable functions to the player.
+
+### Ready Button
 
 The ready button lets the players send their commands. His text gives some hints about the current state of the game,
 displaying the amount of commands set in the current round or tells the player to wait for his opponent.
 He is updates using his `act(float delta)` method that's called together with `stage.act()` in the rendering method and
 in situations where he should not be pressed.
 
-## Stat Panels
+### Stat Panels
 
 The stat panels are the two large panels on the top sides of the screen. They display the current status of
 all characters currently alive on the board. The hp bars are colored according to their current hp.
 Clicking on a character opens a `Dialog` that displays all information about the character.
 
-## Map Input Adapter
+### Escape menu
 
+A small menu that opens thanks to the [](MapInputAdapter.md) that allows the player to abandon the match and
+return to the main menu.

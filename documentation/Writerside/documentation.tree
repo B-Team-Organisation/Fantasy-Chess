@@ -47,6 +47,10 @@
                 <toc-element topic="MainMenu.md"/>
                 <toc-element topic="GameScreen.md"/>
             </toc-element>
+            <toc-element topic="Input.md">
+                <toc-element topic="FullscreenInputListener.md"/>
+                <toc-element topic="MapInputAdapter.md"/>
+            </toc-element>
             <toc-element topic="Graphics.md">
                 <toc-element topic="CharacterSprite.md"/>
                 <toc-element topic="TurnOutcomeAnimations.md"/>
