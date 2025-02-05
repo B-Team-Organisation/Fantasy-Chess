@@ -1,4 +1,5 @@
 # Tilemap
+`Author: Jacinto Schwarzwälder`
 
 
 ### Coordinate System Conversions

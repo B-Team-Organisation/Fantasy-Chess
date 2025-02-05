@@ -6,6 +6,8 @@
                  name="Fantasy-Chess Documentation"
                  start-page="Introduction.md">
 
+    <toc-element topic="Introduction.md"/>
+    <toc-element topic="GameInstructions.md"/>
     <toc-element topic="Gameplay.md"/>
     <toc-element topic="Organization.md"/>
     <toc-element toc-title="Specifications">
@@ -16,7 +18,6 @@
     <toc-element toc-title="Technical Reference">
         <toc-element topic="Architecture.md"/>
         <toc-element toc-title="Common">
-            <toc-element topic="Introduction.md"/>
             <toc-element topic="Common.md"/>
             <toc-element topic="Json-Writer.md"/>
             <toc-element topic="Packet.md"/>
