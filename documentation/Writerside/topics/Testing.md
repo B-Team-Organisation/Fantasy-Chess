@@ -3,7 +3,7 @@
 `Author: Albano Vukelaj`
 
 ## Testing Overview
-All three modules (`common`, `client`, `server`) were extensively tested.
+All three modules (`common`, `client`, `server`) are extensively tested.
 While `common` and `server` modules utilized automated testing through **JUnit**,
 the `client` module has been difficult to cover with unit tests due to the complexity of the game state 
 and the challenges of validating graphical elements.
