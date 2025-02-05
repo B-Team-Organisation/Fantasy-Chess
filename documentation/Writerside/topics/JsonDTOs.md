@@ -1,5 +1,7 @@
 # JsonDTOs
 
+`Author: Marc Matija`
+
 JsonDTOs (`Data Transfer Object`) are classes, which implement the JsonDTO interface, which Identifies that a certain
 class can be serialized to JSON. This process needs to be done manually using the custom [`Json Writer`](Json-Writer.md)
 provided in the [common](Common.md) package.
