@@ -2,8 +2,6 @@
 
 `Author: Albano Vukelaj, Lukas Walker`
 
-Start typing here...
-
 ## Player Model
 
 A data model describing all relevant data for a player
@@ -16,6 +14,11 @@ A data model describing all relevant data for a Lobby.
 A pattern model represents a [Pattern](Patterns.md), storing a `string` representation, its name and the subpattern-mappings necessary to decode it.
 
 See [](PatternModel.md)
+
+## Grid Model
+The grid model represents the grid the characters are moved on.
+
+See [](GridModel.md)
 
 ## Character Data Model
 
