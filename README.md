@@ -16,32 +16,48 @@ Dania Anwar             - Design Lead
 Jacinto Schwarzwälder   - Repository and PM Tools  
 Albano Vukelaj
 
-## Prototype
+## The Game
 
-![alt text](/assets/image.png)
+![image](https://github.com/user-attachments/assets/7fd655e3-d8e6-412a-b17f-7f31a5788276)
 
-## How to get running (for now)
+## Getting Started
 
-*SETUP:*
+For the best experience please install <a href="https://www.jetbrains.com/idea/">Jetbrains IntelliJ IDEA</a> or
+download one of the existing binaries under [releases](https://github.com/B-Team-Organisation/Fantasy-Chess/releases).
 
-```sh
-    fantasychess-server/gradlew wrapper && fantasychess-client/gradlew wrapper && common/gradlew wrapper
+### Running the Project
+
+#### Downloaded binaries
+
+If you have running binaries, you can run the client by hosting it on any webserver. For local use we recommend using
+[`npx serve`](https://www.npmjs.com/package/serve).
+
+
+Running the Client:
+```bash
+    npx serve dist
 ```
 
-*Start Server:*
-
-```sh
-    fantasychess-server/gradlew bootRun
+Running the Server:
+```bash
+    java -jar fantasychess-server-{version}.jar
 ```
 
-*Start Client:*
+#### Building from source
 
-```sh
-    fantasychess-client/gradlew superDev
+If you do not have existing binaries, you can build them by using the following commands, once you have cloned the
+project:
+
+Building the Client:
+```bash
+    cd fantasychess-client/ && ./gradlew dist
 ```
 
-*Build Docker Container:*
-
-```sh
-    # TODO
+Building the Server:
+```bash
+    cd fantasychess-server/ && ./gradlew bootJar
 ```
+
+## Documentation
+
+The documentation and infos on the implementation can be found [here](https://b-team-organisation.github.io/Fantasy-Chess).
