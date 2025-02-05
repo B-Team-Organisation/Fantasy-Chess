@@ -6,7 +6,7 @@ state throughout the match lifecycle.
 
 ## Structure of CharacterEntity
 📌 **For a full technical reference, check the** 
-[CharacterDataModel JavaDoc](../../../common/src/main/java/com/bteam/common/entities/CharacterEntity.java).
+[CharacterDataModel JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/entities/CharacterEntity.html).
 
 ## Key Attributes (Definition List)
 
@@ -63,7 +63,7 @@ CharacterEntity character = new CharacterEntity(
 
 The `CharacterEntity` updates dynamically during the game.
 
-- Position and health values change in response to [Turn Logic Service](Turn-Logic-Service.md) that elaborates game actions.
+- Position and health values change in response to [](Turn-Logic.md) that elaborates game actions.
 - Movement and attack actions interact with the `GridModel`.
 
 ### Combat and Damage Handling

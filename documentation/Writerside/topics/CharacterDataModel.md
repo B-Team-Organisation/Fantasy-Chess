@@ -6,15 +6,10 @@ Unlike [](CharacterEntity.md), which changes dynamically during the game,
 
 ### Structure of CharacterDataModel
 📌 **For a full technical reference, check the**
-[CharacterDataModel JavaDoc](../../common/src/main/java/com/bteam/common/models/CharacterDataModel.java).
+[CharacterDataModel JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/models/CharacterDataModel.html).
 
-### Key Attributes of CharacterDataModel
-
-- **Name (`String`)**: The name of the character type.
-- **Description (`String`)**: A textual representation of the character’s background or abilities.
-- **Health (`int`)**: The base health assigned to this character type.
-- **Attack Power (`int`)**: The damage potential of this character.
-- **Attack Patterns (`PatternService[]`)**: Defines how the character attacks.
-- **Movement Patterns (`PatternService[]`)**: Defines how the character moves.
-- **Attack Description (`String`)**: Additional explanation of the attack patterns.
-- **Movement Description (`String`)**: Additional explanation of the movement patterns.
+### **Key Attributes** (Quick Overview)
+- **Name & Description**: Basic character information.
+- **Health & Attack Power**: Base stats determining survivability and damage.
+- **Attack & Movement Patterns**: Defines how the character moves and attacks.
+- **Pattern Descriptions**: Additional explanations for attacks and movements.  
