@@ -26,7 +26,7 @@ public class ExampleService{
 ## Game State Service
 
 Handling all data regarding the game's current state, the Game State Service is arguably the most important of the
-services. It incorporates the [](Turn-Logic-Service.md) from the common package. It gathers all commands the player
+services. It incorporates the [](Turn-Logic.md) from the common package. It gathers all commands the player
 send and then forwards them to the said service. It also rotates the coordinates according to the players view
 within their browser and sets up new games. Additionally, it provides the ability to query for specific games
 or see all currently running games.

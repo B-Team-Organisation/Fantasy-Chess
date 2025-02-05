@@ -1,8 +1,10 @@
 # Testing
 
+`Author: Albano Vukelaj`
+
 ## Testing Overview
 The project was tested extensively in three primary modules: `common`, `server`, and `client`. 
-While `common` and `server` modules utilized automated testing through **JUnit**, 
+While `common` and `server` modules utilized automated testing through **JUnit**, and **Mockito**
 the `client` module relied on manual testing due to **GWT** limitations.
 
 ---
@@ -17,7 +19,7 @@ This module was rigorously tested using **JUnit** to ensure the correctness and 
 - **DTOs:**
     - Ensured correct serialization and deserialization of data through tests like `TestPatternListDTO`.
 - **Services:**
-    - Validated game logic and command verification processes in services such as [](Turn-Logic-Service.md) and `CommandValidator`.
+    - Validated game logic and command verification processes in services such as [](Turn-Logic.md) and `CommandValidator`.
 - **Utilities:**
     - Covered helper classes like `TestUtils` and `TurnResultNoOrder` to ensure robust utility methods.
 
@@ -45,7 +47,9 @@ The [](Server.md) module is responsible for backend logic, WebSocket communicati
 ---
 
 ## Client Module
-The [](Client.md) module relied on **manual testing** due to the limitations of **GWT** , which restricted the ability to perform automated tests.
+The [](Client.md) module relied on **manual testing** due to the limitations of **GWT** , 
+which restricted the ability to perform automated tests, as well as the client requiring many graphical tests which
+would be difficult to automate.
 
 ### Manual Testing Process
 - **Functional Testing:**
