@@ -52,7 +52,7 @@
             <toc-element topic="Input.md">
                 <toc-element topic="MapInputAdapter.md"/>
             </toc-element>
-            <toc-element topic="Graphics.md">
+            <toc-element toc-title="Graphics">
                 <toc-element topic="CharacterSprite.md"/>
                 <toc-element topic="TurnOutcomeAnimations.md"/>
             </toc-element>
