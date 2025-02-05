@@ -1,5 +1,7 @@
 # Character Data Model
 
+`Author: Albano Vukelaj`
+
 It defines all static properties such as attack and movement patterns, base stats, and descriptions.
 Unlike [](CharacterEntity.md), which changes dynamically during the game,
 `CharacterDataModel` remains constant and serves as a template for creating new character entities.

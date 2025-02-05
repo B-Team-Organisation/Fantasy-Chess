@@ -1,5 +1,7 @@
 # Character Entities
 
+`Author: Albano Vukelaj`
+
 The `CharacterEntity` represents an active instance of a character in the game. These entities
 are dynamically instantiated during gameplay, integrating with the game's logic to maintain their
 state throughout the match lifecycle.
