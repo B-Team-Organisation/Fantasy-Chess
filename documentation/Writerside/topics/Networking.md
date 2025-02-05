@@ -1,5 +1,7 @@
 # Networking
 
+`Author: Marc Matija`
+
 Clientside networking is handled by the [`gdx-websockets`](https://github.com/MrStahlfelge/gdx-websockets) library
 
 ## WebSocket Service

@@ -65,5 +65,9 @@
             <toc-element topic="Repositories.md"/>
             <toc-element topic="Entities.md"/>
         </toc-element>
+        <toc-element toc-title="Deployment">
+            <toc-element topic="Pipeline.md"/>
+            <toc-element topic="Deployment.md"/>
+        </toc-element>
     </toc-element>
 </instance-profile>

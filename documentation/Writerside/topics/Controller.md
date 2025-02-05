@@ -1,5 +1,7 @@
 # Controller
 
+`Author: Marc Matija`
+
 Controller are a Spring Boot component that manages incoming HTTP requests. In this project they are used for any
 communication before a WebSocket connection has been established.
 
