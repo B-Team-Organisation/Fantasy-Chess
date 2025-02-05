@@ -1,5 +1,7 @@
 # Json Writer
 
+`Author: Marc Matija`
+
 Utility class for constructing JSON strings in a type-safe manner. This class was made out of necessity, as
 the client cannot use Reflection due to limitations with the LibGDX and GWT version. This results in being unable to
 automatically generate JSON from java classes, thus this solution was created.

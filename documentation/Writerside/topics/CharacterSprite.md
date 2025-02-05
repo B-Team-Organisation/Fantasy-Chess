@@ -1,5 +1,7 @@
 # Character Sprite
 
+`Author: Lukas Walker`
+
 The Character Sprite is the graphical representation of the [](CharacterEntity.md). It inherits from the Sprite class
 from LibGDX, extending its capabilities for the purposes of this game.
 

@@ -1,5 +1,7 @@
 # Events
 
+`Author: Marc Matija`
+
 Events are custom classes, that allow for the registration of [](#listener) and invocation of these listeners.
 As Java does not provide a native Event System out of the box, this one was created. They are type of generic class
 in which listeners are consumers.

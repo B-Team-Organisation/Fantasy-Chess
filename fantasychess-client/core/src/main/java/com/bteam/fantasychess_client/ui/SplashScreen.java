@@ -65,15 +65,11 @@ public class SplashScreen extends ScreenAdapter {
         TextButton playButton = new TextButton("Play!", skin);
         playButton.setDisabled(true);
 
-        // Disable button if name too short
-        onChange(usernameInput, () -> {
-            playButton.setDisabled(usernameInput.getText().isEmpty() || usernameInput.getText().length() > 4);
-        });
-
         // User input logic
         onChange(usernameInput, () -> {
             playButton.setDisabled(usernameInput.getText().length() < 4);
         });
+
         usernameInput.addListener(new FocusListener() {
             @Override
             public void keyboardFocusChanged(FocusEvent event, Actor actor, boolean focused) {

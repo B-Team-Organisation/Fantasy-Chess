@@ -8,7 +8,7 @@ footer: B-Team
 
 # Fantasy-Chess
 
-A PvP multiplayer browser game.
+Ein Spieler-gegen-Spieler Browser game.
 
 > Marc Matija, Jacinto Schwarzwälder, Lukas Walker, Albano Vukelaj, Dania Anwar, Adnan Bennis
 
@@ -20,10 +20,7 @@ A PvP multiplayer browser game.
 - Bluffen & Vorausdenken
 - Weniger Wartezeiten, mehr Action
 - Vielfältige Charakterfähigkeiten
-
 - Einfache Netzwerk Struktur durch runden-basiertes Kampfsystem
-
-<!-- _something funny here idk_ -->
 
 ![bg right:30%](assets/img/pitch-chess-diplomacy.png)
 
@@ -31,22 +28,10 @@ A PvP multiplayer browser game.
 
 ---
 
-# Live Demo
-
-<!--
-    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
-    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
-    wir öffnen eine Lobby und spielen ein wenig.
--->
-
-<!-- _footer: "B-Team: Marc Matija"-->
-
----
-
-# Agenda (WIP)
-- Projektorganisation
-- Generelles Spiel
-- Technische Umsetzung
+# Agenda
+- Projektorganisation + Technologien
+- Design
+- Spezifikationen + Technische Umsetzung
 - Qualität
 - Doku
 - (Zukunft)
@@ -82,13 +67,25 @@ A PvP multiplayer browser game.
 Z. Zukunft <code>Wer noch was braucht</code>
 -->
 
+<!-- _footer: "B-Team: Marc Matija"-->
+
 ---
 
-# Introduction
+# Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
 # Projektorganisation
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -97,12 +94,9 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Scrum Master: Marc
 - Sprints gingen 2 Wochen
 - Meetings wöchentlich 1x online (DC), 1x in Person
+- Zeiterfassung über Clockify
 
----
-
-# Clockify
-
-![w:900](./assets/img/jacinto/Clockify.png)
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -112,75 +106,36 @@ Z. Zukunft <code>Wer noch was braucht</code>
 - Mit Github Pages wurde die Doku gehostet
 - Mit Github Projects haben wir unser Task Management gemacht
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Kanban
 
 ![w:900](./assets/img/jacinto/kanban.png)
 
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
 ---
 
 # Guidelines
-![w:900](./assets/img/jacinto/guidelines.png)
+![w:900](./assets/img/jacinto/guidelines_3.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
-# Prototyping
+# Technologien & Projektstruktur
 
-![w:900](./assets/img/jacinto/prototype.png)
-
----
-
-# Scrum
+<!-- _footer: "B-Team: Adnan Bennis" -->
 
 ---
 
-# Spiel
+# Projekt Struktur
 
----
+![width:800px](assets/img/technology.drawio.svg)
 
-<!-- _footer: "B-Team: Albano Vukelaj "-->
-
-# Main Menu
-
-<style scoped>
-  img.center {
-    float: center;
-    margin-left : 230px;
-    
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
-
---- 
-
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
-# Main Menu
-
-<style scoped>
-  img.right {
-    float: right;
-    margin-left: 20px; 
-    margin-top: 0px;
-    max-width: 60%; 
-  }
-</style>
-<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
-
-### Funktionen
-- Lobby-Suche
-- Datenaktualisierung
-- Lobby-Erstellung
-
-### Vorteile des Hauptmenüs
-- Benutzerfreundlichkeit
-- Flexibilität
-- Effizienz
-
----
-
-# Technologien
+<!-- _footer: "B-Team: Adnan Bennis" -->
 
 ---
 
@@ -196,8 +151,8 @@ Z. Zukunft <code>Wer noch was braucht</code>
   - Leichtgewichtige Entwicklungsdatenbank
 - **PostgreSQL**
   - Stabile Datenbank für Produktion
-  
-<!-- _footer: "B-Team: Adnan Bennis"-->
+
+<!-- _footer: "B-Team: Adnan Bennis" -->
 
 ---
 
@@ -231,35 +186,186 @@ Z. Zukunft <code>Wer noch was braucht</code>
 # Client Tools
 
 - **TexturePacker**
-  - Erstellung von Texture Atlanten
+  - Erstellung des Texture Atlas
 - **SkinComposer**
-  - Anpassbare UI-Skin-Erstellung
+  - UI-Skin-Erstellung
 - **Tiled**
   - Map-Editor mit einfacher Code-Integration
 - **Piskel**
-  - Pixel-Art-Editor für Grafiken
+  - Pixel-Art-Editor für Pixel-Grafiken
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
-# Spiel an sich
+# Design
+
+<!-- _footer: "B-Team: Dania Anwar"-->
 
 ---
 
-<!-- _footer: "B-Team: Albano Vukelaj"-->
+# Prototyping
+
+![w:900](./assets/img/jacinto/prototype.png)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:400 bg](assets/img/figma/splashscreen.webp)
+![w:400 bg](assets/img/figma/mainmenu.webp)
+![w:400 bg](assets/img/figma/lobbyDialog.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Figma
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+
+![w:600 bg](assets/img/figma/gamescreen.webp)
+![w:500 bg](assets/img/figma/turnoutcome.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Screens
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+
+![w:500 bg](assets/img/screens/SplashScreen.webp)
+![w:500 bg](assets/img/screens/Lobbyscreen5.webp)
+![w:500 bg](assets/img/screens/Gamescreen.webp)
+
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+<style scoped>
+.bg-white{
+  background-color: white;
+  padding: 0 .2em;
+}
+</style>
+
+<br/><br/><br/><br/><br/><br/>
+
+# <span class="bg-white">Design - Karte</span>
+<span class="bg-white">TiledMap: Isometrisches Tileset</span>
+<span class="bg-white">Erstellt mit Tiled</span>
+
+![bg](assets/img/TiledScreenshot.png)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Design - Charaktere
+
+<br><br><br><br><br><br><br><br>
+
+![bg w:100](assets/img/scaled-characters/bombo.webp)
+![bg w:100](assets/img/scaled-characters/blossom.webp)
+![bg w:100](assets/img/scaled-characters/fitzooth.webp)
+![bg w:100](assets/img/scaled-characters/flash.webp)
+![bg w:100](assets/img/scaled-characters/prometheus.webp)
+![bg w:100](assets/img/scaled-characters/stablin.webp)
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Spezifikationen + Technische Umsetzung
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+---
+
+# Main Menu
+
+<style scoped>
+  img.center {
+    float: center;
+    margin-left : 230px;
+    
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_.png" alt="Main Menu" class="center" width ="700" />
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+---
+
+# Main Menu
+
+<style scoped>
+  img.right {
+    float: right;
+    margin-left: 20px; 
+    margin-top: 0px;
+    max-width: 60%; 
+  }
+</style>
+<img src="assets/img/MainMenu/MainMenu_CreateLobby.png" alt="Main Menu Create Lobby" class="right" />
+
+### Funktionen
+- Lobby-Suche
+- Datenaktualisierung
+- Lobby-Erstellung
+
+### Vorteile des Hauptmenüs
+- Benutzerfreundlichkeit
+- Flexibilität
+- Effizienz
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
+---
 
 # Charakter-Balancing
 
- Balancieren von **Leben, Angriff und Bewegung**.
+ Balancieren von **Leben, Angriff und Bewegung**
 
-### Prozess-Übersicht:
+## Unser Prozess:
 1. Richtlininien erstellt
 2. Richtlinien befolgt
-3. 15 Charaktere vorgeschlagen,**2 pro Typ**.  
-4. 6 endgültige Charaktere ausgewählt.   
-5. Mathematische Balance durch ein Balancing-Dreieck  
-6. Charaktere getestet und feinjustiert.
+    15 Charaktere vorgeschlagen, **2 pro Typ** 
+4. 6 endgültige Charaktere ausgewählt  
+5. Balancing durch ein Balancing-Dreieck  
+6. Charaktere getestet und feinjustiert
+
+<!-- _footer: "B-Team: Albano Vukelaj "-->
 
 ---
 
@@ -267,16 +373,17 @@ Z. Zukunft <code>Wer noch was braucht</code>
 
 Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
-- **Alle Charaktere** im Dreieck eingezeichnet.  
-- Werte so angepasst, dass jeder ein **ähnliches Gesamtvolumen** hat.  
+- **Alle Charaktere** im Dreieck eingezeichnet
+- Werte so angepasst, dass jeder ein **ähnlichen Flächeninhalt** hat 
 
 > **Theorie ≠ Praxis!** Anpassungen waren notwendig, um das Balancing im echten Spiel zu verbessern.
 
+<!-- _footer: "B-Team: Albano Vukelaj "-->
+
 ---
 
-<!-- _footer: "B-Team: Albano Vukelaj"-->
-
 # Balanzierung Prometheus
+
 <style scoped>
   img.center {
     float: center;
@@ -293,27 +400,96 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
 <img src="assets/img/Prometheus.png" alt="Prometheus" class="right" width ="120">
 
----
-
-# Game Interaction
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ---
 
-# Coordinate Systems
+# CharacterDataModel
 
-![w:900](./assets/img/jacinto/CoordinateMaps.png)
+Definiert alle **statischen Eigenschaften** eines Charakters.
+
+## Kernpunkte:
+- Dient als **Initialzustand** zur Erstellung neuer Charakter-Instanzen
+- **Statische Definition** eines Charakters
+- Fest im **Common-Modul** implementiert 
+<!--um Wiederverwendbarkeit zwischen Server und Client zu gewährleisten-->
+- Entscheidet welche Statistiken und Befehlsmuster ein Character hat
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ---
 
-# Grid to World
+# Character-Entity
 
-![w:900](./assets/img/jacinto/gridToWorld.png)
+Repräsentiert eine **aktive Instanz** eines Charakters im Spiel.
+
+## Kernpunkte:
+- Wird **direkt vor dem Start des Spiels** erzeugt
+- Spiel Logik bearbeitet während des laufenden Spieles den Zustand
+- Speichert Zustand des Characters während des Spiels
+- **Eindeutige ID (`String`)**: Wird vom Server bei der Instanziierung zugewiesen
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ---
 
-# World to Grid
+# Patterns
 
-![w:900](./assets/img/jacinto/worldToGrid.png)
+## Datenstruktur zum Speichern von Befehlsmustern
+- Einfach zu erstellen und lesen
+- Gut skalierbar
+- Alle vorstellbaren Muster speichern
+- Wiederverwendbar
+
+Umsetzung: Name + String-Representation + Subpattern-Mappings
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Patterns - Beispiel
+
+Name: plus
+<pre>
+String: " x \n
+         xxx\n
+          x "
+</pre>
+Subpattern Mappings: -
+
+![Plus Pattern bg right width:300px](assets/img/plusPatternHighRes.png)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Patterns - Beispiel
+
+Name: bombThrow
+<pre>
+String: " +++ \n
+         ++ ++\n
+         +   +\n
+         ++ ++\n
+          +++ "
+</pre>
+Subpattern Mappings: '+' -> "plus"
+
+![Bombo Pattern bg right width:300px](assets/img/bomboPatternHighRes.png)
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
+# Character Integration
+
+## Character ganz einfach integrieren:
+
+1. Patterns definieren
+2. Character Data Model erstellen
+3. Bilder in TextureAtlas packen
+
+<!-- _footer: "B-Team: Lukas Walker"-->
 
 ---
 
@@ -337,11 +513,27 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
 ---
 
+# Game Screen - Lobby Menu
+
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/LobbyVideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+<!-- _footer: "B-Team: Lukas Walker"-->
+
+---
+
 # Game Screen - Initialisation
 
-<!-- Bild vom Gamescreen: Init Mode -->
-
-![Game Screen in Command Mode w:900px center](assets/img/GameScreenInit.jpg)
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/InitVideo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
 <!-- _footer: "B-Team: Lukas Walker"-->
 
@@ -349,39 +541,12 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
 # Game Screen - Command Mode
 
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Command Mode w:900px center](assets/img/GameScreenCommandMode.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Command Menu
-
-<!-- Bild vom Gamescreen: Command Menu -->
-
-![Game Screen in Command Menu w:900px center](assets/img/CommandModeCommands.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Move Command Mode
-
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Movement Preview Mode w:900px center](assets/img/CommandModeMove.jpg)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
-
----
-
-# Game Screen - Attack Command Mode
-
-<!-- Bild vom Gamescreen: Command Mode -->
-
-![Game Screen in Attack Preview Mode w:900px center](assets/img/CommandModeAttack.jpg)
+<div align="center">
+  <video width="900" autoplay loop muted playsinline>
+    <source src="assets/vid/CommandMode.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
 <!-- _footer: "B-Team: Lukas Walker"-->
 
@@ -436,55 +601,39 @@ Visualisierung des **Health-Attack-Movement-Dreiecks**.
 
 ---
 
-# Patterns
+# Game Interaction
 
-## Datenstruktur zum Speichern von Befehlsmustern
-- Einfach zu erstellen und lesen
-- Gut skalierbar
-- Alle vorstellbaren Muster speichern
-- Wiederverwendbar
-
-Umsetzung: Name + String-Representation + Subpattern-Mappings
-
-<!-- _footer: "B-Team: Lukas Walker"-->
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
-# Patterns - Beispiel
+# Coordinate Systems
 
-Name: plus
-<pre>
-String: " x 
-         xxx
-          x "
-</pre>
-Subpattern Mappings: -
+![w:900](./assets/img/jacinto/CoordinateMaps.png)
 
-![Plus Pattern bg right width:300px](assets/img/plusPatternHighRes.png)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
-# Patterns - Beispiel
+# World to Grid
 
-Name: bombThrow
-<pre>
-String: " +++ \n
-         ++ ++\n
-         +   +\n
-         ++ ++\n
-          +++ "
-</pre>
-Subpattern Mappings: '+' -> "plus"
+![w:900](./assets/img/jacinto/worldToGrid.png)
 
-![Bombo Pattern bg right width:300px](assets/img/bomboPatternHighRes.png)
-
-<!-- _footer: "B-Team: Lukas Walker"-->
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
-# Turn Logic
+# Grid to World
+
+![w:900](./assets/img/jacinto/gridToWorld.png)
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
+
+---
+
+# Turn Logik
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -495,10 +644,12 @@ Subpattern Mappings: '+' -> "plus"
 - Befehle müssen sich an die Movement / Attack Patterns der Charaktere halten -> Charaktere vom Server als anticheat
 - Charaktere dürfen sich nicht dahin bewegen, wo andere Charaktere sind<br />-> Auch nicht wenn der sich wegbewegt
 - Mehrere Spieler dürfen sich nicht an die gleiche Stelle bewegen
-- Eigener Check für Charktere gegnerischer Spieler -> "Bounces"
+- Eigener Check für Charaktere gegnerischer Spieler -> "Bounces"
 
 <!--Ggf. Gif von Bounces oder so-->
 <!--Ggf. Architekturmodell oder so-->
+
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -506,11 +657,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ![w:900](./assets/img/jacinto/sequence_diagram.png)
 
----
-
-# Klassendiagramm
-
-![h:500](./assets/img/jacinto/turn_logic_classes.png)
+<!-- _footer: "B-Team: Jacinto Schwarzwälder"-->
 
 ---
 
@@ -542,7 +689,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Architecture
+# Architektur
 
 ![bg right](../documentation/Writerside/img/architecture/architecture.drawio.svg)
 
@@ -550,7 +697,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-# Auth
+# Authentifikation
 
 ![width:600px bg right](assets/img/auth-sequence.svg)
 
@@ -580,7 +727,7 @@ Subpattern Mappings: '+' -> "plus"
 
 ---
 
-## [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
+# [Packets](https://b-team-organisation.github.io/Fantasy-Chess/packet.html)
 
 Simple Json struktur, welche die gesendeten Daten in `data` und die id des packets in `id` angibt
 
@@ -592,7 +739,21 @@ Simple Json struktur, welche die gesendeten Daten in `data` und die id des packe
 }
 ```
 
-> Serialisiert mit [JsonWriter](https://b-team-organisation.github.io/Fantasy-Chess/json-writer.html)
+<!-- _footer: "B-Team: Marc Matija"-->
+
+---
+
+## Serialisierung
+
+- Eigene Serialisierung
+  - LibGDX mit GWT keine `Reflection`
+- `JsonWriter`
+
+## Deserialisierung 
+- Platform Abhängig
+- Client und Server eigene Implementation
+
+> Weiteres in der Doku.
 
 <!-- _footer: "B-Team: Marc Matija"-->
 
@@ -710,9 +871,8 @@ public interface PacketHandler {
   - **Szenarien:** Testen des Spielflusses durch Playtests
   - **Input Reaktionen:** Validieren der korrekten Reaktion auf Inputs
   - **Funktionstests:** UI-Reaktionen und Gameplay-Funktionen wurden geprüft
----
 
-<!-- _footer: "B-Team: Albano Vukelaj"-->
+---
 
 # Qualität - Client Module
 
@@ -727,6 +887,8 @@ public interface PacketHandler {
   - Korrekte CommandPreview and TurnOutcome
 - **UI Testing:**  
   - Stat-Overlays und Dialoge
+
+<!-- _footer: "B-Team: Albano Vukelaj"-->
 
 ---
 
@@ -751,7 +913,7 @@ public interface PacketHandler {
 ## Was wurde getestet?
 
 - **WebSocket Services:**  
-  Stabilität von Verbindungen und Nachrichtennutzlasten 
+  Stabilität von Verbindungen
 - **Controllers:**  
   REST-Endpunkte validiert
 - **Handlers:**  
@@ -760,6 +922,8 @@ public interface PacketHandler {
 ---
 
 # Dokumentation
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
@@ -770,17 +934,31 @@ public interface PacketHandler {
 
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
+
 ---
 
 # Dokumentation mit Writerside
 - Writerside ermöglicht eine zentrale, gut strukturierte Dokumentation
 - **Vorteile:**
-  - Unterstützung für **Markdown**
+  - Benutzt **Markdown** für simple Syntax
   - Inhalte sind direkt im **Browser** aufrufbar
   - **Einfache Navigation** durch verschiedene Dokumentationsbereiche
   - Perfekt für Benutzeranleitungen, Entwickler-Dokus und Architektur-Übersichten
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
+
+---
+
+# Writerside Live Demo
+
+<!--
+    Live Demo ähnlich zum Games Day, einer hat einen Laptop offen
+    und ist auf dem Server vorbereitet. Um den lobby Browser zu zeigen
+    wir öffnen eine Lobby und spielen ein wenig.
+-->
+
+<!-- _footer: "B-Team: Adnan Bennis"-->
+
 ---
 
 
@@ -793,6 +971,7 @@ public interface PacketHandler {
 - Verhindert Missverständnisse durch klare Beschreibungen
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
+
 ---
 
 # Beispiele: 
@@ -831,24 +1010,27 @@ public class GridService {
 ```
 
 <!-- _footer: "B-Team: Adnan Bennis"-->
----
-
-## Methode mit Parameter
-```java
-/**
- * Makes the {@link TextField} only accept letters, digits 
- * and other defined chars as input.
- *
- * @param textField the {@link TextField} to apply the filter to.
- */
-private void addNameFilter(TextField textField) {
-    ...
-}
-```
-
-<!-- _footer: "B-Team: Adnan Bennis"-->
 
 ---
 
 # Zukunft
 
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Direkte Änderungen
+
+- Token endpunkt mit Springboot Authentifizieren
+  - Aktuell keine sensiblen spieler daten behandelt
+- Game State in der Datenbank Speichern
+  - Aktuell nur Spieler Daten in der Datenbank
+- Charaktere in die Datenbank Schreiben
+  - Charaktere aktuell hard-coded in commons
+- Spieler und Spiel Statistiken
+
+<!-- _footer: "B-Team: Dania Anwar"-->
+
+---
+
+# Q&A

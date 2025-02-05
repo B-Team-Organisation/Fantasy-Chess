@@ -1,5 +1,7 @@
 # Grid Model
 
+`Author: Lukas Walker`
+
 The grid model represents the playing field of our game. Its core component is a 2D array of [Tile Models](TileModel.md),
 its size being defined by a `rows` and a `cols` value. The [](GridService.md) wraps this model to efficiently query and
 manipulate it.

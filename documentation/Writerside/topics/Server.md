@@ -1,5 +1,7 @@
 # Server
 
+`Author: Marc Matija`
+
 The Server consists of a Spring Boot project which acts as a websocket server using Spring Messaging. However, instead
 of using the STOMP framework which comes with Spring Boot by default a proprietary system is used due to the 
 restrictions of the [client websocket implementation](Networking.md#gdx-websockets). The server also makes use of

@@ -1,5 +1,7 @@
 # Turn Outcome Animation
 
+`Author: Lukas Walker`
+
 The turn outcome is animated using the `TurnResultAnimationHandler`. 
 As soon as the client receives the [Turn Result](Turn-Logic.md), a new instance of the `TurnResultAnimationHandler` is
 created to animate the results for the player.

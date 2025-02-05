@@ -1,5 +1,7 @@
 # Data Entities
 
+`Author: Marc Matija`
+
 Different to the entities inside the client, data entities are a construct from SpringBoot and map a Java Class
 to a structure in a database. The specific type of database is not important in this case, as translations to different
 databases happens using Spring JPA.

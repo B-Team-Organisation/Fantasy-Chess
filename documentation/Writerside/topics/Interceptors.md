@@ -1,5 +1,7 @@
 # Interceptors
 
+`Author: Marc Matija`
+
 ## Text WebSocket Handler Extension
 The `TextWebSocketHandlerExt` extends the base functionality of the [`TextWebSocketHandler`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/socket/handler/TextWebSocketHandler.html)
 by adding the Token invalidation and checking which player the websocket connection belongs to, it requests the

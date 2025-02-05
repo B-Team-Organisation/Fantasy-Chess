@@ -1,4 +1,5 @@
 # Organization
+`Author: Jacinto Schwarzwälder`
 
 The project was organised using scrum. To manage it, we used various platforms as explained below. 
 Some team members also had the additional responsibility to make sure that things went smooth in regard 
