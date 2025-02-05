@@ -1,4 +1,5 @@
 # Turn Logic
+`Author: Jacinto Schwarzwälder`
 
 The Turn Logic handles the application of all turn-related rules *after the commands have been sent by the players*.
 Thus, its scope is all movement and attack commands as well as the potential result of the game.
