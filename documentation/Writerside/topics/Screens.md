@@ -5,5 +5,6 @@ Screens are the different scenes we can see in the game. This game relies on thr
 - [](SplashScreen.md)
 - [](MainMenu.md)
 - [](GameScreen.md)
+- [](LobbyScreen.md)
 
 More information about each screen can be found in their subtopic.

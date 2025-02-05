@@ -44,6 +44,7 @@
         <toc-element toc-title="Client">
             <toc-element topic="Client.md"/>
             <toc-element topic="Screens.md">
+                <toc-element topic="LobbyScreen.md"/>
                 <toc-element topic="SplashScreen.md"/>
                 <toc-element topic="MainMenu.md"/>
                 <toc-element topic="GameScreen.md"/>

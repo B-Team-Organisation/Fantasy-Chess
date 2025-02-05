@@ -25,10 +25,10 @@ import static com.bteam.fantasychess_client.Main.*;
 /**
  * A lobby screen for waiting after lobby creation.
  * <p>
- * Shows players in lobby and offers leaving and toggeling ready status.
+ * Shows players in lobby and offers leaving and toggling ready status.
  * If both players are ready, the game should start.
  *
- * @author jacinto
+ * @author jacinto, marc
  * @version 1.0
  */
 public class LobbyScreen extends Dialog {
