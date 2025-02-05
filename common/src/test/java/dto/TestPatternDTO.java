@@ -4,6 +4,8 @@ import com.bteam.common.dto.PatternDTO;
 import com.bteam.common.models.PatternModel;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.HashMap;
 
 public class TestPatternDTO {
@@ -19,6 +21,6 @@ public class TestPatternDTO {
 
 		String jsonString = patternDTO.toJson();
 		String correctJsonString = "{\"patternName\":\"TestPattern\",\"patternString\":\"xxx\nx x\nxxx\",\"subpatternMappings\":{\"x\":\".\",\"y\":\",\"}}";
-		org.junit.jupiter.api.Assertions.assertEquals(correctJsonString,jsonString);
+		assertEquals(correctJsonString,jsonString);
 	}
 }

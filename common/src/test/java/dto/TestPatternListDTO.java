@@ -5,6 +5,7 @@ import com.bteam.common.dto.PatternListDTO;
 import com.bteam.common.models.PatternModel;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class TestPatternListDTO {
 	}
 
 	@Test
-	public void testPatternListDTOtoJson() {
+	void testPatternListDTOtoJson() {
 		String patternDTOJson = patternDTO.toJson();
 
 		PatternListDTO patternListDTO;
@@ -34,21 +35,21 @@ public class TestPatternListDTO {
 
 		patternListDTO = new PatternListDTO();
 		correctJson = "{\"patterns\":[]}";
-		org.junit.jupiter.api.Assertions.assertEquals(correctJson,patternListDTO.toJson());
+		assertEquals(correctJson,patternListDTO.toJson());
 
 		patternListDTO = new PatternListDTO(patterns);
-		org.junit.jupiter.api.Assertions.assertEquals(correctJson,patternListDTO.toJson());
+		assertEquals(correctJson,patternListDTO.toJson());
 
 		patterns.add(patternDTO);
 
 		correctJson = "{\"patterns\":["+patternDTO.toJson()+"]}";
 		patternListDTO = new PatternListDTO(patterns);
-		org.junit.jupiter.api.Assertions.assertEquals(correctJson,patternListDTO.toJson());
+		assertEquals(correctJson,patternListDTO.toJson());
 
 		patterns.add(patternDTO);
 
 		correctJson = "{\"patterns\":["+patternDTO.toJson()+","+patternDTO.toJson()+"]}";
 		patternListDTO = new PatternListDTO(patterns);
-		org.junit.jupiter.api.Assertions.assertEquals(correctJson,patternListDTO.toJson());
+		assertEquals(correctJson,patternListDTO.toJson());
 	}
 }
