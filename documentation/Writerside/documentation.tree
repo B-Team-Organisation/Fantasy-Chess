@@ -66,4 +66,5 @@
             <toc-element topic="Entities.md"/>
         </toc-element>
     </toc-element>
+    <toc-element topic="FutureFeatures.md"/>
 </instance-profile>
