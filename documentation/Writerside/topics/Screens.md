@@ -33,7 +33,8 @@ The most important methods we used of the LibGDX `ScreenAdapter` are:
 ## UI + Input
 
 The screens all extends the LibGDX class ScreenAdapter for easy method overrides.
-Rendering takes place using one or two viewports and orthographic cameras, both from LibGDX.
+Rendering takes place using one or two viewports and [orthographic cameras](https://libgdx.com/wiki/graphics/2d/orthographic-camera)
+, both from LibGDX.
 We use Scene2D for our UI with a adjusted default skin
 from the [SkinComposer Tool](https://libgdx.com/wiki/tools/skin-composer).
 All used graphics are combined in one `TextureAtlas` for efficient storage and access.

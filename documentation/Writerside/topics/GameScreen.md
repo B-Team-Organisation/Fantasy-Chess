@@ -15,7 +15,9 @@ The following things happen when the game screen gets created (combination of co
 - Creation of cameras and viewports for rendering
 - Creating of font for displaying damage numbers
 - Creation of important ui elements like the [readyButton](GameScreen.md#ready-button)
-- Creation of the `atlas` for texture retrieval and `batch` for sprite rendering.
+- Creation of the 
+[atlas](https://libgdx.com/wiki/tools/texture-packer) for texture retrieval and 
+[batch](https://libgdx.com/wiki/graphics/2d/spritebatch-textureregions-and-sprites) for sprite rendering
 - Import of the tiled tmx map used for rendering the map + creation of its renderer
 - Creation of the `TiledMathService` for all calculations. See [](Tilemap.md)
 - Creation of custom map layers. See [](GameScreen.md#other-layers)
@@ -45,8 +47,10 @@ See [](MapInputAdapter.md) or its [javadoc](https://b-team-organisation.github.i
 ## Game Phases
 
 The entire time a players game shows the Game Screen, it is in some kind of phase.
-These phases represent the current context of the game screen and are use to regulate the flow of the game and
+These phases represent the current context of the game screen and are used to regulate the flow of the game and
 contextualize inputs.
+
+The following diagram visualises the states and transitions:
 
 ![](../img/client/ComplexCycle.svg)
 
@@ -57,7 +61,7 @@ This puts the Game Screen in the [Lobby Phase](GameScreen.md#lobby-phase) by def
 
 ### Lobby Phase
 
-The lobby phase stats when the screen is created and ends when the game starts.
+The lobby phase starts when the screen is created and ends when the game starts.
 Both players have to be ready at this point.
 They can set themselfs ready using the provided dialog, leading to their status being communicated with the other client
 via the server.
@@ -122,7 +126,7 @@ This phase is the last phase of the game loop. Its shows both players the winner
 
 The map was created using the tool [Tiled](http://www.mapeditor.org/) and exported as a tmx file.
 This file can be loaded using the TmxMapLoader to directly manipulate and render it in game.
-The map itself is stored in the base layer of this map, every single tile being saved with all nececarry
+The map itself is stored in the base layer of this map, every single tile being saved with all necessary
 information for its depiction.
 
 ## Other Layers
@@ -151,7 +155,7 @@ This layers contains a single green tile to show which character is currently se
 
 ![](../img/client/HighlightLayer.png)
 
-This layer contains the single highlighting the current tile hovered by the player.
+This layer contains a  highlight on the tile currently hovered by the player.
 
 #### Command Option/Preview Layer
 
@@ -171,10 +175,10 @@ The Game Screen features many UI elements, each providing valuable functions to 
 
 ### Ready Button
 
-The ready button lets the players send their commands. His text gives some hints about the current state of the game,
+The ready button lets the players send their commands. Its text gives some hints about the current state of the game,
 displaying the amount of commands set in the current round or tells the player to wait for his opponent.
-He is updates using his `act(float delta)` method that's called together with `stage.act()` in the rendering method and
-in situations where he should not be pressed.
+The button is updated using his `act(float delta)` method that's called together with `stage.act()` in the rendering 
+method and in situations where it should not be pressed.
 
 ### Stat Panels
 

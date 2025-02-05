@@ -10,10 +10,10 @@ left corner.
 
 ## Username Input
 
-The username input field displayes "Username" until clicked to communicate the user what to write into it.
-Clicking on it allows the user to type both letters and numbers into it. All other symbols will be declined.
+The username input field displays "Username" until clicked to communicate to the user what to write into it.
+Clicking on it allows the user to type both letters and numbers into it.
 
-All usernames are required to be at least 4 Characters long.
+All usernames are required to be at least 4 Characters long and consist of only letters and numbers.
 
 When a valid username is set, the play button comes active. If the username later fails its requirements, it gets
 disabled again.
