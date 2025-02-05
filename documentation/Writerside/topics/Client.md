@@ -13,3 +13,20 @@ The client consists of 2 submodules.
 
 - **HTML** - handles the ability to render to the browser
 - **Core** - contains the program code independent of platform
+
+## Services
+
+In order to manage Data, the client makes use of Services. The services are:
+
+### WebSocketService
+
+Manages the WebSocket connection to the server and handles packet routing.
+More infos under [](Networking.md)
+
+### Lobby Service
+
+The Lobby service manages the active lobby the user is part of and the players within it.
+
+### Client Game State Service
+
+Manages the current state of the game on the client.
