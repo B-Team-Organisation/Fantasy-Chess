@@ -1,17 +1,42 @@
 # Character Data Model
 
-`Author: Albano Vukelaj`
+`Author: Jacinto Schwarzwälder`
 
-It defines all static properties such as attack and movement patterns, base stats, and descriptions.
-Unlike [](CharacterEntity.md), which changes dynamically during the game,
-`CharacterDataModel` remains constant and serves as a template for creating new character entities.
+A CharacterDataModel defines all static properties of a character. They represent a model used by the [CharacterEntities](CharacterEntity.md).
+See the following class diagram for more information:
 
-### Structure of CharacterDataModel
-📌 **For a full technical reference, check the**
-[CharacterDataModel JavaDoc](https://b-team-organisation.github.io/Fantasy-Chess/java-docs/common/com/bteam/common/models/CharacterDataModel.html).
+```plantuml
+@startuml
+class AttackDataModel {
+    - String name;
+    - String description;
+    - int health;
+    - int attackPower;
+    - PatternService[] attackPatterns;
+    - PatternService[] movementPatterns;
+    - String attackDescription;
+    - String movementDescription;
+    + String getName()
+    + String getDescription()
+    + int getHealth()
+    + int getAttackPower()
+    + PatternService[] getAttackPatterns()
+    + PatternService[] getMovementPatterns()
+    + String getAttackDescription()
+    + String getMovementDescription()
+    + void setName(name: String)
+    + void setDescription(description: String)
+    + void setHealth(health: int)
+    + void setAttackPower(int attackPower)
+    + void setAttackPatterns(attackPatterns: PatternService[])
+    + void setMovementPatterns(movementPatterns: PatternService[])
+    + void setAttackDescription(attackDescription: String)
+    + void setMovementDescription(movementDescription: String)
+}
+@enduml
+```
 
-### **Key Attributes** (Quick Overview)
-- **Name & Description**: Basic character information.
-- **Health & Attack Power**: Base stats determining survivability and damage.
-- **Attack & Movement Patterns**: Defines how the character moves and attacks.
-- **Pattern Descriptions**: Additional explanations for attacks and movements.  
+As shown, a character has a name and description, as well as a fixed amount of health, attackPower (damage from attacks)
+and lists of [](PatternService.md) for the attack and movement patterns. Additionally, there are descriptions for attacks
+and movements.
+
