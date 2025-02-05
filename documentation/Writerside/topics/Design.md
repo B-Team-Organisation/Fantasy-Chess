@@ -1,5 +1,7 @@
 # Design
 
+`Author: Dania Anwar`
+
 ### Concept
 Before developing the digital version of our game, we created a physical prototype using paper.
 This allowed us to test the game mechanics, evaluate whether the game was enjoyable, and establish an initial visual concept.
