@@ -1,10 +1,8 @@
-# Tilemap
+# Coordinate System Conversions
+
 `Author: Jacinto Schwarzwälder`
 
-
-### Coordinate System Conversions
-
-##### There are three coordinate systems:
+## There are three coordinate systems:
 
 <deflist type="medium">
     <def title="World Coordinates">
