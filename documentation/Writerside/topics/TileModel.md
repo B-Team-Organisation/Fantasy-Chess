@@ -1,5 +1,7 @@
 # Tile Model
 
+`Author: Lukas Walker`
+
 A tile represents a single position on the [](GridModel.md) and is the fundamental
 building block of the [](GridModel.md).
 

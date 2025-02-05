@@ -1,5 +1,7 @@
 # Pattern Model
 
+`Author: Lukas Walker`
+
 A pattern model stores the unique name, a `String` representation of a [Pattern](Patterns.md) and
 the subpattern-mappings to decode it (`char` -> pattern name). It comes with getters for all fields.
 

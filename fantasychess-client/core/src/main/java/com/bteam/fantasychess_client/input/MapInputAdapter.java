@@ -32,7 +32,7 @@ import static com.bteam.fantasychess_client.Main.getWebSocketService;
  * Allows the player to click on the characters to execute context dependent actions.
  *
  * @author lukas jacinto
- * @version 1.0
+ * @version 1.1
  */
 public class MapInputAdapter extends InputAdapter {
     GameScreen gameScreen;
@@ -70,13 +70,13 @@ public class MapInputAdapter extends InputAdapter {
         Vector3 worldPos3 = gameCamera.unproject(new Vector3(screenX,screenY,0));
         Vector2D gridPos = mathService.worldToGrid(worldPos3.x, worldPos3.y);
 
-        if (gridPos == null){
-            return false;
-        }
-
         Main.getLogger().log(Level.SEVERE,"Clicked");
 
         if (button == Input.Buttons.LEFT) {
+
+            if (gridPos == null){
+                return false;
+            }
 
             switch (gameScreenMode) {
                 case TURN_OUTCOME:
@@ -192,6 +192,9 @@ public class MapInputAdapter extends InputAdapter {
             }
             case MOVE_MODE: {
                 getLogger().log(Level.SEVERE, "Move pressed at:" + gridPos.toString());
+                if (character != null) {
+                    break;
+                }
                 if (!Arrays.asList(gameScreen.getValidCommandDestinations()).contains(gridPos)) break;
                 Main.getCommandManagementService().setCommand(new MovementDataModel(gameScreen.getSelectedCharacter().getId(), gridPos));
                 commandMode = CommandMode.NO_SELECTION;
@@ -225,7 +228,6 @@ public class MapInputAdapter extends InputAdapter {
         }
     }
 
-
     /**
      * Getter for the {@link GameScreenMode}
      *
@@ -257,7 +259,6 @@ public class MapInputAdapter extends InputAdapter {
     public void setCommandMode(CommandMode commandMode) {
         this.commandMode = commandMode;
     }
-
 
 }
 

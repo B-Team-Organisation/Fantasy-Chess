@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 /**
  * Usefull methods for ui building
+ *
+ * @author lukas
  */
 public class UserInterfaceUtil {
 
