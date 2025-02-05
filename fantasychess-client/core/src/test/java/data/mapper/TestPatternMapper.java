@@ -8,6 +8,7 @@ import com.bteam.common.models.PatternModel;
 import com.bteam.fantasychess_client.data.mapper.PatternMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,7 @@ public class TestPatternMapper {
         JsonValue patternJson = new JsonReader().parse(patternDTO.toJson());
         PatternModel extractedModel = PatternMapper.patternFromJson(patternJson);
 
-        org.junit.jupiter.api.Assertions.assertEquals(patternModel, extractedModel);
+        assertEquals(patternModel, extractedModel);
     }
 
     @Test
@@ -50,6 +51,6 @@ public class TestPatternMapper {
         PatternListDTO patternListDTO = new PatternListDTO(patternDTOList);
         JsonValue patternListDTOJson = new JsonReader().parse(patternListDTO.toJson());
 
-        org.junit.jupiter.api.Assertions.assertEquals(patternList, PatternMapper.patternsFromJson(patternListDTOJson.get("patterns")));
+        assertEquals(patternList, PatternMapper.patternsFromJson(patternListDTOJson.get("patterns")));
     }
 }

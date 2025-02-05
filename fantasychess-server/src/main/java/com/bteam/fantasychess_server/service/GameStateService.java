@@ -5,8 +5,8 @@ import com.bteam.common.enums.GameStatus;
 import com.bteam.common.exceptions.DestinationAlreadyOccupiedException;
 import com.bteam.common.exceptions.DestinationInvalidException;
 import com.bteam.common.models.*;
-import com.bteam.common.services.TurnLogicService;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.utils.TurnLogic;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.stores.CharacterStore;
 import com.bteam.common.utils.Pair;
 import com.bteam.common.utils.PairNoOrder;
@@ -132,7 +132,7 @@ public class GameStateService {
             game.setGrid(grid.getGridModel());
             result = new TurnResult(game.getEntities(), List.of(), movements, List.of(), null);
         } else {
-            result = TurnLogicService.applyCommands(movements, game.getEntities(), attacks,
+            result = TurnLogic.applyCommands(movements, game.getEntities(), attacks,
                     gridService, host.getPlayerId());
         }
         game.getCommands().clear();
@@ -196,6 +196,6 @@ public class GameStateService {
         var game = getGame(gameId);
         if (game == null) return null;
         if (game.getEntities().isEmpty()) return "DRAW";
-        return TurnLogicService.checkForWinner(game.getEntities());
+        return TurnLogic.checkForWinner(game.getEntities());
     }
 }

@@ -30,7 +30,10 @@ later be swapped out for an OICD or 0auth authentiction process to be able to ea
 > More Information on the authentication flow can be found [here](Authentication.md#auth-flow)
 
 
-### `api/v1/register`  
+### `api/v1/register`
+
+Endpoint for registering a new user.
+
 Method: `POST`
 
 **Request:**
@@ -42,14 +45,14 @@ Body:
 }
 ```
 
-
-**Response:**   
+**Response:**  
 Code: `200`  
 Type: `UUID`  
 Body: `{UUID}`  
 
-
 ### `api/v1/token`
+
+Endpoint for obtaining a token
 
 <warning>This endpoint is currently not secured, this goes against the authentication flow, as this is THE endpoint
 that needs to be secured, however, to add proper authentication and platform independent authentication, you just need

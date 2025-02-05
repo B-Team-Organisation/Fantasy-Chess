@@ -1,7 +1,7 @@
 package com.bteam.fantasychess_server.client.interceptors;
 
 import com.bteam.common.dto.*;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
 import com.bteam.fantasychess_server.client.Client;
 import com.bteam.fantasychess_server.client.PacketHandler;
@@ -15,6 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static com.bteam.common.constants.PacketConstants.GAME_COMMANDS;
+import static com.bteam.common.constants.PacketConstants.GAME_TURN_RESULT;
 
 public class GamePacketHandler implements PacketHandler {
     private final String packetPattern = "GAME_";
@@ -41,7 +44,7 @@ public class GamePacketHandler implements PacketHandler {
         var data = tree.get("data");
 
         switch (id) {
-            case "GAME_COMMANDS":
+            case GAME_COMMANDS:
                 var commands = mapper.convertValue(data, CommandListDTO.class);
                 var attacks = CommandMapper.attacksFromDTO(commands);
                 var movements = CommandMapper.movementsFromDTO(commands);
@@ -56,7 +59,9 @@ public class GamePacketHandler implements PacketHandler {
                 var playerUUID = UUID.fromString(client.getPlayer().getPlayerId());
                 var players = lobbyService.getLobbyWithPlayer(playerUUID).getPlayers();
                 var result = gameStateService.processMoves(gameId, game.getCommands());
-                for (var p : players) {
+
+                for (int i = 0; i < players.size(); i++) {
+                    var p = players.get(i);
                     Packet packetToSend;
                     TurnResult turnResult = result.getFirst();
                     if (lobbyService.getLobby(UUID.fromString(game.getLobbyId())).isHost(p))
@@ -82,8 +87,8 @@ public class GamePacketHandler implements PacketHandler {
                     }
 
                     var dto = new TurnResultDTO(updatedCharactersDTO, rejectedCommands,
-                        validCommandsDto, turnResult.getWinner());
-                    packetToSend = new Packet(dto, "GAME_TURN_RESULT");
+                            validCommandsDto, turnResult.getWinner());
+                    packetToSend = new Packet(dto, GAME_TURN_RESULT);
                     System.out.println(dto.toJson());
                     WebSocketService.getCurrentClientForPlayer(p).sendPacket(packetToSend);
                 }

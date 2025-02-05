@@ -6,9 +6,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.bteam.common.entities.CharacterEntity;
 import com.bteam.common.models.AttackDataModel;
 import com.bteam.common.models.MovementDataModel;
-import com.bteam.common.services.TurnResult;
+import com.bteam.common.models.TurnResult;
 import com.bteam.common.utils.PairNoOrder;
-import com.bteam.common.entities.CharacterEntity;
 import com.bteam.fantasychess_client.ui.GameScreen;
 import com.bteam.fantasychess_client.utils.TileMathService;
 
