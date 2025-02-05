@@ -4,7 +4,7 @@
 
 ## Testing Overview
 All three modules (`common`, `client`, `server`) are extensively tested.
-While [](Common.md) and [](Server.md) modules utilized automated testing through **JUnit**,and **Mockito**
+While [](Common.md) and [](Server.md) modules utilized automated testing through **JUnit** (and **Mockito** where needed),
 the [](Client.md) module has been difficult to cover with unit tests due to the complexity of the game state 
 and the challenges of validating graphical elements.
 Additionally, the **GWT compiler's** output has only been tested manually due to time constraints.
@@ -34,30 +34,29 @@ The [](Server.md) module is responsible for backend logic, WebSocket communicati
 - **WebSocket Services:**
     - Verified connection stability.
 - **Controllers:**
-    - Ensured REST endpoints in classes like `HealthControllerTest` processed requests and responses correctly.
+    - Ensured REST endpoints in classes like `HealthControllerTest` processed requests and responses correctly
 - **Handlers:**
-    - Validated event management and packet handling with tests such as `LobbyPacketHandlerTest` and `TextWebSocketHandlerExtTest`.
+    - Validated event management and packet handling with tests such as `LobbyPacketHandlerTest` and
+`TextWebSocketHandlerExtTest`
 - **Utilities:**
-    - Tested supporting classes like `EventTest` and `PairTest` to ensure reliability in backend operations.
+    - Tested supporting classes like `EventTest` and `PairTest` to ensure reliability in backend operations
 
 ## Client Module
-The [](Client.md) module relied on **manual testing** due to the limitations of **GWT** , 
-which restricted the ability to perform automated tests, as well as the client requiring many graphical tests which
-would be difficult to automate.
+The [](Client.md) module relied on **manual testing** due to the limitations of testing visual features 
+which restricted the ability to perform automated tests, as well as the quirks of GWT that provide cryptic error
+messages
 
 ### Manual Testing Process
-- **Functional Testing:**
-    - Ensured UI responsiveness and verified gameplay features, such as character interactions and grid mechanics.
 - **Scenario-Based Testing:**
-    - Simulated different game states ( beginning, mid-game, and endgame) to test UI consistency and state transitions.
+  - Play-tested different game states to test game cycle, UI consistency and state transitions
+- **Functional Testing:**
+    - Ensured UI responsiveness and verified gameplay features, such as character interactions and grid interactions
 - **Cross-Device Validation:**
-    - Confirmed compatibility and responsiveness on various devices and screen sizes.
+    - Confirmed compatibility and responsiveness on various operational systems and screen sizes
 
 ### Key Focus Areas
-1. Health bar rendering and updates.
-2. Character representation
-3. Character stat overlays for accuracy and visibility.
-4. Scrollable UI components ( lists and dialogs) for smooth navigation.
-
-Manual testing played a critical role in identifying UI/UX issues that automated tests could not detect.
+1. Character and map rendering
+2. Command system and previews
+3. Input responses
+4. UI features
 
