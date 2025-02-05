@@ -1,4 +1,5 @@
 # Turn Logic
+`Author: Jacinto Schwarzwälder`
 
 The Turn Logic handles the application of all turn-related rules *after the commands have been sent by the players*.
 Thus, its scope is all movement and attack commands as well as the potential result of the game.
@@ -93,8 +94,6 @@ sequenceDiagram
     participant Server
     participant TurnLogic
     participant CommandValidator
-    participant ValidationResult
-    participant TurnResult
         
     activate Server    
     Server ->>TurnLogic: <<create>>
@@ -105,19 +104,11 @@ sequenceDiagram
     activate CommandValidator
     TurnLogic->>CommandValidator: Validate Commands
     
-    CommandValidator-->>ValidationResult: <<create>>
-    activate ValidationResult
-    ValidationResult-->>CommandValidator: 
     CommandValidator-->>TurnLogic: Return ValidationResult
     deactivate CommandValidator
-    deactivate ValidationResult
 
-    TurnLogic-->>TurnResult: <<create>>
-    activate TurnResult
-    TurnResult-->>TurnLogic: 
     TurnLogic-->>Server: Return TurnResult
     deactivate TurnLogic
-    deactivate TurnResult
     deactivate Server
 ```
 

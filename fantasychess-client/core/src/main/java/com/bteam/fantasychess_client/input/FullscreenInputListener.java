@@ -9,6 +9,8 @@ import com.badlogic.gdx.InputAdapter;
  * <p>
  * This {@link InputAdapter} can be used in an {@link com.badlogic.gdx.InputMultiplexer} to allow the
  * user to enter fullscreen by pressing the F11 key.
+ *
+ * @author lukas
  */
 public class FullscreenInputListener extends InputAdapter {
     @Override

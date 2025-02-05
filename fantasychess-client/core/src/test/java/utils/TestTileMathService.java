@@ -5,12 +5,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.bteam.common.models.Vector2D;
 import com.bteam.fantasychess_client.utils.TileMathService;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TestTileMathService {
 
@@ -57,24 +57,24 @@ class TestTileMathService {
             9,9, basicTiledMap,100,50
         );
 
-        Assertions.assertEquals(tileMathService.getMapCenter().getX(), 0);
-        Assertions.assertEquals(tileMathService.getMapCenter().getY(), 0);
+        assertEquals(tileMathService.getMapCenter().getX(), 0);
+        assertEquals(tileMathService.getMapCenter().getY(), 0);
 
         Vector2 result = tileMathService.gridToWorld(0,0);
-        Assertions.assertEquals(0,result.x,0.1);
-        Assertions.assertEquals(200,result.y,0.1);
+        assertEquals(0,result.x,0.1);
+        assertEquals(200,result.y,0.1);
 
         result = tileMathService.gridToWorld(8,8);
-        Assertions.assertEquals(0,result.x,0.1);
-        Assertions.assertEquals(-200,result.y,0.1);
+        assertEquals(0,result.x,0.1);
+        assertEquals(-200,result.y,0.1);
 
         result = tileMathService.gridToWorld(8,0);
-        Assertions.assertEquals(400,result.x,0.1);
-        Assertions.assertEquals(0,result.y,0.1);
+        assertEquals(400,result.x,0.1);
+        assertEquals(0,result.y,0.1);
 
         result = tileMathService.gridToWorld(0,8);
-        Assertions.assertEquals(-400,result.x,0.1);
-        Assertions.assertEquals(0,result.y,0.1);
+        assertEquals(-400,result.x,0.1);
+        assertEquals(0,result.y,0.1);
     }
 
     @Test
@@ -83,12 +83,12 @@ class TestTileMathService {
 
         Vector2 mouse = new Vector2(144,0);
         Vector2D result = tileMathService.worldToGrid(mouse.x, mouse.y);
-        Assertions.assertEquals(8, result.getX(),0.1);
-        Assertions.assertEquals(0, result.getY(),0.1);
+        assertEquals(8, result.getX(),0.1);
+        assertEquals(0, result.getY(),0.1);
 
         mouse = new Vector2(-1233,10);
         result = tileMathService.worldToGrid(mouse.x,mouse.y);
-        Assertions.assertNull(result);
+        assertNull(result);
     }
 
 
@@ -103,7 +103,7 @@ class TestTileMathService {
         Vector2 orientation2 = point2.cpy().sub(new Vector2(6, 8));
         Vector2 result1 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
         Vector2 expected1 = new Vector2(4.4f,5.6f);
-        Assertions.assertEquals(expected1, result1);
+        assertEquals(expected1, result1);
 
         // first test but direction vertices in other direction
         point1 = new Vector2(2, 8);
@@ -112,7 +112,7 @@ class TestTileMathService {
         orientation2 = new Vector2(6, 8).sub(point2.cpy());
         Vector2 result2 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
         Vector2 expected2 = new Vector2(4.4f,5.6f);
-        Assertions.assertEquals(expected2, result2);
+        assertEquals(expected2, result2);
 
         // first line has both points before intersection
         point1 = new Vector2(2, 8);
@@ -121,7 +121,7 @@ class TestTileMathService {
         orientation2 = point2.cpy().sub(new Vector2(12, 4));
         Vector2 result3 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
         Vector2 expected3 = new Vector2(7,3);
-        Assertions.assertEquals(expected3, result3);
+        assertEquals(expected3, result3);
 
 
         // parallel lines
@@ -130,7 +130,7 @@ class TestTileMathService {
         point2 = new Vector2(6, 8);
         orientation2 = point2.cpy().sub(new Vector2(8, 6));
         Vector2 result4 = tileMathService.lineIntersection(point1, orientation1, point2, orientation2);
-        Assertions.assertNull(result4);
+        assertNull(result4);
     }
 
     @Test
@@ -141,33 +141,33 @@ class TestTileMathService {
         Vector2 end1 = new Vector2(50,10);
         Vector2 point1 = new Vector2(30,20);
         float result1 = tileMathService.percentOnLine(point1, start1, end1);
-        Assertions.assertEquals(0.5f,result1,0.01);
+        assertEquals(0.5f,result1,0.01);
 
         Vector2 start2 = new Vector2(10,30);
         Vector2 end2 = new Vector2(50,10);
         Vector2 point2 = new Vector2(-10,40);
         float result2 = tileMathService.percentOnLine(point2, start2, end2);
-        Assertions.assertEquals(0f,result2,0.01);
+        assertEquals(0f,result2,0.01);
 
         Vector2 start3 = new Vector2(10,30);
         Vector2 end3 = new Vector2(50,10);
         Vector2 point3 = new Vector2(70,0);
         float result3 = tileMathService.percentOnLine(point3, start3, end3);
-        Assertions.assertEquals(1.0f,result3,0.01);
+        assertEquals(1.0f,result3,0.01);
 
         Vector2 start4 = new Vector2(10,20);
         Vector2 end4 = new Vector2(60,20);
         Vector2 point4 = new Vector2(20,20);
         float result4 = tileMathService.percentOnLine(point4, start4, end4);
-        Assertions.assertEquals(0.2f,result4,0.01);
+        assertEquals(0.2f,result4,0.01);
     }
 
     @Test
     void testGetMapCenter() {
         TileMathService tileMathService1 = new TileMathService(9,9,basicTiledMap,32,16);
 
-        Assertions.assertEquals(tileMathService1.getMapCenter().getX(), 0);
-        Assertions.assertEquals(tileMathService1.getMapCenter().getY(), 0);
+        assertEquals(0, tileMathService1.getMapCenter().getX());
+        assertEquals(0, tileMathService1.getMapCenter().getY());
 
     }
 }

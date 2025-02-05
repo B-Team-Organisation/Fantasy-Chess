@@ -1,5 +1,7 @@
 # Grid Service
 
+`Author: Lukas Walker`
+
 The Grid Service wraps a [](GridModel.md) and hosts methods providing information about the [](GridModel.md) or to manipulate it.
 It only holds a single [](GridModel.md):
 

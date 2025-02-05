@@ -1,5 +1,7 @@
 # Character Store
 
+`Author: Lukas Walker`
+
 The `CharacterStore` holds all character definitions. When implementing a new character, the [](CharacterDataModel.md)
 is created in it.
 
