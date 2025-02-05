@@ -5,6 +5,7 @@ Screens are the different scenes we can see in the game. This game relies on thr
 - [](SplashScreen.md)
 - [](MainMenu.md)
 - [](GameScreen.md)
+- [](LobbyScreen.md)
 
 The different screen types are kept track of in the Screens `enum`:
 
