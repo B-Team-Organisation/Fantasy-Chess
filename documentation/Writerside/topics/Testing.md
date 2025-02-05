@@ -4,8 +4,8 @@
 
 ## Testing Overview
 All three modules (`common`, `client`, `server`) are extensively tested.
-While `common` and `server` modules utilized automated testing through **JUnit**,
-the `client` module has been difficult to cover with unit tests due to the complexity of the game state 
+While [](Common.md) and [](Server.md) modules utilized automated testing through **JUnit**,
+the [](Client.md) module has been difficult to cover with unit tests due to the complexity of the game state 
 and the challenges of validating graphical elements.
 Additionally, the **GWT compiler's** output has only been tested manually due to time constraints.
 
@@ -17,11 +17,11 @@ This module was rigorously tested using **JUnit** to ensure the correctness and 
 
 ### Key Areas of Testing
 - **[](Models.md):**
-    - Verified data integrity and edge cases in classes such as `GridModel`,`GridService`, `LobbyModels`,`PatternModel`,`PatternService`and `Vector2D`.
+    - Verified data integrity and edge cases in classes such as [](GridModel.md),[](GridService.md), `LobbyModels`,[](PatternModel.md),[](PatternService.md) and `Vector2D`.
 - **DTOs:**
     - Ensured correct serialization and deserialization of data through tests like `TestPatternListDTO`.
 - **Services:**
-    - Validated game logic and command verification processes in services such as [](Turn-Logic.md) and[CommandValidator](Turn-Logic.md#commandvalidation).
+    - Validated game logic and command verification processes in services such as [](Turn-Logic.md) and [CommandValidator](Turn-Logic.md#1-command-validation).
   
 ### Testing Approach
 1. **Unit Tests:**
