@@ -54,7 +54,6 @@
             </toc-element>
             <toc-element topic="Networking.md"/>
             <toc-element topic="Tilemap.md"/>
-            <toc-element topic="Packet-Handling.md"/>
         </toc-element>
         <toc-element toc-title="Server">
             <toc-element topic="Server.md"/>
