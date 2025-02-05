@@ -1,5 +1,7 @@
 # Characters
 
+`Author: Lukas Walker`
+
 Characters are the pieces players move on the board. Each character has:
 - A **name** and **description**
 - **Base stats** for health and damage

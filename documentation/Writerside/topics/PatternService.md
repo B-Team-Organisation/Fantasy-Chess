@@ -1,5 +1,7 @@
 # Pattern Services
 
+`Author: Lukas Walker`
+
 Pattern Services wrap a [Pattern Model](PatternModel.md) and provide methods to manipulate and retrieve information
 about the [Pattern](Patterns.md).
 A pattern service holds its underlying [Pattern Model](PatternModel.md), a reference to 
